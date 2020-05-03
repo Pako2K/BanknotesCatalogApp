@@ -1,5 +1,5 @@
 {
-    "serverPort": 8080,
+    "serverPort": 80,
     "staticContent": "../BanknotesHTML",
 
     "logConfigFile": "./config/DEV/log4js.config.json",
