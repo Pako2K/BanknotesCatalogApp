@@ -1,0 +1,34 @@
+{
+    "serverPort": 8080,
+    "staticContent": "../BanknotesHTML",
+
+    "logConfigFile": "./config/PROD/log4js.config.json",
+
+    "credentialsDB": "../DB/PROD/credentials.db",
+    "catalogueDB": "../DB/PROD/catalogue.db",
+
+    "useHTTPS": true,
+
+    "sslOptions": {
+        "maxVersion": "TLSv1.3",
+        "minVersion": "TLSv1.2",
+        "requestCert": false,
+        "privateKeyFile": "./cert/privateKey.key",
+        "certificateFile": "./cert/certificate.crt",
+        "handshakeTimeout": 60000
+    },
+
+    "sessionOptions": {
+        "name": "wid",
+        "cookie": {
+            "path": "/",
+            "httpOnly": true,
+            "secure": true,
+            "maxAge": 1200000
+        },
+        "resave": true,
+        "unset": "destroy",
+        "saveUninitialized": false,
+        "rolling": true
+    }
+}

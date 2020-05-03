@@ -7,7 +7,7 @@
     "credentialsDB": "../DB/DEV/credentials.db",
     "catalogueDB": "../DB/DEV/catalogue.db",
 
-    "useHTTPS": true,
+    "useHTTPS": false,
 
     "sslOptions": {
         "maxVersion": "TLSv1.3",
@@ -31,5 +31,4 @@
         "saveUninitialized": false,
         "rolling": true
     }
-
 }
