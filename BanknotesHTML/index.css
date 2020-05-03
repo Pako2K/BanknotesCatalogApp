@@ -1,0 +1,236 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  margin: 0px;
+  overflow: auto;
+  min-width: 300px;
+  background: black;
+}
+
+#intro-section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
+  background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
+  height: auto;
+}
+
+#intro-section h1 {
+  font-family: "Source Sans Pro", "sans-serif";
+  font-size: 2em;
+  font-weight: bold;
+  color: #215a64;
+  text-shadow: 2px 3px 4px #787878;
+  padding: 1em 3em;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.user-input-section {
+  margin: auto;
+  padding: 2em 0;
+  background-color: #5ab4b4;
+}
+
+.user-input-section form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.user-input-section form div {
+  margin: auto;
+}
+
+.user-input-section form input,
+.user-input-section form button {
+  display: inline-block;
+  border-radius: 2em;
+  border: none;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.user-input-section form input[type="text"],
+.user-input-section form input[type="password"],
+.user-input-section form input[type="email"] {
+  padding-left: 3em;
+  height: 2.5em;
+}
+
+.user-input-section form input[type="submit"],
+.user-input-section form button {
+  background: #92d050;
+  width: 7em;
+  height: 2em;
+  color: white;
+  -webkit-box-shadow: 3px 3px 5px #325032;
+          box-shadow: 3px 3px 5px #325032;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+.user-input-section form input:focus {
+  outline: none;
+}
+
+.user-input-section form input[type="submit"]:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.user-input-section form ::-webkit-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgrey;
+  opacity: 1;
+  /* Firefox */
+}
+
+.user-input-section form :-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgrey;
+  opacity: 1;
+  /* Firefox */
+}
+
+.user-input-section form ::-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgrey;
+  opacity: 1;
+  /* Firefox */
+}
+
+.user-input-section form ::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightgrey;
+  opacity: 1;
+  /* Firefox */
+}
+
+.user-input-section form :-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: lightgrey;
+}
+
+.user-input-section form ::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: lightgrey;
+}
+
+.user-input-section form img {
+  position: absolute;
+  width: 2em;
+  margin-top: 0.4em;
+  margin-left: 0.8em;
+}
+
+.user-input-section form span {
+  font-family: "sans-serif";
+  font-size: 0.88em;
+  color: whitesmoke;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1000px) {
+  #intro-section h1 {
+    font-size: 1.8em;
+    padding-left: 0.9em 2.7em;
+  }
+  #intro-section img {
+    width: 4em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  #intro-section {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+  }
+  #intro-section h1 {
+    font-size: 1.5em;
+    padding: 0;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0;
+  }
+  #intro-section img:last-child {
+    display: none;
+  }
+  .user-input-section > form input,
+  .user-input-section > form button {
+    font-size: 0.825em;
+  }
+  .user-input-section > form img {
+    width: 1.5em;
+    margin-top: 0.3em;
+    margin-left: 0.6em;
+  }
+  .user-input-section > form span {
+    font-size: 0.66em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #intro-section h1 {
+    font-size: 1.3em;
+    margin-top: 1em;
+  }
+  #intro-section img:first-child {
+    display: none;
+  }
+  .user-input-section > form input,
+  .user-input-section > form button {
+    font-size: 0.715em;
+  }
+  .user-input-section > form img {
+    width: 1.3em;
+  }
+  .user-input-section > form span {
+    font-size: 0.572em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #intro-section > h3 {
+    font-size: 1.2em;
+  }
+  .user-input-section > form input,
+  .user-input-section > form button {
+    font-size: 0.66em;
+  }
+  .user-input-section > form img {
+    width: 1.2;
+  }
+  .user-input-section > form span {
+    font-size: 0.528em;
+  }
+}
+/*# sourceMappingURL=index.css.map */

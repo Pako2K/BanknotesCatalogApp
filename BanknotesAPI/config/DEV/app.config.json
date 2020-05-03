@@ -1,0 +1,33 @@
+{
+    "serverPort": 8080,
+    "staticContent": "./html",
+
+    "logConfigFile": "./config/log4js.config.json",
+
+    "credentialsDB": "D:/PAKO/_PROJECTS/HTML/Numismatics/data/credentials.db",
+    "catalogueDB": "D:/PAKO/_PROJECTS/HTML/Numismatics/data/Numismatics.db",
+
+    "sslOptions": {
+        "maxVersion": "TLSv1.3",
+        "minVersion": "TLSv1.2",
+        "requestCert": false,
+        "privateKeyFile": "./openssl/privateKey.key",
+        "certificateFile": "./openssl/certificate.crt",
+        "handshakeTimeout": 60000
+    },
+
+    "sessionOptions": {
+        "name": "wid",
+        "cookie": {
+            "path": "/",
+            "httpOnly": true,
+            "secure": true,
+            "maxAge": 1200000
+        },
+        "resave": true,
+        "unset": "destroy",
+        "saveUninitialized": false,
+        "rolling": true
+    }
+
+}
