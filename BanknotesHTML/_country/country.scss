@@ -1,0 +1,169 @@
+#country-header {
+    font-family: Lucida sans, sans-serif;
+    background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
+    padding: 1em 2em 0.2em 2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    // Left Column
+    &>div:first-of-type {
+        margin-right: 0.6em;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        // First row within the column
+        &>div:first-of-type {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            #continent-div {
+                margin-right: 0.5em;
+                &>img {
+                    display: block;
+                    width: 40px;
+                    margin: auto;
+                }
+                &>p {
+                    font-size: 0.7em;
+                    text-align: center;
+                    color: grey;
+                    margin: 0;
+                }
+            }
+            #flag-div>img {
+                height: 52px;
+                width: auto;
+                border: solid 0.75px black;
+                margin-right: 0.5em;
+            }
+            #country-data {
+                color: black;
+                &>p:first-of-type {
+                    margin: 0;
+                    font-size: 1.5em;
+                    text-shadow: 2px 2px 4px rgb(20, 20, 50);
+                }
+                // Full name and "i" icon
+                &>p:nth-of-type(2) {
+                    display: inline-block;
+                    margin: 0.5em 0;
+                    font-size: 0.9em;
+                    font-style: italic;
+                    &>img {
+                        display: inline-block;
+                        width: 1.1em;
+                        height: 1.1em;
+                        vertical-align: top;
+                        margin-left: 0.5em;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+        // Description
+        &>div:nth-of-type(2) {
+            font-size: 0.7em;
+            color: rgb(50, 50, 50);
+            display: none;
+        }
+        // Parent country
+        #parent-country {
+            display: none;
+            &>p {
+                margin: 0.5em 0;
+                font-size: 0.7em;
+                color: black;
+            }
+            &>a {
+                display: block;
+                font-size: 0.7em;
+            }
+        }
+    }
+    // Right Column (successors)
+    &>div:last-of-type {
+        display: flex;
+        flex-direction: row;
+        &>div {
+            display: none;
+            margin-left: 0.6em;
+        }
+        & p {
+            font-size: 0.6em;
+            color: black;
+            margin: 0;
+            padding-bottom: 0.5em;
+        }
+        & a {
+            display: block;
+            font-size: 0.6em;
+            margin-bottom: 0.4em;
+        }
+    }
+}
+
+.country-link {
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 1em;
+    border: dotted transparent 0.5px;
+    white-space: nowrap;
+    &>img {
+        height: 2em;
+        width: auto;
+        margin: 0 0.5em 0 0;
+        vertical-align: middle;
+        border-radius: 3px;
+    }
+    &:link {
+        color: black;
+    }
+    &:visited {
+        color: black;
+    }
+    &:hover>span {
+        color: black;
+        border-bottom: dotted grey 0.75px;
+    }
+    &:active {
+        color: grey;
+    }
+}
+
+#country-nav {
+    background: linear-gradient(180deg, rgb(225, 240, 240), rgb(160, 220, 220));
+    padding-left: 1em;
+    height: 2.6em;
+    &>p {
+        font-family: Monotype Corsiva, Times New Roman;
+        font-size: 1em;
+        color: black;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0.3em 0.5em;
+        padding: 0.4em 1.2em;
+        border-radius: 1em;
+        cursor: pointer;
+        transition: 0.4s;
+        &.selected-view {
+            background: rgb(44, 94, 94);
+            color: whitesmoke;
+        }
+        &:not(.selected-view):hover {
+            background: rgb(144, 194, 194);
+        }
+    }
+}
+
+hr {
+    margin: 0;
+}
+
+#results-table {
+    padding: 2em 0em;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    background-color: whitesmoke;
+}

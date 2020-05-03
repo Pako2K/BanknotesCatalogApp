@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Banknotes Database</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/_shared/index.css">
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+    <link rel="stylesheet" href="./country.css">
+    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+
+
+    <!-- 
+        <link rel="stylesheet" href="/_countries/_currencies/currency.css">
+        <link rel="stylesheet" href="/_countries/_currencies/_series/series-summary.css">
+        <link rel="stylesheet" href="/_countries/_currencies/_series/series-detail.css">
+        <link rel="stylesheet" href="/_countries/_currencies/_series/series-list.css">
+        <link rel="stylesheet" href="/_shared/forms.css">
+        -->
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
+    <script src="./country.js"></script>
+    <script src="./_currencies/currencies.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <script>
+            $("body>header").load("/_shared/header/__header.html", function() {
+                $(".selected-header-nav").removeClass("selected-header-nav");
+            });
+        </script>
+    </header>
+
+    <section id="country-header">
+        <!-- Left column -->
+        <div>
+            <!-- First Row: main info -->
+            <div>
+                <div id="continent-div">
+                    <img src="" alt="Continent icon" />
+                    <p></p>
+                </div>
+
+                <div id="flag-div">
+                    <img src="" alt="Territory flag" />
+                </div>
+
+                <div id="country-data">
+                    <p><span id="name"></span> <span> - </span> <span id="iso3"></span></p>
+                    <p>
+                        <span id="full-name"></span>
+                        <img src="/_shared/img/info-icon.svg" alt="Info icon" onclick="showDescription()" />
+                    </p>
+                </div>
+            </div>
+
+            <!-- Second Row: description-->
+            <div>
+                <p id="country-desc"></p>
+            </div>
+
+            <!-- Third Row: parent country -->
+            <div id="parent-country">
+                <p></p>
+                <a class="country-link" href="" target="_self"><img src="" alt="" /><span></span></a>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div>
+            <div id="predecessors">
+                <p>Preceded by: </p>
+            </div>
+            <div id="successors">
+                <p>Succeeded by: </p>
+            </div>
+        </div>
+    </section>
+
+    <div id="country-nav">
+        <p class="selected-view" onclick="selectView(this)">Currencies</p>
+        <p onclick="selectView(this)">Series</p>
+        <p onclick="selectView(this)">Denominations</p>
+        <p onclick="selectView(this)">Years</p>
+    </div>
+
+    <hr/>
+
+    <section id="results-table">
+    </section>
+
+    <!--<section id="currency-section"></section> -->
+
+    <footer>
+        <script>
+            $("body>footer").load("/_shared/footer/__footer.html");
+        </script>
+    </footer>
+</body>
+
+</html>
