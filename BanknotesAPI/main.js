@@ -1,7 +1,5 @@
 "use strict";
 
-const appConfigFile = 'config/app.config.json';
-
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
@@ -12,6 +10,13 @@ const SQLiteStore = require('connect-sqlite3')(session);
 const crypto = require('crypto');
 const DBs = require('./DBConnections');
 const api = require('./banknotes-api');
+
+// Read environment parameter
+const ENV = process.argv[2];
+
+console.log(" *** ENVIRONMENT: " + ENV);
+
+const appConfigFile = `config/${ENV}/app.config.json`;
 
 // Read configuration properties from file
 const appConfig = JSON.parse(fs.readFileSync(appConfigFile));
@@ -41,10 +46,8 @@ DBs.connect(appConfig.credentialsDB, 'credentialsDB')
 
 
 function startServer() {
-
     // Create the express app
     const app = express();
-
 
     // Add session middleware
     const sessionConf = appConfig.sessionOptions;
@@ -81,8 +84,13 @@ function startServer() {
 
     log.debug("SSL Options: " + JSON.stringify(appConfig.sslOptions));
 
-    https.createServer(sslOptions, app).listen(appConfig.serverPort);
-    //http.createServer(app).listen(appConfig.serverPort);
+    if (appConfig.useHTTPS) {
+        https.createServer(sslOptions, app).listen(appConfig.serverPort);
+        log.info("Listening port (https): " + appConfig.serverPort);
+    } else {
+        http.createServer(app).listen(appConfig.serverPort);
+        log.info("Listening port (http): " + appConfig.serverPort);
+    }
 }
 
 

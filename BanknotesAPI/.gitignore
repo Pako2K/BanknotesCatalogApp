@@ -1,2 +1,8 @@
 # exclude external node modules
 node_modules/*
+
+# exclude certificates folder
+cert/*
+
+# exclude logs directory
+logs/*

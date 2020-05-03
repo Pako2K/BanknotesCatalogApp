@@ -1,18 +1,20 @@
 {
     "serverPort": 8080,
-    "staticContent": "./html",
+    "staticContent": "../BanknotesHTML",
 
-    "logConfigFile": "./config/log4js.config.json",
+    "logConfigFile": "./config/DEV/log4js.config.json",
 
-    "credentialsDB": "D:/PAKO/_PROJECTS/HTML/Numismatics/data/credentials.db",
-    "catalogueDB": "D:/PAKO/_PROJECTS/HTML/Numismatics/data/Numismatics.db",
+    "credentialsDB": "../DB/DEV/credentials.db",
+    "catalogueDB": "../DB/DEV/catalogue.db",
+
+    "useHTTPS": true,
 
     "sslOptions": {
         "maxVersion": "TLSv1.3",
         "minVersion": "TLSv1.2",
         "requestCert": false,
-        "privateKeyFile": "./openssl/privateKey.key",
-        "certificateFile": "./openssl/certificate.crt",
+        "privateKeyFile": "./cert/privateKey.key",
+        "certificateFile": "./cert/certificate.crt",
         "handshakeTimeout": 60000
     },
 

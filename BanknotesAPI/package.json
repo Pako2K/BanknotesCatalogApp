@@ -1,5 +1,5 @@
 {
-    "name": "BanknotesCatalogApp",
+    "name": "banknotes-catalogue-app",
     "description": "Banknotes Catalogue and Collection App",
     "repository": {},
     "license": "MIT",
@@ -22,7 +22,9 @@
         "moment": "^2.24.0"
     },
     "scripts": {
-        "start": "node main.js"
+        "start": "node main.js DEV",
+        "start-DEV": "node main.js DEV",
+        "start-PROD": "node main.js PROD"
     },
     "engines": {
         "node": ">= 8.0.0",
