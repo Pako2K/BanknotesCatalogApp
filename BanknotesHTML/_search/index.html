@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Banknotes Database: Search</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+    <link rel="stylesheet" href="/_shared/index.css">
+    <link rel="stylesheet" href="search.css">
+    <link rel="stylesheet" href="/_shared/from-to-filter/FromToFilter.css">
+    <link rel="stylesheet" href="/_shared/select-filter/SelectFilter.css">
+    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_shared/utils.js"></script>
+    <script src="search.js"></script>
+    <script src="/_shared/from-to-filter/FromToFilter.js"></script>
+    <script src="/_shared/select-filter/SelectFilter.js"></script>
+    <script src="/_shared/list-table/__list-table.js"></script>
+</head>
+
+<body>
+    <header>
+        <script>
+            $("body>header").load("/_shared/header/__header.html");
+        </script>
+    </header>
+
+    <section class="filters-section">
+        <div id="continent-filters">
+            <p>Continent</p>
+            <div>
+                <script>
+                    let filter = new SelectFilter($("#continent-filters>div"), "Continent", selectFilterChanged);
+                    loadContinents(filter);
+                </script>
+            </div>
+        </div>
+        <div id="territory-filters">
+            <p>Territory</p>
+            <div>
+                <script>
+                    let filter2 = new SelectFilter($("#territory-filters>div:first-of-type"), "Territory Type", selectFilterChanged);
+                    loadTerritoryTypes(filter2);
+                </script>
+            </div>
+            <div>
+                <script>
+                    new FromToFilter($("#territory-filters>div:nth-of-type(2)"), "Founded", territoryFilterChanged);
+                </script>
+            </div>
+            <div>
+                <script>
+                    new FromToFilter($("#territory-filters>div:last-of-type"), "Disappeared", territoryFilterChanged);
+                </script>
+            </div>
+        </div>
+        <div id="currency-filters">
+            <p>Currency</p>
+            <div>
+                <script>
+                    new FromToFilter($("#currency-filters>div:nth-of-type(1)"), "Created", currencyFilterChanged);
+                </script>
+            </div>
+            <div>
+                <script>
+                    new FromToFilter($("#currency-filters>div:last-of-type"), "Replaced", currencyFilterChanged);
+                </script>
+            </div>
+        </div>
+        <div id="banknote-filters">
+            <p>Banknote</p>
+            <div>
+                <script>
+                    new FromToFilter($("#banknote-filters>div:first-of-type"), "Denomination", banknoteFilterChanged, "Min", "Max");
+                </script>
+            </div>
+            <div>
+                <script>
+                    new FromToFilter($("#banknote-filters>div:last-of-type"), "Issue Date", banknoteFilterChanged);
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="results-section">
+        <p>Enter your search criteria</p>
+        <p>No banknotes found with this search criteria.</p>
+        <p>Found <span></span> banknotes. Refine your search.</p>
+        <div>
+            <table id="results-table" class="list-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2"><span class="is-sortable sorting-column" onclick="sortClick(this)">Catalogue Id</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc sort-selection"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Territory</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Currency</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Series</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Denomination</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Issue Date</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Printed Date</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
+                        <th colspan="2" class="th-stats only-logged-in">Collection</th>
+                    </tr>
+                    <tr>
+                        <td class="only-logged-in">Grade</td>
+                        <td class="only-logged-in"><span class="is-sortable" onclick="sortClick(this)">Price</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <script>
+            $("body>footer").load("/_shared/footer/__footer.html");
+        </script>
+    </footer>
+</body>

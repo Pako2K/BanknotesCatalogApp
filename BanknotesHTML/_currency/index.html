@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Banknotes Database</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/_shared/index.css">
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+    <link rel="stylesheet" href="./currency.css">
+    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+
+
+    <!-- 
+        <link rel="stylesheet" href="/_countries/_currencies/currency.css">
+        <link rel="stylesheet" href="/_countries/_currencies/_series/series-summary.css">
+        <link rel="stylesheet" href="/_countries/_currencies/_series/series-detail.css">
+        <link rel="stylesheet" href="/_countries/_currencies/_series/series-list.css">
+        <link rel="stylesheet" href="/_shared/forms.css">
+        -->
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
+    <script src="./currency.js"></script>
+
+
+</head>
+
+<body>
+    <header>
+        <script>
+            $("body>header").load("/_shared/header/__header.html", function() {
+                $(".selected-header-nav").removeClass("selected-header-nav");
+            });
+        </script>
+    </header>
+
+    <section id="country-header">
+        <div id="continent-div">
+            <img src="" alt="Continent icon" />
+            <p></p>
+        </div>
+
+        <div id="flag-div">
+            <a href=""><img src="" alt="Territory flag" /></a>
+        </div>
+
+        <div id="country-data">
+            <a href=""><span id="name"></span> <span> - </span> <span id="iso3"></span></a>
+        </div>
+    </section>
+
+    <section id="currency-header">
+        <div id="currency-data">
+            <div>
+                <p>
+                    <span id="currency-symbol"></span>
+                    <span id="currency-name" class="name"></span> <span class="name"> - </span> <span class="name" id="currency-iso3"></span>
+                    <img src="/_shared/img/info-icon-white.svg" alt="Info icon" onclick="showDescription()" />
+                </p>
+                <p id="currency-period"></p>
+                <p id="currency-subunit"></p>
+            </div>
+
+            <!-- Second Row: description-->
+            <div>
+                <p id="currency-desc"></p>
+            </div>
+        </div>
+
+        <div id="currency-relatives">
+            <div>
+                <p>Previous:</p>
+                <a class="currency-link" href="" target="_self" id="currency-predecessor"></a>
+                <p id="predecessorRate"></p>
+            </div>
+            <div>
+                <p>Replaced by:</p>
+                <a id="currency-successor" class="currency-link" href="" target="_self"></a>
+                <p id="successorRate"></p>
+            </div>
+        </div>
+    </section>
+
+
+    <div id="currency-nav">
+        <p class="selected-view" onclick="selectView(this)">Series</p>
+        <p onclick="selectView(this)">Denominations</p>
+        <p onclick="selectView(this)">Years</p>
+    </div>
+
+    <hr/>
+
+    <section id="results-table">
+    </section>
+
+    <footer>
+        <script>
+            $("body>footer").load("/_shared/footer/__footer.html");
+        </script>
+    </footer>
+</body>
+
+</html>

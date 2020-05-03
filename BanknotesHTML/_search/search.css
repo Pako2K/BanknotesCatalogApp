@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+.filters-section {
+  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
+  background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 1em 0;
+}
+
+.filters-section > div {
+  min-width: 15%;
+  padding: 0 1em;
+}
+
+.filters-section > div:not(:first-of-type) {
+  border-left: 1px solid white;
+  -webkit-box-shadow: -1px 0px gray;
+          box-shadow: -1px 0px gray;
+}
+
+.filters-section > div > p {
+  margin-top: 0;
+  font-size: 1em;
+  font-weight: bold;
+  color: black;
+}
+
+.filters-section > div > div {
+  margin-left: 1em;
+}
+
+hr {
+  margin: 0;
+}
+
+#results-section {
+  background: whitesmoke;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  overflow: auto;
+}
+
+#results-section > p {
+  font-family: sans-serif;
+  font-size: 1.2em;
+  font-style: bold;
+  margin: 2em;
+}
+
+#results-section > p:nth-of-type(2) {
+  color: darkgreen;
+  display: none;
+}
+
+#results-section > p:last-of-type {
+  color: darkred;
+  display: none;
+}
+
+#results-section.success > p {
+  display: none;
+}
+
+#results-section.not-found > p {
+  display: none;
+}
+
+#results-section.not-found > p:not(:nth-of-type(2)) {
+  display: none;
+}
+
+#results-section.not-found > p:nth-of-type(2) {
+  display: block;
+}
+
+#results-section.too-many-results > p:not(:last-of-type) {
+  display: none;
+}
+
+#results-section.too-many-results > p:last-of-type {
+  display: block;
+}
+
+#results-section > div {
+  border: solid 0.5em rgba(0, 0, 0, 0);
+  display: none;
+}
+
+#results-section.success > div {
+  display: block;
+}
+/*# sourceMappingURL=search.css.map */

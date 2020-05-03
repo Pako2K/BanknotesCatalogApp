@@ -1,0 +1,83 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+.main-footer {
+  background: black;
+  width: 100%;
+  padding: 0.7em 1em;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.main-footer div.links {
+  border: 0.5px solid grey;
+  padding: 0.2em 3em 0.2em 1em;
+  text-align: left;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.main-footer div.session-info {
+  font-family: "Source Sans Pro", "sans-serif";
+  border: 0.5px solid grey;
+  color: whitesmoke;
+  background-color: #1f281f;
+  padding: 0.2em 1em;
+  text-align: right;
+  display: none;
+}
+
+.main-footer a {
+  display: block;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-size: 0.8em;
+  color: whitesmoke;
+  margin: 0.4em 0;
+  border-bottom: dotted 0.5px whitesmoke;
+  text-decoration: none;
+}
+
+.main-footer a:link {
+  color: whitesmoke;
+}
+
+.main-footer a:visited {
+  color: whitesmoke;
+}
+
+.main-footer a:hover {
+  color: whitesmoke;
+}
+
+.main-footer a:active {
+  color: lightblue;
+}
+
+.main-footer p {
+  font-size: 0.7em;
+}
+
+@media screen and (max-width: 800px) {
+  .main-footer a {
+    font-size: 0.6em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main-footer a {
+    font-size: 0.52em;
+  }
+}
+/*# sourceMappingURL=footer.css.map */

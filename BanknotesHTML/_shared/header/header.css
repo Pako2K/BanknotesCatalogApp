@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+.main-header {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  background: #0c0c0c;
+  color: whitesmoke;
+  padding: 0.8em 1.5em;
+}
+
+.main-header div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+.main-header div div > h1 {
+  margin: 0 1em 0.2em 0;
+  font-family: "Girassol", "Times New Roman";
+  font-size: 2.5em;
+  text-shadow: 2px 3px 2px #787878;
+  text-align: left;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.main-header div div > h1 span {
+  white-space: nowrap;
+}
+
+.main-header div div.user-info {
+  -webkit-tap-highlight-color: transparent;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.main-header div div.user-info p {
+  margin-top: 0;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-size: 0.9em;
+  color: lightgray;
+  margin: 0;
+}
+
+.main-header div div.user-info a img {
+  width: 1.4em;
+  height: 1.4em;
+  cursor: pointer;
+  margin-left: 0.5em;
+  vertical-align: middle;
+  display: none;
+}
+
+.main-header nav {
+  -webkit-tap-highlight-color: transparent;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  clear: both;
+}
+
+.main-header nav p {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  font-family: "Berkshire Swash", "cursive";
+  font-size: 1.1em;
+  color: whitesmoke;
+  text-decoration: none;
+  margin: 0 0 0 0.8em;
+  padding: 0.3em 1em;
+  border: solid 1px #0c0c0c;
+  border-radius: 1em;
+  cursor: pointer;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.main-header nav p.selected-option {
+  background-color: #3c4b4b;
+  border-color: #3c4b4b;
+}
+
+.main-header nav p:not(.selected-option):active {
+  border-color: grey;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  nav > p:not(.selected-option):hover {
+    border-color: grey;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .main-header div div > h1 {
+    font-size: 2.25em;
+  }
+  .main-header div div.user-info p {
+    font-size: 0.81em;
+  }
+  .main-header div div.user-info a img {
+    width: 1.26em;
+    height: 1.26em;
+  }
+  .main-header nav p {
+    font-size: 0.99em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .main-header div div > h1 {
+    font-size: 1.875em;
+  }
+  .main-header div div.user-info p {
+    font-size: 0.675em;
+  }
+  .main-header div div.user-info a > img {
+    width: 1.05em;
+    height: 1.05em;
+  }
+  .main-header nav > p {
+    font-size: 0.825em;
+    padding: 0.225em 0.75em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main-header div > div > h1 {
+    font-size: 1.625em;
+  }
+  .main-header nav > p {
+    font-size: 0.715em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .main-header {
+    padding: 0.48em 0.9em;
+  }
+  .main-header div > div > h1 {
+    font-size: 1.5em;
+  }
+  .main-header nav {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  .main-header nav p {
+    font-size: 0.66em;
+    margin: 0 0 0 0.48em;
+  }
+}
+/*# sourceMappingURL=header.css.map */

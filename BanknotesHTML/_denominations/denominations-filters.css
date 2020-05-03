@@ -1,0 +1,204 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+#denominations-filters {
+  background: -webkit-gradient(linear, left bottom, left top, from(#dbdbdd), color-stop(74%, #edf1f4));
+  background: linear-gradient(0deg, #dbdbdd 0%, #edf1f4 74%);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  padding: 1em 0;
+}
+
+#cont-img {
+  margin-right: 1em;
+  border: solid 1px darkgray;
+  border-radius: 10px;
+  padding: 14px 14px 10px 14px;
+  -webkit-box-shadow: 1px 1px 3px 0px gray inset;
+          box-shadow: 1px 1px 3px 0px gray inset;
+}
+
+#cont-img > img {
+  width: 80px;
+  height: 80px;
+}
+
+#year-filter {
+  margin-left: 1em;
+  border: solid 1px darkgray;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-shadow: 1px 1px 3px 0px gray inset;
+          box-shadow: 1px 1px 3px 0px gray inset;
+}
+
+#year-filter > p {
+  font-family: "Source Sans Pro", "sans-serif";
+  font-size: 0.9em;
+  text-shadow: 1.5px 1.5px 3px grey;
+  text-align: center;
+  margin: 0.4em 0;
+}
+
+#year-filter > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+#year-filter > div > p {
+  width: 3.5em;
+  text-align: right;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-size: 0.8em;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  margin: 0;
+}
+
+#year-filter > div > img {
+  width: 2.5em;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+}
+
+#year-filter > div > input {
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  font-family: "sans-serif";
+  font-size: 1.1em;
+  width: 4em;
+  color: darkblue;
+  text-align: left;
+  padding-top: 0.1em;
+  padding-left: 0.4em;
+  -webkit-box-shadow: 4px 4px 8px grey;
+          box-shadow: 4px 4px 8px grey;
+  outline: none;
+  border: none;
+}
+
+@media screen and (max-width: 1000px) {
+  #denominations-filters {
+    padding: 0.9em 0;
+  }
+  #cont-img {
+    margin: 0.9em;
+    padding: 12.6px 12.6px 10px 12.6px;
+  }
+  #cont-img > img {
+    width: 72px;
+    height: 72px;
+  }
+  #year-filter {
+    margin: 0.9em;
+    padding: 0.5em 0.9em;
+  }
+  #year-filter > p {
+    font-size: 0.81em;
+  }
+  #year-filter > div > p {
+    width: 3.15em;
+    font-size: 0.72em;
+  }
+  #year-filter > div > img {
+    width: 2.25em;
+  }
+  #year-filter > div > input {
+    font-size: 0.99em;
+    width: 3.6em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  #cont-img {
+    margin: 0.75em;
+  }
+  #year-filter {
+    margin: 0.75em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #denominations-filters {
+    padding: 0.65em 0;
+  }
+  #cont-img {
+    padding: 9.1px 9.1px 6.5px 9.1px;
+  }
+  #cont-img > img {
+    width: 52px;
+    height: 52px;
+  }
+  #year-filter > p {
+    font-size: 0.585em;
+  }
+  #year-filter > div > p {
+    width: 2.275em;
+    font-size: 0.52em;
+  }
+  #year-filter > div > img {
+    width: 1.625em;
+  }
+  #year-filter > div > input {
+    font-size: 0.715em;
+    width: 4.2em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #denominations-filters {
+    padding: 0.6em 0;
+  }
+  #cont-img {
+    padding: 8.4px 8.4px 6px 8.4px;
+  }
+  #cont-img > img {
+    width: 48px;
+    height: 48px;
+  }
+  #year-filter > p {
+    font-size: 0.54em;
+  }
+  #year-filter > div > p {
+    width: 2.1em;
+    font-size: 0.48em;
+  }
+  #year-filter > div > img {
+    width: 1.5em;
+  }
+  #year-filter > div > input {
+    font-size: 0.66em;
+  }
+}
+/*# sourceMappingURL=denominations-filters.css.map */

@@ -1,0 +1,80 @@
+@import '../_shared/common';
+.filters-section {
+    // background: linear-gradient(0deg, rgb(82, 183, 183), rgb(46, 107, 107));
+    background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1em 0;
+    &>div {
+        min-width: 15%;
+        padding: 0 1em;
+        &:not(:first-of-type) {
+            border-left: 1px solid white;
+            box-shadow: -1px 0px gray;
+        }
+        &>p {
+            margin-top: 0;
+            font-size: 1em;
+            font-weight: bold;
+            color: black;
+        }
+        &>div {
+            margin-left: 1em;
+        }
+    }
+}
+
+hr {
+    margin: 0;
+}
+
+#results-section {
+    background: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    &>p {
+        font-family: sans-serif;
+        font-size: 1.2em;
+        font-style: bold;
+        margin: 2em;
+        &:nth-of-type(2) {
+            color: darkgreen;
+            display: none;
+        }
+        &:last-of-type {
+            color: darkred;
+            display: none;
+        }
+    }
+    &.success>p {
+        display: none;
+    }
+    &.not-found>p {
+        &:not(:nth-of-type(2)) {
+            display: none;
+        }
+        &:nth-of-type(2) {
+            display: block;
+        }
+        display: none;
+    }
+    &.too-many-results>p {
+        &:not(:last-of-type) {
+            display: none;
+        }
+        &:last-of-type {
+            display: block;
+        }
+    }
+    &>div {
+        // This is used to have a visible shadow of the table! 
+        border: solid 0.5em rgba(0, 0, 0, 0);
+        display: none;
+    }
+    &.success>div {
+        display: block;
+    }
+}

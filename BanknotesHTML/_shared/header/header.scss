@@ -1,0 +1,158 @@
+@import '../common';
+$header-bg-color: rgb(12, 12, 12);
+$header-color: whitesmoke;
+.main-header {
+    @include no-user-select;
+    background: $header-bg-color;
+    color: $header-color;
+    padding: 0.8em 1.5em;
+    & div {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        & div>h1 {
+            margin: 0 1em 0.2em 0;
+            font-family: $FONT_TITLE;
+            font-size: 2.5em;
+            text-shadow: 2px 3px 2px rgb(120, 120, 120);
+            text-align: left;
+            transition: 0.4s;
+            & span {
+                white-space: nowrap;
+            }
+        }
+        div.user-info {
+            @include tap-nohighlight;
+            display: flex;
+            align-items: center;
+            & p {
+                margin-top: 0;
+                font-family: $FONT_HEADER;
+                font-size: 0.9em;
+                color: lightgray;
+                margin: 0;
+            }
+            & a {
+                img {
+                    width: 1.4em;
+                    height: 1.4em;
+                    cursor: pointer;
+                    margin-left: 0.5em;
+                    vertical-align: middle;
+                    display: none;
+                }
+            }
+        }
+    }
+    & nav {
+        @include tap-nohighlight;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        clear: both;
+        & p {
+            @include no-user-select;
+            font-family: $FONT_MENU;
+            font-size: 1.1em;
+            color: $header-color;
+            text-decoration: none;
+            margin: 0 0 0 0.8em;
+            padding: 0.3em 1em;
+            border: solid 1px $header-bg-color;
+            border-radius: 1em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        & p.selected-option {
+            background-color: rgb(60, 75, 75);
+            border-color: rgb(60, 75, 75);
+        }
+        & p:not(.selected-option):active {
+            border-color: grey;
+        }
+    }
+}
+
+// Include hover only for non-touch screens
+@media(hover: hover) and (pointer: fine) {
+    nav>p:not(.selected-option):hover {
+        border-color: grey;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    .main-header {
+        & div {
+            & div>h1 {
+                font-size: 2.5em * $WIDTH_FACTOR_BIG_TABLET;
+            }
+            div.user-info {
+                & p {
+                    font-size: 0.9em * $WIDTH_FACTOR_BIG_TABLET;
+                }
+                & a {
+                    img {
+                        width: 1.4em * $WIDTH_FACTOR_BIG_TABLET;
+                        height: 1.4em * $WIDTH_FACTOR_BIG_TABLET;
+                    }
+                }
+            }
+        }
+        & nav {
+            & p {
+                font-size: 1.1em * $WIDTH_FACTOR_BIG_TABLET;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    .main-header {
+        & div {
+            div>h1 {
+                font-size: 2.5em * $WIDTH_FACTOR_SMALL_TABLET;
+            }
+            div.user-info {
+                & p {
+                    font-size: 0.9em * $WIDTH_FACTOR_SMALL_TABLET;
+                }
+                & a>img {
+                    width: 1.4em * $WIDTH_FACTOR_SMALL_TABLET;
+                    height: 1.4em * $WIDTH_FACTOR_SMALL_TABLET;
+                }
+            }
+        }
+        & nav>p {
+            font-size: 1.1em * $WIDTH_FACTOR_SMALL_TABLET;
+            padding: 0.3em * $WIDTH_FACTOR_SMALL_TABLET 1em * $WIDTH_FACTOR_SMALL_TABLET;
+        }
+    }
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    .main-header {
+        & div>div>h1 {
+            font-size: 2.5em * $HEIGHT_FACTOR_BIG_PHONE;
+        }
+        & nav>p {
+            font-size: 1.1em * $HEIGHT_FACTOR_BIG_PHONE;
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    .main-header {
+        padding: 0.8em * $WIDTH_FACTOR_BIG_PHONE 1.5em * $WIDTH_FACTOR_BIG_PHONE;
+        & div>div>h1 {
+            font-size: 2.5em * $WIDTH_FACTOR_BIG_PHONE;
+        }
+        & nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            & p {
+                font-size: 1.1em * $WIDTH_FACTOR_BIG_PHONE;
+                margin: 0 0 0 0.8em * $WIDTH_FACTOR_BIG_PHONE;
+            }
+        }
+    }
+}

@@ -1,0 +1,51 @@
+@import '../common';
+#continents-filter {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    & p {
+        @include no-user-select;
+        @include tap-nohighlight;
+        font: normal 0.9em $FONT_MENU;
+        color: black;
+        background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
+        width: 16.67%;
+        text-align: center;
+        margin: auto;
+        padding: 0.5em 0;
+        border-bottom: solid 1px darkgrey;
+        cursor: pointer;
+        transition: 0.4s;
+        &.selectedContinent {
+            color: white;
+            background: rgb(60, 130, 130);
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    #continents-filter {
+        flex-wrap: wrap;
+        & p {
+            width: 33.33%;
+            font-size: 1.2em * $WIDTH_FACTOR_SMALL_TABLET;
+            padding: 0.5em * $WIDTH_FACTOR_SMALL_TABLET 0;
+        }
+    }
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    #continents-filter>p {
+        font-size: 1.2em * $HEIGHT_FACTOR_BIG_PHONE;
+        padding: 0.5em * $HEIGHT_FACTOR_BIG_PHONE 0;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    #continents-filter>p {
+        font-size: 1.2em * $WIDTH_FACTOR_BIG_PHONE;
+        padding: 0.5em * $WIDTH_FACTOR_BIG_PHONE 0;
+    }
+}

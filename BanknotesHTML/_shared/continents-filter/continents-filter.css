@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+#continents-filter {
+  position: relative;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+}
+
+#continents-filter p {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  -webkit-tap-highlight-color: transparent;
+  font: normal 0.9em "Berkshire Swash", "cursive";
+  color: black;
+  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
+  background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
+  width: 16.67%;
+  text-align: center;
+  margin: auto;
+  padding: 0.5em 0;
+  border-bottom: solid 1px darkgrey;
+  cursor: pointer;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+#continents-filter p.selectedContinent {
+  color: white;
+  background: #3c8282;
+}
+
+@media screen and (max-width: 800px) {
+  #continents-filter {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+  }
+  #continents-filter p {
+    width: 33.33%;
+    font-size: 0.9em;
+    padding: 0.375em 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #continents-filter > p {
+    font-size: 0.78em;
+    padding: 0.325em 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #continents-filter > p {
+    font-size: 0.72em;
+    padding: 0.3em 0;
+  }
+}
+/*# sourceMappingURL=continents-filter.css.map */

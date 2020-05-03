@@ -1,0 +1,62 @@
+@import '../common';
+.main-footer {
+    background: black;
+    width: 100%;
+    padding: 0.7em 1em;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    div.links {
+        border: 0.5px solid grey;
+        padding: 0.2em 3em 0.2em 1em;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    div.session-info {
+        font-family: $FONT_HEADER;
+        border: 0.5px solid grey;
+        color: whitesmoke;
+        background-color: rgb(31, 40, 31);
+        padding: 0.2em 1em;
+        text-align: right;
+        display: none;
+    }
+    a {
+        display: block;
+        font-family: $FONT_HEADER;
+        font-size: 0.8em;
+        color: whitesmoke;
+        margin: 0.4em 0;
+        border-bottom: dotted 0.5px whitesmoke;
+        text-decoration: none;
+    }
+    a:link {
+        color: whitesmoke;
+    }
+    a:visited {
+        color: whitesmoke;
+    }
+    a:hover {
+        color: whitesmoke;
+    }
+    a:active {
+        color: lightblue;
+    }
+    p {
+        font-size: 0.7em;
+    }
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    .main-footer a {
+        font-size: 0.8em * $WIDTH_FACTOR_SMALL_TABLET;
+    }
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    .main-footer a {
+        font-size: 0.8em * $HEIGHT_FACTOR_BIG_PHONE;
+    }
+}
