@@ -1,0 +1,49 @@
+@mixin slideButton($shadow) {
+    background-color: whitesmoke;
+    border: solid 1px lightgray;
+    box-shadow: $shadow $shadow 2*$shadow 1px grey inset;
+    transition: 0.8s;
+}
+
+@mixin slideButtonOn($outBright) {
+    &.__slide-button-on__ {
+        background-color: rgb(126, 208, 80);
+        box-shadow: 2px 2px 4px 1px rgb(156, 190, 156) inset, 0px 0px 6px 5px rgb(136, 218, 90) inset, 0 0 $outBright 0.5px rgb(120, 205, 90);
+    }
+    &.__slide-button-on__>div {
+        left: 50%;
+    }
+}
+
+@mixin innerButton($top, $left, $shadow) {
+    background-color: white;
+    border: solid 1px whitesmoke;
+    position: relative;
+    top: $top;
+    left: $left;
+    width: 50%-$left;
+    height: 100% - 2*$top;
+    box-shadow: $shadow $shadow 2*$shadow grey;
+    transition: 0.4s;
+}
+
+.__slide-button__ *,
+.__small-slide-button__ * {
+    box-sizing: border-box;
+}
+
+.__slide-button__ {
+    @include slideButton(2px);
+    &>div {
+        @include innerButton(3%, 2.5%, 2px);
+    }
+    @include slideButtonOn(4px);
+}
+
+.__small-slide-button__ {
+    @include slideButton(1px);
+    &>div {
+        @include innerButton(15%, 12.5%, 1px);
+    }
+    @include slideButtonOn(2px);
+}

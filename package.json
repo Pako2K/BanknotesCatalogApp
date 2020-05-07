@@ -1,0 +1,34 @@
+{
+    "name": "banknotes-catalogue-app",
+    "description": "Banknotes Catalogue and Collection App",
+    "repository": {},
+    "license": "MIT",
+    "version": "0.1.0",
+    "keywords": [
+        "util",
+        "functional",
+        "server",
+        "client",
+        "browser"
+    ],
+    "author": "Pako2K",
+    "contributors": [],
+    "dependencies": {
+        "connect-sqlite3": "^0.9.11",
+        "express": "^4.17.1",
+        "express-session": "^1.17.0",
+        "jsonschema": "^1.2.5",
+        "log4js": "^6.1.2",
+        "moment": "^2.24.0",
+        "pg": "^8.0.3"
+    },
+    "scripts": {
+        "start": "node main.js DEV",
+        "start-DEV": "node main.js DEV",
+        "start-PROD": "node main.js PROD"
+    },
+    "engines": {
+        "node": ">= 8.0.0",
+        "npm": ">= 3.0.0"
+    }
+}
