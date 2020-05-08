@@ -143,8 +143,8 @@ function territoryByIdItemsStatsGET(request, response) {
                             LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
                             LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
                             INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
-                            INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = ?
-                            GROUP BY CUR.cur_id
+                            INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                            GROUP BY "id"
                             ORDER BY CUR.cur_start, CUR.cur_end, CUR.cur_name`;
             break;
             // case "series":
@@ -295,16 +295,17 @@ function variantsItemsGET(request, response) {
                             CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName",
                             BIT.bit_gra_grade AS "grade", BIT.bit_price AS "price"
                     FROM bva_variant BVA 
-					LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                    LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                    INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
                     INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
                     INNER JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
                     INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
                     INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
-                    INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = "OWNED"
+                    INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = 'OWNED'
                     INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}
                     ${sqlBanknote}`;
 
-    catalogueDB.execSQL(sqlStr, [], (err, rows) => {
+    catalogueDB.execSQL(sqlStr, [request.session.user], (err, rows) => {
         if (err) {
             let exception = new Exception(500, err.code, err.message);
             exception.send(response);

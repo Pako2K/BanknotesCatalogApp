@@ -1,6 +1,9 @@
 "use strict";
 
 let url = require('url');
+const log = require("../../utils/logger").logger;
+const Exception = require('../../utils/Exception').Exception;
+const dbs = require('../../db-connections');
 
 let db;
 

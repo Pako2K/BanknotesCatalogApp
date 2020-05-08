@@ -56,7 +56,7 @@ function territoryByIdCurrenciesGET(request, response) {
                 LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
                 LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
                 GROUP BY id, "continentId","territoryId","territoryName","currencyType","iso3"
-                ORDER BY start, end`;
+                ORDER BY "start", "end"`;
 
     catalogueDB.getAndReply(response, sql);
 }
@@ -70,14 +70,14 @@ function currencyByIdGET(request, response) {
                         pred.cur_id AS pred_cur_id, pred.cur_name AS pred_cur_name, predTEC.tec_ISO3 AS pred_tec_iso3, pred.cur_replacement_rate AS pred_cur_replacement_rate,
                         succ.cur_name AS succ_cur_name, succTEC.tec_ISO3 AS succ_tec_iso3
                 FROM cur_currency CUR
-                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type = "OWNED"
+                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type = 'OWNED'
                 INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id
                 INNER JOIN con_continent CON ON con_id = TER.ter_con_id
                 LEFT JOIN cus_currency_unit CUS ON CUR.cur_id = CUS.cus_cur_id
                 LEFT JOIN cur_currency pred ON pred.cur_successor = cur.cur_id
-                LEFT JOIN tec_territory_currency predTEC ON predTEC.tec_cur_id = pred.cur_id AND predTEC.tec_cur_type = "OWNED"
+                LEFT JOIN tec_territory_currency predTEC ON predTEC.tec_cur_id = pred.cur_id AND predTEC.tec_cur_type = 'OWNED'
                 LEFT JOIN cur_currency succ ON succ.cur_id = cur.cur_successor 
-                LEFT JOIN tec_territory_currency succTEC ON succTEC.tec_cur_id = succ.cur_id AND succTEC.tec_cur_type = "OWNED"
+                LEFT JOIN tec_territory_currency succTEC ON succTEC.tec_cur_id = succ.cur_id AND succTEC.tec_cur_type = 'OWNED'
                 WHERE CUR.cur_id = ${currencyId}`;
 
     catalogueDB.execSQL(sql, [], (err, rows) => {

@@ -73,7 +73,7 @@ function territoryByIdGET(request, response) {
                 LEFT OUTER JOIN ter_territory TER2 ON TER.ter_parent_country_id = TER2.ter_id
                 WHERE TER.ter_id = ${territoryId}`;
 
-    catalogueDB.execSQL(sql, [], (err, row) => {
+    catalogueDB.execSQL(sql, [], (err, rows) => {
         if (err) {
             let exception = new Exception(500, err.code, err.message);
             exception.send(response);
@@ -81,42 +81,43 @@ function territoryByIdGET(request, response) {
         }
 
         var replyJSON = {};
-        if (row) {
+        let result = rows[0];
+        if (result) {
             // Build reply JSON
-            replyJSON.id = row.ter_id;
-            replyJSON.continent = { "id": row.ter_con_id, "name": row.con_name };
-            replyJSON.territoryType = { "id": row.ter_tty_id, "name": row.tty_name };
-            if (row.ter_iso2)
-                replyJSON.iso2 = row.ter_iso2;
-            if (row.ter_iso3)
-                replyJSON.iso3 = row.ter_iso3;
-            replyJSON.name = row.ter_name;
-            replyJSON.officialName = row.ter_official_name;
-            replyJSON.start = row.ter_start;
-            if (row.ter_end)
-                replyJSON.end = row.ter_end;
-            replyJSON.officialName = row.ter_official_name;
-            if (row.ter_parent_country_id)
-                replyJSON.parent = { "id": row.ter_parent_country_id, "name": row.ter_parent_name, "iso3": row.ter_parent_iso3 };
-            replyJSON.description = row.ter_description;
+            replyJSON.id = result.ter_id;
+            replyJSON.continent = { "id": result.ter_con_id, "name": result.con_name };
+            replyJSON.territoryType = { "id": result.ter_tty_id, "name": result.tty_name };
+            if (result.ter_iso2)
+                replyJSON.iso2 = result.ter_iso2;
+            if (result.ter_iso3)
+                replyJSON.iso3 = result.ter_iso3;
+            replyJSON.name = result.ter_name;
+            replyJSON.officialName = result.ter_official_name;
+            replyJSON.start = result.ter_start;
+            if (result.ter_end)
+                replyJSON.end = result.ter_end;
+            replyJSON.officialName = result.ter_official_name;
+            if (result.ter_parent_country_id)
+                replyJSON.parent = { "id": result.ter_parent_country_id, "name": result.ter_parent_name, "iso3": result.ter_parent_iso3 };
+            replyJSON.description = result.ter_description;
 
-            let succesorsStr = row.ter_successor_id;
+            let succesorsStr = result.ter_successor_id;
             let sql = "";
             let succesors = [];
             if (succesorsStr) {
                 succesors = succesorsStr.split(",");
-                sql = ` SELECT "SUC" AS type, ter_id, ter_name, ter_iso3 
+                sql = ` SELECT 'SUC' AS type, ter_id, ter_name, ter_iso3 
                         FROM ter_territory 
                         WHERE ter_id in (${succesorsStr})
                         UNION
                         `;
             }
-            sql += `SELECT "PRE" AS type, ter_id, ter_name, ter_iso3 
+            sql += `SELECT 'PRE' AS type, ter_id, ter_name, ter_iso3 
                     FROM ter_territory 
-                    WHERE ter_successor_id = ${row.ter_id} 
-                    OR ter_successor_id like '%,${row.ter_id}' 
-                    OR ter_successor_id like '${row.ter_id},%' 
-                    OR ter_successor_id like '%,${row.ter_id},%'`;
+                    WHERE ter_successor_id = '${result.ter_id}' 
+                    OR ter_successor_id like '%,${result.ter_id}' 
+                    OR ter_successor_id like '${result.ter_id},%' 
+                    OR ter_successor_id like '%,${result.ter_id},%'`;
 
             catalogueDB.execSQL(sql, [], (err, rows) => {
                 if (err) {
