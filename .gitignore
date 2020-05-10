@@ -6,3 +6,6 @@ cert/*
 
 # exclude logs directory
 logs/*
+
+# exclude local executables
+*.bat

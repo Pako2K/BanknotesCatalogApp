@@ -13,7 +13,6 @@ const dbArray = [];
 class PostgresDB {
     constructor(conParams) {
         this.pool = new Pool(conParams);
-        log.info(`Connected to DB: ${conParams.database}`);
     }
 
     execSQL(sqlStr, params, callback) {
@@ -48,12 +47,13 @@ class PostgresDB {
 module.exports.connect = function(conParams, dbAlias) {
     let dbConnection = this.getDBConnection(dbAlias);
     if (dbConnection) {
-        log.info(`Already connected to DB: ${conParams.database}`);
+        log.info(`Already connected to DB: ${dbAlias}`);
         return dbConnection;
     } else {
-        log.debug(`Trying to open connection to DB ${conParams.database}`);
+        log.debug(`Trying to open connection to DB ${JSON.stringify(conParams)}`);
         try {
             dbConnection = new PostgresDB(conParams);
+            log.info(`Connected to DB: ${dbAlias}`);
             dbArray.push({ alias: dbAlias, connection: dbConnection })
         } catch (err) {
             log.error(err);

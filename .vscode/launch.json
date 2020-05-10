@@ -5,6 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "env": {
+                "PORT": "80",
+                "CRE_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/credentials",
+                "CAT_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/banknotes",
+            },
             "type": "node",
             "request": "launch",
             "name": "Launch Program",

@@ -20,12 +20,12 @@
         "jsonschema": "^1.2.5",
         "log4js": "^6.1.2",
         "moment": "^2.24.0",
-        "pg": "^8.0.3"
+        "pg": "^8.1.0"
     },
     "scripts": {
-        "start": "node main.js DEV",
-        "start-DEV": "node main.js DEV",
-        "start-PROD": "node main.js PROD"
+        "start": "node main.js PROD",
+        "start-DEV": "start-DEV.bat",
+        "start-PROD": "start-PROD.bat"
     },
     "engines": {
         "node": ">= 8.0.0",

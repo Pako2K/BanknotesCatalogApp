@@ -25,7 +25,16 @@ const appConfig = JSON.parse(fs.readFileSync(appConfigFile));
 const log = logger.initialize(appConfig.logConfigFile);
 log.info(`Logger initialized at ${log.level} level`);
 
-// Initialize DB connections
+// Initialize DB connections and Server Port. By default values are taken from the environment. If not available, then read them from the conifg
+appConfig.credentialsDB.connectionString = process.env.CRE_DATABASE_URL || appConfig.credentialsDB.connectionString;
+log.info(appConfig.credentialsDB.connectionString);
+
+appConfig.catalogueDB.connectionString = process.env.CAT_DATABASE_URL || appConfig.catalogueDB.connectionString;
+log.info(appConfig.catalogueDB.connectionString);
+
+appConfig.serverPort = process.env.PORT || appConfig.serverPort;
+
+// Connect to the DB's and start the server
 if (DBs.connect(appConfig.credentialsDB, 'credentialsDB') && DBs.connect(appConfig.catalogueDB, 'catalogueDB')) {
     startServer();
 } else {
