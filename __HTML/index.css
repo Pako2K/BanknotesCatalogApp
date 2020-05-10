@@ -76,12 +76,23 @@ body {
   height: 2.5em;
 }
 
-.user-input-section form input[type="submit"],
-.user-input-section form button {
+.user-input-section form input[type="submit"] {
   background: #92d050;
   width: 7em;
   height: 2em;
   color: white;
+  -webkit-box-shadow: 3px 3px 5px #325032;
+          box-shadow: 3px 3px 5px #325032;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+.user-input-section form button {
+  background: #747474;
+  width: 7em;
+  height: 2em;
+  color: whitesmoke;
   -webkit-box-shadow: 3px 3px 5px #325032;
           box-shadow: 3px 3px 5px #325032;
   margin-left: 0.5em;

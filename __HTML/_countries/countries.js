@@ -205,7 +205,7 @@ function loadCountriesTable() {
 
             let priceStr = (country.collecStats.price === 0) ? '-' : country.collecStats.price.toFixed(2) + ' €';
             record = `<tr>
-                                <th><img src="/_countries/img/flags/` + flagFileName + `.png"></th>
+                                <th><img src="/_countries/img/flags/` + flagFileName.toLowerCase() + `.png"></th>
                                 <th>${country.iso3}</th>
                                 <th class="name"><a href="/_country/index.html?countryId=` + country.id + `">` + country.name + `</a></th>
                                 <th>` + country.start + `</th>
