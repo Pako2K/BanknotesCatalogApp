@@ -70,19 +70,18 @@ function startServer() {
 
     api.initialize(app);
 
-
-    const sslOptions = {
-        handshakeTimeout: appConfig.sslOptions.handshakeTimeout,
-        requestCert: false, // NO MUTUAL AUTHENTICATION
-        maxVersion: appConfig.sslOptions.maxVersion,
-        minVersion: appConfig.sslOptions.minVersion,
-        key: fs.readFileSync(appConfig.sslOptions.privateKeyFile),
-        cert: fs.readFileSync(appConfig.sslOptions.certificateFile)
-    };
-
-    log.debug("SSL Options: " + JSON.stringify(appConfig.sslOptions));
-
     if (appConfig.useHTTPS) {
+        const sslOptions = {
+            handshakeTimeout: appConfig.sslOptions.handshakeTimeout,
+            requestCert: false, // NO MUTUAL AUTHENTICATION
+            maxVersion: appConfig.sslOptions.maxVersion,
+            minVersion: appConfig.sslOptions.minVersion,
+            key: fs.readFileSync(appConfig.sslOptions.privateKeyFile),
+            cert: fs.readFileSync(appConfig.sslOptions.certificateFile)
+        };
+
+        log.debug("SSL Options: " + JSON.stringify(appConfig.sslOptions));
+
         https.createServer(sslOptions, app).listen(appConfig.serverPort);
         log.info("Listening port (https): " + appConfig.serverPort);
     } else {
