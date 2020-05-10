@@ -33,7 +33,7 @@
         "cookie": {
             "path": "/",
             "httpOnly": true,
-            "secure": true,
+            "secure": false,
             "maxAge": 1200000
         },
         "resave": true,
