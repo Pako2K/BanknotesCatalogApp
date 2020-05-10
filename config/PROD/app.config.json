@@ -17,7 +17,7 @@
         }
     },
 
-    "useHTTPS": true,
+    "useHTTPS": false,
 
     "sslOptions": {
         "maxVersion": "TLSv1.3",
