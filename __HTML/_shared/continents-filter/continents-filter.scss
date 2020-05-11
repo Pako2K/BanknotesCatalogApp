@@ -1,4 +1,5 @@
 @import '../common';
+$size: 1.1em;
 #continents-filter {
     position: relative;
     width: 100%;
@@ -8,7 +9,7 @@
     & p {
         @include no-user-select;
         @include tap-nohighlight;
-        font: normal 0.9em $FONT_MENU;
+        font: normal $size $FONT_MENU;
         color: black;
         background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
         width: 16.67%;
@@ -30,7 +31,7 @@
         flex-wrap: wrap;
         & p {
             width: 33.33%;
-            font-size: 1.2em * $WIDTH_FACTOR_SMALL_TABLET;
+            font-size: $size * $WIDTH_FACTOR_SMALL_TABLET;
             padding: 0.5em * $WIDTH_FACTOR_SMALL_TABLET 0;
         }
     }
@@ -38,14 +39,14 @@
 
 @media screen and (max-width: $HEIGHT_BIG_PHONE) {
     #continents-filter>p {
-        font-size: 1.2em * $HEIGHT_FACTOR_BIG_PHONE;
+        font-size: $size * $HEIGHT_FACTOR_BIG_PHONE;
         padding: 0.5em * $HEIGHT_FACTOR_BIG_PHONE 0;
     }
 }
 
 @media screen and (max-width: $WIDTH_BIG_PHONE) {
     #continents-filter>p {
-        font-size: 1.2em * $WIDTH_FACTOR_BIG_PHONE;
+        font-size: $size * $WIDTH_FACTOR_BIG_PHONE;
         padding: 0.5em * $WIDTH_FACTOR_BIG_PHONE 0;
     }
 }

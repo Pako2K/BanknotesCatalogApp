@@ -93,8 +93,8 @@ function sortClick(htmlElem, titleStr) {
     let mapFieldName = {
         "ISO": "iso3",
         "Name": "name",
-        "Start": "start",
-        "End": "end",
+        "Founded": "start",
+        "Finished": "end",
         "Currencies": "numCurrencies",
         "Series": "numSeries",
         "Denom.": "numDenominations",

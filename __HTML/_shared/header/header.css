@@ -103,7 +103,7 @@
   margin: 0 0 0 0.8em;
   padding: 0.3em 1em;
   border: solid 1px #0c0c0c;
-  border-radius: 1em;
+  border-radius: 0.5em;
   cursor: pointer;
   -webkit-transition: 0.3s;
   transition: 0.3s;
@@ -112,6 +112,7 @@
 .main-header nav p.selected-option {
   background-color: #3c4b4b;
   border-color: #3c4b4b;
+  color: white;
 }
 
 .main-header nav p:not(.selected-option):active {

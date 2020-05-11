@@ -59,13 +59,14 @@ $header-color: whitesmoke;
             margin: 0 0 0 0.8em;
             padding: 0.3em 1em;
             border: solid 1px $header-bg-color;
-            border-radius: 1em;
+            border-radius: 0.5em;
             cursor: pointer;
             transition: 0.3s;
         }
         & p.selected-option {
             background-color: rgb(60, 75, 75);
             border-color: rgb(60, 75, 75);
+            color: white;
         }
         & p:not(.selected-option):active {
             border-color: grey;

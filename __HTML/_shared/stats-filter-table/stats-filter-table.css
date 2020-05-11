@@ -33,6 +33,7 @@ table.stats-filter-table > thead th[colspan] {
 table.stats-filter-table > thead th > div {
   display: inline-block;
   vertical-align: middle;
+  margin: 0 0.1em;
 }
 
 table.stats-filter-table > thead td {

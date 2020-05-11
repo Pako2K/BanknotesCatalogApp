@@ -25,7 +25,7 @@
   user-select: none;
   /* Standard syntax */
   -webkit-tap-highlight-color: transparent;
-  font: normal 0.9em "Berkshire Swash", "cursive";
+  font: normal 1.1em "Berkshire Swash", "cursive";
   color: black;
   background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
   background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
@@ -51,21 +51,21 @@
   }
   #continents-filter p {
     width: 33.33%;
-    font-size: 0.9em;
+    font-size: 0.825em;
     padding: 0.375em 0;
   }
 }
 
 @media screen and (max-width: 600px) {
   #continents-filter > p {
-    font-size: 0.78em;
+    font-size: 0.715em;
     padding: 0.325em 0;
   }
 }
 
 @media screen and (max-width: 400px) {
   #continents-filter > p {
-    font-size: 0.72em;
+    font-size: 0.66em;
     padding: 0.3em 0;
   }
 }
