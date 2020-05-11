@@ -3,7 +3,7 @@ Web App to manage a banknotes catalogue and a collection of banknotes
 
 
 ***************************************************************************************************************************************************
-INSTALLATION (LOCAL - DEV) ==> APP AND DB running on local servers
+INSTALLATION (DEV-like), App and DB running on local servers
 -------------------------------------------------------------------
 * Clone this GitHub project
 * Run "npm install": it downloads all the dependencies to the "node_modules" directory. It requires access to the npm repository in the Internet!
@@ -63,7 +63,7 @@ INSTALLATION (LOCAL - DEV) ==> APP AND DB running on local servers
     For a local DB in the DEV env, it is assumed that a SSL connection is not needed (ssl = false).
 
 
-RUNNING / TESTING THE APP
+Running / Testing the App
 ---------------------------
 From the Command Line (Windows): 
     set CRE_DATABASE_URL=postgres://AppAPI:<pwd>@<dbhost>:<dbport>/<credentialsDbName>
@@ -97,7 +97,7 @@ NOTE: in DEBUG mode, VSC will not show the stdout logs!
 
 
 ***************************************************************************************************************************************************
-INSTALLATION (LOCAL - PROD)
+INSTALLATION (PROD-like), App and DB running on local servers
 -------------------------------------------------------------------
 * Clone this GitHub project
 * Run "npm install": it downloads all the dependencies to the "node_modules" directory. It requires access to the npm repository in the Internet!
@@ -156,7 +156,7 @@ INSTALLATION (LOCAL - PROD)
     It is assumed that a SSL connection will be used. "rejectUnauthorized" is set to false since no mutual authentication is used:  no client certificates are needed 
 
 
-RUNNING THE APP
+Running the App
 ----------------
 From the Command Line (Windows): 
     set CRE_DATABASE_URL=postgres://AppAPI:<pwd>@<dbhost>:<dbport>/<credentialsDbName>
