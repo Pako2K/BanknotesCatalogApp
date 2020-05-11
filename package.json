@@ -24,8 +24,8 @@
     },
     "scripts": {
         "start": "node main.js PROD",
-        "start-DEV": "start-DEV.bat",
-        "start-PROD": "start-PROD.bat"
+        "start-DEV": "node main.js PROD",
+        "start-PROD": "node main.js PROD"
     },
     "engines": {
         "node": ">= 8.0.0",

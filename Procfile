@@ -1,1 +1,1 @@
-web: node main.js PROD
+web: node main.js PROD-HEROKU

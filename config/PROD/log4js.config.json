@@ -1,14 +1,16 @@
 {
     "appenders": {
-        "out": {
-            "type": "stdout",
+        "file": {
+            "type": "dateFile",
+            "filename": "./logs/banknotes-api.log",
+            "daysToKeep": 10,
             "layout": {
                 "type": "pattern",
-                "pattern": "%[%d{yyyy-MM-dd hh:mm:ss.SSS} - [%-6p] - %f{1}.%l -%] %m"
+                "pattern": "%d{yyyy-MM-dd hh:mm:ss.SSS} - [%-6p] - %f{1}.%l - %m"
             }
         }
     },
     "categories": {
-        "default": { "appenders": ["out"], "level": "info", "enableCallStack": true }
+        "default": { "appenders": ["file"], "level": "info", "enableCallStack": true }
     }
 }

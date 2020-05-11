@@ -1,8 +1,7 @@
 {
-    "serverPort": 443,
     "staticContent": "./__HTML",
 
-    "logConfigFile": "./config/PROD/log4js.config.json",
+    "logConfigFile": "./config/PROD-HEROKU/log4js.config.json",
 
     "credentialsDB": {
         "connectionString": null,
@@ -17,23 +16,14 @@
         }
     },
 
-    "useHTTPS": true,
-
-    "sslOptions": {
-        "maxVersion": "TLSv1.3",
-        "minVersion": "TLSv1.2",
-        "requestCert": false,
-        "privateKeyFile": "./cert/privateKey.key",
-        "certificateFile": "./cert/certificate.crt",
-        "handshakeTimeout": 60000
-    },
+    "useHTTPS": false,
 
     "sessionOptions": {
         "name": "wid",
         "cookie": {
             "path": "/",
             "httpOnly": true,
-            "secure": true,
+            "secure": false,
             "maxAge": 1200000
         },
         "resave": true,
