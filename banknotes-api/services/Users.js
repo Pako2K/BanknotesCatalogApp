@@ -335,8 +335,11 @@ function userSessionGET(request, response) {
                         // Store login date && reset state
                         const sqlInsertDate = "UPDATE cre_credentials SET cre_last_connection = $1 WHERE cre_username = $2";
                         credDB.execSQL(sqlInsertDate, [moment().format('dddd, DD MMMM YYYY, HH:mm'), username], (err) => {
-                            new Exception(500, err.code, err.message);
-                            return;
+                            if (err) {
+                                // Just log the exception
+                                new Exception(500, err.code, err.message);
+                                return;
+                            }
                         });
                     });
                 } else {
