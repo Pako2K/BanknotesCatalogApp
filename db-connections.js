@@ -15,11 +15,71 @@ class PostgresDB {
         this.pool = new Pool(conParams);
     }
 
+    beginTransaction() {
+        return new Promise((resolve, reject) => {
+            this.pool.connect((err, client, done) => {
+                if (err) {
+                    log.error('Error retrieving client connection.' + JSON.stringify(err));
+                    if (client)
+                        client.release();
+                    reject(err);
+                }
+                client.query('BEGIN', (err) => {
+                    if (err) {
+                        log.error('Error starting transaction.' + JSON.stringify(err));
+                        client.release();
+                        reject(err);
+                    }
+                    resolve(client);
+                });
+            });
+        });
+    }
+
+    execSQLTransaction(client, sqlStr, params) {
+        return new Promise((resolve, reject) => {
+            client.query(sqlStr, params, (err, result) => {
+                if (err) {
+                    rollbackTransaction(client);
+                    reject(err);
+                } else
+                    resolve(result.rows);
+            });
+        });
+    }
+
+    commitTransaction(client) {
+        return new Promise((resolve, reject) => {
+            client.query('COMMIT', (err) => {
+                client.release();
+                if (err) {
+                    log.error('Error committing transaction.' + JSON.stringify(err));
+                    reject(err);
+                }
+                resolve();
+            });
+        });
+    }
+
+    rollbackTransaction(client) {
+        return new Promise((resolve, reject) => {
+            client.query('ROLLBACK', (err) => {
+                client.release();
+                if (err) {
+                    log.error('Error rolling back transaction.' + JSON.stringify(err));
+                    reject(err);
+                }
+                resolve();
+            });
+        });
+    }
+
     execSQL(sqlStr, params, callback) {
         this.pool.query(sqlStr, params, (err, result) => {
-            if (err)
+            if (err) {
+                err.message += `\nSQL Query: ${sqlStr}\nSQL Params: ${params}`;
                 callback(err);
-            else
+            } else
                 callback(err, result.rows);
         });
     }
@@ -31,8 +91,8 @@ class PostgresDB {
     getAndReply(response, sqlStr) {
         this.pool.query(sqlStr, (err, result) => {
             if (err) {
-                let exception = new Exception(500, err.code, err.message);
-                exception.send(response);
+                err.message += `\nSQL Query: ${sqlStr}\nSQL Params: ${params}`;
+                new Exception(500, err.code, err.message).send(response);
                 return;
             }
 

@@ -118,8 +118,7 @@ function variantsGET(request, response) {
 
     // If the 3 sql filters are "" (and therefore they are equal)
     if (sqlTerritory === sqlCurrency && sqlBanknote === sqlCurrency) {
-        let exception = new Exception(400, "VAR-001", "Search parameters not found");
-        exception.send(response);
+        new Exception(400, "VAR-001", "Search parameters not found").send(response);
         return;
     }
 
@@ -138,14 +137,12 @@ function variantsGET(request, response) {
 
     catalogueDB.execSQL(sqlStr, [], (err, rows) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 
         if (rows.length > 500) {
-            let exception = new Exception(413, "VAR-002", "Too many variants found: " + rows.length);
-            exception.send(response);
+            new Exception(413, "VAR-002", "Too many variants found: " + rows.length).send(response);
             return;
         }
 

@@ -21,9 +21,19 @@ function showLoginForm() {
     $("#register-form-pwd").val("");
     $("#register-form-pwd-rep").val("");
     $("#register-form-mail").val("");
+    $("#register-form-conf-code").val("");
 
-    $("form[name='register-form']").slideToggle(200);
+    $("form[name='register-form']").slideUp(200);
+    $("form[name='confirm-form']").slideUp(200);
     $("form[name='login-form']").show(400);
+}
+
+function showConfirmationForm() {
+    $("#register-form-conf-code").val("");
+    let email = $("#register-form-mail").val();
+    $("#conf-email").text(email);
+    $("form[name='register-form']").hide(300);
+    $("form[name='confirm-form']").slideToggle(400);
 }
 
 function register() {
@@ -72,17 +82,15 @@ function register() {
         dataType: 'text',
 
         success: function(result, status) {
-            alert(`You are successfully registered. Have fun!`);
-            showLoginForm();
+            showConfirmationForm();
         },
 
         error: function(xhr, status, error) {
-            let exception;
+            let exception = JSON.parse(xhr.responseText);
             switch (xhr.status) {
                 case 400:
                 case 403:
                 case 500:
-                    exception = JSON.parse(xhr.responseText);
                     alert(`Registration failed. ${exception.code}: ${error}. ${exception.description}`);
                     break;
                 default:
@@ -120,13 +128,53 @@ function login() {
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 401:
-                    alert(error + ": User name or password is not valid.");
+                    alert(`Login failed.\n${xhr.responseJSON.code}: ${xhr.responseJSON.description}`);
                     break;
                 case 500:
-                    alert(`Login failed. \n${error}\nContact the web site administrator.`);
+                    if (xhr.responseJSON)
+                        alert(`Login failed.\n${xhr.responseJSON.code}: ${xhr.responseJSON.description}.\nContact the web site administrator.`);
+                    else
+                        alert(`Login failed.\n${status}: ${error}.\nContact the web site administrator.`);
                     break;
                 default:
-                    alert(`Login failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
+                    alert(`Login failed.\n${xhr.status}: ${error}\nPlease try again or contact the web site administrator.`);
+            }
+        }
+    });
+}
+
+
+function confirm() {
+    let usr = $("#register-form-usr").val();
+    let code = $("#register-form-conf-code").val();
+
+    $.ajax({
+        type: "POST",
+        url: "/user/validation",
+        contentType: "application/json",
+        async: false,
+        cache: false,
+        data: JSON.stringify({ "username": usr, "validationCode": code }),
+        timeout: 5000,
+        dataType: 'json',
+
+        success: function(result, status) {
+            alert(`You are successfully registered. Enjoy!`);
+            showLoginForm();
+        },
+
+        error: function(xhr, status, error) {
+            $("#register-form-conf-code").val("");
+            switch (xhr.status) {
+                case 400:
+                case 403:
+                case 500:
+                    alert(`Registration failed. ${xhr.responseJSON.code}: ${error}. ${xhr.responseJSON.description}`);
+                    if (xhr.responseJSON.code === "VAL-02" || xhr.responseJSON.code === "VAL-03" || xhr.responseJSON.code === "VAL-05")
+                        showLoginForm();
+                    break;
+                default:
+                    alert(`Registration failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
             }
         }
     });

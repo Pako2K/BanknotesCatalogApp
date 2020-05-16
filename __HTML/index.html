@@ -72,6 +72,19 @@
                     <input type="submit" value="Register">
                 </div>
             </form>
+
+            <form name="confirm-form" action="javascript:confirm();" style='display: none'>
+                <div>
+                    <p>One final step to complete your registration. <br><u>Enter the confirmation code</u> sent to your email, <br><span id="conf-email"></span>.</p>
+                </div>
+                <div>
+                    <div>
+                        <img src="img/confirm.png" alt="code-icon">
+                        <input type="text" id="register-form-conf-code" name="code" placeholder="Code" size=10 maxlength="10" autocomplete="off" required>
+                        <input type="submit" value="OK">
+                    </div>
+                </div>
+            </form>
         </section>
 
     </main>

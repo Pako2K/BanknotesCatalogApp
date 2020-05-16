@@ -69,6 +69,7 @@ From the Command Line (Windows):
     set CRE_DATABASE_URL=postgres://AppAPI:<pwd>@<dbhost>:<dbport>/<credentialsDbName>
     set CAT_DATABASE_URL=postgres://AppAPI:<pwd>@<dbhost>:<dbport>/<banknotesDbName>
     set PORT = 80 (or any othe port you want)
+    set MAIL_PWD = <mail_provider_password>
     node main.js DEV 
     (or npm start-DEV)
 
@@ -79,6 +80,7 @@ From Visual Studio Code:
                 "PORT": "80",
                 "CRE_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/credentials",
                 "CAT_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/banknotes",
+                 "MAIL_PWD": "mailpwd"
             },
             "type": "node",
             "request": "launch",
@@ -162,6 +164,7 @@ From the Command Line (Windows):
     set CRE_DATABASE_URL=postgres://AppAPI:<pwd>@<dbhost>:<dbport>/<credentialsDbName>
     set CAT_DATABASE_URL=postgres://AppAPI:<pwd>@<dbhost>:<dbport>/<banknotesDbName>
     set PORT = 443 (or any other port you want)
+    set MAIL_PWD = <mail_provider_password>
     node main.js PROD 
     (or "npm start-PROD", or "npm start")
 
@@ -201,7 +204,8 @@ INSTALLATION (CLOUD - HEROKU)
     Note down the URL of each DB. 
         ==> content of the environment variables: DATABASE_URL, HEROKU_POSTGRESQL_<colour>_URL (e.g. postgres://<user>:<pwd>@<server>:<port>/<dbName>)
 
-    In Heroku create 2 additional env variables, CAT_DATABASE_URL and CRE_DATABASE_URL,  and asssign the same values as the ones set in DATABASE_URL and HEROKU_POSTGRESQL_<colour>_URL
+    Create 2 additional env variables, CAT_DATABASE_URL and CRE_DATABASE_URL,  and asssign the same values as the ones set in DATABASE_URL and HEROKU_POSTGRESQL_<colour>_URL
+    Create another env variable for the mail password: MAIL_PWD = <mail_provider_password>
 
     Create DB structures and load data:
 

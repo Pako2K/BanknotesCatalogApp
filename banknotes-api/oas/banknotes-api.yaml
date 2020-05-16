@@ -62,6 +62,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+  
+  /user/validation:
+    post:
+      tags: 
+      - Users
+      summary: Sends validation for a new user (register-step 2)
+      description: Confirms the request to create a new account by sending the validations code
+      operationId: userValidationPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userValidation'
+      responses:
+        "200":
+          description: User confirmed
+        "400":
+          description: Invalid request. Some fields in the request are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: 'Session id or validation code is not valid. Codes: VAL-02 => Session expired; VAL-03 => User is not valid; VAL-04 => Validation code is wrong (after 3 attempts the session will expire automatically); VAL-05 => Registration will be cancelled'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
                 
   /user/session:
     get:
@@ -94,8 +129,14 @@ paths:
                   lastConnection:
                     type: string
                     description: datetime in format 'dddd, DD MMMM YYYY, HH:mm'
+        "400":
+          description: "LOG-01: Http header (authorization) not provided | LOG-02: Value of Http header (authorization) is not valid | LOG-03: Invalid username:password in 'authorization' header"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
         "401":
-          description: Username or password is not valid
+          description: "AUT-01: Username or password is not valid | AUT-02: Account is not activated"
           content:
             application/json:
               schema:
@@ -814,7 +855,21 @@ components:
           description: base64 encoded password
           minLength: 8
           
-          
+    userValidation:
+      type: object
+      required:
+      - username
+      - validationCode
+      properties:
+        username:
+          type: string
+          maxLength: 16
+          minLength: 3
+          pattern: /[A-Z 0-9]/gi
+        validationCode:
+          type: string
+          minLength: 8
+
     continent:
       type: object
       required:
@@ -975,6 +1030,8 @@ components:
           properties:
             continentId:
               type: integer
+            continentName:
+              type: string
             id:
               type: integer
             iso3:

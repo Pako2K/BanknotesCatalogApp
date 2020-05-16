@@ -32,6 +32,22 @@ $font-size-input: 1.1em;
         flex-direction: column;
         & div {
             margin: auto;
+            &>span {
+                font-family: $FONT_DATA;
+                font-size: $font-size-input * 0.8;
+                color: whitesmoke;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            &>p {
+                margin-bottom: 2em;
+                max-width: 20em;
+                color: white;
+                &>span {
+                    font-style: italic;
+                    color: whitesmoke;
+                }
+            }
         }
         & input,
         & button {
@@ -97,13 +113,6 @@ $font-size-input: 1.1em;
             width: 2em;
             margin-top: 0.4em;
             margin-left: 0.8em;
-        }
-        & span {
-            font-family: $FONT_DATA;
-            font-size: $font-size-input * 0.8;
-            color: whitesmoke;
-            text-decoration: underline;
-            cursor: pointer;
         }
     }
 }

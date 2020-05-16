@@ -82,8 +82,7 @@ function currencyByIdGET(request, response) {
 
     catalogueDB.execSQL(sql, [], (err, rows) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 

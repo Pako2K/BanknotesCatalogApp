@@ -1,0 +1,18 @@
+{
+    "SMTPTransport": {
+        "host": "mail.gmx.net",
+        "port": 587,
+        "secure": false,
+        "auth": {
+            "user": "banknotes-catalogue@gmx.net",
+            "pass": null
+        }
+    },
+
+    "registrationOptions": {
+        "from": "banknotes-catalogue@gmx.net",
+        "to": null,
+        "subject": "The Banknotes Online Catalogue: registration request",
+        "html": "<h3>Welcome %%USERNAME%%,</h3>        <p>Thanks for registering in <i>The Banknotes Online Catalogue</i>.</p>        <p>To complete the registration, enter this validation code: <b>%%CODE%%</b><br>            <span><small>This code is valid for %%EXPIRATION%% minutes. Afterwards your request will be deleted.</small></span></p>        <p>Enjoy it!</p>        <h3>The Banknotes Online Catalogue Team.</h3>"
+    }
+}

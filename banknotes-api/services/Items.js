@@ -26,8 +26,7 @@ function itemsStatsGET(request, response) {
     const GROUPINGS = ['territory', 'currency', 'denomination', 'year'];
     if (grouping === undefined || grouping === '' || GROUPINGS.indexOf(grouping) === -1) {
         // Invalid parameter
-        let exception = new Exception(400, "ITEM-1", "Query parameter missing or not valid");
-        exception.send(response);
+        new Exception(400, "ITEM-1", "Query parameter missing or not valid").send(response);
         return;
     }
 
@@ -108,8 +107,7 @@ function itemsStatsGET(request, response) {
 
     catalogueDB.execSQL(sqlStats, [request.session.user], (err, rows) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 
@@ -127,8 +125,7 @@ function territoryByIdItemsStatsGET(request, response) {
     const GROUPINGS = ['currency', 'series', 'denomination', 'year'];
     if (grouping === undefined || grouping === '' || GROUPINGS.indexOf(grouping) === -1) {
         // Invalid parameter
-        let exception = new Exception(400, "ITEM-1", "Query parameter missing or not valid");
-        exception.send(response);
+        new Exception(400, "ITEM-1", "Query parameter missing or not valid").send(response);
         return;
     }
 
@@ -195,8 +192,7 @@ function territoryByIdItemsStatsGET(request, response) {
 
     catalogueDB.execSQL(sqlStats, [request.session.user], (err, rows) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 
@@ -284,8 +280,7 @@ function variantsItemsGET(request, response) {
 
     // If the 3 sql filters are "" (and therefore they are equal)
     if (sqlTerritory === sqlCurrency && sqlBanknote === sqlCurrency) {
-        let exception = new Exception(400, "ITE-001", "Search parameters not found");
-        exception.send(response);
+        new Exception(400, "ITE-001", "Search parameters not found").send(response);
         return;
     }
 
@@ -307,14 +302,12 @@ function variantsItemsGET(request, response) {
 
     catalogueDB.execSQL(sqlStr, [request.session.user], (err, rows) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 
         if (rows.length > 500) {
-            let exception = new Exception(413, "ITE-002", "Too many variants found: " + rows.length);
-            exception.send(response);
+            new Exception(413, "ITE-002", "Too many variants found: " + rows.length).send(response);
             return;
         }
 

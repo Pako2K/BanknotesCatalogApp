@@ -9,6 +9,7 @@
                 "PORT": "80",
                 "CRE_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/credentials",
                 "CAT_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/banknotes",
+                "MAIL_PWD": "i3yysqBO6t9T75aqVSK4"
             },
             "type": "node",
             "request": "launch",

@@ -7,6 +7,17 @@ const crypto = require('crypto');
 const jsonParser = require('body-parser').json();
 const jsonValidator = require('jsonschema').validate;
 const moment = require('moment');
+const mailer = require('nodemailer');
+const fs = require('fs');
+
+// Read configuration properties from file
+const mailConfig = JSON.parse(fs.readFileSync(`./config/${process.argv[2]}/mail.config.json`));
+
+// Setup mail transport
+mailConfig.SMTPTransport.auth.pass = process.env.MAIL_PWD;
+let mailTransport = mailer.createTransport(mailConfig.SMTPTransport);
+
+const VAL_CODE_LENGTH = 8;
 
 let credDB;
 let catalogueDB;
@@ -16,6 +27,7 @@ module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
     app.put('/user', jsonParser, userPUT);
+    app.post('/user/validation', jsonParser, userValidationPOST);
     app.delete('/user/session', userSessionDELETE);
     app.get('/user/session', userSessionGET);
     app.get('/user/session/ping', userSessionPingGET);
@@ -46,22 +58,13 @@ const UserSchema = {
     }
 };
 
+
 // ===> /user (register)
 function userPUT(request, response) {
-    const sqlSelectUser = ` SELECT * FROM cre_credentials
-                            WHERE cre_username = $1
-                            OR cre_mail = $2`;
-
-    const sqlInsertUserCredential = `INSERT INTO cre_credentials (cre_username, cre_salt, cre_hashed_pwd, cre_mail, cre_is_admin)
-                                     VALUES ($1, $2, $3, $4, 0)`;
-
-    const sqlInsertUserCatalogue = `INSERT INTO usr_user (usr_name) VALUES ($1)`;
-
     // Validate user info in the body 
     let valResult = jsonValidator(request.body, UserSchema);
     if (valResult.errors.length) {
-        let exception = new Exception(400, "REG-1", JSON.stringify(valResult.errors));
-        exception.send(response);
+        new Exception(400, "REG-1", JSON.stringify(valResult.errors)).send(response);
         return;
     }
 
@@ -70,31 +73,50 @@ function userPUT(request, response) {
     let pwd = buf.toString();
     // Validate password length: it must have at least 8 characters and no more than 30
     if (pwd.length > 30 || pwd.length < 8) {
-        let exception = new Exception(400, "REG-2", "Password is too short (less than 8 characters) or too long (more than 30 characters)");
-        exception.send(response);
+        new Exception(400, "REG-2", "Password is too short (less than 8 characters) or too long (more than 30 characters)").send(response);
         return;
     }
 
     // Validate that username and passowrd do not contain a ":"
     if (pwd.indexOf(":") !== -1 || request.body.username.indexOf(":") !== -1) {
-        let exception = new Exception(400, "REG-3", "Username and Password cannot contain ':'");
-        exception.send(response);
+        new Exception(400, "REG-3", "Username and Password cannot contain ':'").send(response);
         return;
     }
 
     // Check that the username and the email are not already used 
+    const sqlSelectUser = ` SELECT * FROM cre_credentials
+                            WHERE cre_username = $1
+                            OR cre_mail = $2`;
     credDB.execSQL(sqlSelectUser, [request.body.username, request.body.email], (err, rows) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 
         if (rows.length) {
-            // User already exists!
-            let exception = new Exception(403, "REG-2", "Username or email is already registered");
-            exception.send(response);
-            return;
+            if (rows[0].cre_state === 0) {
+                // User already exists!
+                new Exception(403, "REG-2", "Username or email is already registered").send(response);
+                return;
+            } else {
+                // Retrieve Insertion Timestamp and compare it to the current timestamp
+                let now = moment();
+                let insertTimestamp = moment(rows[0].cre_insert_timestamp);
+                if ((now.diff(insertTimestamp, 'seconds')) > 1800) {
+                    // Delete "expired" user and continue
+                    const sqlDeleteUser = "DELETE FROM cre_credentials WHERE cre_username = $1";
+                    credDB.execSQL(sqlDeleteUser, [request.body.username], (err) => {
+                        if (err) {
+                            new Exception(500, err.code, err.message).send(response);
+                            return;
+                        }
+                    });
+                } else {
+                    // User already exists!
+                    new Exception(403, "REG-2", "Username or email is already registered").send(response);
+                    return;
+                }
+            }
         }
 
         // Calculate Salt 
@@ -104,25 +126,152 @@ function userPUT(request, response) {
         // Create password hash
         let hashedPwd = encryptPwd(salt, pwd);
 
-        // Store credentials in DB's and send reply
-        credDB.execSQL(sqlInsertUserCredential, [request.body.username, salt, hashedPwd, request.body.email], (err) => {
-            if (err) {
-                let exception = new Exception(500, err.code, err.message);
-                exception.send(response);
-                return;
-            }
-            // Copy username to catalogueDB
-            catalogueDB.execSQL(sqlInsertUserCatalogue, [request.body.username], (err) => {
-                if (err) {
-                    let exception = new Exception(500, err.code, err.message);
-                    exception.send(response);
+        // Generate validation code
+        let validationCode = crypto.randomBytes(Math.ceil(VAL_CODE_LENGTH / 2)).toString('hex').slice(0, VAL_CODE_LENGTH);
+
+        // Create session id to be used during the confirmation of the user (using the validation code)
+        log.info(`User ${request.body.username} has requested to sign up`);
+        setUserSession(request, request.body.username).catch((err) => {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }).then(() => {
+            mailConfig.registrationOptions.to = request.body.email;
+            mailConfig.registrationOptions.html = mailConfig.registrationOptions.html.replace("%%USERNAME%%", request.body.username)
+                .replace("%%CODE%%", validationCode).replace("%%EXPIRATION%%", request.session.cookie.originalMaxAge / 60000);
+
+            mailTransport.sendMail(mailConfig.registrationOptions, function(error, info) {
+                if (error) {
+                    log.error(`Email not sent: ${request.body.email}. User Name: ${request.body.username}.\nERROR: ${JSON.stringify(error)}`);
+                    new Exception(500, "REG-3", error.message).send(response);
                     return;
                 }
+                log.info(`Validation mail sent to ${request.body.email}. User Name: ${request.body.username}. ${info.response}`);
 
-                response.writeHead(200);
-                response.send();
+                // Store credentials in DB's and send reply
+                const sqlInsertUserCredential = `INSERT INTO cre_credentials (cre_username, cre_salt, cre_hashed_pwd, cre_mail, cre_is_admin, cre_validation_code, cre_state)
+                                                VALUES ($1, $2, $3, $4, 0, $5, -1)`;
+                credDB.execSQL(sqlInsertUserCredential, [request.body.username, salt, hashedPwd, request.body.email, validationCode], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message).send(response);
+                        return;
+                    }
+
+                    response.writeHead(200);
+                    response.send();
+                });
             });
         });
+    });
+}
+
+const UserValidationSchema = {
+    "type": "object",
+    "required": ["username", "validationCode"],
+    "properties": {
+        "username": {
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 3,
+            "pattern": "^[A-Za-z 0-9]+$"
+        },
+        "validationCode": {
+            "type": "string",
+            "minLength": VAL_CODE_LENGTH,
+        }
+    }
+};
+// ===> /user/validation (registration confirmation)
+function userValidationPOST(request, response) {
+    // Validate user info in the body 
+    let valResult = jsonValidator(request.body, UserValidationSchema);
+    if (valResult.errors.length) {
+        new Exception(400, "VAL-01", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    // Check that the username matches the session user
+    if (request.body.username !== request.session.user) {
+        new Exception(403, "VAL-02", `Session is not valid or expired`).send(response);
+        return;
+    }
+
+    // Check that the validation code is correct
+    const sqlSelectUser = ` SELECT * FROM cre_credentials
+                            WHERE cre_username = $1`;
+    credDB.execSQL(sqlSelectUser, [request.session.user], (err, rows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        if (rows[0].length === 0) {
+            new Exception(403, "VAL-03", `User is not valid`).send(response);
+            return;
+        }
+
+        if (rows[0].cre_state === 0) {
+            // User already activated!
+            response.writeHead(200);
+            response.send();
+            return;
+        }
+
+        if (rows[0].cre_validation_code !== request.body.validationCode) {
+            let newState;
+            if (rows[0].cre_state === -1) newState = 1;
+            else if (rows[0].cre_state === 1) newState = 2;
+            else newState = 3;
+
+            if (newState < 3) {
+                // Update state
+                const sqlUpdateState = "UPDATE cre_credentials SET cre_state = $1 WHERE cre_username = $2";
+                credDB.execSQL(sqlUpdateState, [newState, request.session.user], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message).send(response);
+                        return
+                    }
+                    new Exception(403, "VAL-04", `Validation code is wrong. ${3 - newState} attempts left.`).send(response);
+                    return;
+                });
+            } else {
+                // Cancel registration
+                // Delete user
+                const sqlDeleteUser = "DELETE FROM cre_credentials WHERE cre_username = $1";
+                credDB.execSQL(sqlDeleteUser, [request.session.user], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message);
+                    }
+                    request.session.destroy((err) => {
+                        if (err) {
+                            new Exception(500, err.code, err.message);
+                        }
+                        new Exception(403, "VAL-05", `Validation code is wrong. Registration has been cancelled`).send(response);
+                        return;
+                    });
+                });
+            }
+        } else {
+            // Confirm registration: update State and CatalogDB table
+            // Update state
+            const sqlUpdateState = "UPDATE cre_credentials SET cre_state = 0,  cre_validation_code = NULL WHERE cre_username = $1";
+            credDB.execSQL(sqlUpdateState, [request.session.user], (err) => {
+                if (err) {
+                    new Exception(500, err.code, err.message).send(response);
+                    return;
+                }
+                // Copy username to catalogueDB
+                const sqlInsertUserCatalogue = `INSERT INTO usr_user (usr_name) VALUES ($1)`;
+                catalogueDB.execSQL(sqlInsertUserCatalogue, [request.body.username], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message).send(response);
+                        return;
+                    }
+                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    response.write("{}");
+                    response.send();
+                });
+            });
+        }
     });
 }
 
@@ -130,86 +279,89 @@ function userPUT(request, response) {
 
 // ===> /user/session (login)
 function userSessionGET(request, response) {
-    const sqlSelectCredentials = `SELECT cre_salt, cre_hashed_pwd, cre_is_admin AS "isAdmin", cre_last_connection AS "lastConnection" 
-                                  FROM cre_credentials where cre_username = $1`;
-    const sqlInsertDate = "UPDATE cre_credentials SET cre_last_connection = $1 WHERE cre_username = $2";
-
-    // Validate and parse authorization header
-    if (!request.headers.authorization) {
-        let exception = new Exception(400, "LOG-1", "Http header not provided: authorization");
-        exception.send(response);
-        return;
-    }
-
-    // Extract username and password
-    // Authorization looks like  "Basic Y2hhcmxlczoxMjM0NQ==". The second part is in base64(user:pwd)
-    let tokenizedAuth = request.headers.authorization.split(' ');
-    if (tokenizedAuth.length !== 2 || tokenizedAuth[0] !== "Basic") {
-        let exception = new Exception(400, "LOG-2", "Value of Http header is not valid: authorization");
-        exception.send(response);
-        return;
-    }
-
-    // Decode string user:pwd
-    let buf = Buffer.from(tokenizedAuth[1], 'base64');
-    let usrPwd = buf.toString();
-
-    let usrPwdArray = usrPwd.split(':'); // split on a ':'
-    if (usrPwdArray.length !== 2) {
-        let exception = new Exception(400, "LOG-3", "Invalid username:password in 'authorization' header");
-        exception.send(response);
-        return;
-    }
-
-    let username = usrPwdArray[0];
-    let password = usrPwdArray[1];
-
-    log.debug(`Login requested by: ${username}`);
-
-    credDB.execSQL(sqlSelectCredentials, [username], (err, rows) => {
-        if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+    try {
+        // Validate and parse authorization header
+        if (!request.headers.authorization) {
+            new Exception(400, "LOG-01", "Http header (authorization) not provided").send(response);
             return;
         }
 
-        // Calculate hashed password and compare to te stored one
-        if (rows !== undefined && rows[0].cre_hashed_pwd === encryptPwd(rows[0].cre_salt, password)) {
-            log.info(`User ${username} logged in`);
-            setUserSession(request, username).catch((err) => {
-                let exception = new Exception(500, err.code, err.message);
-                exception.send(response);
-                return;
-            }).then(() => {
-                let replyJSON = { isAdmin: rows[0].isAdmin, lastConnection: rows[0].lastConnection };
-                response.writeHead(200, { 'Content-Type': 'application/json' });
-                response.write(JSON.stringify(replyJSON));
-                response.send();
-
-                // Store login date
-                credDB.execSQL(sqlInsertDate, [moment().format('dddd, DD MMMM YYYY, HH:mm'), username], (err) => {
-                    if (err) {
-                        log.error(err.code + ": " + err.message);
-                        throw err;
-                    }
-                });
-            });
-
-        } else {
-            // Unauthorized
-            let exception = new Exception(401, "AUT-1", `User ${username} not found or wrong password`);
-            exception.send(response);
+        // Extract username and password
+        // Authorization looks like  "Basic Y2hhcmxlczoxMjM0NQ==". The second part is in base64(user:pwd)
+        let tokenizedAuth = request.headers.authorization.split(' ');
+        if (tokenizedAuth.length !== 2 || tokenizedAuth[0] !== "Basic") {
+            new Exception(400, "LOG-02", "Value of Http header (authorization) is not valid").send(response);
+            return;
         }
-    });
+
+        // Decode string user:pwd
+        let buf = Buffer.from(tokenizedAuth[1], 'base64');
+        let usrPwd = buf.toString();
+
+        let usrPwdArray = usrPwd.split(':'); // split on a ':'
+        if (usrPwdArray.length !== 2) {
+            new Exception(400, "LOG-03", "Invalid username:password in 'authorization' header").send(response);
+            return;
+        }
+
+        let username = usrPwdArray[0];
+        let password = usrPwdArray[1];
+
+        log.debug(`Login requested by: ${username}`);
+
+        const sqlSelectCredentials = `  SELECT cre_salt, cre_hashed_pwd, cre_is_admin AS "isAdmin", cre_last_connection AS "lastConnection", cre_state AS "state" 
+                                    FROM cre_credentials where cre_username = $1`;
+
+        credDB.execSQL(sqlSelectCredentials, [username], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Calculate hashed password and compare to te stored one
+            if (rows.length && rows[0].cre_hashed_pwd === encryptPwd(rows[0].cre_salt, password)) {
+                if (rows[0].state === 0) {
+                    // User is active
+                    log.info(`User ${username} logged in`);
+                    setUserSession(request, username).catch((err) => {
+                        new Exception(500, err.code, err.message).send(response);
+                        return;
+                    }).then(() => {
+                        let replyJSON = { isAdmin: rows[0].isAdmin, lastConnection: rows[0].lastConnection };
+                        response.writeHead(200, { 'Content-Type': 'application/json' });
+                        response.write(JSON.stringify(replyJSON));
+                        response.send();
+
+                        // Store login date && reset state
+                        const sqlInsertDate = "UPDATE cre_credentials SET cre_last_connection = $1 WHERE cre_username = $2";
+                        credDB.execSQL(sqlInsertDate, [moment().format('dddd, DD MMMM YYYY, HH:mm'), username], (err) => {
+                            new Exception(500, err.code, err.message);
+                            return;
+                        });
+                    });
+                } else {
+                    // User activation is not completed
+                    new Exception(401, "AUT-02", `User ${username} is not activated`).send(response);
+                    return;
+                }
+            } else {
+                // Unauthorized
+                new Exception(401, "AUT-01", `User ${username} not found or wrong password`).send(response);
+                return;
+            }
+        });
+    } catch (err) {
+        new Exception(500, "ERR", "Unexpected Internal Error. " + err.message, err.stack).send(response);
+    }
 }
+
 
 
 // ===> /user/session (logout)
 function userSessionDELETE(request, response) {
     request.session.destroy((err) => {
         if (err) {
-            let exception = new Exception(500, err.code, err.message);
-            exception.send(response);
+            new Exception(500, err.code, err.message).send(response);
             return;
         }
 
@@ -267,8 +419,7 @@ module.exports.validateUser = function(req, res, next) {
     if (!username) {
         log.info("Username not received.");
         // sent error
-        let exception = new Exception(400, "USER-1", "Username in cookie is missing");
-        exception.send(res);
+        new Exception(400, "USER-1", "Username in cookie is missing").send(res);
         return;
     }
 
@@ -277,8 +428,7 @@ module.exports.validateUser = function(req, res, next) {
         log.info("Username is not valid or session has expired.");
         // Cancel current session and sent error
         // sent error
-        let exception = new Exception(403, "USER-2", "Username not logged-in or invalid session");
-        exception.send(res);
+        new Exception(403, "USER-2", "Username not logged-in or invalid session").send(res);
         return;
     }
     next();
