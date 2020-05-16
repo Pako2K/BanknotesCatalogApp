@@ -10,5 +10,5 @@ logs/*
 # exclude local executables
 *.bat
 
-/exclude visual studio code files
+# exclude visual studio code files
 .vscode/*
