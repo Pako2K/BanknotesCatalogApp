@@ -9,6 +9,7 @@ const jsonValidator = require('jsonschema').validate;
 const moment = require('moment');
 const mailer = require('nodemailer');
 const fs = require('fs');
+const url = require('url');
 
 // Read configuration properties from file
 const mailConfig = JSON.parse(fs.readFileSync(`./config/${process.argv[2]}/mail.config.json`));
@@ -28,6 +29,7 @@ module.exports.initialize = function(app) {
 
     app.put('/user', jsonParser, userPUT);
     app.post('/user/validation', jsonParser, userValidationPOST);
+    app.post('/user/password', jsonParser, userPasswordPOST);
     app.delete('/user/session', userSessionDELETE);
     app.get('/user/session', userSessionGET);
     app.get('/user/session/ping', userSessionPingGET);
@@ -57,7 +59,6 @@ const UserSchema = {
         }
     }
 };
-
 
 // ===> /user (register)
 function userPUT(request, response) {
@@ -136,7 +137,7 @@ function userPUT(request, response) {
             return;
         }).then(() => {
             mailConfig.registrationOptions.to = request.body.email;
-            mailConfig.registrationOptions.html = mailConfig.registrationOptions.html.replace("%%USERNAME%%", request.body.username)
+            mailConfig.registrationOptions.html = mailConfig.registrationOptions.htmlTemplate.replace("%%USERNAME%%", request.body.username)
                 .replace("%%CODE%%", validationCode).replace("%%EXPIRATION%%", request.session.cookie.originalMaxAge / 60000);
 
             mailTransport.sendMail(mailConfig.registrationOptions, function(error, info) {
@@ -164,6 +165,8 @@ function userPUT(request, response) {
     });
 }
 
+
+
 const UserValidationSchema = {
     "type": "object",
     "required": ["username", "validationCode"],
@@ -180,12 +183,21 @@ const UserValidationSchema = {
         }
     }
 };
-// ===> /user/validation (registration confirmation)
+// ===> /user/validation?type (registration / pwd change confirmation)
 function userValidationPOST(request, response) {
     // Validate user info in the body 
     let valResult = jsonValidator(request.body, UserValidationSchema);
     if (valResult.errors.length) {
         new Exception(400, "VAL-01", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    // Validate query string
+    let validationType = url.parse(request.url, true).query.type;
+    const TYPES = ['user', 'password'];
+    if (validationType === undefined || validationType === '' || TYPES.indexOf(validationType) === -1) {
+        // Invalid parameter
+        new Exception(400, "VAL-06", "Query parameter missing or not valid").send(response);
         return;
     }
 
@@ -195,73 +207,146 @@ function userValidationPOST(request, response) {
         return;
     }
 
-    // Check that the validation code is correct
-    const sqlSelectUser = ` SELECT * FROM cre_credentials
+    if (validationType === "user") {
+        // Check that the validation code is correct
+        const sqlSelectUser = ` SELECT * FROM cre_credentials
                             WHERE cre_username = $1`;
-    credDB.execSQL(sqlSelectUser, [request.session.user], (err, rows) => {
-        if (err) {
-            new Exception(500, err.code, err.message).send(response);
-            return;
-        }
+        credDB.execSQL(sqlSelectUser, [request.session.user], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
 
-        if (rows[0].length === 0) {
-            new Exception(403, "VAL-03", `User is not valid`).send(response);
-            return;
-        }
+            if (rows[0].length === 0) {
+                new Exception(403, "VAL-03", `User is not valid`).send(response);
+                return;
+            }
 
-        if (rows[0].cre_state === 0) {
-            // User already activated!
-            response.writeHead(200);
-            response.send();
-            return;
-        }
+            if (rows[0].cre_state === 0 || rows[0].cre_state >= 10) {
+                // User already activated!
+                response.writeHead(200);
+                response.write("{}");
+                response.send();
+                return;
+            }
 
-        if (rows[0].cre_validation_code !== request.body.validationCode) {
-            let newState;
-            if (rows[0].cre_state === -1) newState = 1;
-            else if (rows[0].cre_state === 1) newState = 2;
-            else newState = 3;
+            if (rows[0].cre_validation_code !== request.body.validationCode) {
+                let newState;
+                if (rows[0].cre_state === -1) newState = 1;
+                else if (rows[0].cre_state === 1) newState = 2;
+                else newState = 3;
 
-            if (newState < 3) {
-                // Update state
-                const sqlUpdateState = "UPDATE cre_credentials SET cre_state = $1 WHERE cre_username = $2";
-                credDB.execSQL(sqlUpdateState, [newState, request.session.user], (err) => {
-                    if (err) {
-                        new Exception(500, err.code, err.message).send(response);
-                        return
-                    }
-                    new Exception(403, "VAL-04", `Validation code is wrong. ${3 - newState} attempts left.`).send(response);
-                    return;
-                });
-            } else {
-                // Cancel registration
-                // Delete user
-                const sqlDeleteUser = "DELETE FROM cre_credentials WHERE cre_username = $1";
-                credDB.execSQL(sqlDeleteUser, [request.session.user], (err) => {
-                    if (err) {
-                        new Exception(500, err.code, err.message);
-                    }
-                    request.session.destroy((err) => {
+                if (newState < 3) {
+                    // Update state
+                    const sqlUpdateState = "UPDATE cre_credentials SET cre_state = $1 WHERE cre_username = $2";
+                    credDB.execSQL(sqlUpdateState, [newState, request.session.user], (err) => {
+                        if (err) {
+                            new Exception(500, err.code, err.message).send(response);
+                            return
+                        }
+                        new Exception(403, "VAL-04", `Validation code is wrong. ${3 - newState} attempts left.`).send(response);
+                        return;
+                    });
+                } else {
+                    // Cancel registration
+                    // Delete user
+                    const sqlDeleteUser = "DELETE FROM cre_credentials WHERE cre_username = $1";
+                    credDB.execSQL(sqlDeleteUser, [request.session.user], (err) => {
                         if (err) {
                             new Exception(500, err.code, err.message);
                         }
-                        new Exception(403, "VAL-05", `Validation code is wrong. Registration has been cancelled`).send(response);
+                        request.session.destroy((err) => {
+                            if (err) {
+                                new Exception(500, err.code, err.message);
+                            }
+                            new Exception(403, "VAL-05", `Validation code is wrong. Registration has been cancelled`).send(response);
+                            return;
+                        });
+                    });
+                }
+            } else {
+                // Confirm registration: update State and CatalogDB table
+                // Update state
+                const sqlUpdateState = "UPDATE cre_credentials SET cre_state = 0,  cre_validation_code = NULL WHERE cre_username = $1";
+                credDB.execSQL(sqlUpdateState, [request.session.user], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message).send(response);
                         return;
+                    }
+                    // Copy username to catalogueDB
+                    const sqlInsertUserCatalogue = `INSERT INTO usr_user (usr_name) VALUES ($1)`;
+                    catalogueDB.execSQL(sqlInsertUserCatalogue, [request.body.username], (err) => {
+                        if (err) {
+                            new Exception(500, err.code, err.message).send(response);
+                            return;
+                        }
+                        response.writeHead(200, { 'Content-Type': 'application/json' });
+                        response.write("{}");
+                        response.send();
                     });
                 });
             }
-        } else {
-            // Confirm registration: update State and CatalogDB table
-            // Update state
-            const sqlUpdateState = "UPDATE cre_credentials SET cre_state = 0,  cre_validation_code = NULL WHERE cre_username = $1";
-            credDB.execSQL(sqlUpdateState, [request.session.user], (err) => {
-                if (err) {
-                    new Exception(500, err.code, err.message).send(response);
-                    return;
+        });
+    } else if (validationType === "password") {
+        // Check that the validation code is correct
+        const sqlSelectUser = ` SELECT * FROM cre_credentials
+                                WHERE cre_username = $1`;
+        credDB.execSQL(sqlSelectUser, [request.session.user], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            if (rows[0].length === 0) {
+                new Exception(403, "VAL-03", `User is not valid`).send(response);
+                return;
+            }
+
+            if (rows[0].cre_state < 10) {
+                // User did not requet to change the password!
+                log.warn(`Password change validation for ${request.session.user}: User did not requet to change the password!`);
+                response.writeHead(200);
+                response.send();
+                return;
+            }
+
+
+            if (rows[0].cre_validation_code !== request.body.validationCode) {
+                let newState = rows[0].cre_state;
+                if (newState <= 12) newState++;
+
+                if (newState < 13) {
+                    // Update state
+                    const sqlUpdateState = "UPDATE cre_credentials SET cre_state = $1 WHERE cre_username = $2";
+                    credDB.execSQL(sqlUpdateState, [newState, request.session.user], (err) => {
+                        if (err) {
+                            new Exception(500, err.code, err.message).send(response);
+                            return
+                        }
+                        new Exception(403, "VAL-04", `Validation code is wrong. ${13 - newState} attempts left.`).send(response);
+                        return;
+                    });
+                } else {
+                    // Cancel pwd change
+                    let randomPwd = crypto.randomBytes(Math.ceil(VAL_CODE_LENGTH / 2)).toString('hex').slice(0, VAL_CODE_LENGTH);
+                    const sqlUpdatePwd = "UPDATE cre_credentials SET cre_hashed_pwd = $1 WHERE cre_username = $2";
+                    credDB.execSQL(sqlUpdatePwd, [randomPwd, request.session.user], (err) => {
+                        if (err) {
+                            new Exception(500, err.code, err.message);
+                        }
+                        request.session.destroy((err) => {
+                            if (err) {
+                                new Exception(500, err.code, err.message);
+                            }
+                            new Exception(403, "VAL-05", `Validation code is wrong. New password has been deleted`).send(response);
+                            return;
+                        });
+                    });
                 }
-                // Copy username to catalogueDB
-                const sqlInsertUserCatalogue = `INSERT INTO usr_user (usr_name) VALUES ($1)`;
-                catalogueDB.execSQL(sqlInsertUserCatalogue, [request.body.username], (err) => {
+            } else {
+                // Confirmed : update State and password
+                const sqlUpdateState = "UPDATE cre_credentials SET cre_state = 0,  cre_validation_code = NULL WHERE cre_username = $1";
+                credDB.execSQL(sqlUpdateState, [request.session.user], (err) => {
                     if (err) {
                         new Exception(500, err.code, err.message).send(response);
                         return;
@@ -270,9 +355,192 @@ function userValidationPOST(request, response) {
                     response.write("{}");
                     response.send();
                 });
-            });
+            }
+        });
+    }
+}
+
+
+const UserPasswordSchema = {
+    "type": "object",
+    "required": [
+        "username",
+        "authentication",
+        "newPassword"
+    ],
+    "properties": {
+        "username": {
+            "type": "string"
+        },
+        "authentication": {
+            "oneOf": [{
+                    "type": "object",
+                    "required": [
+                        "password"
+                    ],
+                    "properties": {
+                        "password": {
+                            "type": "string",
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "email"
+                    ],
+                    "properties": {
+                        "email": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "newPassword": {
+            "type": "string",
+            "format": "base64",
+            "minLength": 8
         }
-    });
+    }
+};
+// ===> /user/password (change password)
+function userPasswordPOST(request, response) {
+    // Validate user info in the body 
+    let valResult = jsonValidator(request.body, UserPasswordSchema);
+    if (valResult.errors.length) {
+        new Exception(400, "PWD-01", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    // decode and validate new password
+    let newPwd = Buffer.from(request.body.newPassword, 'base64').toString();
+    // Validate password length: it must have at least 8 characters and no more than 30
+    if (newPwd.length > 30 || newPwd.length < 8) {
+        new Exception(400, "PWD-02", "Password is too short (less than 8 characters) or too long (more than 30 characters)").send(response);
+        return;
+    }
+    // Validate that passowrd does not contain a ":"
+    if (newPwd.indexOf(":") !== -1) {
+        new Exception(400, "PWD-03", "New password cannot contain ':'").send(response);
+        return;
+    }
+
+    // Check which authentication paramter is provided
+    if (request.body.authentication.password) {
+        // Password can be changed immediately
+
+        // decode password
+        let pwd = Buffer.from(request.body.authentication.password, 'base64').toString();
+
+        // Validate the username and password 
+        const sqlSelectCredentials = `  SELECT cre_salt, cre_hashed_pwd, cre_mail
+                                        FROM cre_credentials 
+                                        WHERE cre_username = $1
+                                        AND cre_state = 0`;
+
+        credDB.execSQL(sqlSelectCredentials, [request.body.username], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Calculate hashed password and compare to te stored one
+            if (rows.length && rows[0].cre_hashed_pwd === encryptPwd(rows[0].cre_salt, pwd)) {
+                // Password can be updated
+                const sqlUpdatePwd = "UPDATE cre_credentials SET cre_hashed_pwd = $1 WHERE cre_username = $2";
+                credDB.execSQL(sqlUpdatePwd, [encryptPwd(rows[0].cre_salt, newPwd), request.body.username], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message).send(response);
+                        return;
+                    }
+                    log.info(`Password changed for User ${request.body.username}`);
+
+                    mailConfig.confirmationPwdChangedOptions.to = rows[0].cre_mail;
+                    mailConfig.confirmationPwdChangedOptions.html = mailConfig.confirmationPwdChangedOptions.htmlTemplate.replace("%%USERNAME%%", request.body.username);
+
+                    mailTransport.sendMail(mailConfig.confirmationPwdChangedOptions, function(error, info) {
+                        if (error) {
+                            log.error(`Email not sent: ${rows[0].cre_mail}. User Name: ${request.body.username}.\nERROR: ${JSON.stringify(error)}`);
+                            // Only log the error
+                            new Exception(500, "REG-3", error.message);
+                        } else {
+                            log.info(`Password changed. Confirmation mail sent to ${rows[0].cre_mail}. User Name: ${request.body.username}. ${info.response}`);
+                        }
+                    });
+
+                    response.writeHead(200);
+                    response.send();
+                    return;
+                });
+            } else {
+                // Unauthorized
+                new Exception(401, "PWD-04", `User ${request.body.username} not found or wrong password`).send(response);
+                return;
+            }
+        });
+    } else {
+        // Password change must be confirmed with validation code
+
+        // Validate the username and email
+        const sqlSelectCredentials = `  SELECT *
+                                        FROM cre_credentials 
+                                        WHERE cre_username = $1
+                                        AND cre_mail = $2
+                                        AND cre_state = 0 OR cre_state >= 10`;
+
+        credDB.execSQL(sqlSelectCredentials, [request.body.username, request.body.authentication.email], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            if (rows.length) {
+                // Password can be updated and validation email sent
+
+                // Generate validation code
+                let validationCode = crypto.randomBytes(Math.ceil(VAL_CODE_LENGTH / 2)).toString('hex').slice(0, VAL_CODE_LENGTH);
+
+                const sqlUpdatePwd = `UPDATE cre_credentials 
+                                      SET cre_hashed_pwd = $1, cre_state = 10, cre_validation_code = $2
+                                      WHERE cre_username = $3`;
+                credDB.execSQL(sqlUpdatePwd, [encryptPwd(rows[0].cre_salt, newPwd), validationCode, request.body.username], (err) => {
+                    if (err) {
+                        new Exception(500, err.code, err.message).send(response);
+                        return;
+                    }
+                    log.info(`Password change requested by User ${request.body.username}`);
+
+                    // Create session id to be used during the confirmation of the user (using the validation code)
+                    setUserSession(request, request.body.username).catch((err) => {
+                        new Exception(500, err.code, err.message).send(response);
+                        return;
+                    }).then(() => {
+                        mailConfig.pwdChangeOptions.to = request.body.authentication.email;
+                        mailConfig.pwdChangeOptions.html = mailConfig.pwdChangeOptions.htmlTemplate.replace("%%USERNAME%%", request.body.username)
+                            .replace("%%CODE%%", validationCode).replace("%%EXPIRATION%%", request.session.cookie.originalMaxAge / 60000);
+
+                        mailTransport.sendMail(mailConfig.pwdChangeOptions, function(error, info) {
+                            if (error) {
+                                log.error(`Email not sent: ${request.body.authentication.email}. User Name: ${request.body.username}.\nERROR: ${JSON.stringify(error)}`);
+                                new Exception(500, "REG-3", error.message).send(response);
+                                return;
+                            }
+                            log.info(`Validation mail sent to ${request.body.authentication.email}. User Name: ${request.body.username}. ${info.response}`);
+
+                            response.writeHead(200);
+                            response.send();
+                            return;
+                        });
+                    });
+                });
+            } else {
+                // Unauthorized
+                new Exception(401, "PWD-04", `User ${request.body.username} or email address ${request.body.authentication.email} not found`).send(response);
+                return;
+            }
+        });
+    }
 }
 
 
@@ -310,7 +578,7 @@ function userSessionGET(request, response) {
         log.debug(`Login requested by: ${username}`);
 
         const sqlSelectCredentials = `  SELECT cre_salt, cre_hashed_pwd, cre_is_admin AS "isAdmin", cre_last_connection AS "lastConnection", cre_state AS "state" 
-                                    FROM cre_credentials where cre_username = $1`;
+                                        FROM cre_credentials where cre_username = $1`;
 
         credDB.execSQL(sqlSelectCredentials, [username], (err, rows) => {
             if (err) {

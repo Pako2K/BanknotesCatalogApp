@@ -67,9 +67,19 @@ paths:
     post:
       tags: 
       - Users
-      summary: Sends validation for a new user (register-step 2)
-      description: Confirms the request to create a new account by sending the validations code
+      summary: Sends validation for a new user (register-step 2) or a password change
+      description: Confirms the request to create a new account or reset the password by sending the validation code. The type of confirmation is indicated by the query string
       operationId: userValidationPOST
+      parameters:
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - password
+          - user
+        required: true
+        description: "Type of validation: for a new password or for a new user"
       requestBody:
         content:
           application/json:
@@ -97,7 +107,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
                 
+
+  /user/password:
+    post:
+      tags: 
+      - Users
+      summary: Sends a request to change the user password. 
+      description: If the user provides the authorization credentials (user/pwd) the change is executed immediately. Otherwise, if the user provides only its name and the email, a validation will be required.
+      operationId: userPasswordPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userPassword'
+      responses:
+        "200":
+          description: Password changed.
+        "400":
+          description: Invalid request. Some fields in the request are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "401":
+          description: Username and password or email are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
                 
+                                
   /user/session:
     get:
       tags: 
@@ -843,18 +888,12 @@ components:
       - password
       properties:
         username:
-          type: string
-          maxLength: 16
-          minLength: 3
-          pattern: /[A-Z 0-9]/gi
+          $ref: '#/components/schemas/usernameType'
         email:
-          type: string
-          pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi
+          $ref: '#/components/schemas/emailType'
         password:
-          type: string
-          description: base64 encoded password
-          minLength: 8
-          
+          $ref: '#/components/schemas/passwordType'
+
     userValidation:
       type: object
       required:
@@ -862,13 +901,36 @@ components:
       - validationCode
       properties:
         username:
-          type: string
-          maxLength: 16
-          minLength: 3
-          pattern: /[A-Z 0-9]/gi
+          $ref: '#/components/schemas/usernameType'
         validationCode:
           type: string
           minLength: 8
+
+    userPassword:
+      type: object
+      required:
+      - username
+      - authentication
+      - newPassword
+      properties:
+        username:
+          $ref: '#/components/schemas/usernameType'
+        authentication:
+          oneOf:
+          - type: object
+            required: 
+            - password
+            properties:
+              password:
+                $ref: '#/components/schemas/passwordType'
+          - type: object
+            required: 
+            - email
+            properties:
+              email:
+                $ref: '#/components/schemas/emailType'
+        newPassword:
+          $ref: '#/components/schemas/passwordType'
 
     continent:
       type: object
@@ -1264,6 +1326,21 @@ components:
       type: string
       maxLength: 3
       minLength: 3
+    
+    usernameType:
+      type: string
+      maxLength: 16
+      minLength: 3
+      pattern: /[A-Z 0-9]/gi  
+          
+    passwordType:
+      type: string
+      format: base64
+      minLength: 8
+    
+    emailType:
+      type: string
+      pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi
           
     exception:
       type: object

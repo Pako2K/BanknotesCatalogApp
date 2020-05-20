@@ -205,7 +205,6 @@ INSTALLATION (CLOUD - HEROKU)
         ==> content of the environment variables: DATABASE_URL, HEROKU_POSTGRESQL_<colour>_URL (e.g. postgres://<user>:<pwd>@<server>:<port>/<dbName>)
 
     Create 2 additional env variables, CAT_DATABASE_URL and CRE_DATABASE_URL,  and asssign the same values as the ones set in DATABASE_URL and HEROKU_POSTGRESQL_<colour>_URL
-    Create another env variable for the mail password: MAIL_PWD = <mail_provider_password>
 
     Create DB structures and load data:
 
@@ -222,7 +221,8 @@ INSTALLATION (CLOUD - HEROKU)
         
                 heroku pg:pull HEROKU_POSTGRESQL_<colour> <local_db_name> --app <heroku_app>
 
-
+* MAIL SMTP Transport
+    Create another env variable for the mail password: MAIL_PWD = <mail_provider_password>
 
 DEPLOY AND RUN THE APP
 -----------------------

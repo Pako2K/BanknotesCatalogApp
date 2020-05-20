@@ -13,6 +13,20 @@
         "from": "banknotes-catalogue@gmx.net",
         "to": null,
         "subject": "The Banknotes Online Catalogue: registration request",
-        "html": "<h3>Welcome %%USERNAME%%,</h3>        <p>Thanks for registering in <i>The Banknotes Online Catalogue</i>.</p>        <p>To complete the registration, enter this validation code: <b>%%CODE%%</b><br>            <span><small>This code is valid for %%EXPIRATION%% minutes. Afterwards your request will be deleted.</small></span></p>        <p>Enjoy it!</p>        <h3>The Banknotes Online Catalogue Team.</h3>"
+        "htmlTemplate": "<h3>Welcome %%USERNAME%%,</h3>        <p>Thanks for registering in <i>The Banknotes Online Catalogue</i>.</p>        <p>To complete the registration, enter this validation code: <b>%%CODE%%</b><br>            <span><small>This code is valid for %%EXPIRATION%% minutes. Afterwards your request will be deleted.</small></span></p>        <p>Enjoy it!</p>        <h3>The Banknotes Online Catalogue Team.</h3>"
+    },
+
+    "pwdChangeOptions": {
+        "from": "banknotes-catalogue@gmx.net",
+        "to": null,
+        "subject": "The Banknotes Online Catalogue: password change request",
+        "htmlTemplate": "<h3>Hi %%USERNAME%%,</h3>  <p>You have requested to change your password in <i>The Banknotes Online Catalogue</i>.</p>  <p>To confirm this change, enter this validation code in you browser: <b>%%CODE%%</b><br>  <span><small>This code is valid for %%EXPIRATION%% minutes.</small></span></p>  <h3>The Banknotes Online Catalogue Team.</h3>"
+    },
+
+    "confirmationPwdChangedOptions": {
+        "from": "banknotes-catalogue@gmx.net",
+        "to": null,
+        "subject": "The Banknotes Online Catalogue: password changed",
+        "htmlTemplate": "<h3>Hi %%USERNAME%%,</h3>  <p>You changed your password in <i>The Banknotes Online Catalogue</i>.</p>  <p><small>If you did not request this change, please reset your password immediately.<small></p>  <h3>The Banknotes Online Catalogue Team.</h3>"
     }
 }

@@ -1,0 +1,16 @@
+@import './_shared/index',
+'./_shared/common';
+//
+$font-size-title: 2em;
+//
+$font-input: Arial;
+$font-size-input: 1.1em;
+//
+body {
+    background-color: whitesmoke;
+}
+
+main {
+    padding: 2em;
+    color: black;
+}

@@ -32,20 +32,28 @@ $font-size-input: 1.1em;
         flex-direction: column;
         & div {
             margin: auto;
-            &>span {
+            &>span.links {
                 font-family: $FONT_DATA;
                 font-size: $font-size-input * 0.8;
                 color: whitesmoke;
                 text-decoration: underline;
                 cursor: pointer;
             }
+            &>span.separate {
+                font-family: $FONT_DATA;
+                font-size: $font-size-input;
+                color: whitesmoke;
+                padding: 0 0.6em;
+            }
             &>p {
-                margin-bottom: 2em;
                 max-width: 20em;
                 color: white;
                 &>span {
                     font-style: italic;
                     color: whitesmoke;
+                }
+                &:last-of-type {
+                    margin-bottom: 2em;
                 }
             }
         }

@@ -9,32 +9,58 @@ $(document).ready(function() {
 
 
 function showRegisterForm() {
-    $("#form-usr").val("");
-    $("#form-pwd").val("");
-
-    $("form[name='login-form']").hide(300);
-    $("form[name='register-form']").slideToggle(400);
-}
-
-function showLoginForm() {
     $("#register-form-usr").val("");
     $("#register-form-pwd").val("");
     $("#register-form-pwd-rep").val("");
     $("#register-form-mail").val("");
     $("#register-form-conf-code").val("");
 
+    $("form[name='login-form']").hide(300);
+    $("form[name='register-form']").slideToggle(400);
+}
+
+function showLoginForm() {
+    $("#form-usr").val("");
+    $("#form-pwd").val("");
+
     $("form[name='register-form']").slideUp(200);
     $("form[name='confirm-form']").slideUp(200);
+    $("form[name='reset-pwd-form']").slideUp(200);
     $("form[name='login-form']").show(400);
 }
 
-function showConfirmationForm() {
-    $("#register-form-conf-code").val("");
-    let email = $("#register-form-mail").val();
+function showConfirmationForm(type) {
+    $("#confirm-form-conf-code").val("");
+    let email;
+    if (type === "user") {
+        email = $("#register-form-mail").val();
+        $("form[name='confirm-form']").data("type", "user");
+        $("form[name='register-form']").hide(300);
+        $("form[name='confirm-form'] p.pwd-change").hide();
+        $("form[name='confirm-form'] p.registration").show();
+    } else if (type === "password") {
+        email = $("#reset-pwd-form-mail").val();
+        $("form[name='confirm-form']").data("type", "password");
+        $("form[name='reset-pwd-form']").hide(300);
+        $("form[name='confirm-form'] p.pwd-change").show();
+        $("form[name='confirm-form'] p.registration").hide();
+    }
     $("#conf-email").text(email);
-    $("form[name='register-form']").hide(300);
+
     $("form[name='confirm-form']").slideToggle(400);
 }
+
+function showResetPasswordForm() {
+    $("#reset-pwd-form-usr").val("");
+    $("#reset-pwd-form-pwd").val("");
+    $("#reset-pwd-form-new-pwd").val("");
+    $("#reset-pwd-form-new-pwd-rep").val("");
+    $("#reset-pwd-form-mail").val("");
+
+    $("form[name='login-form']").hide(300);
+    $("form[name='reset-pwd-form']").slideToggle(400);
+}
+
 
 function register() {
     let usr = $("#register-form-usr").val();
@@ -82,7 +108,7 @@ function register() {
         dataType: 'text',
 
         success: function(result, status) {
-            showConfirmationForm();
+            showConfirmationForm("user");
         },
 
         error: function(xhr, status, error) {
@@ -145,12 +171,19 @@ function login() {
 
 
 function confirm() {
-    let usr = $("#register-form-usr").val();
-    let code = $("#register-form-conf-code").val();
+
+    let code = $("#confirm-form-conf-code").val();
+    let type = $("form[name='confirm-form']").data("type");
+
+    let usr;
+    if (type === "user")
+        usr = $("#register-form-usr").val();
+    else
+        usr = $("#reset-pwd-form-usr").val();
 
     $.ajax({
         type: "POST",
-        url: "/user/validation",
+        url: `/user/validation?type=${type}`,
         contentType: "application/json",
         async: false,
         cache: false,
@@ -159,7 +192,10 @@ function confirm() {
         dataType: 'json',
 
         success: function(result, status) {
-            alert(`You are successfully registered. Enjoy!`);
+            if (type === "user")
+                alert(`You are successfully registered. Enjoy!`);
+            else
+                alert(`Your password has been changed.`);
             showLoginForm();
         },
 
@@ -172,6 +208,81 @@ function confirm() {
                     alert(`Registration failed. ${xhr.responseJSON.code}: ${error}. ${xhr.responseJSON.description}`);
                     if (xhr.responseJSON.code === "VAL-02" || xhr.responseJSON.code === "VAL-03" || xhr.responseJSON.code === "VAL-05")
                         showLoginForm();
+                    break;
+                default:
+                    alert(`Registration failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
+            }
+        }
+    });
+}
+
+
+function resetPwd() {
+    // Validate fields
+    let usr = $("#reset-pwd-form-usr").val();
+    let pwd = $("#reset-pwd-form-pwd").val();
+    let email = $("#reset-pwd-form-mail").val();
+    let newPwd = $("#reset-pwd-form-new-pwd").val();
+    let newPwdRep = $("#reset-pwd-form-new-pwd-rep").val();
+
+    let authentication = {};
+    // If password is not provided, the email must be valid xxx@yyy.zzz
+    if (pwd === "") {
+        if (email === "") {
+            alert("User password or e-mail address must be provided");
+            $("#reset-pwd-form-pwd").select();
+            return;
+        }
+        if (email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi) == null) {
+            alert("Mail address is not valid");
+            $("#reset-pwd-form-mail").select();
+            return;
+        }
+        authentication.email = email;
+    } else {
+        authentication.password = btoa(pwd);
+    }
+
+    // Password must have at least 8 characters
+    if (newPwd.length < 8) {
+        alert("New password is too short (minimun length is 8 characters)");
+        $("#reset-pwd-form-new-pwd").select();
+        return;
+    }
+
+    // Passwords must match
+    if (newPwd !== newPwdRep) {
+        alert("New passwords do not match!");
+        $("#reset-pwd-form-new-pwd-rep").select();
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/user/password?type=password",
+        contentType: "application/json",
+        async: false,
+        cache: false,
+        data: JSON.stringify({ "username": usr, "authentication": authentication, "newPassword": btoa(newPwd) }),
+        timeout: 5000,
+        dataType: 'text',
+
+        success: function(result, status) {
+            if (authentication.email) {
+                showConfirmationForm("password");
+            } else {
+                alert("Your password is changed. A confirmation was sent to your email.")
+                showLoginForm();
+            }
+        },
+
+        error: function(xhr, status, error) {
+            let exception = JSON.parse(xhr.responseText);
+            switch (xhr.status) {
+                case 400:
+                case 401:
+                case 500:
+                    alert(`Registration failed. ${exception.code}: ${error}. ${exception.description}`);
                     break;
                 default:
                     alert(`Registration failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
