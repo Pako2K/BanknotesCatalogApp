@@ -5,8 +5,16 @@ $(document).ready(function() {
     if (user !== undefined && user !== "") {
         $(".user-input-section").hide();
     }
+
+    // Assign click event to the info images
+    // $("form img.info").click(() => {
+    //     //    $(this).siblings("p").slideToggle(400);
+    // })
 });
 
+function toggleInfo(elem) {
+    $(elem).siblings("p").slideToggle(400);
+}
 
 function showRegisterForm() {
     $("#register-form-usr").val("");
@@ -42,15 +50,26 @@ function showConfirmationForm(type) {
         email = $("#reset-pwd-form-mail").val();
         $("form[name='confirm-form']").data("type", "password");
         $("form[name='reset-pwd-form']").hide(300);
-        $("form[name='confirm-form'] p.pwd-change").show();
         $("form[name='confirm-form'] p.registration").hide();
+        $("form[name='confirm-form'] p.pwd-change").show();
     }
     $("#conf-email").text(email);
 
     $("form[name='confirm-form']").slideToggle(400);
 }
 
-function showResetPasswordForm() {
+function showResetPasswordForm(type) {
+    if (type === "change") {
+        $("#input-password").show();
+        $("#input-email").hide();
+        $("#reset-pwd-form-pwd").attr("required", "true");
+        $("#reset-pwd-form-mail").removeAttr("required");
+    } else {
+        $("#input-password").hide();
+        $("#input-email").show();
+        $("#reset-pwd-form-pwd").removeAttr("required");
+        $("#reset-pwd-form-mail").attr("required", "true");
+    }
     $("#reset-pwd-form-usr").val("");
     $("#reset-pwd-form-pwd").val("");
     $("#reset-pwd-form-new-pwd").val("");
@@ -58,7 +77,7 @@ function showResetPasswordForm() {
     $("#reset-pwd-form-mail").val("");
 
     $("form[name='login-form']").hide(300);
-    $("form[name='reset-pwd-form']").slideToggle(400);
+    $("form[name='reset-pwd-form']").slideDown(400);
 }
 
 
@@ -205,12 +224,12 @@ function confirm() {
                 case 400:
                 case 403:
                 case 500:
-                    alert(`Registration failed. ${xhr.responseJSON.code}: ${error}. ${xhr.responseJSON.description}`);
+                    alert(`Confirmation failed. ${xhr.responseJSON.code}: ${error}. ${xhr.responseJSON.description}`);
                     if (xhr.responseJSON.code === "VAL-02" || xhr.responseJSON.code === "VAL-03" || xhr.responseJSON.code === "VAL-05")
                         showLoginForm();
                     break;
                 default:
-                    alert(`Registration failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
+                    alert(`Confirmation failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
             }
         }
     });
@@ -226,13 +245,8 @@ function resetPwd() {
     let newPwdRep = $("#reset-pwd-form-new-pwd-rep").val();
 
     let authentication = {};
-    // If password is not provided, the email must be valid xxx@yyy.zzz
-    if (pwd === "") {
-        if (email === "") {
-            alert("User password or e-mail address must be provided");
-            $("#reset-pwd-form-pwd").select();
-            return;
-        }
+    // The email must be valid xxx@yyy.zzz, if it is provided
+    if (email !== "") {
         if (email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi) == null) {
             alert("Mail address is not valid");
             $("#reset-pwd-form-mail").select();
@@ -240,6 +254,11 @@ function resetPwd() {
         }
         authentication.email = email;
     } else {
+        if (pwd === "") {
+            alert("User password or e-mail address must be provided");
+            $("#reset-pwd-form-pwd").select();
+            return;
+        }
         authentication.password = btoa(pwd);
     }
 
@@ -259,7 +278,7 @@ function resetPwd() {
 
     $.ajax({
         type: "POST",
-        url: "/user/password?type=password",
+        url: "/user/password",
         contentType: "application/json",
         async: false,
         cache: false,

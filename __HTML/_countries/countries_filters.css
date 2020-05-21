@@ -160,54 +160,54 @@
 
 @media screen and (max-width: 600px) {
   #countries-filters {
-    padding: 0.65em 0;
+    padding: 0.75em 0;
   }
   #cont-img {
-    padding: 9.1px 9.1px 6.5px 9.1px;
+    padding: 10.5px 10.5px 7.5px 10.5px;
   }
   #cont-img > img {
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
   }
   #year-filter > p {
-    font-size: 0.585em;
+    font-size: 0.675em;
   }
   #year-filter > div > p {
-    width: 2.275em;
-    font-size: 0.52em;
+    width: 2.625em;
+    font-size: 0.6em;
   }
   #year-filter > div > img {
-    width: 1.625em;
+    width: 1.875em;
   }
   #year-filter > div > input {
-    font-size: 0.715em;
+    font-size: 0.825em;
     width: 4.2em;
   }
 }
 
 @media screen and (max-width: 400px) {
   #countries-filters {
-    padding: 0.6em 0;
+    padding: 0.7em 0;
   }
   #cont-img {
-    padding: 8.4px 8.4px 6px 8.4px;
+    padding: 9.8px 9.8px 7px 9.8px;
   }
   #cont-img > img {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
   }
   #year-filter > p {
-    font-size: 0.54em;
+    font-size: 0.63em;
   }
   #year-filter > div > p {
-    width: 2.1em;
-    font-size: 0.48em;
+    width: 2.45em;
+    font-size: 0.56em;
   }
   #year-filter > div > img {
-    width: 1.5em;
+    width: 1.75em;
   }
   #year-filter > div > input {
-    font-size: 0.66em;
+    font-size: 0.77em;
   }
 }
 /*# sourceMappingURL=countries_filters.css.map */

@@ -218,6 +218,33 @@ table.list-table tfoot > tr > td:first-of-type {
 
 @media screen and (max-width: 800px) {
   table.list-table thead th {
+    font-size: 0.595em;
+    padding: 0.8em 0.5em;
+  }
+  table.list-table thead td {
+    font-size: 0.51em;
+    padding: 0.6em 0.4em;
+  }
+  table.list-table tbody th,
+  table.list-table tbody td {
+    font-size: 0.595em;
+    padding: 0.5em 0.5em;
+  }
+  table.list-table tbody th > img {
+    height: 1.02em;
+  }
+  table.list-table tfoot > tr > th {
+    font-size: 0.595em;
+    padding: 0.5em 0.5em;
+  }
+  table.list-table tfoot > tr > td {
+    font-size: 0.68em;
+    padding: 0.5em 0.5em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  table.list-table thead th {
     font-size: 0.525em;
     padding: 0.8em 0.5em;
   }
@@ -239,33 +266,6 @@ table.list-table tfoot > tr > td:first-of-type {
   }
   table.list-table tfoot > tr > td {
     font-size: 0.6em;
-    padding: 0.5em 0.5em;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  table.list-table thead th {
-    font-size: 0.455em;
-    padding: 0.8em 0.5em;
-  }
-  table.list-table thead td {
-    font-size: 0.39em;
-    padding: 0.6em 0.4em;
-  }
-  table.list-table tbody th,
-  table.list-table tbody td {
-    font-size: 0.455em;
-    padding: 0.5em 0.5em;
-  }
-  table.list-table tbody th > img {
-    height: 0.78em;
-  }
-  table.list-table tfoot > tr > th {
-    font-size: 0.455em;
-    padding: 0.5em 0.5em;
-  }
-  table.list-table tfoot > tr > td {
-    font-size: 0.52em;
     padding: 0.5em 0.5em;
   }
 }

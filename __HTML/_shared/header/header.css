@@ -143,36 +143,24 @@
 
 @media screen and (max-width: 800px) {
   .main-header div div > h1 {
-    font-size: 1.875em;
+    font-size: 2.125em;
   }
   .main-header div div.user-info p {
-    font-size: 0.675em;
+    font-size: 0.765em;
   }
   .main-header div div.user-info a > img {
-    width: 1.05em;
-    height: 1.05em;
+    width: 1.19em;
+    height: 1.19em;
   }
   .main-header nav > p {
-    font-size: 0.825em;
-    padding: 0.225em 0.75em;
+    font-size: 0.935em;
+    padding: 0.255em 0.85em;
   }
 }
 
 @media screen and (max-width: 600px) {
   .main-header div > div > h1 {
-    font-size: 1.625em;
-  }
-  .main-header nav > p {
-    font-size: 0.715em;
-  }
-}
-
-@media screen and (max-width: 400px) {
-  .main-header {
-    padding: 0.48em 0.9em;
-  }
-  .main-header div > div > h1 {
-    font-size: 1.5em;
+    font-size: 1.875em;
   }
   .main-header nav {
     -ms-flex-wrap: wrap;
@@ -182,8 +170,21 @@
             justify-content: center;
   }
   .main-header nav p {
-    font-size: 0.66em;
-    margin: 0 0 0 0.48em;
+    font-size: 0.825em;
+    margin: 0 0 0 0.6em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .main-header {
+    padding: 0.56em 1.05em;
+  }
+  .main-header div > div > h1 {
+    font-size: 1.75em;
+  }
+  .main-header nav p {
+    font-size: 0.77em;
+    margin: 0 0 0 0.56em;
   }
 }
 /*# sourceMappingURL=header.css.map */

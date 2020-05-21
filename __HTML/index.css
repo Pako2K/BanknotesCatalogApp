@@ -11,6 +11,39 @@ body {
   background: black;
 }
 
+#intro-section h1 {
+  font-size: 2em;
+}
+
+.user-input-section form > div > p {
+  font-size: 0.99em;
+}
+
+.user-input-section form > div .links {
+  font-size: 0.99em;
+}
+
+.user-input-section form input,
+.user-input-section form button {
+  font-size: 1.1em;
+}
+
+.user-input-section form input[type="submit"],
+.user-input-section form button {
+  width: 7.7em;
+  -webkit-box-shadow: 3px 3px 5px #325032;
+          box-shadow: 3px 3px 5px #325032;
+}
+
+.user-input-section form img.input-img {
+  width: 1.9em;
+}
+
+.user-input-section form img.info {
+  margin-left: 1em*scale-factor;
+  width: 1.4em;
+}
+
 #intro-section {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -29,7 +62,6 @@ body {
 
 #intro-section h1 {
   font-family: "Source Sans Pro", "sans-serif";
-  font-size: 2em;
   font-weight: bold;
   color: #215a64;
   text-shadow: 2px 3px 4px #787878;
@@ -54,91 +86,87 @@ body {
           flex-direction: column;
 }
 
-.user-input-section form div {
+.user-input-section form > div {
   margin: auto;
 }
 
-.user-input-section form div > span.links {
-  font-family: "sans-serif";
-  font-size: 0.88em;
-  color: whitesmoke;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.user-input-section form div > span.separate {
-  font-family: "sans-serif";
-  font-size: 1.1em;
-  color: whitesmoke;
-  padding: 0 0.6em;
-}
-
-.user-input-section form div > p {
-  max-width: 20em;
+.user-input-section form > div > p {
+  max-width: 19em;
   color: white;
+  margin: 0.3em 0.1em;
 }
 
-.user-input-section form div > p > span {
+.user-input-section form > div > p > span {
   font-style: italic;
   color: whitesmoke;
 }
 
-.user-input-section form div > p:last-of-type {
-  margin-bottom: 2em;
+.user-input-section form > div .links {
+  font-family: "sans-serif";
+  color: whitesmoke;
+  text-decoration: underline;
+  margin-bottom: 1em;
+  text-align: center;
+  cursor: pointer;
 }
 
-.user-input-section form input,
-.user-input-section form button {
-  display: inline-block;
+.user-input-section form > div.buttons-div {
+  margin-top: 0.5em;
+}
+
+.user-input-section form .button-style {
   border-radius: 2em;
   border: none;
-  font-family: "Source Sans Pro", "sans-serif";
-  font-size: 1.1em;
-  font-weight: bold;
-  margin-bottom: 1em;
-}
-
-.user-input-section form input[type="text"],
-.user-input-section form input[type="password"],
-.user-input-section form input[type="email"] {
-  padding-left: 3em;
-  height: 2.5em;
-}
-
-.user-input-section form input[type="submit"] {
-  background: #92d050;
-  width: 7em;
-  height: 2em;
-  color: white;
-  -webkit-box-shadow: 3px 3px 5px #325032;
-          box-shadow: 3px 3px 5px #325032;
   margin-left: 0.5em;
   margin-right: 0.5em;
+  height: 2em;
   cursor: pointer;
 }
 
-.user-input-section form button {
-  background: #747474;
-  width: 7em;
-  height: 2em;
-  color: whitesmoke;
-  -webkit-box-shadow: 3px 3px 5px #325032;
-          box-shadow: 3px 3px 5px #325032;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
-  cursor: pointer;
-}
-
-.user-input-section form input:focus {
-  outline: none;
-}
-
-.user-input-section form input[type="submit"]:active {
+.user-input-section form .button-style:active {
   -webkit-box-shadow: none;
           box-shadow: none;
   position: relative;
   top: 2px;
   left: 2px;
+}
+
+.user-input-section form .button-style:focus {
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+  outline: none;
+}
+
+.user-input-section form input,
+.user-input-section form button {
+  display: inline-block;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.user-input-section form button {
+  background: #8b5c5c;
+  color: whitesmoke;
+}
+
+.user-input-section form input[type="text"],
+.user-input-section form input[type="password"],
+.user-input-section form input[type="email"] {
+  height: 2.5em;
+  padding-left: 3em;
+}
+
+.user-input-section form input[type="text"]:focus,
+.user-input-section form input[type="password"]:focus,
+.user-input-section form input[type="email"]:focus {
+  outline: solid 1px darkorange;
+}
+
+.user-input-section form input[type="submit"] {
+  background: #92d050;
+  color: white;
 }
 
 .user-input-section form ::-webkit-input-placeholder {
@@ -179,24 +207,75 @@ body {
   color: lightgrey;
 }
 
-.user-input-section form img {
+.user-input-section form img.input-img {
   position: absolute;
-  width: 2em;
   margin-top: 0.4em;
   margin-left: 0.8em;
+}
+
+.user-input-section form img.info {
+  vertical-align: middle;
+  cursor: pointer;
+  margin-left: 0.4em;
+  display: none;
 }
 
 @media screen and (max-width: 1000px) {
   #intro-section h1 {
     font-size: 1.8em;
-    padding-left: 0.9em 2.7em;
   }
-  #intro-section img {
-    width: 4em;
+  .user-input-section form > div > p {
+    font-size: 0.891em;
+  }
+  .user-input-section form > div .links {
+    font-size: 0.891em;
+  }
+  .user-input-section form input,
+  .user-input-section form button {
+    font-size: 0.99em;
+  }
+  .user-input-section form input[type="submit"],
+  .user-input-section form button {
+    width: 7em;
+    -webkit-box-shadow: 2.7px 2.7px 4.5px #325032;
+            box-shadow: 2.7px 2.7px 4.5px #325032;
+  }
+  .user-input-section form img.input-img {
+    width: 1.71em;
+  }
+  .user-input-section form img.info {
+    margin-left: 1em*scale-factor;
+    width: 1.26em;
   }
 }
 
 @media screen and (max-width: 800px) {
+  #intro-section h1 {
+    font-size: 1.7em;
+  }
+  .user-input-section form > div > p {
+    font-size: 0.8415em;
+  }
+  .user-input-section form > div .links {
+    font-size: 0.8415em;
+  }
+  .user-input-section form input,
+  .user-input-section form button {
+    font-size: 0.935em;
+  }
+  .user-input-section form input[type="submit"],
+  .user-input-section form button {
+    width: 6.65em;
+    -webkit-box-shadow: 2.55px 2.55px 4.25px #325032;
+            box-shadow: 2.55px 2.55px 4.25px #325032;
+  }
+  .user-input-section form img.input-img {
+    width: 1.615em;
+  }
+  .user-input-section form img.info {
+    margin-left: 1em*scale-factor;
+    width: 1.19em;
+  }
   #intro-section {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -207,62 +286,84 @@ body {
             justify-content: flex-start;
   }
   #intro-section h1 {
-    font-size: 1.5em;
     padding: 0;
-    margin-left: 1em;
-    margin-right: 1em;
     margin-top: 0;
   }
   #intro-section img:last-child {
     display: none;
   }
-  .user-input-section > form input,
-  .user-input-section > form button {
-    font-size: 0.825em;
-  }
-  .user-input-section > form img {
-    width: 1.5em;
+  .user-input-section > form img.input-img {
     margin-top: 0.3em;
-    margin-left: 0.6em;
-  }
-  .user-input-section > form span {
-    font-size: 0.66em;
   }
 }
 
 @media screen and (max-width: 600px) {
   #intro-section h1 {
-    font-size: 1.3em;
-    margin-top: 1em;
+    font-size: 1.5em;
+  }
+  .user-input-section form > div > p {
+    font-size: 0.7425em;
+  }
+  .user-input-section form > div .links {
+    font-size: 0.7425em;
+  }
+  .user-input-section form input,
+  .user-input-section form button {
+    font-size: 0.825em;
+  }
+  .user-input-section form input[type="submit"],
+  .user-input-section form button {
+    width: 5.95em;
+    -webkit-box-shadow: 2.25px 2.25px 3.75px #325032;
+            box-shadow: 2.25px 2.25px 3.75px #325032;
+  }
+  .user-input-section form img.input-img {
+    width: 1.425em;
+  }
+  .user-input-section form img.info {
+    margin-left: 1em*scale-factor;
+    width: 1.05em;
+  }
+  #intro-section h1 {
+    margin: 1em 0;
   }
   #intro-section img:first-child {
     display: none;
   }
-  .user-input-section > form input,
-  .user-input-section > form button {
-    font-size: 0.715em;
-  }
-  .user-input-section > form img {
-    width: 1.3em;
-  }
-  .user-input-section > form span {
-    font-size: 0.572em;
-  }
 }
 
 @media screen and (max-width: 400px) {
-  #intro-section > h3 {
-    font-size: 1.2em;
+  #intro-section h1 {
+    font-size: 1.4em;
   }
-  .user-input-section > form input,
-  .user-input-section > form button {
-    font-size: 0.66em;
+  .user-input-section form > div > p {
+    font-size: 0.693em;
   }
-  .user-input-section > form img {
-    width: 1.2;
+  .user-input-section form > div .links {
+    font-size: 0.693em;
   }
-  .user-input-section > form span {
-    font-size: 0.528em;
+  .user-input-section form input,
+  .user-input-section form button {
+    font-size: 0.77em;
+  }
+  .user-input-section form input[type="submit"],
+  .user-input-section form button {
+    width: 5.6em;
+    -webkit-box-shadow: 2.1px 2.1px 3.5px #325032;
+            box-shadow: 2.1px 2.1px 3.5px #325032;
+  }
+  .user-input-section form img.input-img {
+    width: 1.33em;
+  }
+  .user-input-section form img.info {
+    margin-left: 1em*scale-factor;
+    width: 0.98em;
+  }
+  .user-input-section > form img.info {
+    display: inline-block;
+  }
+  .user-input-section > form p.input-info {
+    display: none;
   }
 }
 /*# sourceMappingURL=index.css.map */

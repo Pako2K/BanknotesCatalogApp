@@ -71,13 +71,13 @@
 
 @media screen and (max-width: 800px) {
   .main-footer a {
-    font-size: 0.6em;
+    font-size: 0.68em;
   }
 }
 
 @media screen and (max-width: 600px) {
   .main-footer a {
-    font-size: 0.52em;
+    font-size: 0.6em;
   }
 }
 /*# sourceMappingURL=footer.css.map */

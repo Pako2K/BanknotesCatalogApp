@@ -34,42 +34,51 @@
         <section class='user-input-section'>
             <form name="login-form" action="javascript:login();">
                 <div>
-                    <img src="img/username.png" alt="username-icon">
-                    <input type="text" id="form-usr" name="username" placeholder="User name" size=20 maxlength="16" autocomplete="off" required>
+                    <img src="img/username.png" alt="username-icon" class="input-img">
+                    <input type="text" id="form-usr" name="username" placeholder="User name" size=24 maxlength="16" autocomplete="off" required>
                 </div>
                 <div>
-                    <img src="img/password.png" alt="password-icon">
-                    <input type="password" id="form-pwd" name="password" placeholder="Password" size=20 maxlength="30" required>
+                    <img src="img/password.png" alt="password-icon" class="input-img">
+                    <input type="password" id="form-pwd" name="password" placeholder="Password" size=24 maxlength="30" required>
+                </div>
+                <div class="buttons-div">
+                    <input type="submit" class="button-style" value="Login">
+                    <span class="links" onclick="showRegisterForm()">Sign-up</span>
                 </div>
                 <div>
-                    <input type="submit" value="Login">
-                    <span class="links" onclick="showRegisterForm()">Or register</span>
-                </div>
-                <div>
-                    <span class="links" onclick="showResetPasswordForm()">Password change / reset</span>
+                    <p class="links" onclick="showResetPasswordForm('change')">Change Password</p>
+                    <p class="links" onclick="showResetPasswordForm('forgotten')">Password forgotten?</p>
                 </div>
             </form>
 
             <form name="register-form" action="javascript:register();" style='display: none'>
                 <div>
-                    <img src="img/username.png" alt="username-icon">
-                    <input type="text" id="register-form-usr" name="username" placeholder="User name" size=20 maxlength="16" autocomplete="off" required>
+                    <p class="input-info">Enter a name to identify your account. It must contain at least 3 letters or numbers and no more than 16.</p>
+                    <img src="img/username.png" alt="username-icon" class="input-img">
+                    <input type="text" id="register-form-usr" name="username" placeholder="User name" size=24 minLength="3" maxlength="16" autocomplete="off" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div>
-                    <img src="img/mail.png" alt="mail-icon">
-                    <input type="email" id="register-form-mail" name="mail" placeholder="Mail address" size=20 maxlength="50" autocomplete="off" required>
+                    <p class="input-info">Enter your e-mail. It will only be used to verify your identity. An e-mail will be sent to this address to confirm your registration.</p>
+                    <img src="img/mail.png" alt="mail-icon" class="input-img">
+                    <input type="email" id="register-form-mail" name="mail" placeholder="e-Mail address" size=24 maxlength="50" autocomplete="off" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div>
-                    <img src="img/password.png" alt="password-icon">
-                    <input type="password" id="register-form-pwd" name="password" placeholder="Password" size=20 maxlength="30" required>
+                    <p class="input-info">Type your password. It must contain at least 8 characters.</p>
+                    <img src="img/password.png" alt="password-icon" class="input-img">
+                    <input type="password" id="register-form-pwd" name="password" placeholder="Password" size=24 maxlength="30" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div>
-                    <img src="img/password.png" alt="password-icon">
-                    <input type="password" id="register-form-pwd-rep" name="password-rep" placeholder="Confirm password" size=20 maxlength="30" required>
+                    <p class="input-info">Type your password again to be sure it does not contain any typo.</p>
+                    <img src="img/password.png" alt="password-icon" class="input-img">
+                    <input type="password" id="register-form-pwd-rep" name="password-rep" placeholder="Confirm password" size=24 maxlength="30" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
-                <div>
-                    <button type="button" onclick="showLoginForm()">Cancel</button>
-                    <input type="submit" value="Register">
+                <div class="buttons-div">
+                    <button type="button" class="button-style" onclick="showLoginForm()">Cancel</button>
+                    <input type="submit" class="button-style" value="Register">
                 </div>
             </form>
 
@@ -77,13 +86,13 @@
                 <div>
                     <p class="pwd-change">One final step to change your password.</p>
                     <p class="registration">One final step to complete your registration.</p>
-                    <p><u>Enter the confirmation code</u> sent to your email, <br><span id="conf-email"></span></p>
+                    <p class="pwd-change registration"><b>Enter the confirmation code</b> sent to your email, <span id="conf-email"></span></p>
                 </div>
                 <div>
                     <div>
-                        <img src="img/confirm.png" alt="code-icon">
-                        <input type="text" id="confirm-form-conf-code" name="code" placeholder="Code" size=10 maxlength="10" autocomplete="off" required>
-                        <input type="submit" value="OK">
+                        <img src="img/confirm.png" alt="code-icon" class="input-img">
+                        <input type="text" id="confirm-form-conf-code" name="code" placeholder="Code" size=10 maxlength="12" autocomplete="off" required>
+                        <input type="submit" class="button-style" value="OK">
                     </div>
                 </div>
             </form>
@@ -91,27 +100,38 @@
 
             <form name="reset-pwd-form" action="javascript:resetPwd();" style='display: none'>
                 <div>
-                    <img src="img/username.png" alt="username-icon">
-                    <input type="text" id="reset-pwd-form-usr" name="username" placeholder="User name" size=20 maxlength="16" autocomplete="off" required>
+                    <p class="input-info">Enter your user name.</p>
+                    <img src="img/username.png" alt="username-icon" class="input-img">
+                    <input type="text" id="reset-pwd-form-usr" name="username" placeholder="User name" size=24 maxlength="16" autocomplete="off" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
+                </div>
+                <div id="input-password">
+                    <p class="input-info">Enter your password. If you don't remember it, go to <span class="links" onclick="showResetPasswordForm('forgotten')">Password forgotten?</span></p>
+                    <img src="img/password.png" alt="password-icon" class="input-img">
+                    <input type="password" id="reset-pwd-form-pwd" name="password" placeholder="Password" size=24 maxlength="30">
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
+                </div>
+                <div id="input-email">
+                    <p class="input-info">Enter the e-mail address used to register your account. An e-mail will be sent to that address in order to confirm the change.</p>
+                    <img src="img/mail.png" alt="mail-icon" class="input-img">
+                    <input type="email" id="reset-pwd-form-mail" name="mail" placeholder="Mail address" size=24 maxlength="50" autocomplete="off">
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div>
-                    <img src="img/password.png" alt="password-icon">
-                    <input type="password" id="reset-pwd-form-pwd" name="password" placeholder="Password" size=20 maxlength="30">
-                    <span class="separate">or</span>
-                    <img src="img/mail.png" alt="mail-icon">
-                    <input type="email" id="reset-pwd-form-mail" name="mail" placeholder="Mail address" size=20 maxlength="50" autocomplete="off">
+                    <p class="input-info">Type your <b>new</b> password. It must contain at least 8 characters.</p>
+                    <img src="img/password.png" alt="password-icon" class="input-img">
+                    <input type="password" id="reset-pwd-form-new-pwd" name="password-rep" placeholder="New password" size=24 maxlength="30" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div>
-                    <img src="img/password.png" alt="password-icon">
-                    <input type="password" id="reset-pwd-form-new-pwd" name="password-rep" placeholder="New password" size=20 maxlength="30" required>
+                    <p class="input-info">Type your <b>new</b> password again to be sure it does not contain any typo.</p>
+                    <img src="img/password.png" alt="password-icon" class="input-img">
+                    <input type="password" id="reset-pwd-form-new-pwd-rep" name="password-rep" placeholder="Confirm password" size=24 maxlength="30" required>
+                    <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
-                <div>
-                    <img src="img/password.png" alt="password-icon">
-                    <input type="password" id="reset-pwd-form-new-pwd-rep" name="password-rep" placeholder="Confirm password" size=20 maxlength="30" required>
-                </div>
-                <div>
-                    <button type="button" onclick="showLoginForm()">Cancel</button>
-                    <input type="submit" value="Change">
+                <div class="buttons-div">
+                    <button type="button" class="button-style" onclick="showLoginForm()">Cancel</button>
+                    <input type="submit" class="button-style" value="Change">
                 </div>
             </form>
 

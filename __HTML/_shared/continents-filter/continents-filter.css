@@ -51,22 +51,22 @@
   }
   #continents-filter p {
     width: 33.33%;
-    font-size: 0.825em;
-    padding: 0.375em 0;
+    font-size: 0.935em;
+    padding: 0.425em 0;
   }
 }
 
 @media screen and (max-width: 600px) {
   #continents-filter > p {
-    font-size: 0.715em;
-    padding: 0.325em 0;
+    font-size: 0.825em;
+    padding: 0.375em 0;
   }
 }
 
 @media screen and (max-width: 400px) {
   #continents-filter > p {
-    font-size: 0.66em;
-    padding: 0.3em 0;
+    font-size: 0.77em;
+    padding: 0.35em 0;
   }
 }
 /*# sourceMappingURL=continents-filter.css.map */

@@ -153,6 +153,34 @@ table.stats-filter-table > tbody td.disabled-stats-cell {
 
 @media screen and (max-width: 800px) {
   table.stats-filter-table > thead th[colspan] {
+    font-size: 0.6375em;
+  }
+  table.stats-filter-table > thead td {
+    font-size: 0.51em;
+  }
+  table.stats-filter-table tbody th {
+    font-size: 0.6375em;
+  }
+  table.stats-filter-table tbody td {
+    font-size: 0.68em;
+  }
+  table.stats-filter-table tfoot th {
+    font-size: 0.68em;
+  }
+  table.stats-filter-table tfoot td {
+    font-size: 0.765em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  table.stats-filter-table {
+    margin: 0.75em 0.75em;
+  }
+  table.stats-filter-table .check-button {
+    width: 16px;
+    height: 12px;
+  }
+  table.stats-filter-table > thead th[colspan] {
     font-size: 0.5625em;
   }
   table.stats-filter-table > thead td {
@@ -172,59 +200,31 @@ table.stats-filter-table > tbody td.disabled-stats-cell {
   }
 }
 
-@media screen and (max-width: 600px) {
-  table.stats-filter-table {
-    margin: 0.65em 0.65em;
-  }
-  table.stats-filter-table .check-button {
-    width: 16px;
-    height: 12px;
-  }
-  table.stats-filter-table > thead th[colspan] {
-    font-size: 0.4875em;
-  }
-  table.stats-filter-table > thead td {
-    font-size: 0.39em;
-  }
-  table.stats-filter-table tbody th {
-    font-size: 0.4875em;
-  }
-  table.stats-filter-table tbody td {
-    font-size: 0.52em;
-  }
-  table.stats-filter-table tfoot th {
-    font-size: 0.52em;
-  }
-  table.stats-filter-table tfoot td {
-    font-size: 0.585em;
-  }
-}
-
 @media screen and (max-width: 400px) {
   table.stats-filter-table {
-    margin: 0.6em 0.6em;
+    margin: 0.7em 0.7em;
   }
   table.stats-filter-table .check-button {
     width: 13px;
     height: 10px;
   }
   table.stats-filter-table > thead th[colspan] {
-    font-size: 0.45em;
+    font-size: 0.525em;
   }
   table.stats-filter-table > thead td {
-    font-size: 0.36em;
+    font-size: 0.42em;
   }
   table.stats-filter-table tbody th {
-    font-size: 0.45em;
+    font-size: 0.525em;
   }
   table.stats-filter-table tbody td {
-    font-size: 0.48em;
+    font-size: 0.56em;
   }
   table.stats-filter-table tfoot th {
-    font-size: 0.48em;
+    font-size: 0.56em;
   }
   table.stats-filter-table tfoot td {
-    font-size: 0.54em;
+    font-size: 0.63em;
   }
 }
 /*# sourceMappingURL=stats-filter-table.css.map */

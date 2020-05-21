@@ -135,8 +135,13 @@ $header-color: whitesmoke;
         & div>div>h1 {
             font-size: 2.5em * $HEIGHT_FACTOR_BIG_PHONE;
         }
-        & nav>p {
-            font-size: 1.1em * $HEIGHT_FACTOR_BIG_PHONE;
+        & nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            & p {
+                font-size: 1.1em * $HEIGHT_FACTOR_BIG_PHONE;
+                margin: 0 0 0 0.8em * $HEIGHT_FACTOR_BIG_PHONE;
+            }
         }
     }
 }
@@ -148,8 +153,6 @@ $header-color: whitesmoke;
             font-size: 2.5em * $WIDTH_FACTOR_BIG_PHONE;
         }
         & nav {
-            flex-wrap: wrap;
-            justify-content: center;
             & p {
                 font-size: 1.1em * $WIDTH_FACTOR_BIG_PHONE;
                 margin: 0 0 0 0.8em * $WIDTH_FACTOR_BIG_PHONE;
