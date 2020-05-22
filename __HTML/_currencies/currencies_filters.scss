@@ -110,12 +110,12 @@
         }
     }
     #cont-img {
-        margin-left: 4em;
+        margin-left: 6em;
         margin-right: 1em;
     }
     #year-filter {
         margin-left: 1em;
-        margin-right: 4em;
+        margin-right: 6em;
     }
 }
 
@@ -124,6 +124,8 @@
         padding: 1em * $HEIGHT_FACTOR_BIG_PHONE 0;
     }
     #cont-img {
+        margin-left: 2em;
+        margin-right: 1em;
         padding: 14px * $HEIGHT_FACTOR_BIG_PHONE 14px * $HEIGHT_FACTOR_BIG_PHONE 10px * $HEIGHT_FACTOR_BIG_PHONE 14px * $HEIGHT_FACTOR_BIG_PHONE;
         &>img {
             width: 80px * $HEIGHT_FACTOR_BIG_PHONE;
@@ -131,6 +133,8 @@
         }
     }
     #year-filter {
+        margin-left: 1em;
+        margin-right: 2em;
         &>p {
             font-size: 0.9em * $HEIGHT_FACTOR_BIG_PHONE;
         }
@@ -157,8 +161,8 @@
     #cont-img {
         padding: 14px * $WIDTH_FACTOR_BIG_PHONE 14px * $WIDTH_FACTOR_BIG_PHONE 10px * $WIDTH_FACTOR_BIG_PHONE 14px * $WIDTH_FACTOR_BIG_PHONE;
         &>img {
-            width: 80px * $WIDTH_FACTOR_BIG_PHONE;
-            height: 80px * $WIDTH_FACTOR_BIG_PHONE;
+            width: 80px * $WIDTH_FACTOR_BIG_PHONE * $WIDTH_FACTOR_BIG_PHONE;
+            height: 80px * $WIDTH_FACTOR_BIG_PHONE * $WIDTH_FACTOR_BIG_PHONE;
         }
     }
     #year-filter {
@@ -177,5 +181,10 @@
                 font-size: 1.1em * $WIDTH_FACTOR_BIG_PHONE;
             }
         }
+    }
+    #cont-img,
+    #year-filter {
+        margin-left: 1em;
+        margin-right: 1em;
     }
 }

@@ -33,3 +33,20 @@ $WIDTH_FACTOR_BIG_PHONE: 0.7;
 @mixin tap-nohighlight {
     -webkit-tap-highlight-color: transparent;
 }
+
+@mixin input-placeholder($color) {
+    & ::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: $color;
+        opacity: 1;
+        /* Firefox */
+    }
+    & ::-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        color: $color;
+    }
+    & ::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: $color;
+    }
+}

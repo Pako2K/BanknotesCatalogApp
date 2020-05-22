@@ -129,23 +129,10 @@ $font-size-input: 1.1em;
                 outline: solid 1px darkorange;
             }
         }
+        @include input-placeholder(lightgrey);
         & input[type="submit"] {
             background: rgb(146, 208, 80);
             color: white;
-        }
-        & ::placeholder {
-            /* Chrome, Firefox, Opera, Safari 10.1+ */
-            color: lightgrey;
-            opacity: 1;
-            /* Firefox */
-        }
-        & :-ms-input-placeholder {
-            /* Internet Explorer 10-11 */
-            color: lightgrey;
-        }
-        & ::-ms-input-placeholder {
-            /* Microsoft Edge */
-            color: lightgrey;
         }
         & img.input-img {
             position: absolute;

@@ -149,12 +149,12 @@
             order: 1;
   }
   #cont-img {
-    margin-left: 4em;
+    margin-left: 6em;
     margin-right: 1em;
   }
   #year-filter {
     margin-left: 1em;
-    margin-right: 4em;
+    margin-right: 6em;
   }
 }
 
@@ -163,11 +163,17 @@
     padding: 0.75em 0;
   }
   #cont-img {
+    margin-left: 2em;
+    margin-right: 1em;
     padding: 10.5px 10.5px 7.5px 10.5px;
   }
   #cont-img > img {
     width: 60px;
     height: 60px;
+  }
+  #year-filter {
+    margin-left: 1em;
+    margin-right: 2em;
   }
   #year-filter > p {
     font-size: 0.675em;
@@ -193,8 +199,8 @@
     padding: 9.8px 9.8px 7px 9.8px;
   }
   #cont-img > img {
-    width: 56px;
-    height: 56px;
+    width: 39.2px;
+    height: 39.2px;
   }
   #year-filter > p {
     font-size: 0.63em;
@@ -208,6 +214,11 @@
   }
   #year-filter > div > input {
     font-size: 0.77em;
+  }
+  #cont-img,
+  #year-filter {
+    margin-left: 1em;
+    margin-right: 1em;
   }
 }
 /*# sourceMappingURL=currencies_filters.css.map */

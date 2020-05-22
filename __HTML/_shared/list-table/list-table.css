@@ -61,6 +61,7 @@ table.list-table thead td:nth-of-type(odd) {
 
 table.list-table tbody th {
   font-family: "Source Sans Pro", "sans-serif";
+  white-space: nowrap;
 }
 
 table.list-table tbody td {

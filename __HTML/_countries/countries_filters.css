@@ -1,5 +1,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
 #countries-filters {
+  padding: 1em 0;
+}
+
+#cont-img {
+  border-radius: 10px;
+  padding: 14px 14px 10px 14px;
+}
+
+#cont-img > img {
+  width: 80px;
+  height: 80px;
+}
+
+#year-filter {
+  border-radius: 10px;
+}
+
+#year-filter > p {
+  font-size: 0.9em;
+}
+
+#year-filter > div > p {
+  width: 3.5em;
+  font-size: 0.8em;
+}
+
+#year-filter > div > img {
+  width: 2.5em;
+}
+
+#year-filter > div > input {
+  font-size: 1.1em;
+  width: 4em;
+  -webkit-box-shadow: 4px 4px 8px grey;
+          box-shadow: 4px 4px 8px grey;
+}
+
+#countries-filters {
   background: -webkit-gradient(linear, left bottom, left top, from(#dbdbdd), color-stop(74%, #edf1f4));
   background: linear-gradient(0deg, #dbdbdd 0%, #edf1f4 74%);
   display: -webkit-box;
@@ -19,25 +57,16 @@
           align-items: center;
   -ms-flex-line-pack: center;
       align-content: center;
-  padding: 1em 0;
 }
 
 #cont-img {
   border: solid 1px darkgray;
-  border-radius: 10px;
-  padding: 14px 14px 10px 14px;
   -webkit-box-shadow: 1px 1px 3px 0px gray inset;
           box-shadow: 1px 1px 3px 0px gray inset;
 }
 
-#cont-img > img {
-  width: 80px;
-  height: 80px;
-}
-
 #year-filter {
   border: solid 1px darkgray;
-  border-radius: 10px;
   padding: 0.5em 1em;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -57,7 +86,6 @@
 
 #year-filter > p {
   font-family: "Source Sans Pro", "sans-serif";
-  font-size: 0.9em;
   text-shadow: 1.5px 1.5px 3px grey;
   text-align: center;
   margin: 0.4em 0;
@@ -75,7 +103,6 @@
   width: 3.5em;
   text-align: right;
   font-family: "Source Sans Pro", "sans-serif";
-  font-size: 0.8em;
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
       align-self: center;
@@ -83,7 +110,6 @@
 }
 
 #year-filter > div > img {
-  width: 2.5em;
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
       align-self: center;
@@ -94,14 +120,10 @@
       -ms-grid-row-align: center;
       align-self: center;
   font-family: "sans-serif";
-  font-size: 1.1em;
-  width: 4em;
   color: darkblue;
   text-align: left;
   padding-top: 0.1em;
   padding-left: 0.4em;
-  -webkit-box-shadow: 4px 4px 8px grey;
-          box-shadow: 4px 4px 8px grey;
   outline: none;
   border: none;
 }
@@ -111,16 +133,15 @@
     padding: 0.9em 0;
   }
   #cont-img {
-    margin: 0.5em;
-    padding: 12.6px 12.6px 10px 12.6px;
+    border-radius: 9px;
+    padding: 12.6px 12.6px 9px 12.6px;
   }
   #cont-img > img {
-    width: 72px;
-    height: 72px;
+    width: 64.8px;
+    height: 64.8px;
   }
   #year-filter {
-    margin: 0.5em;
-    padding: 0.5em 0.9em;
+    border-radius: 9px;
   }
   #year-filter > p {
     font-size: 0.81em;
@@ -135,10 +156,48 @@
   #year-filter > div > input {
     font-size: 0.99em;
     width: 3.6em;
+    -webkit-box-shadow: 3.6px 3.6px 7.2px grey;
+            box-shadow: 3.6px 3.6px 7.2px grey;
+  }
+  #cont-img {
+    margin: 0.5em;
+  }
+  #year-filter {
+    margin: 0.5em;
   }
 }
 
 @media screen and (max-width: 800px) {
+  #countries-filters {
+    padding: 0.85em 0;
+  }
+  #cont-img {
+    border-radius: 8.5px;
+    padding: 11.9px 11.9px 8.5px 11.9px;
+  }
+  #cont-img > img {
+    width: 57.8px;
+    height: 57.8px;
+  }
+  #year-filter {
+    border-radius: 8.5px;
+  }
+  #year-filter > p {
+    font-size: 0.765em;
+  }
+  #year-filter > div > p {
+    width: 2.975em;
+    font-size: 0.68em;
+  }
+  #year-filter > div > img {
+    width: 2.125em;
+  }
+  #year-filter > div > input {
+    font-size: 0.935em;
+    width: 3.4em;
+    -webkit-box-shadow: 3.4px 3.4px 6.8px grey;
+            box-shadow: 3.4px 3.4px 6.8px grey;
+  }
   #countries-filters {
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
@@ -149,12 +208,12 @@
             order: 1;
   }
   #cont-img {
-    margin-left: 4em;
+    margin-left: 5em;
     margin-right: 1em;
   }
   #year-filter {
     margin-left: 1em;
-    margin-right: 4em;
+    margin-right: 5em;
   }
 }
 
@@ -163,11 +222,15 @@
     padding: 0.75em 0;
   }
   #cont-img {
+    border-radius: 7.5px;
     padding: 10.5px 10.5px 7.5px 10.5px;
   }
   #cont-img > img {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
+  }
+  #year-filter {
+    border-radius: 7.5px;
   }
   #year-filter > p {
     font-size: 0.675em;
@@ -181,7 +244,17 @@
   }
   #year-filter > div > input {
     font-size: 0.825em;
-    width: 4.2em;
+    width: 3em;
+    -webkit-box-shadow: 3px 3px 6px grey;
+            box-shadow: 3px 3px 6px grey;
+  }
+  #cont-img {
+    margin-left: 2em;
+    margin-right: 1em;
+  }
+  #year-filter {
+    margin-left: 1em;
+    margin-right: 2em;
   }
 }
 
@@ -190,11 +263,15 @@
     padding: 0.7em 0;
   }
   #cont-img {
+    border-radius: 7px;
     padding: 9.8px 9.8px 7px 9.8px;
   }
   #cont-img > img {
-    width: 56px;
-    height: 56px;
+    width: 39.2px;
+    height: 39.2px;
+  }
+  #year-filter {
+    border-radius: 7px;
   }
   #year-filter > p {
     font-size: 0.63em;
@@ -208,6 +285,14 @@
   }
   #year-filter > div > input {
     font-size: 0.77em;
+    width: 2.8em;
+    -webkit-box-shadow: 2.8px 2.8px 5.6px grey;
+            box-shadow: 2.8px 2.8px 5.6px grey;
+  }
+  #cont-img,
+  #year-filter {
+    margin-left: 1em;
+    margin-right: 1em;
   }
 }
 /*# sourceMappingURL=countries_filters.css.map */

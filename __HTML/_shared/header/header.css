@@ -129,13 +129,6 @@
   .main-header div div > h1 {
     font-size: 2.25em;
   }
-  .main-header div div.user-info p {
-    font-size: 0.81em;
-  }
-  .main-header div div.user-info a img {
-    width: 1.26em;
-    height: 1.26em;
-  }
   .main-header nav p {
     font-size: 0.99em;
   }
@@ -146,11 +139,11 @@
     font-size: 2.125em;
   }
   .main-header div div.user-info p {
-    font-size: 0.765em;
+    font-size: 0.8em;
   }
   .main-header div div.user-info a > img {
-    width: 1.19em;
-    height: 1.19em;
+    width: 1.2em;
+    height: 1.2em;
   }
   .main-header nav > p {
     font-size: 0.935em;

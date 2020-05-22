@@ -57,6 +57,7 @@ table.stats-filter-table tbody th {
           flex-direction: row;
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 table.stats-filter-table tbody th > div {

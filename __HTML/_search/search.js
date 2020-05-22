@@ -54,6 +54,18 @@ $(document).ready(() => {
     $(".filters-section").data("filters", JSON.stringify(filters));
 });
 
+$(window).resize(function() {
+    let fontSize = calcFontSize();
+    for (let filter of window.filters) {
+        filter.setSize(fontSize);
+    }
+});
+
+function calcFontSize() {
+    if ($(window).width() < 420) return 11;
+    else return 14;
+}
+
 
 function territoryFilterChanged(filterName, from, to) {
     // Store new value in the list of filters
@@ -223,10 +235,10 @@ function loadResultsTable() {
                         <th>${variant.catalogueId}</th>
                         <th class="name"><a href="/_country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
                         <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}">${variant.currencyName}</a></th>
-                        <td>${variant.seriesName}</td>
-                        <td>${variant.denomination}</td>
-                        <td>${variant.issueYear}</td>
-                        <td>${variant.printedDate}</td>
+                        <th>${variant.seriesName}</th>
+                        <th>${variant.denomination}</th>
+                        <th>${variant.issueYear}</th>
+                        <th>${variant.printedDate}</th>
                         <td class="only-logged-in">${variant.grade || "-"}</td>
                         <td class="only-logged-in">${priceStr}</td>
                     </tr>`;

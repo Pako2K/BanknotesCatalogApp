@@ -105,15 +105,15 @@ function variantsGET(request, response) {
     param = queryStrJSON.issueDateFrom || "";
     if (param !== "")
         if (sqlBanknote === "")
-            sqlBanknote = `WHERE issueYear >= ${param}`;
+            sqlBanknote = `WHERE "issueYear" >= ${param}`;
         else
-            sqlBanknote += ` AND issueYear >= ${param}`;
+            sqlBanknote += ` AND "issueYear" >= ${param}`;
     param = queryStrJSON.issueDateTo || "";
     if (param !== "") {
         if (sqlBanknote === "")
-            sqlBanknote = `WHERE issueYear <= ${param}`;
+            sqlBanknote = `WHERE "issueYear" <= ${param}`;
         else
-            sqlBanknote += ` AND issueYear <= ${param}`;
+            sqlBanknote += ` AND "issueYear" <= ${param}`;
     }
 
     // If the 3 sql filters are "" (and therefore they are equal)
@@ -123,16 +123,18 @@ function variantsGET(request, response) {
     }
 
 
-    let sqlStr = `  SELECT BVA.bva_cat_id AS "catalogueId", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
-                            BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
-                            CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName"
-                    FROM bva_variant BVA
-                    INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
-                    INNER JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
-                    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
-                    INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
-                    INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = 'OWNED'
-                    INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}
+    let sqlStr = `  WITH resultset AS (
+                            SELECT BVA.bva_cat_id AS "catalogueId", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                                    BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
+                                    CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName"
+                            FROM bva_variant BVA
+                            INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
+                            INNER JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
+                            INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                            INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
+                            INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = 'OWNED'
+                            INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory})
+                    SELECT * FROM resultset
                     ${sqlBanknote}`;
 
     catalogueDB.execSQL(sqlStr, [], (err, rows) => {

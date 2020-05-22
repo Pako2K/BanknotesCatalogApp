@@ -1,12 +1,20 @@
 @import '../_shared/common';
 .filters-section {
-    // background: linear-gradient(0deg, rgb(82, 183, 183), rgb(46, 107, 107));
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
     display: flex;
     flex-direction: row;
     justify-content: center;
     padding: 1em 0;
-    &>div {
+    & div.filters-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        &:first-of-type {
+            border-right: 1px solid gray;
+            box-shadow: 1px 0px white;
+        }
+    }
+    & div.filter-box {
         min-width: 15%;
         padding: 0 1em;
         &:not(:first-of-type) {
@@ -76,5 +84,63 @@ hr {
     }
     &.success>div {
         display: block;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    .filters-section {
+        padding: 1em * $WIDTH_FACTOR_BIG_TABLET 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        & div.filters-row {
+            margin-bottom: 1.2em;
+            &:first-of-type {
+                border-right: none;
+                box-shadow: none;
+            }
+        }
+        & div.filter-box {
+            width: 18em;
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    .filters-section {
+        padding: 0.6em 0;
+        & div.filters-row {
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+            &:last-of-type {
+                margin-bottom: 1em;
+            }
+        }
+        & div.filter-box {
+            margin-top: 1em;
+            margin-left: 2em;
+            padding: 0 0.5em;
+            &>p {
+                font-size: 0.9em;
+                margin-bottom: 0;
+            }
+            &>div {
+                margin-left: 0.8em;
+            }
+            &:not(:first-of-type) {
+                border-left: none;
+                box-shadow: none;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    #results-section {
+        align-items: flex-start;
     }
 }

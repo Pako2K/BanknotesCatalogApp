@@ -1,4 +1,8 @@
 @import '../_shared/common';
+body {
+    min-width: 360px;
+}
+
 section {
     background: white;
     display: flex;

@@ -1,4 +1,39 @@
 @import '../_shared/common';
+@mixin media-screen-block($scale-factor: 1) {
+    #countries-filters {
+        padding: 1em*$scale-factor 0;
+    }
+    #cont-img {
+        border-radius: 10px*$scale-factor;
+        padding: 14px*$scale-factor 14px*$scale-factor 10px*$scale-factor 14px*$scale-factor;
+        &>img {
+            width: 80px*$scale-factor*$scale-factor;
+            height: 80px*$scale-factor*$scale-factor;
+        }
+    }
+    #year-filter {
+        border-radius: 10px*$scale-factor;
+        &>p {
+            font-size: 0.9em*$scale-factor;
+        }
+        &>div {
+            &>p {
+                width: 3.5em*$scale-factor;
+                font-size: 0.8em*$scale-factor;
+            }
+            &>img {
+                width: 2.5em*$scale-factor;
+            }
+            &>input {
+                font-size: 1.1em*$scale-factor;
+                width: 4em*$scale-factor;
+                box-shadow: 4px*$scale-factor 4px*$scale-factor 8px*$scale-factor grey;
+            }
+        }
+    }
+}
+
+@include media-screen-block();
 #countries-filters {
     background: linear-gradient(0deg, #dbdbdd 0%, #edf1f4 74%);
     display: flex;
@@ -7,23 +42,15 @@
     flex-wrap: nowrap;
     align-items: center;
     align-content: center;
-    padding: 1em 0;
 }
 
 #cont-img {
     border: solid 1px darkgray;
-    border-radius: 10px;
-    padding: 14px 14px 10px 14px;
     box-shadow: 1px 1px 3px 0px gray inset;
-    &>img {
-        width: 80px;
-        height: 80px;
-    }
 }
 
 #year-filter {
     border: solid 1px darkgray;
-    border-radius: 10px;
     padding: 0.5em 1em;
     display: flex;
     flex-direction: column;
@@ -32,7 +59,6 @@
     box-shadow: 1px 1px 3px 0px gray inset;
     &>p {
         font-family: $FONT_HEADER;
-        font-size: 0.9em;
         text-shadow: 1.5px 1.5px 3px grey;
         text-align: center;
         margin: 0.4em 0;
@@ -44,24 +70,19 @@
             width: 3.5em;
             text-align: right;
             font-family: $FONT_HEADER;
-            font-size: 0.8em;
             align-self: center;
             margin: 0;
         }
         &>img {
-            width: 2.5em;
             align-self: center;
         }
         &>input {
             align-self: center;
             font-family: $FONT_DATA;
-            font-size: 1.1em;
-            width: 4em;
             color: darkblue;
             text-align: left;
             padding-top: 0.1em;
             padding-left: 0.4em;
-            box-shadow: 4px 4px 8px grey;
             outline: none;
             border: none;
         }
@@ -69,40 +90,17 @@
 }
 
 @media screen and (max-width: $WIDTH_BIG_TABLET) {
-    #countries-filters {
-        padding: 1em * $WIDTH_FACTOR_BIG_TABLET 0;
-    }
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
     #cont-img {
         margin: 0.5em;
-        padding: 14px * $WIDTH_FACTOR_BIG_TABLET 14px * $WIDTH_FACTOR_BIG_TABLET 10px 14px * $WIDTH_FACTOR_BIG_TABLET;
-        &>img {
-            width: 80px * $WIDTH_FACTOR_BIG_TABLET;
-            height: 80px * $WIDTH_FACTOR_BIG_TABLET;
-        }
     }
     #year-filter {
         margin: 0.5em;
-        padding: 0.5em 1em * $WIDTH_FACTOR_BIG_TABLET;
-        &>p {
-            font-size: 0.9em * $WIDTH_FACTOR_BIG_TABLET;
-        }
-        &>div {
-            &>p {
-                width: 3.5em * $WIDTH_FACTOR_BIG_TABLET;
-                font-size: 0.8em * $WIDTH_FACTOR_BIG_TABLET;
-            }
-            &>img {
-                width: 2.5em * $WIDTH_FACTOR_BIG_TABLET;
-            }
-            &>input {
-                font-size: 1.1em * $WIDTH_FACTOR_BIG_TABLET;
-                width: 4em * $WIDTH_FACTOR_BIG_TABLET;
-            }
-        }
     }
 }
 
 @media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
     #countries-filters {
         flex-wrap: wrap;
         &>div:nth-of-type(2) {
@@ -110,72 +108,32 @@
         }
     }
     #cont-img {
-        margin-left: 4em;
+        margin-left: 5em;
         margin-right: 1em;
     }
     #year-filter {
         margin-left: 1em;
-        margin-right: 4em;
+        margin-right: 5em;
     }
 }
 
 @media screen and (max-width: $HEIGHT_BIG_PHONE) {
-    #countries-filters {
-        padding: 1em * $HEIGHT_FACTOR_BIG_PHONE 0;
-    }
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
     #cont-img {
-        padding: 14px * $HEIGHT_FACTOR_BIG_PHONE 14px * $HEIGHT_FACTOR_BIG_PHONE 10px * $HEIGHT_FACTOR_BIG_PHONE 14px * $HEIGHT_FACTOR_BIG_PHONE;
-        &>img {
-            width: 80px * $HEIGHT_FACTOR_BIG_PHONE;
-            height: 80px * $HEIGHT_FACTOR_BIG_PHONE;
-        }
+        margin-left: 2em;
+        margin-right: 1em;
     }
     #year-filter {
-        &>p {
-            font-size: 0.9em * $HEIGHT_FACTOR_BIG_PHONE;
-        }
-        &>div {
-            &>p {
-                width: 3.5em * $HEIGHT_FACTOR_BIG_PHONE;
-                font-size: 0.8em * $HEIGHT_FACTOR_BIG_PHONE;
-            }
-            &>img {
-                width: 2.5em * $HEIGHT_FACTOR_BIG_PHONE;
-            }
-            &>input {
-                font-size: 1.1em * $HEIGHT_FACTOR_BIG_PHONE;
-                width: 4.2em;
-            }
-        }
+        margin-left: 1em;
+        margin-right: 2em;
     }
 }
 
 @media screen and (max-width: $WIDTH_BIG_PHONE) {
-    #countries-filters {
-        padding: 1em * $WIDTH_FACTOR_BIG_PHONE 0;
-    }
-    #cont-img {
-        padding: 14px * $WIDTH_FACTOR_BIG_PHONE 14px * $WIDTH_FACTOR_BIG_PHONE 10px * $WIDTH_FACTOR_BIG_PHONE 14px * $WIDTH_FACTOR_BIG_PHONE;
-        &>img {
-            width: 80px * $WIDTH_FACTOR_BIG_PHONE;
-            height: 80px * $WIDTH_FACTOR_BIG_PHONE;
-        }
-    }
+    @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+    #cont-img,
     #year-filter {
-        &>p {
-            font-size: 0.9em * $WIDTH_FACTOR_BIG_PHONE;
-        }
-        &>div {
-            &>p {
-                width: 3.5em * $WIDTH_FACTOR_BIG_PHONE;
-                font-size: 0.8em * $WIDTH_FACTOR_BIG_PHONE;
-            }
-            &>img {
-                width: 2.5em * $WIDTH_FACTOR_BIG_PHONE;
-            }
-            &>input {
-                font-size: 1.1em * $WIDTH_FACTOR_BIG_PHONE;
-            }
-        }
+        margin-left: 1em;
+        margin-right: 1em;
     }
 }

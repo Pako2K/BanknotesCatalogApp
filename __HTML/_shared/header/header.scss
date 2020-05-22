@@ -87,17 +87,6 @@ $header-color: whitesmoke;
             & div>h1 {
                 font-size: 2.5em * $WIDTH_FACTOR_BIG_TABLET;
             }
-            div.user-info {
-                & p {
-                    font-size: 0.9em * $WIDTH_FACTOR_BIG_TABLET;
-                }
-                & a {
-                    img {
-                        width: 1.4em * $WIDTH_FACTOR_BIG_TABLET;
-                        height: 1.4em * $WIDTH_FACTOR_BIG_TABLET;
-                    }
-                }
-            }
         }
         & nav {
             & p {
@@ -115,11 +104,11 @@ $header-color: whitesmoke;
             }
             div.user-info {
                 & p {
-                    font-size: 0.9em * $WIDTH_FACTOR_SMALL_TABLET;
+                    font-size: 0.8em;
                 }
                 & a>img {
-                    width: 1.4em * $WIDTH_FACTOR_SMALL_TABLET;
-                    height: 1.4em * $WIDTH_FACTOR_SMALL_TABLET;
+                    width: 1.2em;
+                    height: 1.2em;
                 }
             }
         }

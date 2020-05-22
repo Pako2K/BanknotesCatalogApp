@@ -164,11 +164,6 @@ body {
   outline: solid 1px darkorange;
 }
 
-.user-input-section form input[type="submit"] {
-  background: #92d050;
-  color: white;
-}
-
 .user-input-section form ::-webkit-input-placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: lightgrey;
@@ -197,7 +192,7 @@ body {
   /* Firefox */
 }
 
-.user-input-section form :-ms-input-placeholder {
+.user-input-section form ::-ms-input-placeholder {
   /* Internet Explorer 10-11 */
   color: lightgrey;
 }
@@ -205,6 +200,11 @@ body {
 .user-input-section form ::-ms-input-placeholder {
   /* Microsoft Edge */
   color: lightgrey;
+}
+
+.user-input-section form input[type="submit"] {
+  background: #92d050;
+  color: white;
 }
 
 .user-input-section form img.input-img {
