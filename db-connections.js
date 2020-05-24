@@ -91,7 +91,7 @@ class PostgresDB {
     getAndReply(response, sqlStr) {
         this.pool.query(sqlStr, (err, result) => {
             if (err) {
-                err.message += `\nSQL Query: ${sqlStr}\nSQL Params: ${params}`;
+                err.message += `\nSQL Query: ${sqlStr}`;
                 new Exception(500, err.code, err.message).send(response);
                 return;
             }
