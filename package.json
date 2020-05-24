@@ -24,9 +24,10 @@
         "pg": "^8.1.0"
     },
     "scripts": {
-        "start": "node main.js PROD",
-        "start-DEV": "node main.js PROD",
-        "start-PROD": "node main.js PROD"
+        "start": "node main.js DEV",
+        "start-DEV": "node main.js DEV",
+        "start-PROD": "node main.js PROD",
+        "start-OPENSHIFT": "node main.js DEV"
     },
     "engines": {
         "node": ">= 8.0.0",

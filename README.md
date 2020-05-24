@@ -180,7 +180,7 @@ INSTALLATION (CLOUD - HEROKU)
 * Clone/fork this GitHub project
 * App configuration:
     - Port: the application will use the value defined in the env variable PORT (set by Heroku).
-    - SSL: configured in "useHTTPS". By default it is false. Heroku will expose a endpoint via SSL and rout the request to the app via HTTP
+    - SSL: configured in "useHTTPS". By default it is false. Heroku will expose a endpoint via SSL and route the request to the app via HTTP
     - Session Management: configured like this by default:
 
         "sessionOptions": {
@@ -228,8 +228,54 @@ DEPLOY AND RUN THE APP
 -----------------------
 In the Procfile select the default run command is: 
     
-    web: node main.js PROD:
+    web: node main.js PROD-HEROKU:
 
 From the root directory of your GIT project execute: 
 
     git push heroku master
+
+
+
+***************************************************************************************************************************************************
+INSTALLATION (CLOUD - OpenShift)
+-------------------------------------------------------------------
+
+* Create project (e.g banknotes-catalogue)
+
+* Download and unzip the OpenShift CLI (oc). Add direcory path to the environment "PATH"
+
+* In the "Administrator" view, create 2 "Persistent Volume Claim" for the databases. Name = "pg-banknotes-pvc" | "pg-credentials-pvc" , Namespace = <project-name>, size = 1GB (this is the minimum!)
+
+* In the "Developer" view, add a Database. Select PostgreSQL template
+
+    Namesapace = <project-name>
+    Database Service Name = pg-banknotes-service | pg-credentials-service
+    Database Name = banknotes
+    Capacity = 1GB
+
+    This will create the service, the secrets and the pod (with the corresponding env. variables).
+    Edit the "Deployment configuration" and change the assigned PVC to "pg-banknotes-pvc" | "pg-credentials-pvc". Eg:
+        persistentVolumeClaim:
+            claimName: pg-banknotes-pvc
+    
+    Delete initially created (and failed) Replication Controller
+
+    The user and password created in the credentials by OpenShift is just a normal user, not the super user (or admin user)
+    The default postgres super user is "postgres". Password is by default ""
+
+    RESULT (See Topology): 2 Deployment Configurations 
+    RESULT (See Project Details): 4 Pods (2 running), 2 PVC's 13 secrets (4 for the 2 databases) 
+
+    TBD: copy YAML files and edit them conveniently. They should be used to recreate the project with better names and fine tuning
+
+
+* Run "port-forwarding" utility in order to be able to connect with pgAdmin or psql locally:
+
+    oc port-forward <pod-name> <local-port>:<service-port>
+
+    psql --host=127.0.0.1 --port=<local-port> <dbname> <user>
+    
+
+* Or run "oc rsh <pod-name>" to connect to the pod shell. From there it is possible to connect to the posgresql DB:
+
+    psql <dbname> <user>
