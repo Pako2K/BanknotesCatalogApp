@@ -27,7 +27,7 @@
         "start": "node main.js DEV",
         "start-DEV": "node main.js DEV",
         "start-PROD": "node main.js PROD",
-        "start-OPENSHIFT": "node main.js DEV"
+        "start-OPENSHIFT": "node main.js PROD-OPENSHIFT"
     },
     "engines": {
         "node": ">= 8.0.0",
