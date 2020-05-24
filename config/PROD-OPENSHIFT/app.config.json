@@ -5,15 +5,11 @@
 
     "credentialsDB": {
         "connectionString": null,
-        "ssl": {
-            "rejectUnauthorized": false
-        }
+        "ssl": false
     },
     "catalogueDB": {
         "connectionString": null,
-        "ssl": {
-            "rejectUnauthorized": false
-        }
+        "ssl": false
     },
 
     "useHTTPS": false,
