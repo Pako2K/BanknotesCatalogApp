@@ -4,6 +4,19 @@ function setContinentImg() {
     $("#cont-img>img").attr("src", getSelectedImg());
 }
 
+$(window).resize(function() {
+    let fontSize = calcFontSize();
+    for (let filter of window.filters) {
+        filter.setSize(fontSize);
+    }
+});
+
+function calcFontSize() {
+    if ($(window).width() < 400) return 10;
+    else if ($(window).width() < 800) return 12;
+    else return 13;
+}
+
 
 $("#countries-filters").ready(() => {
     // Load Country types synchronously, before anything else
@@ -54,20 +67,25 @@ $("#countries-filters").ready(() => {
     }
     initStatsFilterTable($("table.stats-filter-table"), [existingFlag, extinctFlag], existsCheckChanged, rowFlags, terTypeCheckChanged)
 
-
     // Default "to" filter year : current year
-    let year = getCookie("banknotes.ODB.filter.yearTo");
-    if (!year) {
-        year = new Date().getFullYear();
-        $("#input-year-to").val(year);
-        setCookie("banknotes.ODB.filter.yearTo", year);
-    } else {
-        $("#input-year-to").val(year);
+    let year = getCookie("banknotes.ODB.filter.foundedTo");
+    if (year && year !== "") {
+        window.filters[0].initTo(year);
     }
 
-    year = getCookie("banknotes.ODB.filter.yearFrom");
-    if (year) {
-        $("#input-year-from").val(year);
+    year = getCookie("banknotes.ODB.filter.foundedFrom");
+    if (year && year !== "") {
+        window.filters[0].initFrom(year);
+    }
+
+    year = getCookie("banknotes.ODB.filter.disappearedTo");
+    if (year && year !== "") {
+        window.filters[1].initTo(year);
+    }
+
+    year = getCookie("banknotes.ODB.filter.disappearedFrom");
+    if (year && year !== "") {
+        window.filters[1].initFrom(year);
     }
 });
 
@@ -91,12 +109,15 @@ function terTypeCheckChanged(id, onFlag) {
 }
 
 
-function yearFilterChanged(elemId) {
+function yearFilterChanged(filterName, from, to) {
     // Store value in the cookie
-    if (elemId === "input-year-from")
-        setCookie("banknotes.ODB.filter.yearFrom", $("#" + elemId).val());
-    else
-        setCookie("banknotes.ODB.filter.yearTo", $("#" + elemId).val());
+    if (filterName === "Founded") {
+        setCookie("banknotes.ODB.filter.foundedFrom", from);
+        setCookie("banknotes.ODB.filter.foundedTo", to);
+    } else {
+        setCookie("banknotes.ODB.filter.disappearedFrom", from);
+        setCookie("banknotes.ODB.filter.disappearedTo", to);
+    }
 
     // Load table body
     loadCountriesTable();

@@ -58,19 +58,19 @@ function variantsGET(request, response) {
 
     param = queryStrJSON.terStartDateFrom || "";
     if (param !== "")
-        sqlTerritory += ` AND CAST(substr(TER.ter_start,1,4) AS INTEGER) >= ${param}`;
+        sqlTerritory += ` AND TER.ter_start >= ${param}`;
 
     param = queryStrJSON.terStartDateTo || "";
     if (param !== "")
-        sqlTerritory += ` AND CAST(substr(TER.ter_start,1,4) AS INTEGER) <= ${param}`;
+        sqlTerritory += ` AND TER.ter_start <= ${param}`;
 
     param = queryStrJSON.terEndDateFrom || "";
     if (param !== "")
-        sqlTerritory += ` AND CAST(substr(TER.ter_end,1,4) AS INTEGER) >= ${param}`;
+        sqlTerritory += ` AND TER.ter_end >= ${param}`;
 
     param = queryStrJSON.terEndDateTo || "";
     if (param !== "")
-        sqlTerritory += ` AND CAST(substr(TER.ter_end,1,4) AS INTEGER) <= ${param}`;
+        sqlTerritory += ` AND TER.ter_end <= ${param}`;
 
     // Calculate the filters for currencies
     let sqlCurrency = "";

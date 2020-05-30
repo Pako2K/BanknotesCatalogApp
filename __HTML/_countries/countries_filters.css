@@ -21,20 +21,8 @@
   font-size: 0.9em;
 }
 
-#year-filter > div > p {
-  width: 3.5em;
-  font-size: 0.8em;
-}
-
-#year-filter > div > img {
-  width: 2.5em;
-}
-
-#year-filter > div > input {
-  font-size: 1.1em;
-  width: 4em;
-  -webkit-box-shadow: 4px 4px 8px grey;
-          box-shadow: 4px 4px 8px grey;
+#year-filter > div {
+  margin-bottom: 0.3em;
 }
 
 #countries-filters {
@@ -91,43 +79,6 @@
   margin: 0.4em 0;
 }
 
-#year-filter > div {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-}
-
-#year-filter > div > p {
-  width: 3.5em;
-  text-align: right;
-  font-family: "Source Sans Pro", "sans-serif";
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-  margin: 0;
-}
-
-#year-filter > div > img {
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-}
-
-#year-filter > div > input {
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-  font-family: "sans-serif";
-  color: darkblue;
-  text-align: left;
-  padding-top: 0.1em;
-  padding-left: 0.4em;
-  outline: none;
-  border: none;
-}
-
 @media screen and (max-width: 1000px) {
   #countries-filters {
     padding: 0.9em 0;
@@ -146,23 +97,10 @@
   #year-filter > p {
     font-size: 0.81em;
   }
-  #year-filter > div > p {
-    width: 3.15em;
-    font-size: 0.72em;
-  }
-  #year-filter > div > img {
-    width: 2.25em;
-  }
-  #year-filter > div > input {
-    font-size: 0.99em;
-    width: 3.6em;
-    -webkit-box-shadow: 3.6px 3.6px 7.2px grey;
-            box-shadow: 3.6px 3.6px 7.2px grey;
+  #year-filter > div {
+    margin-bottom: 0.27em;
   }
   #cont-img {
-    margin: 0.5em;
-  }
-  #year-filter {
     margin: 0.5em;
   }
 }
@@ -185,18 +123,8 @@
   #year-filter > p {
     font-size: 0.765em;
   }
-  #year-filter > div > p {
-    width: 2.975em;
-    font-size: 0.68em;
-  }
-  #year-filter > div > img {
-    width: 2.125em;
-  }
-  #year-filter > div > input {
-    font-size: 0.935em;
-    width: 3.4em;
-    -webkit-box-shadow: 3.4px 3.4px 6.8px grey;
-            box-shadow: 3.4px 3.4px 6.8px grey;
+  #year-filter > div {
+    margin-bottom: 0.255em;
   }
   #countries-filters {
     -ms-flex-wrap: wrap;
@@ -212,8 +140,8 @@
     margin-right: 1em;
   }
   #year-filter {
-    margin-left: 1em;
     margin-right: 5em;
+    margin-left: 1em;
   }
 }
 
@@ -235,25 +163,13 @@
   #year-filter > p {
     font-size: 0.675em;
   }
-  #year-filter > div > p {
-    width: 2.625em;
-    font-size: 0.6em;
-  }
-  #year-filter > div > img {
-    width: 1.875em;
-  }
-  #year-filter > div > input {
-    font-size: 0.825em;
-    width: 3em;
-    -webkit-box-shadow: 3px 3px 6px grey;
-            box-shadow: 3px 3px 6px grey;
+  #year-filter > div {
+    margin-bottom: 0.225em;
   }
   #cont-img {
     margin-left: 2em;
-    margin-right: 1em;
   }
   #year-filter {
-    margin-left: 1em;
     margin-right: 2em;
   }
 }
@@ -276,22 +192,13 @@
   #year-filter > p {
     font-size: 0.63em;
   }
-  #year-filter > div > p {
-    width: 2.45em;
-    font-size: 0.56em;
+  #year-filter > div {
+    margin-bottom: 0.21em;
   }
-  #year-filter > div > img {
-    width: 1.75em;
-  }
-  #year-filter > div > input {
-    font-size: 0.77em;
-    width: 2.8em;
-    -webkit-box-shadow: 2.8px 2.8px 5.6px grey;
-            box-shadow: 2.8px 2.8px 5.6px grey;
-  }
-  #cont-img,
-  #year-filter {
+  #cont-img {
     margin-left: 1em;
+  }
+  #year-filter {
     margin-right: 1em;
   }
 }

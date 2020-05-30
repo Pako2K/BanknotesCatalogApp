@@ -13,7 +13,7 @@ $("#currencies-table").ready(() => {
         success: function(currenciesJSON, status) {
             for (let row of currenciesJSON) {
                 // Transform dates into years
-                row.start = Number(row.start.split("-")[0]);
+                row.start = row.start ? Number(row.start.split("-")[0]) : null;
                 row.end = row.end ? Number(row.end.split("-")[0]) : null;
 
                 // Add collection statistics
@@ -198,9 +198,6 @@ function loadCurrenciesTable() {
             if (!currency.symbol)
                 currency.symbol = "";
 
-            if (!currency.end)
-                currency.end = "";
-
             if (!currency.iso3)
                 currency.iso3 = "-";
 
@@ -210,8 +207,8 @@ function loadCurrenciesTable() {
                                 <th>${currency.iso3}</th>
                                 <th class="name"><a href="/_currency/index.html?currencyId=${currency.id}">${currency.name}</a></th>
                                 <th class="name"><a href="/_country/index.html?countryId=${currency.territoryId}">${currency.territoryName}</a></th>
-                                <th>${currency.start}</th>
-                                <th>${currency.end}</th>
+                                <th>${currency.start || ""}</th>
+                                <th>${currency.end || ""}</th>
                                 <th>${currency.currencyType}</th>
                                 <td>${currency.numSeries}</td>
                                 <td class="only-logged-in">${currency.collecStats.numSeries || "-"}</td>

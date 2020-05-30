@@ -143,8 +143,14 @@ function loadCountriesTable() {
     // Retrieve filters from the Cookies
     let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
 
-    let yearFrom = Number(getCookie("banknotes.ODB.filter.yearFrom") || -1000);
-    let yearTo = Number(getCookie("banknotes.ODB.filter.yearTo") || new Date().getFullYear());
+    let foundedFrom = Number(getCookie("banknotes.ODB.filter.foundedFrom") || -10000);
+    let foundedTo = Number(getCookie("banknotes.ODB.filter.foundedTo") || new Date().getFullYear());
+    let yearFromStr = getCookie("banknotes.ODB.filter.disappearedFrom");
+    let yearToStr = getCookie("banknotes.ODB.filter.disappearedTo");
+    let disappearedFrom;
+    if (yearFromStr !== "") disappearedFrom = Number(yearFromStr);
+    let disappearedTo;
+    if (yearToStr !== "") disappearedTo = Number(yearToStr);
     let existing = Number(getCookie("banknotes.ODB.filter.existing") || 1);
     let extinct = Number(getCookie("banknotes.ODB.filter.extinct") || 1);
 
@@ -187,9 +193,11 @@ function loadCountriesTable() {
 
     for (let country of countriesJSON) {
         // Apply filters
-        if (country.start <= yearTo && country.start >= yearFrom && (filterContId === 0 || country.continentId === filterContId)) {
-            if ((!extinct && (country.end !== null && country.end < yearTo)) ||
-                (!existing && (country.end === null || country.end >= yearTo)) ||
+        if (country.start <= foundedTo && country.start >= foundedFrom && (filterContId === 0 || country.continentId === filterContId)) {
+            if (disappearedFrom && (country.end === null || country.end < disappearedFrom)) continue;
+            if (disappearedTo && (country.end === null || country.end > disappearedTo)) continue;
+            if ((!extinct && (country.end !== null && country.end < foundedTo)) ||
+                (!existing && (country.end === null || country.end >= foundedTo)) ||
                 (countryTypesArray.indexOf(country.territoryTypeId) === -1))
                 continue;
 
@@ -238,7 +246,7 @@ function loadCountriesTable() {
             totals.price += country.collecStats.price;
 
             // Statistics:
-            if (existing && (country.end === "" || Number(country.end) >= yearTo)) {
+            if (existing && country.end === "") {
                 statsTerType[country.territoryTypeId].existing.total++;
                 if (country.numCurrencies) {
                     statsTerType[country.territoryTypeId].existing.issuing++;

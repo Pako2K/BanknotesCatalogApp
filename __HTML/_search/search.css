@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
 .filters-section {
-  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
-  background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
+  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#3cb3b3));
+  background: linear-gradient(0deg, #e1f0f0, #3cb3b3);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

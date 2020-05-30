@@ -17,18 +17,7 @@
             font-size: 0.9em*$scale-factor;
         }
         &>div {
-            &>p {
-                width: 3.5em*$scale-factor;
-                font-size: 0.8em*$scale-factor;
-            }
-            &>img {
-                width: 2.5em*$scale-factor;
-            }
-            &>input {
-                font-size: 1.1em*$scale-factor;
-                width: 4em*$scale-factor;
-                box-shadow: 4px*$scale-factor 4px*$scale-factor 8px*$scale-factor grey;
-            }
+            margin-bottom: 0.3em * $scale-factor;
         }
     }
 }
@@ -63,38 +52,11 @@
         text-align: center;
         margin: 0.4em 0;
     }
-    &>div {
-        display: flex;
-        justify-content: space-around;
-        &>p {
-            width: 3.5em;
-            text-align: right;
-            font-family: $FONT_HEADER;
-            align-self: center;
-            margin: 0;
-        }
-        &>img {
-            align-self: center;
-        }
-        &>input {
-            align-self: center;
-            font-family: $FONT_DATA;
-            color: darkblue;
-            text-align: left;
-            padding-top: 0.1em;
-            padding-left: 0.4em;
-            outline: none;
-            border: none;
-        }
-    }
 }
 
 @media screen and (max-width: $WIDTH_BIG_TABLET) {
     @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
     #cont-img {
-        margin: 0.5em;
-    }
-    #year-filter {
         margin: 0.5em;
     }
 }
@@ -112,8 +74,8 @@
         margin-right: 1em;
     }
     #year-filter {
-        margin-left: 1em;
         margin-right: 5em;
+        margin-left: 1em;
     }
 }
 
@@ -121,19 +83,18 @@
     @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
     #cont-img {
         margin-left: 2em;
-        margin-right: 1em;
     }
     #year-filter {
-        margin-left: 1em;
         margin-right: 2em;
     }
 }
 
 @media screen and (max-width: $WIDTH_BIG_PHONE) {
     @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
-    #cont-img,
-    #year-filter {
+    #cont-img {
         margin-left: 1em;
+    }
+    #year-filter {
         margin-right: 1em;
     }
 }

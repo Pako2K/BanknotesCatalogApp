@@ -36,29 +36,17 @@ class FromToFilter {
             $(this).data("init-value", $(this).val());
         });
 
+        let thisInst = this;
         parentDiv.find("input").focusout(function() {
             $(this).parents(".from-to-filter").removeClass("input-focus");
             $(this).parents(".input-field").removeClass("input-focus");
 
             // If something changed... validate values, call callback and set css classes
             if ($(this).data("init-value") !== $(this).val()) {
-                let from = $(this).parent().parent().parent().find("input[name='from-filter'").val();
-                let to = $(this).parent().parent().parent().find("input[name='to-filter'").val();
-
-                // Validate input fields
-                if (from === "" || to === "" || Number(from) <= Number(to)) {
-                    $(this).parents(".from-to-filter").removeClass("not-valid");
-
-                    if (from === "" && to === "") {
-                        $(this).parents(".from-to-filter").removeClass("filled-ok");
-                    } else {
-                        $(this).parents(".from-to-filter").addClass("filled-ok");
-                    }
-
+                if (thisInst.validate()) {
+                    let from = thisInst.parentDiv.find("input[name='from-filter']").val();
+                    let to = thisInst.parentDiv.find("input[name='to-filter'").val();
                     callback(filterName, from, to);
-                } else {
-                    $(this).parents(".from-to-filter").removeClass("filled-ok");
-                    $(this).parents(".from-to-filter").addClass("not-valid");
                 }
             }
         });
@@ -76,6 +64,16 @@ class FromToFilter {
 
     getTo() {
         return this.parentDiv.find("input[name='to-filter']").val();
+    }
+
+    initFrom(value) {
+        this.parentDiv.find("input[name='from-filter']").val(value);
+        this.validate();
+    }
+
+    initTo(value) {
+        this.parentDiv.find("input[name='to-filter']").val(value);
+        this.validate();
     }
 
     setFrom(value) {
@@ -102,4 +100,25 @@ class FromToFilter {
         this.parentDiv.children("p").css("color", color);
     }
 
+
+    validate() {
+        let from = this.parentDiv.find("input[name='from-filter']").val();
+        let to = this.parentDiv.find("input[name='to-filter'").val();
+
+        // Validate input fields
+        if (from === "" || to === "" || Number(from) <= Number(to)) {
+            this.parentDiv.removeClass("not-valid");
+
+            if (from === "" && to === "") {
+                this.parentDiv.removeClass("filled-ok");
+            } else {
+                this.parentDiv.addClass("filled-ok");
+            }
+            return true;
+        } else {
+            this.parentDiv.removeClass("filled-ok");
+            this.parentDiv.addClass("not-valid");
+            return false;
+        }
+    }
 }
