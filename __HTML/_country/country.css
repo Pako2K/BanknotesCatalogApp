@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
 #country-header {
   font-family: Lucida sans, sans-serif;
   background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
@@ -177,6 +178,7 @@
   background: linear-gradient(180deg, #e1f0f0, #a0dcdc);
   padding-left: 1em;
   height: 2.6em;
+  white-space: nowrap;
 }
 
 #country-nav > p {
@@ -221,5 +223,91 @@ hr {
       -ms-flex-align: center;
           align-items: center;
   background-color: whitesmoke;
+}
+
+@media screen and (max-width: 800px) {
+  #country-header {
+    padding: 0.85em 1.7em 0.2em 1.7em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #continent-div > img {
+    width: 34px;
+  }
+  #country-header > div:first-of-type > div:first-of-type #continent-div > p {
+    font-size: 0.7em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #flag-div > img {
+    height: 44.2px;
+  }
+  #country-header > div:first-of-type > div:first-of-type #country-data > p:first-of-type {
+    font-size: 1.275em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #country-data > p:nth-of-type(2) {
+    font-size: 0.765em;
+  }
+  #country-header > div:first-of-type > div:nth-of-type(2) {
+    font-size: 0.7em;
+  }
+  #country-header > div:first-of-type #parent-country > p {
+    font-size: 0.7em;
+  }
+  #country-header > div:first-of-type #parent-country > a {
+    font-size: 0.7em;
+  }
+  .country-link > img {
+    height: 1.7em;
+  }
+  #country-nav {
+    padding-left: 0.85em;
+    height: 2.21em;
+  }
+  #country-nav > p {
+    font-size: 0.85em;
+    padding: 0.34em 1.02em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #country-header {
+    padding: 0.7em 1.4em 0.2em 1.4em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #continent-div > img {
+    width: 28px;
+  }
+  #country-header > div:first-of-type > div:first-of-type #continent-div > p {
+    font-size: 0.6em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #flag-div > img {
+    height: 36.4px;
+  }
+  #country-header > div:first-of-type > div:first-of-type #country-data > p:first-of-type {
+    font-size: 1.05em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #country-data > p:nth-of-type(2) {
+    font-size: 0.63em;
+  }
+  #country-header > div:first-of-type > div:first-of-type #country-data > p:nth-of-type(2) > img {
+    width: 1em;
+    height: 1em;
+  }
+  #country-header > div:first-of-type > div:nth-of-type(2) {
+    font-size: 0.6em;
+  }
+  #country-header > div:first-of-type #parent-country > p {
+    font-size: 0.6em;
+  }
+  #country-header > div:first-of-type #parent-country > a {
+    font-size: 0.6em;
+  }
+  .country-link > img {
+    height: 1.4em;
+  }
+  #country-nav {
+    padding-left: 0.7em;
+  }
+  #country-nav > p {
+    font-size: 0.8em;
+    margin: 0.21em 0.28em;
+    padding: 0.28em 0.84em;
+  }
 }
 /*# sourceMappingURL=country.css.map */

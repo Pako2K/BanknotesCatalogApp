@@ -1,3 +1,4 @@
+@import '../_shared/common';
 #country-header {
     font-family: Lucida sans, sans-serif;
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
@@ -134,6 +135,7 @@
     background: linear-gradient(180deg, rgb(225, 240, 240), rgb(160, 220, 220));
     padding-left: 1em;
     height: 2.6em;
+    white-space: nowrap;
     &>p {
         font-family: Monotype Corsiva, Times New Roman;
         font-size: 1em;
@@ -166,4 +168,128 @@ hr {
     flex-wrap: nowrap;
     align-items: center;
     background-color: whitesmoke;
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    #country-header {
+        padding: 1em*$WIDTH_FACTOR_SMALL_TABLET 2em*$WIDTH_FACTOR_SMALL_TABLET 0.2em 2em*$WIDTH_FACTOR_SMALL_TABLET;
+        // Left Column
+        &>div:first-of-type {
+            // First row within the column
+            &>div:first-of-type {
+                #continent-div {
+                    &>img {
+                        width: 40px*$WIDTH_FACTOR_SMALL_TABLET;
+                    }
+                    &>p {
+                        font-size: 0.7em;
+                    }
+                }
+                #flag-div>img {
+                    height: 52px*$WIDTH_FACTOR_SMALL_TABLET;
+                }
+                #country-data {
+                    &>p:first-of-type {
+                        font-size: 1.5em*$WIDTH_FACTOR_SMALL_TABLET;
+                    }
+                    // Full name and "i" icon
+                    &>p:nth-of-type(2) {
+                        font-size: 0.9em*$WIDTH_FACTOR_SMALL_TABLET;
+                    }
+                }
+            }
+            // Description
+            &>div:nth-of-type(2) {
+                font-size: 0.7em;
+            }
+            // Parent country
+            #parent-country {
+                &>p {
+                    font-size: 0.7em;
+                }
+                &>a {
+                    font-size: 0.7em;
+                }
+            }
+        }
+    }
+    .country-link {
+        &>img {
+            height: 2em*$WIDTH_FACTOR_SMALL_TABLET;
+        }
+    }
+    #country-nav {
+        padding-left: 1em*$WIDTH_FACTOR_SMALL_TABLET;
+        height: 2.6em*$WIDTH_FACTOR_SMALL_TABLET;
+        &>p {
+            font-size: 1em*$WIDTH_FACTOR_SMALL_TABLET;
+            padding: 0.4em*$WIDTH_FACTOR_SMALL_TABLET 1.2em*$WIDTH_FACTOR_SMALL_TABLET;
+        }
+    }
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    #country-header {
+        padding: 1em*$WIDTH_FACTOR_BIG_PHONE 2em*$WIDTH_FACTOR_BIG_PHONE 0.2em 2em*$WIDTH_FACTOR_BIG_PHONE;
+        // Left Column
+        &>div:first-of-type {
+            // First row within the column
+            &>div:first-of-type {
+                #continent-div {
+                    &>img {
+                        width: 40px*$WIDTH_FACTOR_BIG_PHONE;
+                    }
+                    &>p {
+                        font-size: 0.6em;
+                    }
+                }
+                #flag-div>img {
+                    height: 52px*$WIDTH_FACTOR_BIG_PHONE;
+                }
+                #country-data {
+                    &>p:first-of-type {
+                        font-size: 1.5em*$WIDTH_FACTOR_BIG_PHONE;
+                    }
+                    // Full name and "i" icon
+                    &>p:nth-of-type(2) {
+                        font-size: 0.9em*$WIDTH_FACTOR_BIG_PHONE;
+                        &>img {
+                            width: 1em;
+                            height: 1em;
+                        }
+                    }
+                }
+            }
+            // Description
+            &>div:nth-of-type(2) {
+                font-size: 0.6em;
+            }
+            // Parent country
+            #parent-country {
+                &>p {
+                    font-size: 0.6em;
+                }
+                &>a {
+                    font-size: 0.6em;
+                }
+            }
+        }
+    }
+    .country-link {
+        &>img {
+            height: 2em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+    }
+    #country-nav {
+        padding-left: 1em*$WIDTH_FACTOR_BIG_PHONE;
+        &>p {
+            font-size: 0.8em;
+            margin: 0.3em*$WIDTH_FACTOR_BIG_PHONE 0.4em*$WIDTH_FACTOR_BIG_PHONE;
+            padding: 0.4em*$WIDTH_FACTOR_BIG_PHONE 1.2em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+    }
 }

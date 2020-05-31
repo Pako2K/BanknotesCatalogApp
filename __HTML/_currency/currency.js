@@ -11,10 +11,6 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(result, status) {
             setHeaders(result);
-
-            // Load results table for the selected navigation option
-            let option = $(".selected-view").text();
-            loadTable(option);
         },
         error: function(xhr, status, error) {
             alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
@@ -74,7 +70,6 @@ function setHeaders(currencyData) {
         $("#currency-data>div img").hide();
 
 
-
     if (currencyData.predecessor) {
         $("#currency-predecessor").attr("href", "/_currency/index.html?currencyId=" + currencyData.predecessor.id);
         let name = currencyData.predecessor.name;
@@ -96,46 +91,6 @@ function setHeaders(currencyData) {
     } else {
         $("#currency-successor").parent().hide();
     }
-
-
-
-
-    // let endDate = "";
-    // if (currencyData.end != null) {
-    //     endDate = " - " + currencyData.end;
-    // }
-
-    // $("#full-name").text(currencyData.fullName + ", " + currencyData.start + endDate);
-    // if (currencyData.description && currencyData.description.length > 0)
-    //     $("#country-desc").html(currencyData.description);
-    // else
-    //     $("#country-data img").remove();
-    // let countryType = currencyData.territoryType.name;
-    // let relation = "";
-    // if (countryType === "Not Recognized State")
-    //     relation = "Claimed by:";
-    // if (countryType === "Territory")
-    //     relation = "Belongs to:";
-    // if (relation !== "") {
-    //     $("#parent-country").show();
-    //     $("#parent-country>p").text(relation);
-    //     $("#parent-country>a").attr("href", "/_country/index.html?countryId=" + currencyData.parent.id);
-    //     $("#parent-country>a>img").attr("src", flagFileName(currencyData.parent));
-    //     $("#parent-country>a>span").text(currencyData.parent.name);
-    // }
-    // if (currencyData.successors.length) {
-    //     $("#successors").show();
-    //     for (let suc of currencyData.successors) {
-    //         $("#successors").append(createCountryLink(suc));
-    //     }
-    // }
-
-    // if (currencyData.predecessors.length) {
-    //     $("#predecessors").show();
-    //     for (let pred of currencyData.predecessors) {
-    //         $("#predecessors").append(createCountryLink(pred));
-    //     }
-    // }
 }
 
 
@@ -153,6 +108,86 @@ function showDescription() {
 }
 
 
-function loadTable(option) {
+function selectView(optionElem) {
+    if ($(optionElem).hasClass('selected-view')) return;
 
+    let option = $(optionElem).text().toLowerCase();
+    $(".selected-view").removeClass('selected-view');
+    $(optionElem).addClass('selected-view');
+    $("#view-section").load(`./${option}/__${option}.html`);
 }
+
+
+
+
+// function addSeries(){
+//     let newSeries = {
+//         "currencyId": $("#currency-name").data("id"),
+//         "name": $("input[name='series-name']").val(),
+//         "issuer": $("input[name='series-issuer']").val(),
+//         "start": $("input[name='series-start']").val(),
+//         "end": $("input[name='series-end']").val(),
+//         "lawDate": $("input[name='series-law']").val(),
+//         "description": $("textarea").val()
+//     };
+
+//     var xhttp = new XMLHttpRequest();
+//     xhttp.onreadystatechange = function() {
+//         if (this.readyState === 4){
+//             if(this.status === 200){
+//                 alert("Series created / updated");
+//                 cleanSeriesForm();
+//                 initializeSeriesSummary(newSeries.currencyId);
+//             }
+//             else if (this.status === 403){
+//                 alert("Insertion / Update failed (ERR = " + this.status + ", " + this.responseText + ").");
+//             }
+//             else{
+//                 alert("Insertion / Update failed (ERR = " + this.status + ", " + this.responseText + "). Please try again");
+//             }
+//         }
+//     };
+
+//     console.log("New Series: " + JSON.stringify(newSeries));
+
+//     if ($("#series-id").text() === ""){
+//         xhttp.open("POST", "/currency/series", true);
+//     }
+//     else{
+//         newSeries.id = $("#series-id").text();
+//         xhttp.open("PUT", "/series", true);
+//     }
+//     xhttp.setRequestHeader("Content-type", "application/json");
+//     xhttp.send(payload = JSON.stringify(newSeries));
+// }
+
+
+// function prepareSeriesEdit(seriesId){
+//     let allSeries = JSON.parse($("#series-data").text());
+
+//     // Search in the array
+//     let series = allSeries.find((elem) => {return elem.id == seriesId;});
+
+
+//     $("#series-id").text(seriesId);
+//     $("input[name='series-name']").val(series.name);
+//     $("input[name='series-issuer']").val(series.issuer);
+//     $("input[name='series-start']").val(series.start);
+//     $("input[name='series-end']").val(series.end);
+//     $("input[name='series-law']").val(series.lawDate);
+//     $("textarea[name='series-description']").val(series.description);
+//     $('#add-series-dialog').show();
+// }
+
+
+// function cleanSeriesForm(){
+//     $('#add-series-dialog').hide();
+
+//     $("#series-id").text("");
+//     $("input[name='series-name']").val("");
+//     $("input[name='series-issuer']").val("");
+//     $("input[name='series-start']").val("");
+//     $("input[name='series-end']").val("");
+//     $("input[name='series-law']").val("");
+//     $("textarea[name='series-description']").val("");
+// }

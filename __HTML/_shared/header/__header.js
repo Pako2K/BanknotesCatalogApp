@@ -1,6 +1,6 @@
 "use strict"
 
-$("#username").ready(function() {
+$("#username").ready(() => {
     let user = getCookie("banknotes.ODB.username");
     if (user !== undefined && user !== "") {
         $("#username").text(user);

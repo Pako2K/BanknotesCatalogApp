@@ -39,7 +39,7 @@ function currenciesGET(request, response) {
     catalogueDB.getAndReply(response, sql);
 }
 
-// ===> //territory/:territoryId/currencies
+// ===> /territory/:territoryId/currencies
 function territoryByIdCurrenciesGET(request, response) {
     let territoryId = request.params.territoryId;
 

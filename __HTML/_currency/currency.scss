@@ -1,3 +1,4 @@
+@import '../_shared/common';
 #country-header {
     font-family: Lucida sans, sans-serif;
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
@@ -142,6 +143,7 @@
     background: rgb(33, 89, 104);
     padding: 0em 1em;
     height: 2.6em;
+    white-space: nowrap;
     &>p {
         font-family: Monotype Corsiva, Times New Roman;
         font-size: 1em;
@@ -167,11 +169,91 @@ hr {
     margin: 0;
 }
 
-#results-table {
+#view-section {
     padding: 2em 0em;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
     background-color: whitesmoke;
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    #currency-nav {
+        padding: 0em 1em*$WIDTH_FACTOR_SMALL_TABLET;
+        height: 2.6em*$WIDTH_FACTOR_SMALL_TABLET;
+        &>p {
+            font-size: 1em*$WIDTH_FACTOR_SMALL_TABLET;
+            padding: 0.4em*$WIDTH_FACTOR_SMALL_TABLET 1.2em*$WIDTH_FACTOR_SMALL_TABLET;
+        }
+    }
+    #view-section {
+        padding: 2em*$WIDTH_FACTOR_SMALL_TABLET 0em;
+    }
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    #country-header {
+        padding: 0.6em 2em*$WIDTH_FACTOR_BIG_PHONE;
+        #continent-div {
+            &>img {
+                width: 26px*$WIDTH_FACTOR_BIG_PHONE;
+            }
+            &>p {
+                font-size: 0.5em;
+            }
+        }
+        #flag-div>a>img {
+            height: 35px*$WIDTH_FACTOR_BIG_PHONE;
+        }
+        #country-data>a {
+            font-size: 1.2em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+    }
+    #currency-header {
+        padding: 0.5em 2em*$WIDTH_FACTOR_BIG_PHONE;
+        & #currency-data>div>p:first-child {
+            margin: 0.5em 0;
+        }
+        & #currency-symbol {
+            font-size: 1.5em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+        & #currency-data .name {
+            font-size: 1.5em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+        & #currency-data img {
+            width: 1.2em*$WIDTH_FACTOR_BIG_PHONE;
+            height: 1.2em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+        & #currency-data>div:first-of-type>p:not(:first-of-type) {
+            font-size: 0.6em;
+        }
+        & #currency-desc {
+            font-size: 0.6em;
+        }
+        & #currency-relatives p:nth-of-type(odd) {
+            font-size: 0.6em;
+        }
+        & #currency-relatives p:nth-of-type(even) {
+            font-size: 0.6em;
+        }
+        .currency-link {
+            font-size: 0.6em;
+        }
+    }
+    #currency-nav {
+        padding: 0em 1em*$WIDTH_FACTOR_BIG_PHONE;
+        height: 2.6em*$WIDTH_FACTOR_BIG_PHONE;
+        &>p {
+            font-size: 1em*$WIDTH_FACTOR_BIG_PHONE;
+            padding: 0.4em*$WIDTH_FACTOR_BIG_PHONE 1.2em*$WIDTH_FACTOR_BIG_PHONE;
+        }
+    }
+    #view-section {
+        padding: 2em*$WIDTH_FACTOR_BIG_PHONE 0em;
+    }
 }

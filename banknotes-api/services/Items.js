@@ -14,6 +14,7 @@ module.exports.initialize = function(app) {
     app.get('/items/stats', users.validateUser, itemsStatsGET);
     app.get('/variants/items', users.validateUser, variantsItemsGET);
     app.get('/territory/:territoryId/items/stats', users.validateUser, territoryByIdItemsStatsGET);
+    app.get('/currency/:currencyId/items/stats', users.validateUser, currencyByIdItemsStatsGET);
 
     log.debug("Items service initialized");
 };
@@ -201,6 +202,69 @@ function territoryByIdItemsStatsGET(request, response) {
         response.send();
     });
 }
+
+
+// ==> /currency/:currencyId/items/stats?grouping=<grouping>'
+function currencyByIdItemsStatsGET(request, response) {
+    let currencyId = request.params.currencyId;
+    let grouping = url.parse(request.url, true).query.grouping;
+    const GROUPINGS = ['series', 'denomination', 'year'];
+    if (grouping === undefined || grouping === '' || GROUPINGS.indexOf(grouping) === -1) {
+        // Invalid parameter
+        new Exception(400, "ITEM-1", "Query parameter missing or not valid").send(response);
+        return;
+    }
+
+    let sqlStats = "";
+    switch (grouping) {
+        case "series":
+            sqlStats = `SELECT SER.ser_id AS "id", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                            count(BVA.bva_id) AS "numVariants", sum(BIT.bit_price) AS "price"
+                        FROM ser_series SER
+                        LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                        LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+                        INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                        INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                        WHERE SER.ser_cur_id = $2
+                        GROUP BY "id"
+                        ORDER BY SER.ser_start, SER.ser_end, SER.ser_name`;
+            break;
+        case "denomination":
+            sqlStats = `SELECT CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                                count (DISTINCT SER.ser_id) AS "numSeries", count(BVA.bva_id) AS "numVariants", sum(BIT.bit_price) AS "price"
+                        FROM ban_banknote BAN
+                        LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $2
+                        INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+                        LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
+                        INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                        INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                        GROUP BY "denomination"`;
+            break;
+        case "year":
+            sqlStats = `SELECT BVA.bva_issue_year AS "issueYear",
+                                count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                                count(BVA.bva_id) AS "numVariants", sum(BIT.bit_price) AS "price"
+                        FROM bva_variant BVA
+                        LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                        LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $2
+                        INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                        INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                        GROUP BY "issueYear"`;
+            break;
+    }
+
+    catalogueDB.execSQL(sqlStats, [request.session.user, currencyId], (err, rows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.write(JSON.stringify(rows));
+        response.send();
+    });
+}
+
 
 //===> /variants/items?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
 //               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo

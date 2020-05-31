@@ -21,6 +21,8 @@ tags:
     description: Manage geographical organization of banknotes
   - name: Currencies
     description: Manage currency information
+  - name: Series
+    description: Manage currency series information
   - name: Banknotes
     description: Manage denominations information
   - name: Variants
@@ -418,7 +420,7 @@ paths:
         description: Id of the currency
       responses:
         "200":
-          description: Ccurrency complete info
+          description: Currency complete info
           content:
             application/json:
               schema:
@@ -430,6 +432,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
   
+  
+  /currency/{currencyId}/series:
+    get:
+      tags:
+      - Series
+      summary: Get all the info about a currency
+      description: Returns the info about a currency.
+      operationId: currencyByIdSeriesGET
+      parameters:
+      - in: path
+        required: true
+        name: currencyId
+        schema:
+          type: integer
+        description: Id of the currency
+      responses:
+        "200":
+          description: Summary and stats of the Series belonging to the specified currency ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
   
   /banknotes/denominations:
     get:
@@ -1195,6 +1228,29 @@ components:
           type: integer
 
 
+    seriesStats:
+      type: object
+      required:
+      - id
+      - name
+      - start
+      - numDenominations
+      - numVariants
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        start:
+          type: integer
+        end:
+          type: integer
+        numDenominations:
+          type: integer
+        numVariants:
+          type: integer
+          
+          
     denomination:
       type: object
       required:

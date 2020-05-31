@@ -12,10 +12,9 @@
     <link rel="stylesheet" href="./currency.css">
     <link rel="stylesheet" href="/_shared/list-table/list-table.css">
 
+    <link rel="stylesheet" href="/_currency/stats/stats.css">
 
     <!-- 
-        <link rel="stylesheet" href="/_countries/_currencies/currency.css">
-        <link rel="stylesheet" href="/_countries/_currencies/_series/series-summary.css">
         <link rel="stylesheet" href="/_countries/_currencies/_series/series-detail.css">
         <link rel="stylesheet" href="/_countries/_currencies/_series/series-list.css">
         <link rel="stylesheet" href="/_shared/forms.css">
@@ -86,14 +85,17 @@
 
 
     <div id="currency-nav">
-        <p class="selected-view" onclick="selectView(this)">Series</p>
-        <p onclick="selectView(this)">Denominations</p>
-        <p onclick="selectView(this)">Years</p>
+        <p onclick="selectView(this)">Summary</p>
+        <p onclick="selectView(this)">Details</p>
+        <p class="selected-view" onclick="selectView(this)">Stats</p>
     </div>
 
     <hr/>
 
-    <section id="results-table">
+    <section id="view-section">
+        <script>
+            $("#view-section").load("./stats/__stats.html");
+        </script>
     </section>
 
     <footer>
