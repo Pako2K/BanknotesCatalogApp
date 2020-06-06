@@ -12,7 +12,7 @@ module.exports.initialize = function(app) {
 
     app.get('/continents', continentsGET);
     app.get('/territory-types', territoryTypesGET);
-    app.get('/territories', territoriesGET);
+    app.get('/territories/stats', territoriesStatsGET);
     app.get('/territory/:territoryId', territoryByIdGET);
 
     log.debug("Territories service initialized");
@@ -42,8 +42,8 @@ function territoryTypesGET(request, response) {
 
 
 
-// ===> /territories
-function territoriesGET(request, response) {
+// ===> /territories/stats
+function territoriesStatsGET(request, response) {
     let sql = ` SELECT  TER.ter_id AS "id", TER.ter_con_id AS "continentId", TER.ter_tty_id AS "territoryTypeId", 
                                 TER.ter_iso3 AS "iso3", TER.ter_name AS "name", TER.ter_start AS "start", TER.ter_end AS "end", 
                                 count(DISTINCT TEC.tec_cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 

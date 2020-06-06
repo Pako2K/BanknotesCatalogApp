@@ -3,74 +3,49 @@
 $("#series-stats").ready(() => {
     let currencyId = window.location.search.substr("?currencyId=".length);
 
-    $.ajax({
-        type: "GET",
-        url: `/currency/${currencyId}/series`,
-        async: true,
-        cache: false,
-        timeout: 5000,
-        dataType: 'json',
+    let seriesJSON = JSON.parse($(document).data("series-stats"));
 
-        success: function(result, status) {
+    if (getCookie("banknotes.ODB.username")) {
+        $.ajax({
+            type: "GET",
+            url: `/currency/${currencyId}/items/stats?grouping=series`,
+            async: true,
+            cache: false,
+            timeout: 5000,
+            dataType: 'json',
 
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/currency/${currencyId}/items/stats?grouping=series`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results with the currency info
-                        let collecIndex = 0;
-                        for (let row of collecResult) {
-                            // Find position in the results
-                            let pos = result.findIndex((elem) => { return elem.id === row.id; });
-                            if (pos !== -1) {
-                                result[pos].numDenominationsCol = row.numDenominations;
-                                result[pos].numVariantsCol = row.numVariants;
-                                result[pos].priceCol = row.price;
-                            }
-                        }
-
-                        loadSeriesTable(result);
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                if (getCookie("banknotes.ODB.username")) {
-                                    alert("Your session is not valid or has expired.");
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
+            success: function(collecResult, status) {
+                // Consolidate results with the currency info
+                let collecIndex = 0;
+                for (let row of collecResult) {
+                    // Find position in the results
+                    let pos = seriesJSON.findIndex((elem) => { return elem.id === row.id; });
+                    if (pos !== -1) {
+                        seriesJSON[pos].numDenominationsCol = row.numDenominations;
+                        seriesJSON[pos].numVariantsCol = row.numVariants;
+                        seriesJSON[pos].priceCol = row.price;
                     }
-                });
-            } else {
-                loadSeriesTable(result);
-            }
-        },
+                }
 
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    // Check whether the cookie has alredy been deleted
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                loadSeriesTable(seriesJSON);
+            },
+            error: function(xhr, status, error) {
+                switch (xhr.status) {
+                    case 403:
+                        if (getCookie("banknotes.ODB.username")) {
+                            alert("Your session is not valid or has expired.");
+                            deleteCookie("banknotes.ODB.username");
+                            location.reload();
+                        }
+                        break;
+                    default:
+                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                }
             }
-        }
-    });
+        });
+    } else {
+        loadSeriesTable(seriesJSON);
+    }
 });
 
 

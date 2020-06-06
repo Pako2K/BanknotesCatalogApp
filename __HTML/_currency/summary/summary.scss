@@ -1,0 +1,180 @@
+@import '../../_shared/common';
+#summary-main-div {
+    min-width: 20em;
+}
+
+.series-detail-section {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2px;
+    &>.col-expand-contract {
+        background-color: rgb(240, 245, 240);
+        border: solid 0.5px black;
+        min-width: 1.6em;
+        min-height: 1.6em;
+        max-height: 1.6em;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        box-shadow: 3px 3px 3px grey;
+        margin-right: 1px;
+        &>img {
+            width: 1em;
+            margin: auto;
+        }
+    }
+    &>div:nth-of-type(2) {
+        background-color: rgb(240, 245, 240);
+        border: solid 0.5px black;
+        overflow: auto;
+        padding: 0.24em 0.5em;
+        box-shadow: 3px 3px 3px grey;
+        width: 95%;
+        &>h4 {
+            font-family: Times New Roman, serif;
+            font-size: 1em;
+            margin: 0;
+        }
+    }
+}
+
+// .series-detail-section>div>p {
+//     font-family: Lucida sans, sans-serif;
+//     margin: 0;
+//     font-size: 0.6em;
+//     padding-left: 1em;
+//     padding-top: 0.4em;
+// }
+// .variants-table {
+//     margin: 0.7em;
+//     border-right: solid 1px darkgrey;
+//     border-bottom: solid 1px darkgrey;
+//     border-collapse: collapse;
+// }
+// .variants-table>thead>tr:first-child>th {
+//     font-family: Lucida sans, sans-serif;
+//     font-size: 0.8em;
+//     border-top: solid 1px darkgrey;
+//     border-left: solid 1px darkgrey;
+//     color: rgb(50, 100, 50);
+//     text-align: center;
+//     background-color: whitesmoke;
+// }
+// .variants-table>thead>tr:nth-child(2)>td:not(:first-of-type) {
+//     font-family: Lucida sans, sans-serif;
+//     font-size: 0.6em;
+//     padding: 0.3em 1em;
+//     color: rgb(50, 100, 50);
+//     border-bottom: solid 1px darkgrey;
+//     text-align: center;
+//     background-color: whitesmoke;
+// }
+// .variants-table>thead>tr:nth-child(2)>td:first-of-type {
+//     border-bottom: solid 1px darkgrey;
+//     border-right: solid 1px darkgrey;
+// }
+// .variants-table>tbody th {
+//     font-family: Lucida sans, sans-serif;
+//     font-size: 0.8em;
+//     color: rgb(50, 100, 50);
+//     text-align: center;
+//     border-left: solid 1px darkgray;
+//     border-right: solid 1px darkgray;
+//     padding: 0.2em 0.6em;
+//     background-color: whitesmoke;
+// }
+// .variants-table .subcol-1 {
+//     border-left: solid 1px darkgray;
+// }
+// .variants-table>tbody>tr>td {
+//     font-family: Lucida sans, sans-serif;
+//     font-size: 0.6em;
+//     text-align: center;
+//     padding: 0.3em 0.6em;
+//     white-space: nowrap;
+//     cursor: pointer;
+// }
+// .variants-table>tbody td.highlight {
+//     text-decoration: underline;
+//     text-shadow: 1px 1px 1px grey;
+// }
+// .last-subrow {
+//     border-bottom: dotted 1px lightgrey;
+// }
+.UNC-grade {
+    background-color: green;
+    color: whitesmoke;
+}
+
+.XF-grade {
+    background-color: greenyellow;
+    color: rgb(70, 70, 70);
+}
+
+.VF-grade {
+    background-color: yellow;
+    color: rgb(70, 70, 70);
+}
+
+.F-grade {
+    background-color: orange;
+    color: rgb(70, 70, 70);
+}
+
+.VG-grade {
+    background-color: rgb(120, 80, 0);
+    ;
+    color: lightgrey;
+}
+
+.G-grade {
+    background-color: rgb(90, 80, 0);
+    ;
+    color: lightgrey;
+}
+
+.P-grade {
+    background-color: rgb(60, 50, 0);
+    ;
+    color: lightgrey;
+}
+
+.REP-grade {
+    background-color: lightgray;
+    color: rgb(70, 70, 70);
+}
+
+.none-grade {
+    background-color: whitesmoke;
+    color: black;
+}
+
+#grades-div {
+    margin-top: 2em;
+    display: flex;
+    font-family: Times New Roman, serif;
+    flex-direction: column;
+    align-items: center;
+}
+
+#grades-div div {
+    border: solid 1px lightgray;
+    padding: 1em;
+    background-color: ghostwhite;
+}
+
+#grades-div h3 {
+    margin: 0;
+    margin-bottom: 1em;
+    font-size: 1em;
+    text-align: center;
+}
+
+#grades-div p {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0.4em;
+    min-width: 10em;
+    text-align: center;
+    cursor: help;
+}

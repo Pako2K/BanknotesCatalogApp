@@ -11,7 +11,7 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/currencies', currenciesGET);
+    app.get('/currencies/stats', currenciesStatsGET);
     app.get('/territory/:territoryId/currencies', territoryByIdCurrenciesGET);
     app.get('/currency/:currencyId', currencyByIdGET);
 
@@ -19,8 +19,8 @@ module.exports.initialize = function(app) {
 };
 
 
-// ===> /currencies
-function currenciesGET(request, response) {
+// ===> /currencies/stats
+function currenciesStatsGET(request, response) {
     let sql = ` SELECT  CUR.cur_id AS "id", TER.ter_con_id AS "continentId", TER.ter_id AS "territoryId",
                         TER.ter_name AS "territoryName", CASE WHEN TER.ter_tty_id = 2 THEN 'SHARED' ELSE 'OWNED' END AS "currencyType", 
                         CUR.cur_symbol AS "symbol", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", 

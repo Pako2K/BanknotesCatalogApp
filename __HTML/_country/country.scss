@@ -292,4 +292,8 @@ hr {
             padding: 0.4em*$WIDTH_FACTOR_BIG_PHONE 1.2em*$WIDTH_FACTOR_BIG_PHONE;
         }
     }
+    #results-table {
+        flex-direction: row;
+        justify-items: flex-start;
+    }
 }

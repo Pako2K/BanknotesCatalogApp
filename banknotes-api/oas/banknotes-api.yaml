@@ -28,7 +28,9 @@ tags:
   - name: Variants
     description: Manage banknote variants information
   - name: Items
-    description: Manage banknotes in the user colection
+    description: Manage banknotes in the user collection
+  - name: Miscellanea
+    description: Set of operations to retrieve static data
 
 paths:
   /user:
@@ -437,8 +439,8 @@ paths:
     get:
       tags:
       - Series
-      summary: Get all the info about a currency
-      description: Returns the info about a currency.
+      summary: Get summary of series for a currency
+      description: Returns the info about the different series of a currency.
       operationId: currencyByIdSeriesGET
       parameters:
       - in: path
@@ -501,6 +503,37 @@ paths:
                 $ref: '#/components/schemas/exception'
   
   
+  /currency/{currencyId}/banknotes:
+    get:
+      tags:
+      - Banknotes
+      summary: Get summary of banknotes(denominations) for a currency
+      description: Returns the info about the different banknotes of a currency.
+      operationId: currencyByIdBanknotesGET
+      parameters:
+      - in: path
+        required: true
+        name: currencyId
+        schema:
+          type: integer
+        description: Id of the currency
+      responses:
+        "200":
+          description: Summary and stats of the banknotes belonging to the specified currency ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/banknoteStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                
   
   /variants/years:
     get:
@@ -524,7 +557,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-  
+ 
+ 
+  /currency/{currencyId}/variants/years:
+    get:
+      tags:
+      - Variants
+      summary: Get summary of banknotes per issued year for a currency
+      description: Returns the info about the different years when variants were issued for a currency.
+      operationId: currencyByIdVariantsYearsGET
+      parameters:
+      - in: path
+        required: true
+        name: currencyId
+        schema:
+          type: integer
+        description: Id of the currency
+      responses:
+        "200":
+          description: Summary and stats of the banknotes belonging to the specified currency ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                 
   /variants:
     get:
       tags: 
@@ -853,7 +918,7 @@ paths:
       tags: 
       - Items
       summary: Get Collection stats for a specific territory
-      description: Retrieves the collection statistics for the active sesion's user and the provided territory
+      description: Retrieves the collection statistics for the active sesion's user and the provided territory and grouping critera
       operationId: territoryByIdItemsStatsGET
       parameters:
       - in: path
@@ -908,8 +973,86 @@ paths:
                 $ref: '#/components/schemas/exception'  
                 
   
-  
+  /currency/{currencyId}/items/stats:
+    get:
+      tags: 
+      - Items
+      summary: Get Collection stats for a specific currency
+      description: Retrieves the collection statistics for the active sesion's user and the provided currency and grouping critera
+      operationId: currencyByIdItemsStatsGET
+      parameters:
+      - in: path
+        required: true
+        name: currencyId
+        schema:
+          type: integer
+        description: Id of the currency
+      - in: cookie
+        name: banknotes.ODB.username
+        schema:
+          type: string
+        required: true
+        description: user for whom the statistics are retrieved
+      - in: query
+        name: grouping
+        schema:
+          type: string
+          enum:
+          - series
+          - denomination
+          - year
+        required: true
+        description: Statistics based on this grouping criteria
+      responses:
+        "200":
+          description: Success. Statistics returned
+          content:
+            application/json:
+               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/itemStats'
+        "400":
+          description: Invalid request. Query or cookie parameter is missing or has no valid value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: User not logged-in or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'  
                 
+  /grades:              
+    get:
+      tags: 
+      - Miscellanea
+      summary: Get banknotes grades
+      description: Retrieves the standard grades used to evaluate th conservation of the banknotes
+      operationId: gradesGET
+      responses:
+        "200":
+          description: Success. 
+          content:
+            application/json:
+               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/grade'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'          
                 
 components:
   schemas:
@@ -1275,6 +1418,21 @@ components:
           type: integer
 
 
+    banknoteStats:
+      type: object
+      required:
+      - denomination
+      - numSeries
+      - numVariants
+      properties:
+        denomination:
+          type: number
+        numSeries:
+          type: integer
+        numVariants:
+          type: integer
+
+
     issueYear:
       type: object
       required:
@@ -1304,6 +1462,20 @@ components:
         numVariants:
           type: integer
 
+
+    issueYearStats:
+      type: object
+      required:
+      - issueYear
+      - numDenominations
+      - numVariants
+      properties:
+        issueYear:
+          type: number
+        numDenominations:
+          type: integer
+        numVariants:
+          type: integer
 
     variant:
       type: object
@@ -1373,6 +1545,23 @@ components:
         price:
           type: number
 
+    grade:
+      type: object
+      required:
+      - value
+      - grade
+      - name
+      - description
+      properties:
+        value:
+          type: integer
+        grade:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          
     iso2:
       type: string
       maxLength: 2

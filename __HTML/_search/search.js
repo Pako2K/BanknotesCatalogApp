@@ -142,7 +142,7 @@ function callVariantsAPI(filters) {
 
     let urlStr = `/variants?${queryStr}`
     if (getCookie("banknotes.ODB.username"))
-        urlStr = `/variants/items?${queryStr}`
+        urlStr = `/items?${queryStr}`
 
     $.ajax({
         type: "GET",

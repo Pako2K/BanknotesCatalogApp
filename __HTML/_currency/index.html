@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/_shared/list-table/list-table.css">
 
     <link rel="stylesheet" href="/_currency/stats/stats.css">
+    <link rel="stylesheet" href="/_currency/summary/summary.css">
 
     <!-- 
         <link rel="stylesheet" href="/_countries/_currencies/_series/series-detail.css">
@@ -85,17 +86,15 @@
 
 
     <div id="currency-nav">
-        <p onclick="selectView(this)">Summary</p>
+        <p class="selected-view" onclick="selectView(this)">Summary</p>
         <p onclick="selectView(this)">Details</p>
-        <p class="selected-view" onclick="selectView(this)">Stats</p>
+        <p onclick="selectView(this)">Stats</p>
     </div>
 
     <hr/>
 
     <section id="view-section">
-        <script>
-            $("#view-section").load("./stats/__stats.html");
-        </script>
+        <!-- Loaded after document is loaded (and series info is retrieved) -->
     </section>
 
     <footer>

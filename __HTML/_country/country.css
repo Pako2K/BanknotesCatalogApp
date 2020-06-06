@@ -309,5 +309,12 @@ hr {
     margin: 0.21em 0.28em;
     padding: 0.28em 0.84em;
   }
+  #results-table {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    justify-items: flex-start;
+  }
 }
 /*# sourceMappingURL=country.css.map */

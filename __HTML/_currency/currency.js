@@ -16,6 +16,28 @@ $(document).ready(function() {
             alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
         }
     });
+
+    // Get basic data and stats for the currency series
+    $.ajax({
+        type: "GET",
+        url: `/currency/${currencyId}/series`,
+        async: true,
+        cache: false,
+        timeout: 5000,
+        dataType: 'json',
+
+        success: function(result, status) {
+            // Store the data in the currency main page
+            $(document).data("series-stats", JSON.stringify(result));
+
+            // Load default navigation option
+            $("#view-section").load("./summary/__summary.html");
+        },
+
+        error: function(xhr, status, error) {
+            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+        }
+    });
 });
 
 

@@ -279,3 +279,18 @@ INSTALLATION (CLOUD - OpenShift)
 * Or run "oc rsh <pod-name>" to connect to the pod shell. From there it is possible to connect to the posgresql DB:
 
     psql <dbname> <user>
+
+* CREATE APP
+    Add From GIT: https://github.com/Pako2K/BanknotesCatalogApp.git. Builder Image: Node.js. Application / Name: banknotes-catalogue-app. 
+    Resource: Deplyoment Config. Create Route: yes
+    Add Evironment variables in the build configuration (BC) for banknotes-catalogue-app:
+        NPM_RUN = start-OPENSHIFT
+        PORT = 8080 or any other port but make sure it is the same in Service > Service Details > Pod Port or Name. YAML: spec.ports[0].targetPort an in the Pod, YAML: sepc.containers[0].resources.port.containerPort
+        CAT_DATABASE_URL = postgres://AppAPI:<pwdAppAPI>@172.30.195.181:5432/banknotes (IP taken from the service pg-banknotes-service, spec.clusterIP, Port taken from spec.ports[0].port)
+        CRE_DATABASE_URL = postgres://AppAPI:<pwdAppAPI>@172.30.24.112:5432/credentials (IP taken from the service pg-credentials-service, spec.clusterIP, Port taken from spec.ports[0].port)
+        MAIL_PWD = <mail_provider_password>
+
+    Create secure route. TLS Settings:
+        Termination Type: edge
+
+TBD: Make secure the Route and the connection to the DB's!
