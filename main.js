@@ -4,6 +4,8 @@
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 const logger = require('./utils/logger');
 const express = require('express');
 const session = require('express-session');
@@ -56,6 +58,10 @@ function startServer() {
 
     // Add middleware for the static content path
     app.use(express.static(appConfig.staticContent));
+
+    // Add midleware to generate Swagger UI
+    app.use('/api-docs/users', swaggerUi.serve, swaggerUi.setup(YAML.load('./banknotes-api/oas/users-api.yaml')));
+    app.use('/api-docs/banknotes', swaggerUi.serve, swaggerUi.setup(YAML.load('./banknotes-api/oas/banknotes-api.yaml')));
 
     // Add default logging middleware
     app.use((req, res, next) => {

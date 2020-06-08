@@ -1,0 +1,351 @@
+openapi: 3.0.2
+info:
+  title: Users API
+  description: API for User Account and Session Management.
+  version: "1.0.0"
+  contact:
+    email: admin@banknotes.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+# Added by API Auto Mocking Plugin
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/banknotes-catalogue/accounts-api/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/banknotes-catalogue/users-api/1.0.0
+  - description: API for User Account and Session Management.
+    url: https://banknotes-db/users-api/1.0.0
+tags:
+  - name: Users
+    description: Manage users and user sessions
+  
+
+paths:
+  /user:
+    put:
+      tags: 
+      - Users
+      summary: Create (register) a new user
+      description: Request to create a new user. The request must be confirmed by providing a validaton code. See /user/validation
+      operationId: userPUT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        "200":
+          description: User created
+        "400":
+          description: Invalid request. Some fields in the request are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: User or email is already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
+  /user/validation:
+    post:
+      tags: 
+      - Users
+      summary: Sends validation for a new user (registration) or a password change
+      description: Confirms the request to create a new account or reset the password by sending the validation code. The type of confirmation is indicated by the parameter in the query string
+      operationId: userValidationPOST
+      parameters:
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - password
+          - user
+        required: true
+        description: "Type of validation: for a new password or for a new user"
+      - name: wid
+        in: cookie
+        required: true
+        description: Session Id for the user requesting the registarion or the password change
+        schema: 
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/validationRequest'
+      responses:
+        "200":
+          description: User confirmed
+        "400":
+          description: Invalid request. Some fields in the request are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: 'Session id or validation code is not valid. Codes: VAL-02 => Session expired; VAL-03 => User is not valid; VAL-04 => Validation code is wrong (after 3 attempts the session will expire automatically); VAL-05 => Valication code is wong. Registration will be cancelled'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+
+  /user/password:
+    post:
+      tags: 
+      - Users
+      summary: Sends a request to change the user password. 
+      description: If the user provides the authorization credentials (user/pwd) the change is executed immediately. Otherwise, if the user provides only its name and the email, a validation will be required.
+      operationId: userPasswordPOST
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/passwordChange'
+      responses:
+        "200":
+          description: Password changed.
+        "400":
+          description: Invalid request. Some fields in the request are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "401":
+          description: Username and password or email are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                                
+  /user/session:
+    get:
+      tags: 
+      - Users
+      summary: Log in and create session
+      description: For the provided user a new session is returned in the cookie, if no session existed yet
+      operationId: userSessionGET
+      security:
+      - basicAuthentication: []
+      responses:
+        "200":
+          description: Login executed successfully or user was already logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessionResponse'
+        "400":
+          description: "LOG-01: Http header (authorization) not provided | LOG-02: Value of Http header (authorization) is not valid | LOG-03: Invalid username:password in 'authorization' header"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "401":
+          description: "AUT-01: Username or password is not valid | AUT-02: Account is not activated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+
+    delete:
+      tags: 
+      - Users
+      summary: Log out and destroy session
+      description: The provided session is destroyed, and the user logged out.
+      operationId: userSessionDELETE
+      parameters:
+      - name: wid
+        in: cookie
+        required: true
+        description: Session Id for the logged in user
+        schema: 
+          type: string
+      responses:
+        "200":
+          description: Logout executed successfully or user not logged in
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
+  /user/session/ping:
+    post:
+      tags: 
+      - Users
+      summary: Check session state
+      description: For the active session it resets the expiration time and returns its value
+      operationId: userSessionPingGET
+      parameters:
+      - name: wid
+        in: cookie
+        required: true
+        description: Session Id for the logged in user
+        schema: 
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - username
+              properties:
+                username:
+                  $ref: '#/components/schemas/usernameType'
+      responses:
+        "200":
+          description: Ping executed successfully. If a session is active it returns the session expiration time. Otherwise it returns expiration = 0
+          content:
+            application/json:
+              schema:
+                type: object
+                required: 
+                - expiration
+                properties:
+                  expiration:
+                    type: integer
+                    description: Session expiration time in miliseconds
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+
+              
+components:
+  securitySchemes:
+    basicAuthentication:
+      type: http
+      scheme: basic
+
+  schemas:
+    user:
+      type: object
+      required:
+      - username
+      - email
+      - password
+      properties:
+        username:
+          $ref: '#/components/schemas/usernameType'
+        email:
+          $ref: '#/components/schemas/emailType'
+        password:
+          $ref: '#/components/schemas/passwordType'
+
+    passwordChange:
+      type: object
+      required:
+      - username
+      - authentication
+      - newPassword
+      properties:
+        username:
+          $ref: '#/components/schemas/usernameType'
+        authentication:
+          oneOf:
+          - type: object
+            required: 
+            - password
+            properties:
+              password:
+                $ref: '#/components/schemas/passwordType'
+          - type: object
+            required: 
+            - email
+            properties:
+              email:
+                $ref: '#/components/schemas/emailType'
+        newPassword:
+          $ref: '#/components/schemas/passwordType'
+
+
+    validationRequest:
+      type: object
+      required:
+      - username
+      - validationCode
+      properties:
+        username:
+          $ref: '#/components/schemas/usernameType'
+        validationCode:
+          type: string
+          minLength: 8
+
+
+    sessionResponse:
+      type: object
+      required: 
+      - isAdmin
+      - lastConnection
+      - expiration
+      properties:
+        isAdmin:
+          type: integer
+          description: 0 if false, 1 if true
+        lastConnection:
+          type: string
+          description: datetime in format 'dddd, DD MMMM YYYY, HH:mm'
+        expiration:
+          type: integer
+          description: Session expiration time in miliseconds
+
+
+    usernameType:
+      type: string
+      maxLength: 16
+      minLength: 3
+      pattern: /[A-Z 0-9]/gi  
+
+          
+    passwordType:
+      type: string
+      format: base64
+      minLength: 8
+
+    
+    emailType:
+      type: string
+      pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi
+
+
+    exception:
+      $ref: 'banknotes-api.yaml#/components/schemas/exception'

@@ -21,7 +21,9 @@
         "log4js": "^6.1.2",
         "moment": "^2.24.0",
         "nodemailer": "^6.4.6",
-        "pg": "^8.1.0"
+        "pg": "^8.1.0",
+        "swagger-ui-express": "^4.1.4",
+        "yamljs": "^0.3.0"
     },
     "scripts": {
         "start": "node main.js DEV",

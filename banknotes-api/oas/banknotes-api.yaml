@@ -1,10 +1,4 @@
 openapi: 3.0.2
-servers:
-# Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/banknotes-catalogue/banknotes-api/1.0.0
-  - description: Banknotes Catalogue and Collection Management API
-    url: https://banknotes-db/1.0.0
 info:
   title: Banknotes API
   description: API for the Banknotes Database.
@@ -14,9 +8,13 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/banknotes-catalogue/banknotes-api/1.0.0
+  - description: Banknotes Catalogue and Collection Management API
+    url: https://banknotes-db/banknotes-api/1.0.0
 tags:
-  - name: Users
-    description: Manage users and user sessions
   - name: Territories
     description: Manage geographical organization of banknotes
   - name: Currencies
@@ -33,220 +31,6 @@ tags:
     description: Set of operations to retrieve static data
 
 paths:
-  /user:
-    put:
-      tags: 
-      - Users
-      summary: Create (register) a new user
-      description: Creates a new user and a session for the new user (login session)
-      operationId: userPUT
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/user'
-      responses:
-        "200":
-          description: User created
-        "400":
-          description: Invalid request. Some fields in the request are not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "403":
-          description: User or email is already registered
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-  
-  /user/validation:
-    post:
-      tags: 
-      - Users
-      summary: Sends validation for a new user (register-step 2) or a password change
-      description: Confirms the request to create a new account or reset the password by sending the validation code. The type of confirmation is indicated by the query string
-      operationId: userValidationPOST
-      parameters:
-      - in: query
-        name: type
-        schema:
-          type: string
-          enum:
-          - password
-          - user
-        required: true
-        description: "Type of validation: for a new password or for a new user"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/userValidation'
-      responses:
-        "200":
-          description: User confirmed
-        "400":
-          description: Invalid request. Some fields in the request are not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "403":
-          description: 'Session id or validation code is not valid. Codes: VAL-02 => Session expired; VAL-03 => User is not valid; VAL-04 => Validation code is wrong (after 3 attempts the session will expire automatically); VAL-05 => Registration will be cancelled'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-                
-
-  /user/password:
-    post:
-      tags: 
-      - Users
-      summary: Sends a request to change the user password. 
-      description: If the user provides the authorization credentials (user/pwd) the change is executed immediately. Otherwise, if the user provides only its name and the email, a validation will be required.
-      operationId: userPasswordPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/userPassword'
-      responses:
-        "200":
-          description: Password changed.
-        "400":
-          description: Invalid request. Some fields in the request are not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "401":
-          description: Username and password or email are not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-                
-                                
-  /user/session:
-    get:
-      tags: 
-      - Users
-      summary: Log in and create session
-      description: For the provided user a new session is returned in the cookie, if no session existed yet
-      operationId: userSessionGET
-      parameters:
-      - in: header
-        name: authorization
-        schema:
-          type: string
-        required: true
-        description: "Basic authoritazion. Value must be like 'Basic Y2hhcmxlczoxMjM0NQ=='. The second part is the 'user:pwd' encoded in base64"
-      responses:
-        "200":
-          description: Login executed successfully or user was already logged in
-          content:
-            application/json:
-              schema:
-                type: object
-                required: 
-                - isAdmin
-                - lastConnection
-                properties:
-                  isAdmin:
-                    type: integer
-                    description: 0 if false, 1 if true
-                  lastConnection:
-                    type: string
-                    description: datetime in format 'dddd, DD MMMM YYYY, HH:mm'
-        "400":
-          description: "LOG-01: Http header (authorization) not provided | LOG-02: Value of Http header (authorization) is not valid | LOG-03: Invalid username:password in 'authorization' header"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "401":
-          description: "AUT-01: Username or password is not valid | AUT-02: Account is not activated"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
-    delete:
-      tags: 
-      - Users
-      summary: Log out and destroy session
-      description: The provided session is destroyed, and the user logged out.
-      operationId: userSessionDELETE
-      responses:
-        "200":
-          description: Logout executed successfully or user not logged in
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-  
-  /user/session/ping:
-    get:
-      tags: 
-      - Users
-      summary: Check session state
-      description: for the active session it resets the the expiration time and returns its value
-      operationId: userSessionPingGET
-      responses:
-        "200":
-          description: Ping executed successfully. If a session is active it returns the user name and the session expiration time. Otherwise it returns an empty user name and expiration = 0
-          content:
-            application/json:
-              schema:
-                type: object
-                required: 
-                - user
-                - lastConnection
-                properties:
-                  user:
-                    type: string
-                    description: User name for the active session
-                  lastConnection:
-                    type: integer
-                    description: Session expiration time in miliseconds
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
-
-
-
   /continents:
     get:
       tags:
@@ -295,13 +79,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
 
-  /territories:
+  /territories/stats:
     get:
       tags:
       - Territories
       summary: Get list of countries and territories.
       description: Returns a list of countries and territries with their main features and statistics about their currencies and banknotes.
-      operationId: territoriesGET
+      operationId: territoriesStatsGET
       responses:
         "200":
           description: List of countries and territories
@@ -339,9 +123,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/territory'
+                $ref: '#/components/schemas/territory'
         "500":
           description: Internal server error
           content:
@@ -351,13 +133,13 @@ paths:
   
   
   
-  /currencies:
+  /currencies/stats:
     get:
       tags: 
       - Currencies
       summary: Get list of currencies.
       description: Returns a list of currencies with their main features and statistics about their banknotes.
-      operationId: currenciesGET
+      operationId: currenciesStatsGET
       responses:
         "200":
           description: List of currencies
@@ -494,7 +276,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/denomination'
+                  $ref: '#/components/schemas/denominationStats'
         "500":
           description: Internal server error
           content:
@@ -582,6 +364,47 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/issueYearStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                
+  /series/{seriesId}/variants:
+    get:
+      tags:
+      - Variants
+      summary: Get all variants for a given series
+      description: Returns the info about the different variants belonging to the giving series.
+      operationId: seriesByIdVariantsGET
+      parameters:
+      - in: path
+        required: true
+        name: seriesId
+        schema:
+          type: integer
+        description: Id of the series
+      responses:
+        "200":
+          description: List of variants for the given series ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denomination:
+                      type: integer
+                    variants:
+                      allOf:
+                        - $ref: '#/components/schemas/variantKey'
+                        - type: object
+                          properties:
+                            description:
+                              type: string
         "500":
           description: Internal server error
           content:
@@ -690,7 +513,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/variant'
+                  $ref: '#/components/schemas/variantTree'
         "400":
           description: Invalid request. At least one query parameter must be provided.
           content:
@@ -779,13 +602,13 @@ paths:
                 $ref: '#/components/schemas/exception'  
                 
   
-  /variants/items:
+  /items:
     get:
       tags: 
       - Items
       summary: Get list of variants and the grade and price of the item, if available.
-      description: Returns a list of variants according to the specified search parameters. At least one search parameter must be provided. No more than 500 variants will be returned
-      operationId: variantsItemsGET
+      description: Returns a list of items according to the specified search parameters. At least one search parameter must be provided. No more than 500 items will be returned
+      operationId: itemsGET
       parameters:
       - in: cookie
         name: banknotes.ODB.username
@@ -885,7 +708,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/variantItem'
+                  $ref: '#/components/schemas/itemTree'
         "400":
           description: Invalid request. Cookie paramter is mandatory and at least one query parameter must be provided. 
           content:
@@ -1031,6 +854,70 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'  
                 
+  /series/{seriesId}/items:
+    get:
+      tags: 
+      - Items
+      summary: Get Collection items for a specific series
+      description: Retrieves the collection items for the active sesion's user and the provided series
+      operationId: seriesByIdItemsGET
+      parameters:
+      - in: path
+        required: true
+        name: seriesId
+        schema:
+          type: integer
+        description: Id of the series
+      - in: cookie
+        name: banknotes.ODB.username
+        schema:
+          type: string
+        required: true
+        description: user for whom the items are retrieved
+      responses:
+        "200":
+          description: Success. List of Items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denomination:
+                      type: integer
+                    variants:
+                      allOf:
+                        - $ref: '#/components/schemas/variantKey'
+                        - type: object
+                          properties:
+                            description:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/itemKey'
+        "400":
+          description: Invalid request. Query or cookie parameter is missing or has no valid value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: User not logged-in or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                
+                
   /grades:              
     get:
       tags: 
@@ -1055,59 +942,12 @@ paths:
                 $ref: '#/components/schemas/exception'          
                 
 components:
+  securitySchemes:
+    basicAuthentication:
+      type: http
+      scheme: basic
+
   schemas:
-    user:
-      type: object
-      required:
-      - username
-      - email
-      - password
-      properties:
-        username:
-          $ref: '#/components/schemas/usernameType'
-        email:
-          $ref: '#/components/schemas/emailType'
-        password:
-          $ref: '#/components/schemas/passwordType'
-
-    userValidation:
-      type: object
-      required:
-      - username
-      - validationCode
-      properties:
-        username:
-          $ref: '#/components/schemas/usernameType'
-        validationCode:
-          type: string
-          minLength: 8
-
-    userPassword:
-      type: object
-      required:
-      - username
-      - authentication
-      - newPassword
-      properties:
-        username:
-          $ref: '#/components/schemas/usernameType'
-        authentication:
-          oneOf:
-          - type: object
-            required: 
-            - password
-            properties:
-              password:
-                $ref: '#/components/schemas/passwordType'
-          - type: object
-            required: 
-            - email
-            properties:
-              email:
-                $ref: '#/components/schemas/emailType'
-        newPassword:
-          $ref: '#/components/schemas/passwordType'
-
     continent:
       type: object
       required:
@@ -1194,7 +1034,8 @@ components:
                 type: string
               iso3:
                 $ref: '#/components/schemas/iso3'
-
+        description:
+          type: string
 
     territoryStats:
       type: object
@@ -1394,7 +1235,7 @@ components:
           type: integer
           
           
-    denomination:
+    denominationStats:
       type: object
       required:
       - continentId
@@ -1477,50 +1318,94 @@ components:
         numVariants:
           type: integer
 
-    variant:
+
+    variantKey:
       type: object
       required:
+      - variantId
       - catalogueId
-      - denomination
       - issueYear
-      - seriesId
-      - seriesName
-      - currencyId
-      - currencyName
-      - territoryId
-      - territoryName
       properties:
+        variantId:
+          type: integer
         catalogueId:
-          type: number
-        denomination:
-          type: number
+          type: integer
         issueYear:
-          type: number
+          type: integer
         printedDate:
           type: string
-        seriesId:
-          type: number
-        seriesName:
-          type: string
-        currencyId:
-          type: number
-        currencyName:
-          type: string
-        territoryId:
-          type: number
-        territoryName:
-          type: string
-     
-    variantItem: 
-      allOf:    
-        - $ref: '#/components/schemas/variant'
+
+    variantTree:
+     allOf:    
+        - $ref: '#/components/schemas/variantKey'
         - type: object
+          required:
+          - denomination
+          - seriesId
+          - seriesName
+          - currencyId
+          - currencyName
+          - territoryId
+          - territoryName
           properties:
-            grade:
+            denomination:
+              type: integer
+            seriesId:
+              type: integer
+            seriesName:
               type: string
-            price:
-              type: number
-        
+            currencyId:
+              type: integer
+            currencyName:
+              type: string
+            territoryId:
+              type: integer
+            territoryName:
+              type: string
+   
+   
+    itemKey:
+      type: object
+      required:
+      - itemId
+      - grade
+      - gradeValue
+      - price
+      properties:
+        itemId:
+          type: integer
+        grade:
+          type: string
+        gradeValue:
+          type: integer
+        price:
+          type: number
+
+    itemTree: 
+      allOf:    
+        - $ref: '#/components/schemas/itemKey'
+        - $ref: '#/components/schemas/variantTree'
+
+    item:
+      allOf:    
+        - $ref: '#/components/schemas/itemKey'
+        - type: object
+          required:
+          - variantId
+          - quantity
+          properties:
+            variantId:
+              type: integer
+            quantity:
+              type: integer
+            seller:
+              type: string
+            purchaseDate:
+              type: string
+            description:
+              type: string
+          
+          
     itemStats:
       type: object
       required:
@@ -1530,6 +1415,7 @@ components:
       properties:
         id:
           type: integer
+          description: "id of the grouping field: territoryId, currencyId, denomination or year"  
         numTerritories:
           type: integer
         numCurrencies:
@@ -1544,6 +1430,7 @@ components:
           type: integer
         price:
           type: number
+
 
     grade:
       type: object
@@ -1562,31 +1449,19 @@ components:
         description:
           type: string
           
+
     iso2:
       type: string
       maxLength: 2
       minLength: 2
+
 
     iso3:
       type: string
       maxLength: 3
       minLength: 3
     
-    usernameType:
-      type: string
-      maxLength: 16
-      minLength: 3
-      pattern: /[A-Z 0-9]/gi  
-          
-    passwordType:
-      type: string
-      format: base64
-      minLength: 8
-    
-    emailType:
-      type: string
-      pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi
-          
+
     exception:
       type: object
       properties:
