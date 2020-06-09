@@ -67,6 +67,12 @@ paths:
       operationId: userValidationPOST
       parameters:
       - in: query
+        name: username
+        schema:
+          type: string
+        required: true
+        description: "User name"
+      - in: query
         name: type
         schema:
           type: string
@@ -86,7 +92,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/validationRequest'
+              type: object
+              required:
+              - validationCode
+              properties:
+                validationCode:
+                  type: string
+                  minLength: 8
       responses:
         "200":
           description: User confirmed
@@ -188,6 +200,12 @@ paths:
       description: The provided session is destroyed, and the user logged out.
       operationId: userSessionDELETE
       parameters:
+      - name: username
+        in: query
+        required: true
+        description: logged in user name
+        schema: 
+          type: string
       - name: wid
         in: cookie
         required: true
@@ -204,34 +222,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
   
-  /user/session/ping:
-    post:
+  /user/session/state:
+    get:
       tags: 
       - Users
-      summary: Check session state
-      description: For the active session it resets the expiration time and returns its value
-      operationId: userSessionPingGET
+      summary: Get and re-new session state
+      description: For the active session it resets the expiration time and returns its value. If the session does not exists or is expired, it does nothing
+      operationId: userSessionStateGET
       parameters:
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
       - name: wid
         in: cookie
         required: true
         description: Session Id for the logged in user
         schema: 
           type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-              - username
-              properties:
-                username:
-                  $ref: '#/components/schemas/usernameType'
       responses:
         "200":
-          description: Ping executed successfully. If a session is active it returns the session expiration time. Otherwise it returns expiration = 0
+          description: If a session is active it returns the session expiration time. Otherwise it returns expiration = 0
           content:
             application/json:
               schema:
@@ -298,19 +310,6 @@ components:
           $ref: '#/components/schemas/passwordType'
 
 
-    validationRequest:
-      type: object
-      required:
-      - username
-      - validationCode
-      properties:
-        username:
-          $ref: '#/components/schemas/usernameType'
-        validationCode:
-          type: string
-          minLength: 8
-
-
     sessionResponse:
       type: object
       required: 
@@ -333,7 +332,7 @@ components:
       type: string
       maxLength: 16
       minLength: 3
-      pattern: /[A-Z 0-9]/gi  
+      pattern: '[A-Za-z 0-9]'
 
           
     passwordType:
@@ -344,8 +343,15 @@ components:
     
     emailType:
       type: string
-      pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gi
+      pattern: '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
 
 
     exception:
-      $ref: 'banknotes-api.yaml#/components/schemas/exception'
+      type: object
+      properties:
+        status:
+          type: integer
+        code:
+          type: string
+        description:
+          type: string

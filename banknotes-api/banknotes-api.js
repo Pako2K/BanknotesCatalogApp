@@ -1,5 +1,7 @@
 "use strict";
 
+const fs = require('fs');
+
 const log = require("../utils/logger").logger;
 
 const users = require("./services/Users");
@@ -11,8 +13,26 @@ const variants = require("./services/Variants");
 const items = require("./services/Items");
 const misc = require("./services/Miscellanea");
 
-module.exports.initialize = function(app) {
-    users.initialize(app);
+const JsonValidator = require('jsonschema').Validator;
+
+module.exports.initialize = function(app, usersOAS, banknotesOAS) {
+    // Remove '#' from references
+    let usersOASStr = JSON.stringify(usersOAS);
+    usersOAS = JSON.parse(usersOASStr.replace(/\$ref":"#/g, '$ref":"'));
+
+    let banknotesOASStr = JSON.stringify(banknotesOAS);
+    banknotesOAS = JSON.parse(banknotesOASStr.replace(/\$ref":"#/g, '$ref":"'));
+
+    // Load all the schemas into the Validators
+    const usersValidator = new JsonValidator();
+    for (let schemaName of Object.keys(usersOAS["components"]["schemas"]))
+        usersValidator.addSchema(usersOAS["components"]["schemas"][schemaName], "/components/schemas/" + schemaName);
+
+    const banknotesValidator = new JsonValidator();
+    for (let schemaName of Object.keys(banknotesOAS["components"]["schemas"]))
+        banknotesValidator.addSchema(banknotesOAS["components"]["schemas"][schemaName], "/components/schemas/" + schemaName);
+
+    users.initialize(app, usersOAS, usersValidator);
     territories.initialize(app);
     currencies.initialize(app);
     series.initialize(app);
@@ -20,5 +40,6 @@ module.exports.initialize = function(app) {
     variants.initialize(app);
     items.initialize(app);
     misc.initialize(app);
+
     log.debug(`API Services initialized`);
 }

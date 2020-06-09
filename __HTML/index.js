@@ -5,11 +5,6 @@ $(document).ready(function() {
     if (user !== undefined && user !== "") {
         $(".user-input-section").hide();
     }
-
-    // Assign click event to the info images
-    // $("form img.info").click(() => {
-    //     //    $(this).siblings("p").slideToggle(400);
-    // })
 });
 
 function toggleInfo(elem) {
@@ -202,11 +197,11 @@ function confirm() {
 
     $.ajax({
         type: "POST",
-        url: `/user/validation?type=${type}`,
+        url: `/user/validation?username=${usr}&type=${type}`,
         contentType: "application/json",
         async: false,
         cache: false,
-        data: JSON.stringify({ "username": usr, "validationCode": code }),
+        data: JSON.stringify({ "validationCode": code }),
         timeout: 5000,
         dataType: 'json',
 

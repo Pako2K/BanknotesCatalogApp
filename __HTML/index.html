@@ -42,8 +42,10 @@
                     <input type="password" id="form-pwd" name="password" placeholder="Password" size=24 maxlength="30" required>
                 </div>
                 <div class="buttons-div">
-                    <input type="submit" class="button-style" value="Login">
-                    <span class="links" onclick="showRegisterForm()">Sign-up</span>
+                    <div>
+                        <input type="submit" class="button-style" value="Login">
+                        <span class="links" onclick="showRegisterForm()">Sign-up</span>
+                    </div>
                 </div>
                 <div>
                     <p class="links" onclick="showResetPasswordForm('change')">Change Password</p>
@@ -77,8 +79,10 @@
                     <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div class="buttons-div">
-                    <button type="button" class="button-style" onclick="showLoginForm()">Cancel</button>
-                    <input type="submit" class="button-style" value="Register">
+                    <div>
+                        <button type="button" class="button-style" onclick="showLoginForm()">Cancel</button>
+                        <input type="submit" class="button-style" value="Register">
+                    </div>
                 </div>
             </form>
 
@@ -89,9 +93,11 @@
                     <p class="pwd-change registration"><b>Enter the confirmation code</b> sent to your email, <span id="conf-email"></span></p>
                 </div>
                 <div>
+                    <img src="img/confirm.png" alt="code-icon" class="input-img">
+                    <input type="text" id="confirm-form-conf-code" name="code" placeholder="Code" size=10 maxlength="12" autocomplete="off" required>
+                </div>
+                <div class="buttons-div">
                     <div>
-                        <img src="img/confirm.png" alt="code-icon" class="input-img">
-                        <input type="text" id="confirm-form-conf-code" name="code" placeholder="Code" size=10 maxlength="12" autocomplete="off" required>
                         <input type="submit" class="button-style" value="OK">
                     </div>
                 </div>
@@ -130,8 +136,10 @@
                     <img src="/_shared/img/info-icon-white.svg" alt="info" class="info" onclick="toggleInfo(this)">
                 </div>
                 <div class="buttons-div">
-                    <button type="button" class="button-style" onclick="showLoginForm()">Cancel</button>
-                    <input type="submit" class="button-style" value="Change">
+                    <div>
+                        <button type="button" class="button-style" onclick="showLoginForm()">Cancel</button>
+                        <input type="submit" class="button-style" value="Change">
+                    </div>
                 </div>
             </form>
 

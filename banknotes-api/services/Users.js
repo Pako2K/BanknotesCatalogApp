@@ -5,7 +5,6 @@ const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
 const crypto = require('crypto');
 const jsonParser = require('body-parser').json();
-const jsonValidator = require('jsonschema').validate;
 const moment = require('moment');
 const mailer = require('nodemailer');
 const fs = require('fs');
@@ -23,47 +22,38 @@ const VAL_CODE_LENGTH = 8;
 let credDB;
 let catalogueDB;
 
-module.exports.initialize = function(app) {
+let serviceValidator;
+let schemas = {};
+
+module.exports.initialize = function(app, usersOAS, validator) {
     credDB = dbs.getDBConnection('credentialsDB');
     catalogueDB = dbs.getDBConnection('catalogueDB');
+    serviceValidator = validator;
 
+    // Add routes and validation schemas for the POST/PUT operations
     app.put('/user', jsonParser, userPUT);
-    app.post('/user/validation', jsonParser, userValidationPOST);
+    schemas.userPUT = getReqJSONSchema(usersOAS, "/user", "put");
+    app.post('/user/validation', jsonParser, validateSessionUser, userValidationPOST);
+    schemas.userValidationPOST = getReqJSONSchema(usersOAS, "/user/validation", "post");
     app.post('/user/password', jsonParser, userPasswordPOST);
-    app.delete('/user/session', userSessionDELETE);
+    schemas.userPasswordPOST = getReqJSONSchema(usersOAS, "/user/password", "post");
     app.get('/user/session', userSessionGET);
-    app.get('/user/session/ping', userSessionPingGET);
+    app.delete('/user/session', validateSessionUser, userSessionDELETE);
+    app.get('/user/session/state', validateSessionUser, userSessionStateGET);
 
     log.debug("Users service initialized");
 };
 
 
-const UserSchema = {
-    "type": "object",
-    "required": ["username", "email", "password"],
-    "properties": {
-        "username": {
-            "type": "string",
-            "maxLength": 16,
-            "minLength": 3,
-            "pattern": "^[A-Za-z 0-9]+$"
-        },
-        "email": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        },
-        "password": {
-            "type": "string",
-            "description": "base64 encoded password",
-            "minLength": "8",
-        }
-    }
-};
+function getReqJSONSchema(swaggerObj, path, operation) {
+    return swaggerObj["paths"][path][operation]["requestBody"]["content"]["application/json"]["schema"];
+}
+
 
 // ===> /user (register)
 function userPUT(request, response) {
     // Validate user info in the body 
-    let valResult = jsonValidator(request.body, UserSchema);
+    let valResult = serviceValidator.validate(request.body, schemas.userPUT);
     if (valResult.errors.length) {
         new Exception(400, "REG-1", JSON.stringify(valResult.errors)).send(response);
         return;
@@ -167,28 +157,12 @@ function userPUT(request, response) {
 
 
 
-const UserValidationSchema = {
-    "type": "object",
-    "required": ["username", "validationCode"],
-    "properties": {
-        "username": {
-            "type": "string",
-            "maxLength": 16,
-            "minLength": 3,
-            "pattern": "^[A-Za-z 0-9]+$"
-        },
-        "validationCode": {
-            "type": "string",
-            "minLength": VAL_CODE_LENGTH,
-        }
-    }
-};
 // ===> /user/validation?type (registration / pwd change confirmation)
 function userValidationPOST(request, response) {
-    // Validate user info in the body 
-    let valResult = jsonValidator(request.body, UserValidationSchema);
+    // Validate info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.userValidationPOST);
     if (valResult.errors.length) {
-        new Exception(400, "VAL-01", JSON.stringify(valResult.errors)).send(response);
+        new Exception(400, "VAL-1", JSON.stringify(valResult.errors)).send(response);
         return;
     }
 
@@ -201,17 +175,13 @@ function userValidationPOST(request, response) {
         return;
     }
 
-    // Check that the username matches the session user
-    if (request.body.username !== request.session.user) {
-        new Exception(403, "VAL-02", `Session is not valid or expired`).send(response);
-        return;
-    }
+    let sessionUser = request.session.user;
 
     if (validationType === "user") {
         // Check that the validation code is correct
         const sqlSelectUser = ` SELECT * FROM cre_credentials
-                            WHERE cre_username = $1`;
-        credDB.execSQL(sqlSelectUser, [request.session.user], (err, rows) => {
+                                WHERE cre_username = $1`;
+        credDB.execSQL(sqlSelectUser, [sessionUser], (err, rows) => {
             if (err) {
                 new Exception(500, err.code, err.message).send(response);
                 return;
@@ -239,7 +209,7 @@ function userValidationPOST(request, response) {
                 if (newState < 3) {
                     // Update state
                     const sqlUpdateState = "UPDATE cre_credentials SET cre_state = $1 WHERE cre_username = $2";
-                    credDB.execSQL(sqlUpdateState, [newState, request.session.user], (err) => {
+                    credDB.execSQL(sqlUpdateState, [newState, sessionUser], (err) => {
                         if (err) {
                             new Exception(500, err.code, err.message).send(response);
                             return
@@ -251,7 +221,7 @@ function userValidationPOST(request, response) {
                     // Cancel registration
                     // Delete user
                     const sqlDeleteUser = "DELETE FROM cre_credentials WHERE cre_username = $1";
-                    credDB.execSQL(sqlDeleteUser, [request.session.user], (err) => {
+                    credDB.execSQL(sqlDeleteUser, [sessionUser], (err) => {
                         if (err) {
                             new Exception(500, err.code, err.message);
                         }
@@ -268,14 +238,14 @@ function userValidationPOST(request, response) {
                 // Confirm registration: update State and CatalogDB table
                 // Update state
                 const sqlUpdateState = "UPDATE cre_credentials SET cre_state = 0,  cre_validation_code = NULL WHERE cre_username = $1";
-                credDB.execSQL(sqlUpdateState, [request.session.user], (err) => {
+                credDB.execSQL(sqlUpdateState, [sessionUser], (err) => {
                     if (err) {
                         new Exception(500, err.code, err.message).send(response);
                         return;
                     }
                     // Copy username to catalogueDB
                     const sqlInsertUserCatalogue = `INSERT INTO usr_user (usr_name) VALUES ($1)`;
-                    catalogueDB.execSQL(sqlInsertUserCatalogue, [request.body.username], (err) => {
+                    catalogueDB.execSQL(sqlInsertUserCatalogue, [sessionUser], (err) => {
                         if (err) {
                             new Exception(500, err.code, err.message).send(response);
                             return;
@@ -291,7 +261,7 @@ function userValidationPOST(request, response) {
         // Check that the validation code is correct
         const sqlSelectUser = ` SELECT * FROM cre_credentials
                                 WHERE cre_username = $1`;
-        credDB.execSQL(sqlSelectUser, [request.session.user], (err, rows) => {
+        credDB.execSQL(sqlSelectUser, [sessionUser], (err, rows) => {
             if (err) {
                 new Exception(500, err.code, err.message).send(response);
                 return;
@@ -304,7 +274,7 @@ function userValidationPOST(request, response) {
 
             if (rows[0].cre_state < 10) {
                 // User did not requet to change the password!
-                log.warn(`Password change validation for ${request.session.user}: User did not requet to change the password!`);
+                log.warn(`Password change validation for ${sessionUser}: User did not requet to change the password!`);
                 response.writeHead(200);
                 response.send();
                 return;
@@ -318,7 +288,7 @@ function userValidationPOST(request, response) {
                 if (newState < 13) {
                     // Update state
                     const sqlUpdateState = "UPDATE cre_credentials SET cre_state = $1 WHERE cre_username = $2";
-                    credDB.execSQL(sqlUpdateState, [newState, request.session.user], (err) => {
+                    credDB.execSQL(sqlUpdateState, [newState, sessionUser], (err) => {
                         if (err) {
                             new Exception(500, err.code, err.message).send(response);
                             return
@@ -330,7 +300,7 @@ function userValidationPOST(request, response) {
                     // Cancel pwd change
                     let randomPwd = crypto.randomBytes(Math.ceil(VAL_CODE_LENGTH / 2)).toString('hex').slice(0, VAL_CODE_LENGTH);
                     const sqlUpdatePwd = "UPDATE cre_credentials SET cre_hashed_pwd = $1 WHERE cre_username = $2";
-                    credDB.execSQL(sqlUpdatePwd, [randomPwd, request.session.user], (err) => {
+                    credDB.execSQL(sqlUpdatePwd, [randomPwd, sessionUser], (err) => {
                         if (err) {
                             new Exception(500, err.code, err.message);
                         }
@@ -346,7 +316,7 @@ function userValidationPOST(request, response) {
             } else {
                 // Confirmed : update State and password
                 const sqlUpdateState = "UPDATE cre_credentials SET cre_state = 0,  cre_validation_code = NULL WHERE cre_username = $1";
-                credDB.execSQL(sqlUpdateState, [request.session.user], (err) => {
+                credDB.execSQL(sqlUpdateState, [sessionUser], (err) => {
                     if (err) {
                         new Exception(500, err.code, err.message).send(response);
                         return;
@@ -361,55 +331,13 @@ function userValidationPOST(request, response) {
 }
 
 
-const UserPasswordSchema = {
-    "type": "object",
-    "required": [
-        "username",
-        "authentication",
-        "newPassword"
-    ],
-    "properties": {
-        "username": {
-            "type": "string"
-        },
-        "authentication": {
-            "oneOf": [{
-                    "type": "object",
-                    "required": [
-                        "password"
-                    ],
-                    "properties": {
-                        "password": {
-                            "type": "string",
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "email"
-                    ],
-                    "properties": {
-                        "email": {
-                            "type": "string"
-                        }
-                    }
-                }
-            ]
-        },
-        "newPassword": {
-            "type": "string",
-            "format": "base64",
-            "minLength": 8
-        }
-    }
-};
+
 // ===> /user/password (change password)
 function userPasswordPOST(request, response) {
-    // Validate user info in the body 
-    let valResult = jsonValidator(request.body, UserPasswordSchema);
+    // Validate info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.userPasswordPOST);
     if (valResult.errors.length) {
-        new Exception(400, "PWD-01", JSON.stringify(valResult.errors)).send(response);
+        new Exception(400, "PWD-1", JSON.stringify(valResult.errors)).send(response);
         return;
     }
 
@@ -544,7 +472,6 @@ function userPasswordPOST(request, response) {
 }
 
 
-
 // ===> /user/session (login)
 function userSessionGET(request, response) {
     try {
@@ -595,7 +522,7 @@ function userSessionGET(request, response) {
                         new Exception(500, err.code, err.message).send(response);
                         return;
                     }).then(() => {
-                        let replyJSON = { isAdmin: rows[0].isAdmin, lastConnection: rows[0].lastConnection };
+                        let replyJSON = { isAdmin: rows[0].isAdmin, lastConnection: rows[0].lastConnection, expiration: request.session.cookie.maxAge };
                         response.writeHead(200, { 'Content-Type': 'application/json' });
                         response.write(JSON.stringify(replyJSON));
                         response.send();
@@ -627,7 +554,6 @@ function userSessionGET(request, response) {
 }
 
 
-
 // ===> /user/session (logout)
 function userSessionDELETE(request, response) {
     request.session.destroy((err) => {
@@ -643,17 +569,14 @@ function userSessionDELETE(request, response) {
 }
 
 
-// ===> /user/session/ping 
-function userSessionPingGET(request, response) {
-    let user = request.session.user || "";
+// ===> /user/session/state (ping)
+function userSessionStateGET(request, response) {
     let expiration = 0;
-    if (user !== "")
+    if (request.session.user !== "")
         expiration = request.session.cookie.maxAge;
 
-    let reply = { user: user, expiration: expiration };
-
     response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.write(JSON.stringify(reply)); //
+    response.write(`{"expiration": ${expiration}}`); //
     response.send();
 }
 
@@ -705,6 +628,23 @@ module.exports.validateUser = function(req, res, next) {
     next();
 }
 
+
+function validateSessionUser(request, response, next) {
+    // Get username from query string
+    let username = url.parse(request.url, true).query.username;
+    if (username === undefined || username === "") {
+        // Invalid parameter
+        new Exception(400, "SES-01", "User name missing").send(response);
+        return;
+    }
+
+    // Check that the username matches the session user
+    if (!request.session.user || username !== request.session.user) {
+        new Exception(403, "SES-02", `Session is not valid or expired`).send(response);
+        return;
+    }
+    next();
+}
 
 // module.exports.validateSessionUser = function(req, res, next) {
 //     // User is not logged in anymore or is anonymous

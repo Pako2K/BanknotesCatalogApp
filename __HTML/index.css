@@ -15,8 +15,12 @@ body {
   font-size: 2em;
 }
 
+.user-input-section form > div {
+  width: 18em;
+}
+
 .user-input-section form > div > p {
-  font-size: 0.99em;
+  font-size: 0.935em;
 }
 
 .user-input-section form > div .links {
@@ -37,11 +41,17 @@ body {
 
 .user-input-section form img.input-img {
   width: 1.9em;
+  margin-top: 0.4em;
+  margin-left: 0.8em;
 }
 
 .user-input-section form img.info {
   margin-left: 1em*scale-factor;
   width: 1.4em;
+}
+
+.user-input-section > form[name=login-form] > div {
+  width: 16em;
 }
 
 #intro-section {
@@ -76,7 +86,7 @@ body {
   background-color: #5ab4b4;
 }
 
-.user-input-section form {
+.user-input-section > form {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -86,22 +96,119 @@ body {
           flex-direction: column;
 }
 
-.user-input-section form > div {
+.user-input-section > form > div {
   margin: auto;
 }
 
-.user-input-section form > div > p {
-  max-width: 19em;
+.user-input-section > form > div > p.input-info {
   color: white;
   margin: 0.3em 0.1em;
 }
 
-.user-input-section form > div > p > span {
+.user-input-section > form > div > p.input-info > span {
   font-style: italic;
   color: whitesmoke;
 }
 
-.user-input-section form > div .links {
+.user-input-section > form img.input-img {
+  position: absolute;
+}
+
+.user-input-section > form input {
+  display: inline-block;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.user-input-section > form input[type="text"],
+.user-input-section > form input[type="password"],
+.user-input-section > form input[type="email"] {
+  height: 2.5em;
+  width: 100%;
+  padding-left: 3em;
+}
+
+.user-input-section > form input[type="text"]:focus,
+.user-input-section > form input[type="password"]:focus,
+.user-input-section > form input[type="email"]:focus {
+  outline: solid 1px darkorange;
+}
+
+.user-input-section > form .links {
+  font-family: "sans-serif";
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.user-input-section > form .button-style {
+  border-radius: 2em;
+  border: none;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  height: 2em;
+  cursor: pointer;
+}
+
+.user-input-section > form .button-style:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.user-input-section > form .button-style:focus {
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+  outline: none;
+}
+
+.user-input-section > form .buttons-div {
+  margin-top: 0.5em;
+}
+
+.user-input-section > form .buttons-div > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.user-input-section > form button {
+  background: #8b5c5c;
+  color: whitesmoke;
+  margin-bottom: 1em;
+}
+
+.user-input-section > form input[type="submit"] {
+  background: #92d050;
+  color: white;
+}
+
+.user-input-section > form img.info {
+  vertical-align: middle;
+  cursor: pointer;
+  margin-left: 0.4em;
+  display: none;
+}
+
+.user-input-section > form[name=login-form] input[type="text"],
+.user-input-section > form[name=login-form] input[type="password"] {
+  width: 100%;
+}
+
+.user-input-section > form[name=login-form] .links {
   font-family: "sans-serif";
   color: whitesmoke;
   text-decoration: underline;
@@ -110,122 +217,15 @@ body {
   cursor: pointer;
 }
 
-.user-input-section form > div.buttons-div {
-  margin-top: 0.5em;
-}
-
-.user-input-section form .button-style {
-  border-radius: 2em;
-  border: none;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
-  height: 2em;
-  cursor: pointer;
-}
-
-.user-input-section form .button-style:active {
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  position: relative;
-  top: 2px;
-  left: 2px;
-}
-
-.user-input-section form .button-style:focus {
-  text-decoration: underline;
-  -webkit-text-decoration-style: dotted;
-          text-decoration-style: dotted;
-  outline: none;
-}
-
-.user-input-section form input,
-.user-input-section form button {
-  display: inline-block;
-  font-family: "Source Sans Pro", "sans-serif";
-  font-weight: bold;
-  margin-bottom: 1em;
-}
-
-.user-input-section form button {
-  background: #8b5c5c;
-  color: whitesmoke;
-}
-
-.user-input-section form input[type="text"],
-.user-input-section form input[type="password"],
-.user-input-section form input[type="email"] {
-  height: 2.5em;
-  padding-left: 3em;
-}
-
-.user-input-section form input[type="text"]:focus,
-.user-input-section form input[type="password"]:focus,
-.user-input-section form input[type="email"]:focus {
-  outline: solid 1px darkorange;
-}
-
-.user-input-section form ::-webkit-input-placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgrey;
-  opacity: 1;
-  /* Firefox */
-}
-
-.user-input-section form :-ms-input-placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgrey;
-  opacity: 1;
-  /* Firefox */
-}
-
-.user-input-section form ::-ms-input-placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgrey;
-  opacity: 1;
-  /* Firefox */
-}
-
-.user-input-section form ::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: lightgrey;
-  opacity: 1;
-  /* Firefox */
-}
-
-.user-input-section form ::-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-  color: lightgrey;
-}
-
-.user-input-section form ::-ms-input-placeholder {
-  /* Microsoft Edge */
-  color: lightgrey;
-}
-
-.user-input-section form input[type="submit"] {
-  background: #92d050;
-  color: white;
-}
-
-.user-input-section form img.input-img {
-  position: absolute;
-  margin-top: 0.4em;
-  margin-left: 0.8em;
-}
-
-.user-input-section form img.info {
-  vertical-align: middle;
-  cursor: pointer;
-  margin-left: 0.4em;
-  display: none;
-}
-
 @media screen and (max-width: 1000px) {
   #intro-section h1 {
     font-size: 1.8em;
   }
+  .user-input-section form > div {
+    width: 16.2em;
+  }
   .user-input-section form > div > p {
-    font-size: 0.891em;
+    font-size: 0.8415em;
   }
   .user-input-section form > div .links {
     font-size: 0.891em;
@@ -242,10 +242,15 @@ body {
   }
   .user-input-section form img.input-img {
     width: 1.71em;
+    margin-top: 0.36em;
+    margin-left: 0.72em;
   }
   .user-input-section form img.info {
     margin-left: 1em*scale-factor;
     width: 1.26em;
+  }
+  .user-input-section > form[name=login-form] > div {
+    width: 14.4em;
   }
 }
 
@@ -253,8 +258,11 @@ body {
   #intro-section h1 {
     font-size: 1.7em;
   }
+  .user-input-section form > div {
+    width: 15.3em;
+  }
   .user-input-section form > div > p {
-    font-size: 0.8415em;
+    font-size: 0.79475em;
   }
   .user-input-section form > div .links {
     font-size: 0.8415em;
@@ -271,10 +279,15 @@ body {
   }
   .user-input-section form img.input-img {
     width: 1.615em;
+    margin-top: 0.34em;
+    margin-left: 0.68em;
   }
   .user-input-section form img.info {
     margin-left: 1em*scale-factor;
     width: 1.19em;
+  }
+  .user-input-section > form[name=login-form] > div {
+    width: 13.6em;
   }
   #intro-section {
     -webkit-box-orient: vertical;
@@ -301,8 +314,11 @@ body {
   #intro-section h1 {
     font-size: 1.5em;
   }
+  .user-input-section form > div {
+    width: 13.5em;
+  }
   .user-input-section form > div > p {
-    font-size: 0.7425em;
+    font-size: 0.70125em;
   }
   .user-input-section form > div .links {
     font-size: 0.7425em;
@@ -319,10 +335,15 @@ body {
   }
   .user-input-section form img.input-img {
     width: 1.425em;
+    margin-top: 0.3em;
+    margin-left: 0.6em;
   }
   .user-input-section form img.info {
     margin-left: 1em*scale-factor;
     width: 1.05em;
+  }
+  .user-input-section > form[name=login-form] > div {
+    width: 12em;
   }
   #intro-section h1 {
     margin: 1em 0;
@@ -336,8 +357,11 @@ body {
   #intro-section h1 {
     font-size: 1.4em;
   }
+  .user-input-section form > div {
+    width: 12.6em;
+  }
   .user-input-section form > div > p {
-    font-size: 0.693em;
+    font-size: 0.6545em;
   }
   .user-input-section form > div .links {
     font-size: 0.693em;
@@ -354,16 +378,35 @@ body {
   }
   .user-input-section form img.input-img {
     width: 1.33em;
+    margin-top: 0.28em;
+    margin-left: 0.56em;
   }
   .user-input-section form img.info {
     margin-left: 1em*scale-factor;
     width: 0.98em;
+  }
+  .user-input-section > form[name=login-form] > div {
+    width: 11.2em;
   }
   .user-input-section > form img.info {
     display: inline-block;
   }
   .user-input-section > form p.input-info {
     display: none;
+  }
+  .user-input-section > form > div {
+    width: 15.4em;
+  }
+  .user-input-section > form > div > p.input-info {
+    max-width: 85%;
+  }
+  .user-input-section > form .buttons-div > div {
+    width: 85%;
+  }
+  .user-input-section > form input[type="text"],
+  .user-input-section > form input[type="password"],
+  .user-input-section > form input[type="email"] {
+    width: 85%;
   }
 }
 /*# sourceMappingURL=index.css.map */

@@ -15,8 +15,9 @@ $font-size-input: 1.1em;
     .user-input-section {
         & form {
             &>div {
+                width: 18em * $scale-factor;
                 &>p {
-                    font-size: $font-size-input * 0.9 * $scale-factor;
+                    font-size: $font-size-input * 0.85 * $scale-factor;
                 }
                 & .links {
                     font-size: $font-size-input * 0.9 * $scale-factor;
@@ -33,11 +34,16 @@ $font-size-input: 1.1em;
             }
             & img.input-img {
                 width: 1.9em*$scale-factor;
+                margin-top: 0.4em*$scale-factor;
+                margin-left: 0.8em*$scale-factor;
             }
             & img.info {
                 margin-left: 1em*scale-factor;
                 width: 1.4em*$scale-factor;
             }
+        }
+        &>form[name=login-form]>div {
+            width: 16em * $scale-factor;
         }
     }
 }
@@ -64,13 +70,12 @@ $font-size-input: 1.1em;
     margin: auto;
     padding: 2em 0;
     background-color: rgb(90, 180, 180);
-    & form {
+    &>form {
         display: flex;
         flex-direction: column;
         &>div {
             margin: auto;
-            &>p {
-                max-width: 19em;
+            &>p.input-info {
                 color: white;
                 margin: 0.3em 0.1em;
                 &>span {
@@ -78,23 +83,36 @@ $font-size-input: 1.1em;
                     color: whitesmoke;
                 }
             }
-            & .links {
-                font-family: $FONT_DATA;
-                color: whitesmoke;
-                text-decoration: underline;
-                margin-bottom: 1em;
-                text-align: center;
-                cursor: pointer;
+        }
+        & img.input-img {
+            position: absolute;
+        }
+        & input {
+            display: inline-block;
+            font-family: $FONT_HEADER;
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+        & input[type="text"],
+        & input[type="password"],
+        & input[type="email"] {
+            height: 2.5em;
+            width: 100%;
+            padding-left: 3em;
+            &:focus {
+                outline: solid 1px darkorange;
             }
-            &.buttons-div {
-                margin-top: 0.5em;
-            }
+        }
+        & .links {
+            font-family: $FONT_DATA;
+            text-decoration: underline;
+            cursor: pointer;
         }
         & .button-style {
             border-radius: 2em;
             border: none;
-            margin-left: 0.5em;
-            margin-right: 0.5em;
+            margin-left: 0.8em;
+            margin-right: 0.8em;
             height: 2em;
             cursor: pointer;
             &:active {
@@ -109,41 +127,43 @@ $font-size-input: 1.1em;
                 outline: none;
             }
         }
-        & input,
-        & button {
-            display: inline-block;
-            font-family: $FONT_HEADER;
-            font-weight: bold;
-            margin-bottom: 1em;
+        & .buttons-div {
+            margin-top: 0.5em;
+            &>div {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+            }
         }
         & button {
             background: rgb(139, 92, 92);
             color: whitesmoke;
+            margin-bottom: 1em;
         }
-        & input[type="text"],
-        & input[type="password"],
-        & input[type="email"] {
-            height: 2.5em;
-            padding-left: 3em;
-            &:focus {
-                outline: solid 1px darkorange;
-            }
-        }
-        @include input-placeholder(lightgrey);
         & input[type="submit"] {
             background: rgb(146, 208, 80);
             color: white;
-        }
-        & img.input-img {
-            position: absolute;
-            margin-top: 0.4em;
-            margin-left: 0.8em;
         }
         & img.info {
             vertical-align: middle;
             cursor: pointer;
             margin-left: 0.4em;
             display: none;
+        }
+    }
+    &>form[name=login-form] {
+        & input[type="text"],
+        & input[type="password"] {
+            width: 100%;
+        }
+        & .links {
+            font-family: $FONT_DATA;
+            color: whitesmoke;
+            text-decoration: underline;
+            margin-bottom: 1em;
+            text-align: center;
+            cursor: pointer;
         }
     }
 }
@@ -186,10 +206,27 @@ $font-size-input: 1.1em;
 
 @media screen and (max-width: $WIDTH_BIG_PHONE) {
     @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
-    .user-input-section>form img.info {
-        display: inline-block;
-    }
-    .user-input-section>form p.input-info {
-        display: none;
+    .user-input-section>form {
+        & img.info {
+            display: inline-block
+        }
+        ;
+        & p.input-info {
+            display: none;
+        }
+        &>div {
+            width: 22em * $WIDTH_FACTOR_BIG_PHONE;
+            &>p.input-info {
+                max-width: 85%;
+            }
+        }
+        & .buttons-div>div {
+            width: 85%;
+        }
+        & input[type="text"],
+        & input[type="password"],
+        & input[type="email"] {
+            width: 85%;
+        }
     }
 }

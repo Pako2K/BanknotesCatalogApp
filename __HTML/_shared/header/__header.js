@@ -29,9 +29,10 @@ $("nav").ready(() => {
 
 
 function _header_logout() {
+    let user = getCookie("banknotes.ODB.username");
     $.ajax({
         type: "DELETE",
-        url: "/user/session",
+        url: `/user/session?username=${user}`,
         async: false,
         cache: false,
         timeout: 5000,

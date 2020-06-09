@@ -7,7 +7,7 @@ $(".main-footer").ready(function() {
 
         $.ajax({
             type: "GET",
-            url: "/user/session/ping",
+            url: `/user/session/state?username=${user}`,
             async: true,
             cache: false,
             timeout: 5000,
@@ -15,7 +15,7 @@ $(".main-footer").ready(function() {
 
             success: function(result, status) {
                 const INTERVAL = 5; // in seconds
-                if (result.user) {
+                if (result.expiration) {
                     let expSec = result.expiration / 1000;
                     let unit = (expSec > 60) ? " minutes" : " minute";
                     $("#expiration").text(Math.ceil(expSec / 60) + unit);

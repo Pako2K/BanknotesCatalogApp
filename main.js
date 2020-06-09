@@ -60,8 +60,10 @@ function startServer() {
     app.use(express.static(appConfig.staticContent));
 
     // Add midleware to generate Swagger UI
-    app.use('/api-docs/users', swaggerUi.serve, swaggerUi.setup(YAML.load('./banknotes-api/oas/users-api.yaml')));
-    app.use('/api-docs/banknotes', swaggerUi.serve, swaggerUi.setup(YAML.load('./banknotes-api/oas/banknotes-api.yaml')));
+    const usersOAS = YAML.load('./banknotes-api/oas/users-api.yaml');
+    const banknotesOAS = YAML.load('./banknotes-api/oas/banknotes-api.yaml');
+    app.use('/api-docs/users', swaggerUi.serve, swaggerUi.setup(usersOAS));
+    app.use('/api-docs/banknotes', swaggerUi.serve, swaggerUi.setup(banknotesOAS));
 
     // Add default logging middleware
     app.use((req, res, next) => {
@@ -75,7 +77,7 @@ function startServer() {
         next();
     });
 
-    api.initialize(app);
+    api.initialize(app, usersOAS, banknotesOAS);
 
     if (appConfig.useHTTPS) {
         const sslOptions = {
