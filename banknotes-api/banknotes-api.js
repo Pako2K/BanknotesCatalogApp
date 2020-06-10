@@ -6,7 +6,7 @@ const log = require("../utils/logger").logger;
 
 const users = require("./services/Users");
 const territories = require("./services/Territories");
-const stats = require("./services/Stats");
+const stats = require("./services/Statistics");
 const currencies = require("./services/Currencies");
 const series = require("./services/Series");
 const banknotes = require("./services/Banknotes");

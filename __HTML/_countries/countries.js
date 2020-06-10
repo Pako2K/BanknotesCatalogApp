@@ -1,73 +1,46 @@
 "use strict"
 
 $("#countries-table").ready(() => {
-    // Get territories
+    let uri = "/territories/variants/stats";
+    if (getCookie("banknotes.ODB.username"))
+        uri = "/territories/items/stats"
+
+    // Get territories and statistics
     $.ajax({
         type: "GET",
-        url: `/territories`,
+        url: uri,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
         success: function(countriesJSON, status) {
-            for (let row of countriesJSON) {
-                row.collecStats = {};
-                row.collecStats.numCurrencies = 0;
-                row.collecStats.numSeries = 0;
-                row.collecStats.numNotes = 0;
-                row.collecStats.numVariants = 0;
-                row.collecStats.numDenominations = 0;
-                row.collecStats.price = 0;
+            if (uri === "/territories/variants/stats") {
+                // Add null collectionStats
+                for (let row of countriesJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.price = 0;
+                }
             }
-
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/items/stats?grouping=territory`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results with the countries info
-                        let collecIndex = 0;
-                        for (let row of countriesJSON) {
-                            if (collecIndex >= collecResult.length)
-                                break;
-                            if (row.id === collecResult[collecIndex].id) {
-                                row.collecStats.numCurrencies = collecResult[collecIndex].numCurrencies;
-                                row.collecStats.numSeries = collecResult[collecIndex].numSeries;
-                                row.collecStats.numNotes = collecResult[collecIndex].numNotes;
-                                row.collecStats.numVariants = collecResult[collecIndex].numVariants;
-                                row.collecStats.numDenominations = collecResult[collecIndex].numDenominations;
-                                row.collecStats.price = collecResult[collecIndex].price;
-                                collecIndex++;
-                            }
-                        }
-                        storeCountriesTable(countriesJSON);
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                alert("Your session is not valid or has expired.");
-                                if (getCookie("banknotes.ODB.username")) {
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
-                    }
-                });
-            } else {
-                storeCountriesTable(countriesJSON);
-            }
+            storeCountriesTable(countriesJSON);
         },
         error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            switch (xhr.status) {
+                case 403:
+                    alert("Your session is not valid or has expired.");
+                    if (getCookie("banknotes.ODB.username")) {
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
         }
     });
 });
@@ -123,7 +96,7 @@ function storeCountriesTable(countriesJSON, sortingField, isCollecBasedSorting) 
             sortingAsc = !sortingAsc;
 
         if (isCollecBasedSorting)
-            sortingField = "collecStats." + sortingField;
+            sortingField = "collectionStats." + sortingField;
 
         let sortingFields = [sortingField];
         if (sortingField !== "name")
@@ -211,7 +184,7 @@ function loadCountriesTable() {
                 flagFileName = country.name.replace(/,|\s/g, "");
             }
 
-            let priceStr = (country.collecStats.price === 0) ? '-' : country.collecStats.price.toFixed(2) + ' €';
+            let priceStr = (country.collectionStats.price === 0) ? '-' : country.collectionStats.price.toFixed(2) + ' €';
             record = `<tr>
                                 <th><img src="/_countries/img/flags/` + flagFileName.toLowerCase() + `.png"></th>
                                 <th>${country.iso3}</th>
@@ -220,44 +193,44 @@ function loadCountriesTable() {
                                 <th>` + country.end + `</th>
                                 <th>` + TER_TYPES[country.territoryTypeId] + `</th>
                                 <td>${country.numCurrencies}</td>
-                                <td class="only-logged-in">${country.collecStats.numCurrencies || '-'}</td>
+                                <td class="only-logged-in">${country.collectionStats.numCurrencies || '-'}</td>
                                 <td>${country.numSeries}</td>
-                                <td class="only-logged-in">${country.collecStats.numSeries || '-'}</td>
+                                <td class="only-logged-in">${country.collectionStats.numSeries || '-'}</td>
                                 <td>${country.numDenominations}</td>
-                                <td class="only-logged-in">${country.collecStats.numDenominations || '-'}</td>
+                                <td class="only-logged-in">${country.collectionStats.numDenominations || '-'}</td>
                                 <td>${country.numNotes}</td>
-                                <td class="only-logged-in">${country.collecStats.numNotes || '-'}</td>
+                                <td class="only-logged-in">${country.collectionStats.numNotes || '-'}</td>
                                 <td>${country.numVariants}</td>
-                                <td class="only-logged-in">${country.collecStats.numVariants || '-'}</td>
+                                <td class="only-logged-in">${country.collectionStats.numVariants || '-'}</td>
                                 <td class="only-logged-in">${priceStr}</td>
                             </tr>`;
             $("#countries-table>tbody").append(record);
 
             totals.currencies.cat += country.numCurrencies;
-            totals.currencies.col += country.collecStats.numCurrencies;
+            totals.currencies.col += country.collectionStats.numCurrencies;
             totals.series.cat += country.numSeries;
-            totals.series.col += country.collecStats.numSeries;
+            totals.series.col += country.collectionStats.numSeries;
             totals.denom.cat += country.numDenominations;
-            totals.denom.col += country.collecStats.numDenominations;
+            totals.denom.col += country.collectionStats.numDenominations;
             totals.notes.cat += country.numNotes;
-            totals.notes.col += country.collecStats.numNotes;
+            totals.notes.col += country.collectionStats.numNotes;
             totals.variants.cat += country.numVariants;
-            totals.variants.col += country.collecStats.numVariants;
-            totals.price += country.collecStats.price;
+            totals.variants.col += country.collectionStats.numVariants;
+            totals.price += country.collectionStats.price;
 
             // Statistics:
             if (existing && country.end === "") {
                 statsTerType[country.territoryTypeId].existing.total++;
                 if (country.numCurrencies) {
                     statsTerType[country.territoryTypeId].existing.issuing++;
-                    if (country.collecStats.numCurrencies)
+                    if (country.collectionStats.numCurrencies)
                         statsTerType[country.territoryTypeId].existing.col++;
                 }
             } else {
                 statsTerType[country.territoryTypeId].extinct.total++;
                 if (country.numCurrencies) {
                     statsTerType[country.territoryTypeId].extinct.issuing++;
-                    if (country.collecStats.numCurrencies)
+                    if (country.collectionStats.numCurrencies)
                         statsTerType[country.territoryTypeId].extinct.col++;
                 }
             }

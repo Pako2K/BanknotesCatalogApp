@@ -27,7 +27,7 @@ tags:
     description: Manage banknote variants information
   - name: Items
     description: Manage banknotes in the user collection
-  - name: Stats
+  - name: Statistics
     description: Retrieve statistics about the catalogue and the user collection
   - name: Miscellanea
     description: Set of operations to retrieve static data
@@ -115,22 +115,22 @@ paths:
                 $ref: '#/components/schemas/exception'
   
 
-  /territories/stats:
+  /territories/variants/stats:
     get:
       tags:
-      - Stats
-      summary: Get list of countries and territories.
-      description: Returns a list of countries and territries with their main features and statistics about their currencies and banknotes.
-      operationId: territoriesStatsGET
+      - Statistics
+      summary: Get statistics about banknotes in catalogue for each territory.
+      description: Returns statistics for the existing banknotes in the catalogue .
+      operationId: territoriesVariantsStatsGET
       responses:
         "200":
-          description: List of countries and territories
+          description: List of territories with statistics
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/territoryStats'
+                  $ref: '#/components/schemas/territoryCatStats'
         "500":
           description: Internal server error
           content:
@@ -139,6 +139,55 @@ paths:
                 $ref: '#/components/schemas/exception'
 
   
+  /territories/items/stats:
+    get:
+      tags:
+      - Statistics
+      summary: Get statistics about banknotes in collection for each territory.
+      description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session).
+      operationId: territoriesItemsStatsGET
+      parameters:
+      - name: banknotes.ODB.username
+        in: cookie
+        required: true
+        description: logged in user name
+        schema:
+          type: string
+      - name: wid
+        in: cookie
+        required: true
+        description: Session Id for the logged in user
+        schema: 
+          type: string
+      responses:
+        "200":
+          description: List of territories with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/territoryColStats'
+        "400":
+          description: Invalid request. Missing cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: Session id or username is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                
   /currencies/stats:
     get:
       tags: 
@@ -1007,7 +1056,7 @@ components:
 
 
     territory:
-     allOf:    
+      allOf:    
       - $ref: '#/components/schemas/territoryKey'
       - type: object
         required:
@@ -1042,45 +1091,69 @@ components:
             type: string
 
 
-    territoryStats:
-      type: object
-      required:
-      - id
-      - continentId
-      - territoryTypeId
-      - name
-      - start
-      - numCurrencies
-      - numSeries
-      - numDenominations
-      - numNotes
-      - numVariants
-      properties:
-        id:
-          type: integer
-        continentId:
-          type: integer
-        territoryTypeId:
-          type: integer
-        iso3:
-          $ref: '#/components/schemas/iso3'
-        name:
-          type: string
-        start:
-          type: integer
-        end:
-          type: integer
-        numCurrencies:
-          type: integer
-        numSeries:
-          type: integer
-        numDenominations:
-          type: integer
-        numNotes:
-          type: integer
-        numVariants:
-          type: integer
+    territoryCatStats:
+      allOf:    
+      - $ref: '#/components/schemas/territoryKey'
+      - type: object
+        required:
+        - continentId
+        - territoryTypeId
+        - start
+        - numCurrencies
+        - numSeries
+        - numDenominations
+        - numNotes
+        - numVariants
+        properties:
+          continentId:
+            type: integer
+          territoryTypeId:
+            type: integer
+          start:
+            type: integer
+          end:
+            type: integer
+          numCurrencies:
+            type: integer
+          numSeries:
+            type: integer
+          numDenominations:
+            type: integer
+          numNotes:
+            type: integer
+          numVariants:
+            type: integer
 
+
+    territoryColStats:
+      allOf:    
+      - $ref: '#/components/schemas/territoryCatStats'
+      - type: object
+        required:
+        - collectionStats
+        properties:
+          collectionStats:
+            type: object
+            required:
+            - numCurrencies
+            - numSeries
+            - numDenominations
+            - numNotes
+            - numVariants
+            - price
+            properties:
+              numCurrencies:
+                type: integer
+              numSeries:
+                type: integer
+              numDenominations:
+                type: integer
+              numNotes:
+                type: integer
+              numVariants:
+                type: integer
+              price:
+                type: number
 
     currency:
       type: object
