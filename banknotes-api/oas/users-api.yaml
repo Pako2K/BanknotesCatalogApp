@@ -67,12 +67,6 @@ paths:
       operationId: userValidationPOST
       parameters:
       - in: query
-        name: username
-        schema:
-          type: string
-        required: true
-        description: "User name"
-      - in: query
         name: type
         schema:
           type: string
@@ -94,8 +88,11 @@ paths:
             schema:
               type: object
               required:
+              - username
               - validationCode
               properties:
+                username:
+                  type: string
                 validationCode:
                   type: string
                   minLength: 8
@@ -193,46 +190,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
 
-    delete:
+    post:
       tags: 
       - Users
-      summary: Log out and destroy session
-      description: The provided session is destroyed, and the user logged out.
-      operationId: userSessionDELETE
+      summary: Check and re-new session state
+      description: For the active session it resets the expiration time and returns its value. If the session does not exists or is expired, it does nothing
+      operationId: userSessionPOST
       parameters:
-      - name: username
-        in: query
-        required: true
-        description: logged in user name
-        schema: 
-          type: string
-      - name: wid
+      - name: banknotes.ODB.username
         in: cookie
         required: true
-        description: Session Id for the logged in user
-        schema: 
-          type: string
-      responses:
-        "200":
-          description: Logout executed successfully or user not logged in
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-  
-  /user/session/state:
-    get:
-      tags: 
-      - Users
-      summary: Get and re-new session state
-      description: For the active session it resets the expiration time and returns its value. If the session does not exists or is expired, it does nothing
-      operationId: userSessionStateGET
-      parameters:
-      - name: username
-        in: query
-        required: true
+        description: logged in user name
         schema:
           type: string
       - name: wid
@@ -260,6 +228,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+
+    delete:
+      tags: 
+      - Users
+      summary: Log out and destroy session
+      description: The provided session is destroyed, and the user logged out.
+      operationId: userSessionDELETE
+      parameters:
+      - name: banknotes.ODB.username
+        in: cookie
+        required: true
+        description: logged in user name
+        schema: 
+          type: string
+      - name: wid
+        in: cookie
+        required: true
+        description: Session Id for the logged in user
+        schema: 
+          type: string
+      responses:
+        "200":
+          description: Logout executed successfully or user not logged in
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
 
               
 components:

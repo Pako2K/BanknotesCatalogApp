@@ -6,8 +6,8 @@ $(".main-footer").ready(function() {
         $(".session-info").show();
 
         $.ajax({
-            type: "GET",
-            url: `/user/session/state?username=${user}`,
+            type: "POST",
+            url: `/user/session`,
             async: true,
             cache: false,
             timeout: 5000,

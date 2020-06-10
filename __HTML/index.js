@@ -161,7 +161,7 @@ function login() {
             $("#username").text(usr);
             setCookie("banknotes.ODB.username", usr, 24 * 60 * 60);
             setCookie("banknotes.ODB.isAdmin", result.isAdmin, 24 * 60 * 60);
-            setCookie("banknotes.ODB.lastConnection", result.lastConnection, 24 * 60 * 60);
+            setCookie("banknotes.ODB.lastConnection", result.lastConnection || "", 24 * 60 * 60);
             $("#_countries")[0].click();
         },
 
@@ -197,11 +197,11 @@ function confirm() {
 
     $.ajax({
         type: "POST",
-        url: `/user/validation?username=${usr}&type=${type}`,
+        url: `/user/validation?type=${type}`,
         contentType: "application/json",
         async: false,
         cache: false,
-        data: JSON.stringify({ "validationCode": code }),
+        data: JSON.stringify({ "username": usr, "validationCode": code }),
         timeout: 5000,
         dataType: 'json',
 

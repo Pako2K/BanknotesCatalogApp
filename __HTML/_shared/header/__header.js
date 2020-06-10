@@ -32,7 +32,7 @@ function _header_logout() {
     let user = getCookie("banknotes.ODB.username");
     $.ajax({
         type: "DELETE",
-        url: `/user/session?username=${user}`,
+        url: `/user/session`,
         async: false,
         cache: false,
         timeout: 5000,

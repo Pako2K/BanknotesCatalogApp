@@ -12,11 +12,11 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/items/stats', users.validateUser, itemsStatsGET);
-    app.get('/items', users.validateUser, itemsGET);
-    app.get('/territory/:territoryId/items/stats', users.validateUser, territoryByIdItemsStatsGET);
-    app.get('/currency/:currencyId/items/stats', users.validateUser, currencyByIdItemsStatsGET);
-    app.get('/series/:seriesId/items', users.validateUser, seriesByIdItemsGET);
+    app.get('/items/stats', users.validateSessionUser, itemsStatsGET);
+    app.get('/items', users.validateSessionUser, itemsGET);
+    app.get('/territory/:territoryId/items/stats', users.validateSessionUser, territoryByIdItemsStatsGET);
+    app.get('/currency/:currencyId/items/stats', users.validateSessionUser, currencyByIdItemsStatsGET);
+    app.get('/series/:seriesId/items', users.validateSessionUser, seriesByIdItemsGET);
 
     log.debug("Items service initialized");
 };

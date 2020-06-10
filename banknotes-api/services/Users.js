@@ -33,13 +33,17 @@ module.exports.initialize = function(app, usersOAS, validator) {
     // Add routes and validation schemas for the POST/PUT operations
     app.put('/user', jsonParser, userPUT);
     schemas.userPUT = getReqJSONSchema(usersOAS, "/user", "put");
-    app.post('/user/validation', jsonParser, validateSessionUser, userValidationPOST);
+
+    app.post('/user/validation', jsonParser, userValidationPOST);
     schemas.userValidationPOST = getReqJSONSchema(usersOAS, "/user/validation", "post");
+
     app.post('/user/password', jsonParser, userPasswordPOST);
     schemas.userPasswordPOST = getReqJSONSchema(usersOAS, "/user/password", "post");
+
     app.get('/user/session', userSessionGET);
-    app.delete('/user/session', validateSessionUser, userSessionDELETE);
-    app.get('/user/session/state', validateSessionUser, userSessionStateGET);
+    app.post('/user/session', module.exports.validateSessionUser, userSessionPOST);
+    app.delete('/user/session', module.exports.validateSessionUser, userSessionDELETE);
+
 
     log.debug("Users service initialized");
 };
@@ -156,26 +160,32 @@ function userPUT(request, response) {
 }
 
 
-
 // ===> /user/validation?type (registration / pwd change confirmation)
 function userValidationPOST(request, response) {
     // Validate info in the body 
     let valResult = serviceValidator.validate(request.body, schemas.userValidationPOST);
     if (valResult.errors.length) {
-        new Exception(400, "VAL-1", JSON.stringify(valResult.errors)).send(response);
+        new Exception(400, "VAL-01", JSON.stringify(valResult.errors)).send(response);
         return;
     }
+
+    // Get username and validate
+    let username = request.body.username;
+    let sessionUser = request.session.user;
+    if (!request.session.user || username !== request.session.user) {
+        new Exception(403, "VAL-02", `Session is not valid or expired`).send(response);
+        return;
+    }
+
 
     // Validate query string
     let validationType = url.parse(request.url, true).query.type;
     const TYPES = ['user', 'password'];
     if (validationType === undefined || validationType === '' || TYPES.indexOf(validationType) === -1) {
         // Invalid parameter
-        new Exception(400, "VAL-06", "Query parameter missing or not valid").send(response);
+        new Exception(400, "VAL-03", "Query parameter missing or not valid").send(response);
         return;
     }
-
-    let sessionUser = request.session.user;
 
     if (validationType === "user") {
         // Check that the validation code is correct
@@ -188,7 +198,7 @@ function userValidationPOST(request, response) {
             }
 
             if (rows[0].length === 0) {
-                new Exception(403, "VAL-03", `User is not valid`).send(response);
+                new Exception(403, "VAL-04", `User is not valid`).send(response);
                 return;
             }
 
@@ -214,7 +224,7 @@ function userValidationPOST(request, response) {
                             new Exception(500, err.code, err.message).send(response);
                             return
                         }
-                        new Exception(403, "VAL-04", `Validation code is wrong. ${3 - newState} attempts left.`).send(response);
+                        new Exception(403, "VAL-05", `Validation code is wrong. ${3 - newState} attempts left.`).send(response);
                         return;
                     });
                 } else {
@@ -229,7 +239,7 @@ function userValidationPOST(request, response) {
                             if (err) {
                                 new Exception(500, err.code, err.message);
                             }
-                            new Exception(403, "VAL-05", `Validation code is wrong. Registration has been cancelled`).send(response);
+                            new Exception(403, "VAL-06", `Validation code is wrong. Registration has been cancelled`).send(response);
                             return;
                         });
                     });
@@ -268,7 +278,7 @@ function userValidationPOST(request, response) {
             }
 
             if (rows[0].length === 0) {
-                new Exception(403, "VAL-03", `User is not valid`).send(response);
+                new Exception(403, "VAL-04", `User is not valid`).send(response);
                 return;
             }
 
@@ -293,7 +303,7 @@ function userValidationPOST(request, response) {
                             new Exception(500, err.code, err.message).send(response);
                             return
                         }
-                        new Exception(403, "VAL-04", `Validation code is wrong. ${13 - newState} attempts left.`).send(response);
+                        new Exception(403, "VAL-05", `Validation code is wrong. ${13 - newState} attempts left.`).send(response);
                         return;
                     });
                 } else {
@@ -308,7 +318,7 @@ function userValidationPOST(request, response) {
                             if (err) {
                                 new Exception(500, err.code, err.message);
                             }
-                            new Exception(403, "VAL-05", `Validation code is wrong. New password has been deleted`).send(response);
+                            new Exception(403, "VAL-06", `Validation code is wrong. New password has been deleted`).send(response);
                             return;
                         });
                     });
@@ -569,11 +579,9 @@ function userSessionDELETE(request, response) {
 }
 
 
-// ===> /user/session/state (ping)
-function userSessionStateGET(request, response) {
-    let expiration = 0;
-    if (request.session.user !== "")
-        expiration = request.session.cookie.maxAge;
+// ===> /user/session (ping)
+function userSessionPOST(request, response) {
+    let expiration = request.session.cookie.maxAge;
 
     response.writeHead(200, { 'Content-Type': 'application/json' });
     response.write(`{"expiration": ${expiration}}`); //
@@ -607,34 +615,12 @@ function setUserSession(request, username) {
     });
 }
 
-module.exports.validateUser = function(req, res, next) {
+module.exports.validateSessionUser = function(request, response, next) {
     // Extract username from the cookie:
-    let username = getHeaderCookie(req.headers.cookie, "banknotes.ODB.username");
-    if (!username) {
-        log.info("Username not received.");
-        // sent error
-        new Exception(400, "USER-1", "Username in cookie is missing").send(res);
-        return;
-    }
-
-    // Check that the user matches with the session user
-    if (!req.session.user || req.session.user !== username) {
-        log.info("Username is not valid or session has expired.");
-        // Cancel current session and sent error
-        // sent error
-        new Exception(403, "USER-2", "Username not logged-in or invalid session").send(res);
-        return;
-    }
-    next();
-}
-
-
-function validateSessionUser(request, response, next) {
-    // Get username from query string
-    let username = url.parse(request.url, true).query.username;
-    if (username === undefined || username === "") {
+    let username = getHeaderCookie(request.headers.cookie, "banknotes.ODB.username");
+    if (!username || username === "") {
         // Invalid parameter
-        new Exception(400, "SES-01", "User name missing").send(response);
+        new Exception(400, "SES-01", "User name in cookie is missing").send(response);
         return;
     }
 
@@ -645,29 +631,6 @@ function validateSessionUser(request, response, next) {
     }
     next();
 }
-
-// module.exports.validateSessionUser = function(req, res, next) {
-//     // User is not logged in anymore or is anonymous
-//     // Extract username from the cookie:
-//     let username = getHeaderCookie(req.headers.cookie, "banknotes.ODB.username");
-//     if (!username) {
-//         if (req.session.user) {
-//             log.info("Username not received. Disconnecting current session for " + req.session.user);
-//             // Cancel current session and sent error
-//             destroySession(req, res, 403, "SES-1", "Invalid username");
-//             return;
-//         } else {
-//             // Anonymous session does not expire
-//             req.session.cookie.maxAge = undefined;
-//         }
-//     } else if (!req.session.user || req.session.user !== username) {
-//         log.info("Username does not match or session has expired. Disconnecting current session for " + req.session.user);
-//         // Cancel current session and sent error
-//         destroySession(req, res, 403, "SES-2", "Invalid session");
-//         return;
-//     }
-//     next();
-// }
 
 
 // module.exports.validateAdmin = function(req, res, next) {
