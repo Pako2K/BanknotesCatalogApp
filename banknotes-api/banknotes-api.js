@@ -6,6 +6,7 @@ const log = require("../utils/logger").logger;
 
 const users = require("./services/Users");
 const territories = require("./services/Territories");
+const stats = require("./services/Stats");
 const currencies = require("./services/Currencies");
 const series = require("./services/Series");
 const banknotes = require("./services/Banknotes");
@@ -34,6 +35,7 @@ module.exports.initialize = function(app, usersOAS, banknotesOAS) {
 
     users.initialize(app, usersOAS, usersValidator);
     territories.initialize(app);
+    stats.initialize(app);
     currencies.initialize(app);
     series.initialize(app);
     banknotes.initialize(app);

@@ -60,14 +60,14 @@ function setCountryHeader(countryData) {
         $("#parent-country>a>img").attr("src", flagFileName(countryData.parent));
         $("#parent-country>a>span").text(countryData.parent.name);
     }
-    if (countryData.successors.length) {
+    if (countryData.successors && countryData.successors.length) {
         $("#successors").show();
         for (let suc of countryData.successors) {
             $("#successors").append(createCountryLink(suc));
         }
     }
 
-    if (countryData.predecessors.length) {
+    if (countryData.predecessors && countryData.predecessors.length) {
         $("#predecessors").show();
         for (let pred of countryData.predecessors) {
             $("#predecessors").append(createCountryLink(pred));

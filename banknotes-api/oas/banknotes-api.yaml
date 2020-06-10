@@ -27,6 +27,8 @@ tags:
     description: Manage banknote variants information
   - name: Items
     description: Manage banknotes in the user collection
+  - name: Stats
+    description: Retrieve statistics about the catalogue and the user collection
   - name: Miscellanea
     description: Set of operations to retrieve static data
 
@@ -36,7 +38,7 @@ paths:
       tags:
       - Territories
       summary: Get list of continents.
-      description: Returns the list of available continents
+      description: Returns the list of defined continents, sorted alphabetically
       operationId: continentsGET
       responses:
         "200":
@@ -44,7 +46,6 @@ paths:
           content:
             application/json:
               schema:
-                example: [{id: 1, name: "Africa"}, {id: 2, name: "Asia"}]
                 type: array
                 items:
                   $ref: '#/components/schemas/continent'
@@ -59,7 +60,7 @@ paths:
     get:
       tags:
       - Territories
-      summary: Get list of territory types.
+      summary: Get territory types.
       description: Returns a list of territory types.
       operationId: territoryTypesGET
       responses:
@@ -71,7 +72,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/territoryType'
-                  
         "500":
           description: Internal server error
           content:
@@ -79,10 +79,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
 
-  /territories/stats:
+
+  /territory/{territoryId}:
     get:
       tags:
       - Territories
+      summary: Get all the info about a territory.
+      description: Returns the info about a country or territory.
+      operationId: territoryByIdGET
+      parameters:
+      - in: path
+        required: true
+        name: territoryId
+        schema:
+          type: integer
+        description: Id of the territory
+      responses:
+        "200":
+          description: Country or territory complete info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/territory'
+        "400":
+          description: Invalid request. The territory Id must be an integer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
+
+  /territories/stats:
+    get:
+      tags:
+      - Stats
       summary: Get list of countries and territories.
       description: Returns a list of countries and territries with their main features and statistics about their currencies and banknotes.
       operationId: territoriesStatsGET
@@ -101,37 +137,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-  
-  
-  /territory/{territoryId}:
-    get:
-      tags:
-      - Territories
-      summary: Get all the info about a country or territory.
-      description: Returns the info about a country or territory.
-      operationId: territoryByIdGET
-      parameters:
-      - in: path
-        required: true
-        name: territoryId
-        schema:
-          type: integer
-        description: Id of the territory          
-      responses:
-        "200":
-          description: Country or territory complete info
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/territory'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-  
-  
+
   
   /currencies/stats:
     get:
@@ -956,86 +962,85 @@ components:
       properties:
         id:
           type: integer
-          example: 1
         name:
           type: string
-          example: "Africa"
-      example:
-        name: name
-        id: 0
-    
-    
-    territory:
+
+
+    territoryTypeKey:
       type: object
       required:
       - id
-      - continentId
-      - territoryTypeId
       - name
-      - officialName
-      - start
       properties:
         id:
           type: integer
-        continent:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-        territoryType:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-        iso2:
-          $ref: '#/components/schemas/iso2'
+        name:
+          type: string
+          
+          
+    territoryType:
+      allOf:    
+      - $ref: '#/components/schemas/territoryTypeKey'
+      - type: object
+        required:
+        - abbreviation
+        - description
+        properties:
+          abbreviation:
+            type: string
+          description:
+            type: string
+
+
+    territoryKey:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
         iso3:
           $ref: '#/components/schemas/iso3'
         name:
           type: string
-        officialName:
-          type: string
-        start:
-          type: integer
-        end:
-          type: integer
-        parent:
-          type: object
-          properties:  
-            id:
-              type: integer
-            name:
-              type: string
-            iso3:
-              $ref: '#/components/schemas/iso3'
-        predecessors:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              iso3:
-                $ref: '#/components/schemas/iso3'
-        successors:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              iso3:
-                $ref: '#/components/schemas/iso3'
-        description:
-          type: string
+
+
+    territory:
+     allOf:    
+      - $ref: '#/components/schemas/territoryKey'
+      - type: object
+        required:
+        - continent
+        - territoryType
+        - officialName
+        - start
+        properties:
+          continent:
+            $ref: '#/components/schemas/continent'
+          territoryType:
+            $ref: '#/components/schemas/territoryTypeKey'
+          iso2:
+            $ref: '#/components/schemas/iso2'
+          officialName:
+            type: string
+          start:
+            type: integer
+          end:
+            type: integer
+          parent:
+           $ref: '#/components/schemas/territoryKey'
+          predecessors:
+            type: array
+            items:
+              $ref: '#/components/schemas/territoryKey'
+          successors:
+            type: array
+            items:
+             $ref: '#/components/schemas/territoryKey'
+          description:
+            type: string
+
 
     territoryStats:
       type: object
@@ -1075,22 +1080,6 @@ components:
           type: integer
         numVariants:
           type: integer
-
-
-    territoryType:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        abbrevation:
-          type: string
-        description:
-          type: string
 
 
     currency:
@@ -1336,7 +1325,7 @@ components:
           type: string
 
     variantTree:
-     allOf:    
+      allOf:    
         - $ref: '#/components/schemas/variantKey'
         - type: object
           required:
