@@ -1,78 +1,52 @@
 "use strict"
 
 $("#currencies-table").ready(() => {
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = "/currencies/items/stats";
+    else
+        variantsUri = "/currencies/variants/stats";
+
     // Get currencies
     $.ajax({
         type: "GET",
-        url: `/currencies`,
+        url: variantsUri || itemsUri,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
         success: function(currenciesJSON, status) {
-            for (let row of currenciesJSON) {
-                // Transform dates into years
-                row.start = row.start ? Number(row.start.split("-")[0]) : null;
-                row.end = row.end ? Number(row.end.split("-")[0]) : null;
-
-                // Add collection statistics
-                row.collecStats = {};
-                row.collecStats.numSeries = 0;
-                row.collecStats.numNotes = 0;
-                row.collecStats.numVariants = 0;
-                row.collecStats.numDenominations = 0;
-                row.collecStats.price = 0;
+            if (variantsUri) {
+                // Add null collectionStats
+                for (let row of currenciesJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
             }
-
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/items/stats?grouping=currency`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results with the countries info
-                        let collecIndex = 0;
-                        for (let row of currenciesJSON) {
-                            if (collecIndex >= collecResult.length)
-                                break;
-                            if (row.id === collecResult[collecIndex].id) {
-                                row.collecStats.numSeries = collecResult[collecIndex].numSeries;
-                                row.collecStats.numNotes = collecResult[collecIndex].numNotes;
-                                row.collecStats.numVariants = collecResult[collecIndex].numVariants;
-                                row.collecStats.numDenominations = collecResult[collecIndex].numDenominations;
-                                row.collecStats.price = collecResult[collecIndex].price;
-                                collecIndex++;
-                            }
-                        }
-                        storeCurrenciesTable(currenciesJSON);
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                alert("Your session is not valid or has expired.");
-                                if (getCookie("banknotes.ODB.username")) {
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
-                    }
-                });
-            } else {
-                storeCurrenciesTable(currenciesJSON);
-            }
+            storeCurrenciesTable(currenciesJSON);
         },
+
         error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            switch (xhr.status) {
+                case 403:
+                    alert("Your session is not valid or has expired.");
+                    if (getCookie("banknotes.ODB.username")) {
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
         }
     });
+
 });
 
 
@@ -96,9 +70,9 @@ function sortClick(htmlElem, titleStr) {
     let mapFieldName = {
         "ISO": "iso3",
         "Name": "name",
-        "Territory": "territoryName",
-        "Start": "start",
-        "End": "end",
+        "Territory": "territory.name",
+        "Created": "start",
+        "Replaced": "end",
         "Series": "numSeries",
         "Denom.": "numDenominations",
         "Notes": "numNotes",
@@ -126,13 +100,13 @@ function storeCurrenciesTable(currenciesJSON, sortingField, isCollecBasedSorting
         if (statsFieldNames.indexOf(sortingField) !== -1)
             sortingAsc = !sortingAsc;
         if (isCollecBasedSorting)
-            sortingField = "collecStats." + sortingField;
+            sortingField = "collectionStats." + sortingField;
 
         let sortingFields = [sortingField];
         if (sortingField !== "name")
             sortingFields.push("name");
-        if (sortingField !== "territoryName")
-            sortingFields.push("territoryName");
+        if (sortingField !== "territory.name")
+            sortingFields.push("territory.name");
 
         currenciesJSON = sortJSON(currenciesJSON, sortingFields, sortingAsc);
     }
@@ -149,8 +123,12 @@ function loadCurrenciesTable() {
     // Retrieve filters from the Cookies
     let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
 
-    let yearFrom = Number(getCookie("banknotes.ODB.filter.yearFrom-currency") || -1000);
-    let yearTo = Number(getCookie("banknotes.ODB.filter.yearTo-currency") || new Date().getFullYear());
+    let createdFrom = Number(getCookie("banknotes.ODB.filter.currency.createdFrom") || -10000);
+    let createdTo = Number(getCookie("banknotes.ODB.filter.currency.createdTo") || new Date().getFullYear());
+    let replacedFrom = getCookie("banknotes.ODB.filter.currency.replacedFrom");
+    let replacedTo = getCookie("banknotes.ODB.filter.currency.replacedTo");
+
+
     let existing = Number(getCookie("banknotes.ODB.filter.existing-currency") || 1);
     let extinct = Number(getCookie("banknotes.ODB.filter.extinct-currency") || 1);
 
@@ -189,9 +167,11 @@ function loadCurrenciesTable() {
 
     for (let currency of currenciesJSON) {
         // Apply filters
-        if (currency.start <= yearTo && currency.start >= yearFrom && (filterContId === 0 || currency.continentId === filterContId)) {
-            if ((!extinct && (currency.end !== null && currency.end < yearTo)) ||
-                (!existing && (currency.end === null || currency.end >= yearTo)) ||
+        if (currency.start <= createdTo && currency.start >= createdFrom && (filterContId === 0 || currency.territory.continent.id === filterContId)) {
+            if (replacedFrom && (currency.end == null || currency.end < replacedFrom)) continue;
+            if (replacedTo && (currency.end == null || currency.end > replacedTo)) continue;
+            if ((!extinct && (currency.end != null && currency.end < createdTo)) ||
+                (!existing && (currency.end == null || currency.end >= createdTo)) ||
                 (currencyTypesArray.indexOf(currency.currencyType) === -1))
                 continue;
 
@@ -201,45 +181,45 @@ function loadCurrenciesTable() {
             if (!currency.iso3)
                 currency.iso3 = "-";
 
-            let priceStr = (currency.collecStats.price === 0) ? "-" : currency.collecStats.price.toFixed(2) + ' €';
+            let priceStr = (currency.collectionStats.price === 0) ? "-" : currency.collectionStats.price.toFixed(2) + ' €';
             record = `<tr>
                                 <th>${currency.symbol}</th>
                                 <th>${currency.iso3}</th>
                                 <th class="name"><a href="/_currency/index.html?currencyId=${currency.id}">${currency.name}</a></th>
-                                <th class="name"><a href="/_country/index.html?countryId=${currency.territoryId}">${currency.territoryName}</a></th>
+                                <th class="name"><a href="/_country/index.html?countryId=${currency.territory.id}">${currency.territory.name}</a></th>
                                 <th>${currency.start || ""}</th>
                                 <th>${currency.end || ""}</th>
                                 <th>${currency.currencyType}</th>
                                 <td>${currency.numSeries}</td>
-                                <td class="only-logged-in">${currency.collecStats.numSeries || "-"}</td>
+                                <td class="only-logged-in">${currency.collectionStats.numSeries || "-"}</td>
                                 <td>${currency.numDenominations}</td>
-                                <td class="only-logged-in">${currency.collecStats.numDenominations || "-"}</td>
+                                <td class="only-logged-in">${currency.collectionStats.numDenominations || "-"}</td>
                                 <td>${currency.numNotes}</td>
-                                <td class="only-logged-in">${currency.collecStats.numNotes || "-"}</td>
+                                <td class="only-logged-in">${currency.collectionStats.numNotes || "-"}</td>
                                 <td>${currency.numVariants}</td>
-                                <td class="only-logged-in">${currency.collecStats.numVariants || "-"}</td>
+                                <td class="only-logged-in">${currency.collectionStats.numVariants || "-"}</td>
                                 <td class="only-logged-in">${priceStr}</td>
                             </tr>`;
             $("#currencies-table>tbody").append(record);
 
             totals.series.cat += currency.numSeries;
-            totals.series.col += currency.collecStats.numSeries;
+            totals.series.col += currency.collectionStats.numSeries;
             totals.denom.cat += currency.numDenominations;
-            totals.denom.col += currency.collecStats.numDenominations;
+            totals.denom.col += currency.collectionStats.numDenominations;
             totals.notes.cat += currency.numNotes;
-            totals.notes.col += currency.collecStats.numNotes;
+            totals.notes.col += currency.collectionStats.numNotes;
             totals.variants.cat += currency.numVariants;
-            totals.variants.col += currency.collecStats.numVariants;
-            totals.price += currency.collecStats.price;
+            totals.variants.col += currency.collectionStats.numVariants;
+            totals.price += currency.collectionStats.price;
 
             // Statistics:
-            if (existing && (currency.end === "" || Number(currency.end) >= yearTo)) {
+            if (existing && currency.end === "") {
                 statsCurType[curTypeMap[currency.currencyType]].existing.catalog++;
-                if (currency.collecStats.numVariants)
+                if (currency.collectionStats.numVariants)
                     statsCurType[curTypeMap[currency.currencyType]].existing.col++;
             } else {
                 statsCurType[curTypeMap[currency.currencyType]].extinct.catalog++;
-                if (currency.collecStats.numVariants)
+                if (currency.collectionStats.numVariants)
                     statsCurType[curTypeMap[currency.currencyType]].extinct.col++;
             }
         }

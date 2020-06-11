@@ -5,6 +5,19 @@ function setContinentImg() {
 }
 
 
+$(window).resize(function() {
+    let fontSize = calcFontSize();
+    for (let filter of window.filters) {
+        filter.setSize(fontSize);
+    }
+});
+
+function calcFontSize() {
+    if ($(window).width() < 400) return 10;
+    else if ($(window).width() < 800) return 12;
+    else return 13;
+}
+
 $("#currencies-filters").ready(() => {
     // Initialize stats and filters table
     let existingFlag = Number(getCookie("banknotes.ODB.filter.existing-currency") || 1);
@@ -17,18 +30,24 @@ $("#currencies-filters").ready(() => {
 
 
     // Default "to" filter year : current year
-    let year = getCookie("banknotes.ODB.filter.yearTo-currency");
-    if (!year) {
-        year = new Date().getFullYear();
-        $("#input-year-to").val(year);
-        setCookie("banknotes.ODB.filter.yearTo-currency", year);
-    } else {
-        $("#input-year-to").val(year);
+    let year = getCookie("banknotes.ODB.filter.currency.createdTo");
+    if (year && year !== "") {
+        window.filters[0].initTo(year);
     }
 
-    year = getCookie("banknotes.ODB.filter.yearFrom-currency");
-    if (year) {
-        $("#input-year-from").val(year);
+    year = getCookie("banknotes.ODB.filter.currency.createdFrom");
+    if (year && year !== "") {
+        window.filters[0].initFrom(year);
+    }
+
+    year = getCookie("banknotes.ODB.filter.currency.replacedTo");
+    if (year && year !== "") {
+        window.filters[1].initTo(year);
+    }
+
+    year = getCookie("banknotes.ODB.filter.currency.replacedFrom");
+    if (year && year !== "") {
+        window.filters[1].initFrom(year);
     }
 });
 
@@ -52,12 +71,15 @@ function curTypeCheckChanged(id, onFlag) {
 }
 
 
-function yearFilterChanged(elemId) {
+function yearFilterChanged(filterName, from, to) {
     // Store value in the cookie
-    if (elemId === "input-year-from")
-        setCookie("banknotes.ODB.filter.yearFrom-currency", $("#" + elemId).val());
-    else
-        setCookie("banknotes.ODB.filter.yearTo-currency", $("#" + elemId).val());
+    if (filterName === "Created") {
+        setCookie("banknotes.ODB.filter.currency.createdFrom", from);
+        setCookie("banknotes.ODB.filter.currency.createdTo", to);
+    } else {
+        setCookie("banknotes.ODB.filter.currency.replacedFrom", from);
+        setCookie("banknotes.ODB.filter.currency.replacedTo", to);
+    }
 
     // Load table body
     loadCurrenciesTable();

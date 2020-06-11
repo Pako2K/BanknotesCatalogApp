@@ -120,7 +120,7 @@ paths:
       tags:
       - Statistics
       summary: Get statistics about banknotes in catalogue for each territory.
-      description: Returns statistics for the existing banknotes in the catalogue .
+      description: Returns statistics for the existing banknotes in the catalogue, based on territories.
       operationId: territoriesVariantsStatsGET
       responses:
         "200":
@@ -186,24 +186,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-                
-                
-  /currencies/stats:
+
+  
+  /currencies/variants/stats:
     get:
       tags: 
-      - Currencies
-      summary: Get list of currencies.
-      description: Returns a list of currencies with their main features and statistics about their banknotes.
-      operationId: currenciesStatsGET
+      - Statistics
+      summary: Get statistics about banknotes in catalogue for each currency.
+      description: Returns a list of currencies in the catalogue with their main features and statistics.
+      operationId: currenciesVariantsStatsGET
       responses:
         "200":
-          description: List of currencies
+          description: List of currencies with statistics
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/currencyStats'
+                  $ref: '#/components/schemas/currencyCatStats'
         "500":
           description: Internal server error
           content:
@@ -212,6 +212,55 @@ paths:
                 $ref: '#/components/schemas/exception'
   
   
+  /currencies/items/stats:
+    get:
+      tags:
+      - Statistics
+      summary: Get statistics about banknotes in collection for each currency.
+      description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session).
+      operationId: currenciesItemsStatsGET
+      parameters:
+      - name: banknotes.ODB.username
+        in: cookie
+        required: true
+        description: logged in user name
+        schema:
+          type: string
+      - name: wid
+        in: cookie
+        required: true
+        description: Session Id for the logged in user
+        schema: 
+          type: string
+      responses:
+        "200":
+          description: List of currencies with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/currencyColStats'
+        "400":
+          description: Invalid request. Missing cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: Session id or username is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                
   /territory/{territoryId}/currencies:
     get:
       tags: 
@@ -234,7 +283,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/currencyStats'
+                  $ref: '#/components/schemas/currencyCatStats'
         "500":
           description: Internal server error
           content:
@@ -1155,125 +1204,160 @@ components:
               price:
                 type: number
 
+
+    currencyKey:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+        iso3:
+          $ref: '#/components/schemas/iso3'
+        name:
+          type: string
+          
+          
+    currencyType:
+      type: string
+      enum:
+      - "OWNED"
+      - "SHARED"
+    
+    
     currency:
-      type: object
-      required:
-      - id
-      - territory
-      - name
-      - fullName
-      - start
-      properties:
-        id:
-          type: integer
-        territory:
-          type: object
-          properties:
-            continentId:
-              type: integer
-            continentName:
-              type: string
-            id:
-              type: integer
-            iso3:
-              $ref: '#/components/schemas/iso3'
-            name:
-              type: string
-        symbol:
-          type: string
-        iso3:
-          $ref: '#/components/schemas/iso3'
-        name:
-          type: string
-        fullName:
-          type: string
-        units:
-          type: array
-          items:
+      allOf:    
+      - $ref: '#/components/schemas/currencyKey'
+      - type: object
+        required:
+        - currencyType
+        - territory
+        - fullName
+        - start
+        properties:
+          currencyType:
+            $ref: '#/components/schemas/currencyType'
+          territory:
+            allOf:    
+            - $ref: '#/components/schemas/territoryKey'
+            - type: object
+              required:
+              - continent
+              properties:
+                continent:
+                  $ref: '#/components/schemas/continent'
+          symbol:
+            type: string
+          iso3:
+            $ref: '#/components/schemas/iso3'
+          fullName:
+            type: string
+          units:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                value:
+                  type: number
+                abbreviation:
+                  type: string
+          start:
+            type: string
+          end:
+            type: string
+          predecessor:
+            allOf:    
+            - $ref: '#/components/schemas/currencyKey'
+            - type: object
+              required:
+              - rate
+              properties:
+                rate:
+                  type: number
+          successor:
+            allOf:    
+            - $ref: '#/components/schemas/currencyKey'
+            - type: object
+              required:
+              - rate
+              properties:
+                rate:
+                  type: number
+          description:
+            type: string
+
+
+    currencyCatStats:
+      allOf:    
+      - $ref: '#/components/schemas/currencyKey'
+      - type: object
+        required:
+        - currencyType
+        - territory
+        - start
+        - numSeries
+        - numDenominations
+        - numNotes
+        - numVariants
+        properties:
+          currencyType:
+            $ref: '#/components/schemas/currencyType'
+          territory:
+            allOf:    
+            - $ref: '#/components/schemas/territoryKey'
+            - type: object
+              required:
+              - continent
+              properties:
+                continent:
+                  $ref: '#/components/schemas/continent'
+          symbol:
+            type: string
+          start:
+            type: integer
+          end:
+            type: integer
+          numSeries:
+            type: integer
+          numDenominations:
+            type: integer
+          numNotes:
+            type: integer
+          numVariants:
+            type: integer
+
+
+    currencyColStats:
+      allOf:    
+      - $ref: '#/components/schemas/currencyCatStats'
+      - type: object
+        required:
+        - collectionStats
+        properties:
+          collectionStats:
             type: object
+            required:
+            - numSeries
+            - numDenominations
+            - numNotes
+            - numVariants
+            - price
             properties:
-              name:
-                type: string
-              value:
+              numSeries:
+                type: integer
+              numDenominations:
+                type: integer
+              numNotes:
+                type: integer
+              numVariants:
+                type: integer
+              price:
                 type: number
-              abbrevation:
-                type: string
-        start:
-          type: string
-        end:
-          type: string
-        predecessor:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            iso3:
-              $ref: '#/components/schemas/iso3'
-            rate:
-              type: number
-        successor:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            iso3:
-              $ref: '#/components/schemas/iso3'
-            rate:
-              type: number
-        description:
-          type: string
-
-
-    currencyStats:
-      type: object
-      required:
-      - id
-      - continentId
-      - territoryId
-      - territoryName
-      - currencyType
-      - name
-      - start
-      - numSeries
-      - numDenominations
-      - numNotes
-      - numVariants
-      properties:
-        id:
-          type: integer
-        continentId:
-          type: integer
-        territoryId:
-          type: integer
-        territoryName:
-          type: string
-        currencyType:
-          type: string
-          enum: [OWNED, SHARED]
-        symbol:
-          type: string
-        iso3:
-          $ref: '#/components/schemas/iso3'
-        name:
-          type: string
-        start:
-          type: integer
-        end:
-          type: integer
-        numSeries:
-          type: integer
-        numDenominations:
-          type: integer
-        numNotes:
-          type: integer
-        numVariants:
-          type: integer
-
-
+            
+            
     seriesStats:
       type: object
       required:

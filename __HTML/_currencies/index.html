@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="currencies_filters.css">
     <link rel="stylesheet" href="/_shared/stats-filter-table/stats-filter-table.css">
     <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+    <link rel="stylesheet" href="/_shared/from-to-filter/FromToFilter.css">
 
     <script src="/_shared/jquery-3.4.1.min.js"></script>
     <script src="/_shared/cookies.js"></script>
@@ -24,6 +25,7 @@
     <script src="currencies_filters.js"></script>
     <script src="/_shared/stats-filter-table/__stats-filter-table.js"></script>
     <script src="/_shared/list-table/__list-table.js"></script>
+    <script src="/_shared/from-to-filter/FromToFilter.js"></script>
 </head>
 
 <body>
@@ -112,7 +114,23 @@
         </div>
 
         <div id="year-filter">
-            <p>Creation</p>
+            <div>
+                <script>
+                    let tmp = new FromToFilter($("#year-filter>div:first-of-type"), "Created", yearFilterChanged);
+                    let fontSize = calcFontSize();
+                    tmp.setSize(fontSize);
+                    window.filters = [];
+                    filters.push(tmp);
+                </script>
+            </div>
+            <div>
+                <script>
+                    tmp = new FromToFilter($("#year-filter>div:last-of-type"), "Replaced", yearFilterChanged);
+                    tmp.setSize(fontSize);
+                    filters.push(tmp);
+                </script>
+            </div>
+            <!-- <p>Creation</p>
             <div>
                 <p>From:</p>
                 <img src="/_shared/img/calendar.svg" alt="calendar-icon" />
@@ -122,7 +140,7 @@
                 <p>To:</p>
                 <img src="/_shared/img/calendar.svg" alt="calendar-icon" />
                 <input id="input-year-to" type="number" onchange="yearFilterChanged(this.id)" />
-            </div>
+            </div> -->
         </div>
     </section>
 
@@ -152,13 +170,13 @@
                                 <div class="sort-desc"></div>
                             </div>
                         </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Start</span>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Created</span>
                             <div class="sort-div" onclick="sortClick(this)">
                                 <div class="sort-asc"></div>
                                 <div class="sort-desc"></div>
                             </div>
                         </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">End</span>
+                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Replaced</span>
                             <div class="sort-div" onclick="sortClick(this)">
                                 <div class="sort-asc"></div>
                                 <div class="sort-desc"></div>

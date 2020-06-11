@@ -1,29 +1,32 @@
 "use strict"
 
 $("#countries-table").ready(() => {
-    let uri = "/territories/variants/stats";
+    let variantsUri;
+    let itemsUri;
     if (getCookie("banknotes.ODB.username"))
-        uri = "/territories/items/stats"
+        itemsUri = "/territories/items/stats";
+    else
+        variantsUri = "/territories/variants/stats";
 
     // Get territories and statistics
     $.ajax({
         type: "GET",
-        url: uri,
+        url: variantsUri || itemsUri,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
         success: function(countriesJSON, status) {
-            if (uri === "/territories/variants/stats") {
+            if (variantsUri) {
                 // Add null collectionStats
                 for (let row of countriesJSON) {
                     row.collectionStats = {};
                     row.collectionStats.numCurrencies = 0;
                     row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
                     row.collectionStats.numNotes = 0;
                     row.collectionStats.numVariants = 0;
-                    row.collectionStats.numDenominations = 0;
                     row.collectionStats.price = 0;
                 }
             }
