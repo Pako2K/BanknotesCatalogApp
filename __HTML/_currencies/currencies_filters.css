@@ -17,10 +17,6 @@
   border-radius: 10px;
 }
 
-#year-filter > p {
-  font-size: 0.9em;
-}
-
 #year-filter > div {
   margin-bottom: 0.3em;
 }
@@ -72,13 +68,6 @@
           box-shadow: 1px 1px 3px 0px gray inset;
 }
 
-#year-filter > p {
-  font-family: "Source Sans Pro", "sans-serif";
-  text-shadow: 1.5px 1.5px 3px grey;
-  text-align: center;
-  margin: 0.4em 0;
-}
-
 @media screen and (max-width: 1000px) {
   #currencies-filters {
     padding: 0.9em 0;
@@ -93,9 +82,6 @@
   }
   #year-filter {
     border-radius: 9px;
-  }
-  #year-filter > p {
-    font-size: 0.81em;
   }
   #year-filter > div {
     margin-bottom: 0.27em;
@@ -119,9 +105,6 @@
   }
   #year-filter {
     border-radius: 8.5px;
-  }
-  #year-filter > p {
-    font-size: 0.765em;
   }
   #year-filter > div {
     margin-bottom: 0.255em;
@@ -160,9 +143,6 @@
   #year-filter {
     border-radius: 7.5px;
   }
-  #year-filter > p {
-    font-size: 0.675em;
-  }
   #year-filter > div {
     margin-bottom: 0.225em;
   }
@@ -188,9 +168,6 @@
   }
   #year-filter {
     border-radius: 7px;
-  }
-  #year-filter > p {
-    font-size: 0.63em;
   }
   #year-filter > div {
     margin-bottom: 0.21em;

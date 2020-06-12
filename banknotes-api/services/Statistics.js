@@ -4,7 +4,7 @@ const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
 const users = require('./Users');
-
+const url = require('url');
 
 let catalogueDB;
 
@@ -15,7 +15,9 @@ module.exports.initialize = function(app) {
     app.get('/territories/items/stats', users.validateSessionUser, territoriesItemsStatsGET);
     app.get('/currencies/variants/stats', currenciesVariantsStatsGET);
     app.get('/currencies/items/stats', users.validateSessionUser, currenciesItemsStatsGET);
-
+    app.get('/denominations/variants/stats', denominationsVariantsStatsGET);
+    app.get('/denominations/items/stats', users.validateSessionUser, denominationsItemsStatsGET);
+    denominationsVariantsStatsGET
     log.debug("Statistics service initialized");
 };
 
@@ -212,40 +214,108 @@ function currenciesItemsStatsGET(request, response) {
 }
 
 
+
+const denominationStats_commonSELECT = ` CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                                        count (DISTINCT TER.ter_id) AS "numTerritories", count (DISTINCT CUR.cur_id) AS "numCurrencies",
+                                        count (DISTINCT SER.ser_id) AS "numSeries", count(BVA.bva_id) AS "numVariants"`;
+const denominationStats_commonFROM = `  FROM ban_banknote BAN
+                                        LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                                        LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
+                                        LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
+                                        LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
+                                        `;
+// ===> /denominations/variants/stats?continentId&fromYear&toYear
+function denominationsVariantsStatsGET(request, response) {
+    request.onlyVariants = true;
+    denominationsItemsStatsGET(request, response);
+}
+
+// ===> /denominations/items/stats?continentId&fromYear&toYear
+function denominationsItemsStatsGET(request, response) {
+    let continentFilter = "";
+    let continentId = parseInt(url.parse(request.url, true).query.continentId);
+    if (!isNaN(continentId))
+        continentFilter = `AND TER.ter_con_id = ${continentId}`;
+
+    let yearFilter = "";
+    let yearFrom = parseInt(url.parse(request.url, true).query.yearFrom);
+    if (!isNaN(yearFrom))
+        yearFilter = `AND BVA.bva_issue_year >= ${yearFrom}`;
+    let yearTo = parseInt(url.parse(request.url, true).query.yearTo);
+    if (!isNaN(yearTo))
+        yearFilter += ` AND BVA.bva_issue_year <= ${yearTo}`;
+
+    let sql = ` SELECT  ${denominationStats_commonSELECT}
+                ${denominationStats_commonFROM}
+                LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id ${yearFilter}
+                GROUP BY "denomination"`;
+
+    if (request.onlyVariants) {
+        catalogueDB.getAndReply(response, sql);
+        return;
+    }
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [], (err, catRows) => {
+        if (err) {
+            err.message += `\nSQL Query: ${sql}`;
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        sql = `SELECT  ${denominationStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                        ${denominationStats_commonFROM}
+                        LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
+                        INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                        INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id ${yearFilter}
+                        INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                        INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                        GROUP BY denomination`;
+        catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
+            if (err) {
+                err.message += `\nSQL Query: ${sql}`;
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics
+            let collecIndex = 0;
+            for (let row of catRows) {
+                row.collectionStats = {};
+                if (collecIndex < colRows.length && row.denomination === colRows[collecIndex].denomination) {
+                    row.collectionStats.numTerritories = colRows[collecIndex].numTerritories;
+                    row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
+                    row.collectionStats.numSeries = colRows[collecIndex].numSeries;
+                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.price = colRows[collecIndex].price;
+                    collecIndex++;
+                } else {
+                    row.collectionStats.numTerritories = 0;
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
+    });
+}
+
+
+
+
 // // ==> items/stats?grouping=<grouping>&fromYear&toYear'
 // function itemsStatsGET(request, response) {
 
 //     let sqlStats = "";
 //     switch (grouping) {
-//         case "currency":
-//             sqlStats = `
-//             break;
-
-//         case "denomination":
-//             let yearFilter = "";
-
-//             let fromYear = parseInt(url.parse(request.url, true).query.fromYear);
-//             if (!isNaN(fromYear))
-//                 yearFilter = `AND BVA.bva_issue_year >= ${fromYear}`;
-
-//             let toYear = parseInt(url.parse(request.url, true).query.toYear);
-//             if (!isNaN(toYear))
-//                 yearFilter += ` AND BVA.bva_issue_year <= ${toYear}`;
-
-//             sqlStats = `SELECT  CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
-//                                 count (DISTINCT TER.ter_id) AS "numTerritories", count (DISTINCT CUR.cur_id) AS "numCurrencies",
-//                                 count (DISTINCT SER.ser_id) AS "numSeries", count(BVA.bva_id) AS "numVariants", sum(BIT.bit_price) AS "price"
-//                         FROM ban_banknote BAN
-//                         LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
-//                         LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
-//                         LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
-//                         LEFT JOIN ter_territory TER ON (TER.ter_id = TEC.tec_ter_id AND TER.ter_con_id <> 1)
-//                         INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id ${yearFilter}
-//                         LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
-//                         INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
-//                         INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
-//                         GROUP BY denomination`;
-//             break;
 //         case "year":
 //             sqlStats = `SELECT  BVA.bva_issue_year AS "issueYear",
 //                                 TER.ter_con_id AS "continentId", count (DISTINCT TER.ter_id) AS "numTerritories", 

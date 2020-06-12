@@ -13,9 +13,6 @@
     }
     #year-filter {
         border-radius: 10px*$scale-factor;
-        &>p {
-            font-size: 0.9em*$scale-factor;
-        }
         &>div {
             margin-bottom: 0.3em * $scale-factor;
         }
@@ -46,12 +43,6 @@
     align-content: center;
     justify-content: center;
     box-shadow: 1px 1px 3px 0px gray inset;
-    &>p {
-        font-family: $FONT_HEADER;
-        text-shadow: 1.5px 1.5px 3px grey;
-        text-align: center;
-        margin: 0.4em 0;
-    }
 }
 
 @media screen and (max-width: $WIDTH_BIG_TABLET) {

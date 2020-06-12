@@ -3,99 +3,88 @@
 $("#denominations-table").ready(readDenominations);
 
 function readDenominations() {
-    // Read years from the cookies
-    let yearFrom = getCookie("banknotes.ODB.filter.yearFrom-denom");
-    let yearTo = getCookie("banknotes.ODB.filter.yearTo-denom");
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = "/denominations/items/stats";
+    else
+        variantsUri = "/denominations/variants/stats";
 
+    // Retrieve filters from the Cookies
+    let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
+    let yearFrom = getCookie("banknotes.ODB.filter.denomination.issuedFrom");
+    let yearTo = getCookie("banknotes.ODB.filter.denomination.issuedTo");
+
+    let queryStr = "";
+    if (filterContId) queryStr = "?continentId=" + filterContId;
+
+    if (yearFrom) {
+        if (queryStr === "") queryStr += "?";
+        else queryStr += "&";
+        queryStr += "yearFrom=" + yearFrom;
+    }
+    if (yearTo) {
+        if (queryStr === "") queryStr += "?";
+        else queryStr += "&";
+        queryStr += "yearTo=" + yearTo;
+    }
     // Get denominations
     $.ajax({
         type: "GET",
-        url: `/banknotes/denominations?fromYear=${yearFrom}&toYear=${yearTo}`,
+        url: (variantsUri || itemsUri) + queryStr,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
         success: function(denominationsJSON, status) {
-            for (let row of denominationsJSON) {
-                // Add collection statistics
-                row.collecStats = {};
-                row.collecStats.numTerritories = 0;
-                row.collecStats.numCurrencies = 0;
-                row.collecStats.numSeries = 0;
-                row.collecStats.numVariants = 0;
-                row.collecStats.price = 0;
-            }
-
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/items/stats?grouping=denomination&fromYear=${yearFrom}&toYear=${yearTo}`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results with the countries info
-                        let collecIndex = 0;
-                        for (let row of denominationsJSON) {
-                            if (collecIndex >= collecResult.length)
-                                break;
-                            if (row.denomination === collecResult[collecIndex].denomination) {
-                                row.collecStats.numTerritories = collecResult[collecIndex].numTerritories;
-                                row.collecStats.numCurrencies = collecResult[collecIndex].numCurrencies;
-                                row.collecStats.numSeries = collecResult[collecIndex].numSeries;
-                                row.collecStats.numVariants = collecResult[collecIndex].numVariants;
-                                row.collecStats.price = collecResult[collecIndex].price;
-                                collecIndex++;
-                            }
-                        }
-                        let sortingField = "denomination";
-                        let storedSortingField = $("#denominations-table").data("sorting-field");
-                        if (storedSortingField) {
-                            sortingField = storedSortingField;
-                        }
-                        storeDenominationsTable(denominationsJSON, sortingField, $("#denominations-table .sorting-column").text() === "Collect.");
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                alert("Your session is not valid or has expired.");
-                                if (getCookie("banknotes.ODB.username")) {
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
-                    }
-                });
-            } else {
-                let sortingField = "denomination";
-                let storedSortingField = $("#denominations-table").data("sorting-field");
-                if (storedSortingField) {
-                    sortingField = storedSortingField;
+            if (variantsUri) {
+                // Add null collectionStats
+                for (let row of denominationsJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numTerritories = 0;
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
                 }
-
-                storeDenominationsTable(denominationsJSON, sortingField, $("#denominations-table .sorting-column").text() === "Collect.");
             }
+
+            let sortingField = "denomination";
+            let storedSortingField = $("#denominations-table").data("sorting-field");
+            if (storedSortingField) {
+                sortingField = storedSortingField;
+            }
+            storeDenominationsTable(denominationsJSON, sortingField, $("#denominations-table .sorting-column").text() === "Collect.");
         },
         error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            switch (xhr.status) {
+                case 403:
+                    alert("Your session is not valid or has expired.");
+                    if (getCookie("banknotes.ODB.username")) {
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
         }
     });
 }
 
-
-function continentFilterUpdated(contId) {
-    setContinentImg();
-
-    // Update page
-    loadDenominationsTable();
+function continentsLoaded() {
+    // Change image
+    $("#cont-img>img").attr("src", getSelectedImg());
 }
 
+
+function continentFilterUpdated() {
+    // Change image
+    $("#cont-img>img").attr("src", getSelectedImg());
+    // Retrieve denominations
+    readDenominations();
+}
 
 function sortClick(htmlElem, titleStr) {
     let mapKey = listTableSetSortingColumn(htmlElem);
@@ -137,7 +126,7 @@ function storeDenominationsTable(denominationsJSON, sortingField, isCollecBasedS
         sortingAsc = !sortingAsc;
 
     if (isCollecBasedSorting)
-        sortingField = "collecStats." + sortingField;
+        sortingField = "collectionStats." + sortingField;
 
     let sortingFields = [sortingField];
     if (sortingField !== "denomination")
@@ -155,9 +144,6 @@ function storeDenominationsTable(denominationsJSON, sortingField, isCollecBasedS
 
 
 function loadDenominationsTable() {
-    // Retrieve filters from the Cookies
-    let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
-
     // Clean table body and foot
     $("#denominations-table>tbody").empty();
     $("#denominations-table>tfoot>tr").empty();
@@ -168,24 +154,21 @@ function loadDenominationsTable() {
     let record = "";
 
     for (let denom of denominationsJSON) {
-        // Apply filters
-        if (filterContId === 0 || denom.continentId === filterContId) {
 
-            let priceStr = (denom.collecStats.price === 0) ? "-" : denom.collecStats.price.toFixed(2) + ' €';
-            record = `<tr>
-                                    <th>${denom.denomination}</th>
-                                    <td>${denom.numTerritories}</td>
-                                    <td class="only-logged-in">${denom.collecStats.numTerritories || "-"}</td>
-                                    <td>${denom.numCurrencies}</td>
-                                    <td class="only-logged-in">${denom.collecStats.numCurrencies || "-"}</td>
-                                    <td>${denom.numSeries}</td>
-                                    <td class="only-logged-in">${denom.collecStats.numSeries || "-"}</td>
-                                    <td>${denom.numVariants}</td>
-                                    <td class="only-logged-in">${denom.collecStats.numVariants || "-"}</td>
-                                    <td class="only-logged-in">${priceStr}</td>
-                                </tr>`;
-            $("#denominations-table>tbody").append(record);
-        }
+        let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price.toFixed(2) + ' €';
+        record = `  <tr>
+                        <th>${denom.denomination}</th>
+                        <td>${denom.numTerritories}</td>
+                        <td class="only-logged-in">${denom.collectionStats.numTerritories || "-"}</td>
+                        <td>${denom.numCurrencies}</td>
+                        <td class="only-logged-in">${denom.collectionStats.numCurrencies || "-"}</td>
+                        <td>${denom.numSeries}</td>
+                        <td class="only-logged-in">${denom.collectionStats.numSeries || "-"}</td>
+                        <td>${denom.numVariants}</td>
+                        <td class="only-logged-in">${denom.collectionStats.numVariants || "-"}</td>
+                        <td class="only-logged-in">${priceStr}</td>
+                    </tr>`;
+        $("#denominations-table>tbody").append(record);
     }
 
     // Hide collection columns if no user is logged 
