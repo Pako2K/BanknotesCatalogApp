@@ -1,5 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
 #years-filters {
+  padding: 1em 0;
+}
+
+#cont-img {
+  border-radius: 10px;
+  padding: 14px 14px 10px 14px;
+}
+
+#cont-img > img {
+  width: 80px;
+  height: 80px;
+}
+
+#year-filter {
+  border-radius: 10px;
+}
+
+#year-filter > div {
+  margin-bottom: 0.3em;
+}
+
+#years-filters {
   background: -webkit-gradient(linear, left bottom, left top, from(#dbdbdd), color-stop(74%, #edf1f4));
   background: linear-gradient(0deg, #dbdbdd 0%, #edf1f4 74%);
   display: -webkit-box;
@@ -19,27 +41,18 @@
           align-items: center;
   -ms-flex-line-pack: center;
       align-content: center;
-  padding: 1em 0;
 }
 
 #cont-img {
   margin-right: 1em;
   border: solid 1px darkgray;
-  border-radius: 10px;
-  padding: 14px 14px 10px 14px;
   -webkit-box-shadow: 1px 1px 3px 0px gray inset;
           box-shadow: 1px 1px 3px 0px gray inset;
-}
-
-#cont-img > img {
-  width: 80px;
-  height: 80px;
 }
 
 #year-filter {
   margin-left: 1em;
   border: solid 1px darkgray;
-  border-radius: 10px;
   padding: 0.5em 1em;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -57,95 +70,54 @@
           box-shadow: 1px 1px 3px 0px gray inset;
 }
 
-#year-filter > p {
-  font-family: "Source Sans Pro", "sans-serif";
-  font-size: 0.9em;
-  text-shadow: 1.5px 1.5px 3px grey;
-  text-align: center;
-  margin: 0.4em 0;
-}
-
-#year-filter > div {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-}
-
-#year-filter > div > p {
-  width: 3.5em;
-  text-align: right;
-  font-family: "Source Sans Pro", "sans-serif";
-  font-size: 0.8em;
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-  margin: 0;
-}
-
-#year-filter > div > img {
-  width: 2.5em;
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-}
-
-#year-filter > div > input {
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-  font-family: "sans-serif";
-  font-size: 1.1em;
-  width: 4em;
-  color: darkblue;
-  text-align: left;
-  padding-top: 0.1em;
-  padding-left: 0.4em;
-  -webkit-box-shadow: 4px 4px 8px grey;
-          box-shadow: 4px 4px 8px grey;
-  outline: none;
-  border: none;
-}
-
 @media screen and (max-width: 1000px) {
   #years-filters {
     padding: 0.9em 0;
   }
   #cont-img {
-    margin: 0.9em;
-    padding: 12.6px 12.6px 10px 12.6px;
+    border-radius: 9px;
+    padding: 12.6px 12.6px 9px 12.6px;
   }
   #cont-img > img {
-    width: 72px;
-    height: 72px;
+    width: 64.8px;
+    height: 64.8px;
   }
   #year-filter {
-    margin: 0.9em;
-    padding: 0.5em 0.9em;
+    border-radius: 9px;
   }
-  #year-filter > p {
-    font-size: 0.81em;
+  #year-filter > div {
+    margin-bottom: 0.27em;
   }
-  #year-filter > div > p {
-    width: 3.15em;
-    font-size: 0.72em;
-  }
-  #year-filter > div > img {
-    width: 2.25em;
-  }
-  #year-filter > div > input {
-    font-size: 0.99em;
-    width: 3.6em;
+  #cont-img {
+    margin: 0.5em;
   }
 }
 
 @media screen and (max-width: 800px) {
+  #years-filters {
+    padding: 0.85em 0;
+  }
   #cont-img {
-    margin: 0.85em;
+    border-radius: 8.5px;
+    padding: 11.9px 11.9px 8.5px 11.9px;
+  }
+  #cont-img > img {
+    width: 57.8px;
+    height: 57.8px;
   }
   #year-filter {
-    margin: 0.85em;
+    border-radius: 8.5px;
+  }
+  #year-filter > div {
+    margin-bottom: 0.255em;
+  }
+  #cont-img {
+    margin-left: 5em;
+    margin-right: 1em;
+  }
+  #year-filter {
+    margin-right: 5em;
+    margin-left: 1em;
   }
 }
 
@@ -154,25 +126,24 @@
     padding: 0.75em 0;
   }
   #cont-img {
+    border-radius: 7.5px;
     padding: 10.5px 10.5px 7.5px 10.5px;
   }
   #cont-img > img {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
   }
-  #year-filter > p {
-    font-size: 0.675em;
+  #year-filter {
+    border-radius: 7.5px;
   }
-  #year-filter > div > p {
-    width: 2.625em;
-    font-size: 0.6em;
+  #year-filter > div {
+    margin-bottom: 0.225em;
   }
-  #year-filter > div > img {
-    width: 1.875em;
+  #cont-img {
+    margin-left: 2em;
   }
-  #year-filter > div > input {
-    font-size: 0.825em;
-    width: 4.2em;
+  #year-filter {
+    margin-right: 2em;
   }
 }
 
@@ -181,24 +152,26 @@
     padding: 0.7em 0;
   }
   #cont-img {
+    border-radius: 7px;
     padding: 9.8px 9.8px 7px 9.8px;
   }
   #cont-img > img {
-    width: 56px;
-    height: 56px;
+    width: 39.2px;
+    height: 39.2px;
   }
-  #year-filter > p {
-    font-size: 0.63em;
+  #year-filter {
+    border-radius: 7px;
   }
-  #year-filter > div > p {
-    width: 2.45em;
-    font-size: 0.56em;
+  #year-filter > div {
+    margin-bottom: 0.21em;
   }
-  #year-filter > div > img {
-    width: 1.75em;
+  #cont-img {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
   }
-  #year-filter > div > input {
-    font-size: 0.77em;
+  #year-filter {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
   }
 }
 /*# sourceMappingURL=years-filters.css.map */

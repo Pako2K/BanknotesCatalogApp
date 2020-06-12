@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="years.css">
     <link rel="stylesheet" href="years-filters.css">
     <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+    <link rel="stylesheet" href="/_shared/from-to-filter/FromToFilter.css">
 
 
     <script src="/_shared/jquery-3.4.1.min.js"></script>
@@ -21,6 +22,7 @@
     <script src="years.js"></script>
     <script src="years-filters.js"></script>
     <script src="/_shared/list-table/__list-table.js"></script>
+    <script src="/_shared/from-to-filter/FromToFilter.js"></script>
 
 </head>
 
@@ -34,7 +36,7 @@
     <div>
         <script>
             // Load the Continents filter (synchornous) 
-            $("div:first-of-type").load("/_shared/continents-filter/__continents-filter.html", setContinentImg);
+            $("div:first-of-type").load("/_shared/continents-filter/__continents-filter.html", continentsLoaded);
         </script>
     </div>
 
@@ -46,16 +48,14 @@
         </div>
 
         <div id="year-filter">
-            <p>Issued</p>
             <div>
-                <p>From:</p>
-                <img src="/_shared/img/calendar.svg" alt="calendar-icon" />
-                <input id="input-year-from" type="number" onchange="yearFilterChanged(this.id)" />
-            </div>
-            <div>
-                <p>To:</p>
-                <img src="/_shared/img/calendar.svg" alt="calendar-icon" />
-                <input id="input-year-to" type="number" onchange="yearFilterChanged(this.id)" />
+                <script>
+                    let tmp = new FromToFilter($("#year-filter>div"), "Issued", yearFilterChanged);
+                    let fontSize = calcFontSize();
+                    tmp.setSize(fontSize);
+                    window.filters = [];
+                    filters.push(tmp);
+                </script>
             </div>
         </div>
     </section>

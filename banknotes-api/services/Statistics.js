@@ -17,7 +17,8 @@ module.exports.initialize = function(app) {
     app.get('/currencies/items/stats', users.validateSessionUser, currenciesItemsStatsGET);
     app.get('/denominations/variants/stats', denominationsVariantsStatsGET);
     app.get('/denominations/items/stats', users.validateSessionUser, denominationsItemsStatsGET);
-    denominationsVariantsStatsGET
+    app.get('/issue-years/variants/stats', issueYearsVariantsStatsGET);
+    app.get('/issue-years/items/stats', users.validateSessionUser, issueYearsItemsStatsGET);
     log.debug("Statistics service initialized");
 };
 
@@ -310,39 +311,90 @@ function denominationsItemsStatsGET(request, response) {
 
 
 
+const issueYearStats_commonSELECT = `BVA.bva_issue_year AS "issueYear", count (DISTINCT TER.ter_id) AS "numTerritories", 
+                                    count (DISTINCT CUR.cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
+                                    count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                                    count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+const issueYearStats_commonFROM = ` FROM bva_variant BVA
+                                    LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                                    LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
+                                    LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
+                                    `;
+// ===> /issue-years/variants/stats?continentId&fromYear&toYear
+function issueYearsVariantsStatsGET(request, response) {
+    request.onlyVariants = true;
+    issueYearsItemsStatsGET(request, response);
+}
 
-// // ==> items/stats?grouping=<grouping>&fromYear&toYear'
-// function itemsStatsGET(request, response) {
+// ===> /issue-years/items/stats?continentId&fromYear&toYear
+function issueYearsItemsStatsGET(request, response) {
+    let continentFilter = "";
+    let continentId = parseInt(url.parse(request.url, true).query.continentId);
+    if (!isNaN(continentId))
+        continentFilter = `AND TER.ter_con_id = ${continentId}`;
 
-//     let sqlStats = "";
-//     switch (grouping) {
-//         case "year":
-//             sqlStats = `SELECT  BVA.bva_issue_year AS "issueYear",
-//                                 TER.ter_con_id AS "continentId", count (DISTINCT TER.ter_id) AS "numTerritories", 
-//                                 count (DISTINCT CUR.cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
-//                                 count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-//                                 count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants",
-//                                 sum(BIT.bit_price) AS "price"
-//                         FROM bva_variant BVA
-//                         LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-//                         LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
-//                         LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
-//                         LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
-//                         LEFT JOIN ter_territory TER ON (TER.ter_id = TEC.tec_ter_id AND TER.ter_con_id <> 1)
-//                         INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
-//                         INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
-//                         GROUP BY "issueYear", "continentId"`;
-//             break;
-//     }
+    let sql = ` SELECT  ${issueYearStats_commonSELECT}
+                ${issueYearStats_commonFROM}
+                LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                GROUP BY "issueYear"`;
 
-//     catalogueDB.execSQL(sqlStats, [request.session.user], (err, rows) => {
-//         if (err) {
-//             new Exception(500, err.code, err.message).send(response);
-//             return;
-//         }
+    if (request.onlyVariants) {
+        catalogueDB.getAndReply(response, sql);
+        return;
+    }
 
-//         response.writeHead(200, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify(rows));
-//         response.send();
-//     });
-// }
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [], (err, catRows) => {
+        if (err) {
+            err.message += `\nSQL Query: ${sql}`;
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        sql = `SELECT  ${issueYearStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                    ${issueYearStats_commonFROM}
+                    LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
+                    INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                    INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                    INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                    GROUP BY "issueYear"`;
+        catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
+            if (err) {
+                err.message += `\nSQL Query: ${sql}`;
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics
+            let collecIndex = 0;
+            for (let row of catRows) {
+                row.collectionStats = {};
+                if (collecIndex < colRows.length && row.denomination === colRows[collecIndex].denomination) {
+                    row.collectionStats.numTerritories = colRows[collecIndex].numTerritories;
+                    row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
+                    row.collectionStats.numSeries = colRows[collecIndex].numSeries;
+                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
+                    row.collectionStats.numNotes = colRows[collecIndex].numNotes;
+                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.price = colRows[collecIndex].price;
+                    collecIndex++;
+                } else {
+                    row.collectionStats.numTerritories = 0;
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
+    });
+}

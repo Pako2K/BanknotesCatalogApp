@@ -1,34 +1,36 @@
 "use strict"
 
-function setContinentImg() {
-    $("#cont-img>img").attr("src", getSelectedImg());
+$(window).resize(function() {
+    let fontSize = calcFontSize();
+    for (let filter of window.filters) {
+        filter.setSize(fontSize);
+    }
+});
+
+function calcFontSize() {
+    if ($(window).width() < 400) return 10;
+    else if ($(window).width() < 800) return 12;
+    else return 13;
 }
 
 
 $("#years-filters").ready(() => {
-    // Default "to" filter year : current year
-    let year = getCookie("banknotes.ODB.filter.yearTo-year");
-    if (!year) {
-        year = new Date().getFullYear();
-        $("#input-year-to").val(year);
-        setCookie("banknotes.ODB.filter.yearTo-year", year);
-    } else {
-        $("#input-year-to").val(year);
+    let year = getCookie("banknotes.ODB.filter.issue-year.issuedTo");
+    if (year && year !== "") {
+        window.filters[0].initTo(year);
     }
 
-    year = getCookie("banknotes.ODB.filter.yearFrom-year");
-    if (year) {
-        $("#input-year-from").val(year);
+    year = getCookie("banknotes.ODB.filter.issue-year.issuedFrom");
+    if (year && year !== "") {
+        window.filters[0].initFrom(year);
     }
 });
 
 
-function yearFilterChanged(elemId) {
+function yearFilterChanged(filterName, from, to) {
     // Store value in the cookie
-    if (elemId === "input-year-from")
-        setCookie("banknotes.ODB.filter.yearFrom-year", $("#" + elemId).val());
-    else
-        setCookie("banknotes.ODB.filter.yearTo-year", $("#" + elemId).val());
+    setCookie("banknotes.ODB.filter.issue-year.issuedFrom", from);
+    setCookie("banknotes.ODB.filter.issue-year.issuedTo", to);
 
     // Show filetered years
     loadYearsTable();

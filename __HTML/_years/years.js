@@ -1,97 +1,78 @@
 "use strict"
 
-$("#years-table").ready(() => {
+$("#years-table").ready(readIssueYears);
+
+function readIssueYears() {
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = "/issue-years/items/stats";
+    else
+        variantsUri = "/issue-years/variants/stats";
+
+    // Retrieve filters from the Cookies
+    let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
+
+    let queryStr = "";
+    if (filterContId) queryStr = "?continentId=" + filterContId;
+
     // Get years
     $.ajax({
         type: "GET",
-        url: `/variants/years`,
+        url: (variantsUri || itemsUri) + queryStr,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
         success: function(yearsJSON, status) {
-            for (let row of yearsJSON) {
-                // Add collection statistics
-                row.collecStats = {};
-                row.collecStats.numTerritories = 0;
-                row.collecStats.numCurrencies = 0;
-                row.collecStats.numSeries = 0;
-                row.collecStats.numDenominations = 0;
-                row.collecStats.numNotes = 0;
-                row.collecStats.numVariants = 0;
-                row.collecStats.price = 0;
-            }
-
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/items/stats?grouping=year`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results with the countries info
-                        let collecIndex = 0;
-                        for (let row of yearsJSON) {
-                            if (collecIndex >= collecResult.length)
-                                break;
-                            if (row.issueYear === collecResult[collecIndex].issueYear) {
-                                row.collecStats.numTerritories = collecResult[collecIndex].numTerritories;
-                                row.collecStats.numCurrencies = collecResult[collecIndex].numCurrencies;
-                                row.collecStats.numSeries = collecResult[collecIndex].numSeries;
-                                row.collecStats.numDenominations = collecResult[collecIndex].numDenominations;
-                                row.collecStats.numNotes = collecResult[collecIndex].numNotes;
-                                row.collecStats.numVariants = collecResult[collecIndex].numVariants;
-                                row.collecStats.price = collecResult[collecIndex].price;
-                                collecIndex++;
-                            }
-                        }
-                        let sortingField = "issueYear";
-                        let storedSortingField = $("#years-table").data("sorting-field");
-                        if (storedSortingField) {
-                            sortingField = storedSortingField;
-                        }
-                        storeYearsTable(yearsJSON, sortingField, $("#years-table .sorting-column").text() === "Collect.");
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                alert("Your session is not valid or has expired.");
-                                if (getCookie("banknotes.ODB.username")) {
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
-                    }
-                });
-            } else {
-                let sortingField = "issueYear";
-                let storedSortingField = $("#years-table").data("sorting-field");
-                if (storedSortingField) {
-                    sortingField = storedSortingField;
+            if (variantsUri) {
+                // Add null collectionStats
+                for (let row of yearsJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numTerritories = 0;
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
                 }
-
-                storeYearsTable(yearsJSON, sortingField, $("#years-table .sorting-column").text() === "Collect.");
             }
+
+            let sortingField = "issueYear";
+            let storedSortingField = $("#years-table").data("sorting-field");
+            if (storedSortingField) {
+                sortingField = storedSortingField;
+            }
+            storeYearsTable(yearsJSON, sortingField, $("#years-table .sorting-column").text() === "Collect.");
         },
         error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            switch (xhr.status) {
+                case 403:
+                    alert("Your session is not valid or has expired.");
+                    if (getCookie("banknotes.ODB.username")) {
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
         }
     });
-});
+}
 
+function continentsLoaded() {
+    // Change image
+    $("#cont-img>img").attr("src", getSelectedImg());
+}
 
-function continentFilterUpdated(contId) {
-    setContinentImg();
-
-    // Update page
-    loadYearsTable();
+function continentFilterUpdated() {
+    // Change image
+    $("#cont-img>img").attr("src", getSelectedImg());
+    // Retrieve denominations
+    readIssueYears();
 }
 
 
@@ -139,7 +120,7 @@ function storeYearsTable(yearsJSON, sortingField, isCollecBasedSorting) {
         sortingAsc = !sortingAsc;
 
     if (isCollecBasedSorting)
-        sortingField = "collecStats." + sortingField;
+        sortingField = "collectionStats." + sortingField;
 
     let sortingFields = [sortingField];
     if (sortingField !== "issueYear")
@@ -157,12 +138,9 @@ function storeYearsTable(yearsJSON, sortingField, isCollecBasedSorting) {
 
 
 function loadYearsTable() {
-    // Retrieve filters from the Cookies
-    let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
-
     // Read years from the cookies
-    let yearFrom = getCookie("banknotes.ODB.filter.yearFrom-year");
-    let yearTo = getCookie("banknotes.ODB.filter.yearTo-year");
+    let yearFrom = getCookie("banknotes.ODB.filter.issue-year.issuedFrom");
+    let yearTo = getCookie("banknotes.ODB.filter.issue-year.issuedTo");
 
     // Clean table body and foot
     $("#years-table>tbody").empty();
@@ -175,27 +153,24 @@ function loadYearsTable() {
 
     for (let year of yearsJSON) {
         // Apply filters
-        if ((filterContId === 0 || year.continentId === filterContId) &&
-            (!yearFrom || year.issueYear >= yearFrom) &&
-            (!yearTo || year.issueYear <= yearTo)) {
-
-            let priceStr = (year.collecStats.price === 0) ? "-" : year.collecStats.price.toFixed(2) + ' €';
-            record = `<tr>
-                                        <th>${year.issueYear}</th>
-                                        <td>${year.numTerritories}</td>
-                                        <td class="only-logged-in">${year.collecStats.numTerritories || "-"}</td>
-                                        <td>${year.numCurrencies}</td>
-                                        <td class="only-logged-in">${year.collecStats.numCurrencies || "-"}</td>
-                                        <td>${year.numSeries}</td>
-                                        <td class="only-logged-in">${year.collecStats.numSeries || "-"}</td>
-                                        <td>${year.numDenominations}</td>
-                                        <td class="only-logged-in">${year.collecStats.numDenominations || "-"}</td>
-                                        <td>${year.numNotes}</td>
-                                        <td class="only-logged-in">${year.collecStats.numNotes || "-"}</td>
-                                        <td>${year.numVariants}</td>
-                                        <td class="only-logged-in">${year.collecStats.numVariants || "-"}</td>
-                                        <td class="only-logged-in">${priceStr}</td>
-                                    </tr>`;
+        if ((!yearFrom || year.issueYear >= yearFrom) && (!yearTo || year.issueYear <= yearTo)) {
+            let priceStr = (year.collectionStats.price === 0) ? "-" : year.collectionStats.price.toFixed(2) + ' €';
+            record = `  <tr>
+                            <th>${year.issueYear}</th>
+                            <td>${year.numTerritories}</td>
+                            <td class="only-logged-in">${year.collectionStats.numTerritories || "-"}</td>
+                            <td>${year.numCurrencies}</td>
+                            <td class="only-logged-in">${year.collectionStats.numCurrencies || "-"}</td>
+                            <td>${year.numSeries}</td>
+                            <td class="only-logged-in">${year.collectionStats.numSeries || "-"}</td>
+                            <td>${year.numDenominations}</td>
+                            <td class="only-logged-in">${year.collectionStats.numDenominations || "-"}</td>
+                            <td>${year.numNotes}</td>
+                            <td class="only-logged-in">${year.collectionStats.numNotes || "-"}</td>
+                            <td>${year.numVariants}</td>
+                            <td class="only-logged-in">${year.collectionStats.numVariants || "-"}</td>
+                            <td class="only-logged-in">${priceStr}</td>
+                        </tr>`;
             $("#years-table>tbody").append(record);
         }
     }

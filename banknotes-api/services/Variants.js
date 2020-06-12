@@ -12,7 +12,6 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/variants/years', variantsYearsGET);
     app.get('/currency/:currencyId/variants/years', currencyByIdVariantsYearsGET);
     app.get('/series/:seriesId/variants', seriesByIdVariantsGET);
     app.get('/variants', variantsGET);
@@ -21,25 +20,6 @@ module.exports.initialize = function(app) {
     log.debug("Variants service initialized");
 
 };
-
-
-// ===> /variants/years
-function variantsYearsGET(request, response) {
-    let sql = `SELECT  BVA.bva_issue_year AS "issueYear",
-                    TER.ter_con_id AS "continentId", count (DISTINCT TER.ter_id) AS "numTerritories", 
-                    count (DISTINCT CUR.cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
-                    count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                    count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"
-                FROM bva_variant BVA
-                LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-                LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
-                LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
-                LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
-                LEFT JOIN ter_territory TER ON (TER.ter_id = TEC.tec_ter_id AND TER.ter_con_id <> 1)
-                GROUP BY "issueYear", "continentId"`;
-
-    catalogueDB.getAndReply(response, sql);
-}
 
 
 // ===> /currency/:currencyId/variants/years

@@ -15,7 +15,6 @@ function calcFontSize() {
 }
 
 $("#currencies-filters").ready(() => {
-    // Default "to" filter year : current year
     let year = getCookie("banknotes.ODB.filter.denomination.issuedTo");
     if (year && year !== "") {
         window.filters[0].initTo(year);
