@@ -5,74 +5,18 @@ const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
 const users = require('./Users');
-const variants = require('./Variants');
 
 let catalogueDB;
 
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/items', users.validateSessionUser, itemsGET);
     app.get('/territory/:territoryId/items/stats', users.validateSessionUser, territoryByIdItemsStatsGET);
     app.get('/currency/:currencyId/items/stats', users.validateSessionUser, currencyByIdItemsStatsGET);
     app.get('/series/:seriesId/items', users.validateSessionUser, seriesByIdItemsGET);
 
     log.debug("Items service initialized");
 };
-
-
-//===> /items?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
-//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
-function itemsGET(request, response) {
-    let queryStrJSON = url.parse(request.url, true).query;
-    let sqlTerritory = variants.variantsTerritoryFilterSQL(queryStrJSON);
-    let sqlCurrency = variants.variantsCurrencyFilterSQL(queryStrJSON);
-    let sqlBanknote = variants.variantsBanknoteFilterSQL(queryStrJSON);
-
-
-    // If the 3 sql filters are "" (and therefore they are equal)
-    if (sqlTerritory === sqlCurrency && sqlBanknote === sqlCurrency) {
-        new Exception(400, "ITE-001", "Search parameters not found").send(response);
-        return;
-    }
-
-    let sqlStr = `  WITH resultset AS (
-                            SELECT BVA.bva_id AS "variantId", BVA.bva_cat_id AS "catalogueId",
-                                CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
-                                BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
-                                CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName",
-                                BIT.bit_id AS "itemId", BIT.bit_gra_grade AS "grade", GRA.gra_value AS "gradeValue", BIT.bit_price AS "price"
-                            FROM bva_variant BVA 
-                            LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
-                            LEFT JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
-                            INNER JOIN gra_grade GRA ON GRA.gre_grade = BIT.bit_gra_grade
-                            INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
-                            INNER JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
-                            INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
-                            INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
-                            INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = 'OWNED'
-                            INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}
-                            )
-                    SELECT * FROM resultset
-                    ${sqlBanknote}`;
-
-    catalogueDB.execSQL(sqlStr, [request.session.user], (err, rows) => {
-        if (err) {
-            new Exception(500, err.code, err.message).send(response);
-            return;
-        }
-
-        if (rows.length > 500) {
-            new Exception(413, "ITE-002", "Too many variants found: " + rows.length).send(response);
-            return;
-        }
-
-        // Build reply JSON
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.write(JSON.stringify(rows));
-        response.send();
-    });
-}
 
 
 // ==> /territory/:territoryId/items/stats?grouping=<grouping>'

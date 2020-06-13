@@ -127,13 +127,13 @@ function selectFilterChanged(filterName, id, value) {
 function callVariantsAPI(filters) {
     // Build query string
     let queryStr = "";
-    queryStr += "contId=" + filters.continent + "&terTypeId=" + filters.territory.type +
+    queryStr += "continentId=" + filters.continent + "&terTypeId=" + filters.territory.type +
         "&terStartDateFrom=" + filters.territory.foundedFrom + "&terStartDateTo=" + filters.territory.foundedTo +
         "&terEndDateFrom=" + filters.territory.disappearedFrom + "&terEndDateTo=" + filters.territory.disappearedTo +
         "&curStartDateFrom=" + filters.currency.createdFrom + "&curStartDateTo=" + filters.currency.createdTo +
         "&curEndDateFrom=" + filters.currency.replacedFrom + "&curEndDateTo=" + filters.currency.replacedTo +
         "&minDenom=" + filters.banknote.denominationMin + "&maxDenom=" + filters.banknote.denominationMax +
-        "&issueDateFrom=" + filters.banknote.issuedateFrom + "&issueDateTo=" + filters.banknote.issuedateTo;
+        "&issueYearFrom=" + filters.banknote.issuedateFrom + "&issueYearTo=" + filters.banknote.issuedateTo;
 
     // Get variants
     $("#results-section").removeClass("success");
@@ -160,7 +160,7 @@ function callVariantsAPI(filters) {
             $("#results-section").addClass("success");
 
             for (let row of variantsJSON) {
-                // Add collection statistics
+                // Parse the catalogue id in order to be able to sort
                 row.catalogueIdInt = parseInt(row.catalogueId.slice(2));
                 row.catalogueIdSuffix = row.catalogueId.slice(2 + row.catalogueIdInt.toString().length);
                 row.grade = row.grade || "-";
@@ -229,8 +229,6 @@ function loadResultsTable() {
     let record = "";
 
     for (let variant of variantsJSON) {
-
-        let priceStr = (variant.price === 0) ? "-" : variant.price.toFixed(2) + ' €';
         record = `  <tr>
                         <th>${variant.catalogueId}</th>
                         <th class="name"><a href="/_country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
@@ -239,8 +237,8 @@ function loadResultsTable() {
                         <th>${variant.denomination}</th>
                         <th>${variant.issueYear}</th>
                         <th>${variant.printedDate}</th>
-                        <td class="only-logged-in">${variant.grade || "-"}</td>
-                        <td class="only-logged-in">${priceStr}</td>
+                        <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
+                        <td class="only-logged-in">${(variant.item) ? variant.item.price.toFixed(2) + ' €' : "-"}</td>
                     </tr>`;
         $("#results-table>tbody").append(record);
     }

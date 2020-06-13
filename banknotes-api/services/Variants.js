@@ -15,6 +15,7 @@ module.exports.initialize = function(app) {
     app.get('/currency/:currencyId/variants/years', currencyByIdVariantsYearsGET);
     app.get('/series/:seriesId/variants', seriesByIdVariantsGET);
     app.get('/variants', variantsGET);
+    app.get('/items', itemsGET);
 
 
     log.debug("Variants service initialized");
@@ -36,12 +37,23 @@ function currencyByIdVariantsYearsGET(request, response) {
     catalogueDB.getAndReply(response, sql);
 }
 
-module.exports.variantsTerritoryFilterSQL = function(queryStrJSON) {
+
+//===> /variants?continentId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
+//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
+function variantsGET(request, response) {
+    request.onlyVariants = true;
+    itemsGET(request, response);
+}
+
+//===> /items?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
+//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
+function itemsGET(request, response) {
+    let queryStrJSON = url.parse(request.url, true).query;
     let param;
 
     // Calculate the filters for territories
     let sqlTerritory = "";
-    param = queryStrJSON.contId || "";
+    param = queryStrJSON.continentId || "";
     if (param !== "")
         sqlTerritory = `AND TER.ter_con_id = ${param}`;
 
@@ -65,11 +77,6 @@ module.exports.variantsTerritoryFilterSQL = function(queryStrJSON) {
     if (param !== "")
         sqlTerritory += ` AND TER.ter_end <= ${param}`;
 
-    return sqlTerritory;
-}
-
-module.exports.variantsCurrencyFilterSQL = function(queryStrJSON) {
-    let param;
 
     // Calculate the filters for currencies
     let sqlCurrency = "";
@@ -89,11 +96,6 @@ module.exports.variantsCurrencyFilterSQL = function(queryStrJSON) {
     if (param !== "")
         sqlCurrency += ` AND CAST(substr(CUR.cur_end,1,4) AS INTEGER) <= ${param}`;
 
-    return sqlCurrency;
-}
-
-module.exports.variantsBanknoteFilterSQL = function(queryStrJSON) {
-    let param;
 
     // Calculate the filters for banknotes
     let sqlBanknote = "";
@@ -107,13 +109,13 @@ module.exports.variantsBanknoteFilterSQL = function(queryStrJSON) {
         else
             sqlBanknote += ` AND denomination <= ${param}`;
     }
-    param = queryStrJSON.issueDateFrom || "";
+    param = queryStrJSON.issueYearFrom || "";
     if (param !== "")
         if (sqlBanknote === "")
             sqlBanknote = `WHERE "issueYear" >= ${param}`;
         else
             sqlBanknote += ` AND "issueYear" >= ${param}`;
-    param = queryStrJSON.issueDateTo || "";
+    param = queryStrJSON.issueYearTo || "";
     if (param !== "") {
         if (sqlBanknote === "")
             sqlBanknote = `WHERE "issueYear" <= ${param}`;
@@ -121,16 +123,6 @@ module.exports.variantsBanknoteFilterSQL = function(queryStrJSON) {
             sqlBanknote += ` AND "issueYear" <= ${param}`;
     }
 
-    return sqlBanknote;
-}
-
-//===> /variants?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
-//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
-function variantsGET(request, response) {
-    let queryStrJSON = url.parse(request.url, true).query
-    let sqlTerritory = module.exports.variantsTerritoryFilterSQL(queryStrJSON);
-    let sqlCurrency = module.exports.variantsCurrencyFilterSQL(queryStrJSON);
-    let sqlBanknote = module.exports.variantsBanknoteFilterSQL(queryStrJSON);
 
     // If the 3 sql filters are "" (and therefore they are equal)
     if (sqlTerritory === sqlCurrency && sqlBanknote === sqlCurrency) {
@@ -138,39 +130,87 @@ function variantsGET(request, response) {
         return;
     }
 
-    let sqlStr = `  WITH resultset AS (
-                            SELECT BVA.bva_id AS "variantId", BVA.bva_cat_id AS "catalogueId", 
-                                CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
-                                BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
-                                CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName"
-                            FROM bva_variant BVA
-                            INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
+    const commonJoinsSQL = `INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
                             INNER JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
                             INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
                             INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
                             INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = 'OWNED'
-                            INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}
-                        )
-                    SELECT * FROM resultset
-                    ${sqlBanknote}`;
+                            INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}`;
 
-    catalogueDB.execSQL(sqlStr, [], (err, rows) => {
+    let sql = ` WITH resultset AS (
+                    SELECT  BVA.bva_id AS "variantId", BVA.bva_cat_id AS "catalogueId", 
+                            BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate",
+                            CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                            SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
+                            CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName"
+                    FROM bva_variant BVA
+                    ${commonJoinsSQL}
+                )
+                SELECT * FROM resultset
+                ${sqlBanknote}
+                ORDER BY "variantId"`;
+    if (request.onlyVariants) {
+        catalogueDB.getAndReply(response, sql);
+        return;
+    }
+
+    // Retrieve the catalogue data
+    catalogueDB.execSQL(sql, [], (err, catRows) => {
         if (err) {
             new Exception(500, err.code, err.message).send(response);
             return;
         }
 
-        if (rows.length > 500) {
-            new Exception(413, "VAR-002", "Too many variants found: " + rows.length).send(response);
-            return;
-        }
 
-        // Build reply JSON
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.write(JSON.stringify(rows));
-        response.send();
+        // Retrieve the collection data
+        sql = ` WITH resultset AS (
+                        SELECT  BIT.bit_id AS "id", GRA.gra_value AS "gradeValue", GRA.gra_grade AS "grade", 
+                                BIT.bit_price AS "price", BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", 
+                                CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination"
+                        FROM bva_variant BVA 
+                        LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                        LEFT JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                        INNER JOIN gra_grade GRA ON GRA.gra_grade = BIT.bit_gra_grade
+                        ${commonJoinsSQL}
+                )
+                SELECT * FROM resultset RES
+                ${sqlBanknote}
+                ORDER BY "variantId"`;
+
+        catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue data
+            let collecIndex = 0;
+            for (let row of catRows) {
+                let item = {};
+                while (collecIndex < colRows.length && row.variantId === colRows[collecIndex].variantId) {
+                    // Take the collection item with the highest grade (min grade value) and price
+                    if (!item.id || item.gradeValue > colRows[collecIndex].gradeValue ||
+                        (item.gradeValue === colRows[collecIndex].gradeValue && item.price < colRows[collecIndex].price)) {
+                        item.id = colRows[collecIndex].id;
+                        item.gradeValue = colRows[collecIndex].gradeValue;
+                        item.grade = colRows[collecIndex].grade;
+                        item.price = colRows[collecIndex].price;
+                    }
+                    collecIndex++;
+                }
+                if (item.id) row.item = { id: item.id, grade: item.grade, price: item.price };
+            }
+
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
     });
 }
+
+
+
 
 // ===> /series/:seriesId/variants
 // Returns: [{"denomination":20, "variants":[{ "variantId": , "printedDate": , "issueYear": , "catalogueId": , "description": }]}]

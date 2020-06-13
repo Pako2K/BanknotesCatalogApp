@@ -32,6 +32,7 @@ tags:
   - name: Miscellanea
     description: Set of operations to retrieve static data
 
+
 paths:
   /continents:
     get:
@@ -147,18 +148,8 @@ paths:
       description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session).
       operationId: territoriesItemsStatsGET
       parameters:
-      - name: banknotes.ODB.username
-        in: cookie
-        required: true
-        description: logged in user name
-        schema:
-          type: string
-      - name: wid
-        in: cookie
-        required: true
-        description: Session Id for the logged in user
-        schema: 
-          type: string
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
       responses:
         "200":
           description: List of territories with statistics
@@ -220,18 +211,8 @@ paths:
       description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session).
       operationId: currenciesItemsStatsGET
       parameters:
-      - name: banknotes.ODB.username
-        in: cookie
-        required: true
-        description: logged in user name
-        schema:
-          type: string
-      - name: wid
-        in: cookie
-        required: true
-        description: Session Id for the logged in user
-        schema: 
-          type: string
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
       responses:
         "200":
           description: List of currencies with statistics
@@ -312,6 +293,8 @@ paths:
       description: Returns a list of denominations in the catalogue with statistics including the user collection.
       operationId: denominationsItemsStatsGET
       parameters:
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
       - in: query
         name: continentId
         schema:
@@ -330,18 +313,6 @@ paths:
           type: integer
         required: false
         description: Retrieve denominations issued up to this year
-      - name: banknotes.ODB.username
-        in: cookie
-        required: true
-        description: logged in user name
-        schema:
-          type: string
-      - name: wid
-        in: cookie
-        required: true
-        description: Session Id for the logged in user
-        schema: 
-          type: string
       responses:
         "200":
           description: List of denominations with statistics
@@ -410,24 +381,14 @@ paths:
       description: Returns a list of issue-years for banknotes in the catalogue and the user collection with statistics.
       operationId: issueYearsItemsStatsGET
       parameters:
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
       - in: query
         name: continentId
         schema:
           type: integer
         required: false
         description: Retrieve issue-years from countries in this continent
-      - name: banknotes.ODB.username
-        in: cookie
-        required: true
-        description: logged in user name
-        schema:
-          type: string
-      - name: wid
-        in: cookie
-        required: true
-        description: Session Id for the logged in user
-        schema: 
-          type: string
       responses:
         "200":
           description: List of years
@@ -659,90 +620,20 @@ paths:
       description: Returns a list of variants according to the specified search parameters. At least one search parameter must be provided. No more than 500 variants will be returned
       operationId: variantsGET
       parameters:
-      - in: query
-        name: contId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries in this Continent
-      - in: query
-        name: terTypeId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries of this type
-      - in: query
-        name: terStartDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries founded in or after this year
-      - in: query
-        name: terStartDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries founded in or before this year
-      - in: query
-        name: terEndDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries disappeared in or after this year
-      - in: query
-        name: terEndtDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries disappeared in or before this year
-      - in: query
-        name: curStartDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies created in or after this year
-      - in: query
-        name: curStartDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies created in or before this year
-      - in: query
-        name: curEndDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies disappeared in or after this year
-      - in: query
-        name: curEndDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies disappeared in or before this year
-      - in: query
-        name: minDenom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with this or high denomination
-      - in: query
-        name: maxDenom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with this or lower denomination
-      - in: query
-        name: issueDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with issue date in or after this year
-      - in: query
-        name: issueDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with issue date in or before this year  
+      - $ref: '#/components/parameters/searchContinentId'
+      - $ref: '#/components/parameters/searchTerTypeId'
+      - $ref: '#/components/parameters/searchTerStartDateFrom'
+      - $ref: '#/components/parameters/searchTerStartDateTo'
+      - $ref: '#/components/parameters/searchTerEndDateFrom'
+      - $ref: '#/components/parameters/searchTerEndDateTo'
+      - $ref: '#/components/parameters/searchCurStartDateFrom'
+      - $ref: '#/components/parameters/searchCurStartDateTo'
+      - $ref: '#/components/parameters/searchCurEndDateFrom'
+      - $ref: '#/components/parameters/searchCurEndDateTo'
+      - $ref: '#/components/parameters/searchMinDenom'
+      - $ref: '#/components/parameters/searchMaxDenom'
+      - $ref: '#/components/parameters/searchIssueYearFrom'
+      - $ref: '#/components/parameters/searchIssueYearTo'
       responses:
         "200":
           description: List of variants
@@ -773,171 +664,30 @@ paths:
                 $ref: '#/components/schemas/exception'
   
   
-  /items/stats:
-    get:
-      tags:
-      - Items
-      summary: Get Collection stats 
-      description: Retrieves the collection statistics for the active sesion's user
-      operationId: itemsStatsGET
-      parameters:
-      - in: cookie
-        name: banknotes.ODB.username
-        schema:
-          type: string
-        required: true
-        description: user for whom the statistics are retrieved
-      - in: query
-        name: grouping
-        schema:
-          type: string
-          enum:
-          - territory
-          - currency
-          - denomination
-          - year
-        required: true
-        description: Statistics based on this grouping criteria
-      - in: query
-        name: fromYear
-        schema:
-          type: integer
-        required: false
-        description: Retrieve banknotes from this year (for denominations)
-      - in: query
-        name: toYear
-        schema:
-          type: integer
-        required: false
-        description: Retrieve banknotes up to this year (for denominations)
-
-      responses:
-        "200":
-          description: Success. Statistics returned
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/itemStats'
-        "400":
-          description: Invalid request. Query or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "403":
-          description: User not logged-in or invalid session
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'  
-                
-  
   /items:
     get:
       tags: 
-      - Items
+      - Variants
       summary: Get list of variants and the grade and price of the item, if available.
-      description: Returns a list of items according to the specified search parameters. At least one search parameter must be provided. No more than 500 items will be returned
+      description: Returns a list of variants with the best grade and price, if it is in the users' collection, according to the specified search parameters. At least one search parameter must be provided. No more than 500 items will be returned
       operationId: itemsGET
       parameters:
-      - in: cookie
-        name: banknotes.ODB.username
-        schema:
-          type: string
-        required: true
-        description: user for whom the statistics are retrieved
-      - in: query
-        name: contId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries in this Continent
-      - in: query
-        name: terTypeId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries of this type
-      - in: query
-        name: terStartDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries founded in or after this year
-      - in: query
-        name: terStartDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries founded in or before this year
-      - in: query
-        name: terEndDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries disappeared in or after this year
-      - in: query
-        name: terEndtDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants from countries disappeared in or before this year
-      - in: query
-        name: curStartDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies created in or after this year
-      - in: query
-        name: curStartDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies created in or before this year
-      - in: query
-        name: curEndDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies disappeared in or after this year
-      - in: query
-        name: curEndDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants of currencies disappeared in or before this year
-      - in: query
-        name: minDenom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with this or high denomination
-      - in: query
-        name: maxDenom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with this or lower denomination
-      - in: query
-        name: issueDateFrom
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with issue date in or after this year
-      - in: query
-        name: issueDateTo
-        schema:
-          type: integer
-        required: false
-        description: Retrieve variants with issue date in or before this year  
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      - $ref: '#/components/parameters/searchContinentId'
+      - $ref: '#/components/parameters/searchTerTypeId'
+      - $ref: '#/components/parameters/searchTerStartDateFrom'
+      - $ref: '#/components/parameters/searchTerStartDateTo'
+      - $ref: '#/components/parameters/searchTerEndDateFrom'
+      - $ref: '#/components/parameters/searchTerEndDateTo'
+      - $ref: '#/components/parameters/searchCurStartDateFrom'
+      - $ref: '#/components/parameters/searchCurStartDateTo'
+      - $ref: '#/components/parameters/searchCurEndDateFrom'
+      - $ref: '#/components/parameters/searchCurEndDateTo'
+      - $ref: '#/components/parameters/searchMinDenom'
+      - $ref: '#/components/parameters/searchMaxDenom'
+      - $ref: '#/components/parameters/searchIssueYearFrom'
+      - $ref: '#/components/parameters/searchIssueYearTo'
       responses:
         "200":
           description: List of variants and items
@@ -965,7 +715,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-        
         "500":
           description: Internal server error
           content:
@@ -1178,8 +927,124 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'          
+              
                 
 components:
+  parameters:
+    cookieUsername:
+      in: cookie
+      name: banknotes.ODB.username
+      required: true
+      description: logged in user name
+      schema:
+        type: string
+    cookieSessionId:
+      in: cookie
+      name: wid
+      required: true
+      description: Session Id for the logged in user
+      schema: 
+        type: string
+    searchContinentId:
+      in: query
+      name: continentId
+      required: false
+      description: Retrieve resource from countries in this Continent
+      schema:
+        type: integer
+    searchTerTypeId:
+      in: query
+      name: terTypeId
+      required: false
+      description: Retrieve resource from countries of this type
+      schema:
+        type: integer
+    searchTerStartDateFrom:
+      in: query
+      name: terStartDateFrom
+      required: false
+      description: Retrieve resource from countries founded in or after this year
+      schema:
+        type: integer
+    searchTerStartDateTo:
+      in: query
+      name: terStartDateTo
+      required: false
+      description: Retrieve resource from countries founded in or before this year
+      schema:
+        type: integer
+    searchTerEndDateFrom:
+      in: query
+      name: terEndDateFrom
+      required: false
+      description: Retrieve resource from countries disappeared in or after this year
+      schema:
+        type: integer
+    searchTerEndDateTo:
+      in: query
+      name: terEndtDateTo
+      required: false
+      description: Retrieve resource from countries disappeared in or before this year
+      schema:
+        type: integer
+    searchCurStartDateFrom:
+      in: query
+      name: curStartDateFrom
+      required: false
+      description: Retrieve resource of currencies created in or after this year
+      schema:
+        type: integer
+    searchCurStartDateTo:
+      in: query
+      name: curStartDateTo
+      required: false
+      description: Retrieve resource of currencies created in or before this year
+      schema:
+        type: integer
+    searchCurEndDateFrom:
+      in: query
+      name: curEndDateFrom
+      required: false
+      description: Retrieve resource of currencies disappeared in or after this year
+      schema:
+        type: integer
+    searchCurEndDateTo:
+      in: query
+      name: curEndDateTo
+      required: false
+      description: Retrieve resource of currencies disappeared in or before this year
+      schema:
+        type: integer
+    searchMinDenom:
+      in: query
+      name: minDenom
+      required: false
+      description: Retrieve resource with this or high denomination
+      schema:
+        type: integer
+    searchMaxDenom:
+      in: query
+      name: maxDenom
+      required: false
+      description: Retrieve resource with this or lower denomination
+      schema:
+        type: integer
+    searchIssueYearFrom:
+      in: query
+      name: issueYearFrom
+      required: false
+      description: Retrieve resource with issue date in or after this year
+      schema:
+        type: integer
+    searchIssueYearTo:
+      in: query
+      name: issueYearTo
+      required: false
+      description: Retrieve resource with issue date in or before this year  
+      schema:
+        type: integer
+
+
   schemas:
     continent:
       type: object
@@ -1683,24 +1548,25 @@ components:
     itemKey:
       type: object
       required:
-      - itemId
+      - id
       - grade
-      - gradeValue
       - price
       properties:
-        itemId:
+        id:
           type: integer
         grade:
           type: string
-        gradeValue:
-          type: integer
         price:
           type: number
 
     itemTree: 
       allOf:    
-        - $ref: '#/components/schemas/itemKey'
         - $ref: '#/components/schemas/variantTree'
+        - type: object
+          properties:
+            item:
+              $ref: '#/components/schemas/itemKey'
+        
 
     item:
       allOf:    
