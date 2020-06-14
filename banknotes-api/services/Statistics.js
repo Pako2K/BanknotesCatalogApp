@@ -21,6 +21,8 @@ module.exports.initialize = function(app) {
     app.get('/issue-years/items/stats', users.validateSessionUser, issueYearsItemsStatsGET);
     app.get('/territory/:territoryId/currencies/variants/stats', addOnlyVariants, territoryByIdCurrenciesItemsStatsGET);
     app.get('/territory/:territoryId/currencies/items/stats', users.validateSessionUser, territoryByIdCurrenciesItemsStatsGET);
+    app.get('/territory/:territoryId/series/variants/stats', addOnlyVariants, territoryByIdSeriesItemsStatsGET);
+    app.get('/territory/:territoryId/series/items/stats', users.validateSessionUser, territoryByIdSeriesItemsStatsGET);
 
     log.debug("Statistics service initialized");
 };
@@ -452,6 +454,85 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
 
 
 
+const seriesStats_commonSELECT =
+    `SER.ser_id AS "id", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+    count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+
+const territorySerieStats_commonFROM =
+    `FROM ser_series SER
+    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND SER.ser_cur_id = TEC.tec_cur_id AND TEC.tec_cur_type='OWNED'
+    LEFT JOIN cur_currency CUR ON CUR.cur_id = TEC.tec_cur_id
+    LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
+
+// ===> /territory/:territoryId/series/items/stats
+function territoryByIdSeriesItemsStatsGET(request, response) {
+    let territoryId = request.params.territoryId;
+
+    let sql = ` SELECT  SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end", CUR.cur_id, CUR.cur_name, TEC.tec_iso3,
+                ${seriesStats_commonSELECT}
+                ${territorySerieStats_commonFROM}
+                GROUP BY "id", CUR.cur_id, CUR.cur_name, TEC.tec_iso3
+                ORDER BY "start", "end"`;
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [territoryId], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        // Build reply JSON
+        for (let row of catRows) {
+            row.currency = { id: row.cur_id, name: row.cur_name, iso3: row.tec_iso3 };
+            delete row.cur_id;
+            delete row.cur_name;
+            delete row.tec_iso3;
+            if (row.end == null) delete row.end;
+        }
+
+        if (request.onlyVariants) {
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+            return;
+        }
+
+        sql = ` SELECT ${seriesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                ${territorySerieStats_commonFROM}
+                INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
+                GROUP BY "id"`;
+
+        catalogueDB.execSQL(sql, [territoryId, request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics, taking into account the the ordering is different in both resultsets
+            for (let row of catRows) {
+                row.collectionStats = {};
+                // Try to find id in the Collection resultset
+                let found = colRows.findIndex((elem) => { return elem.id === row.id });
+                if (found !== -1) {
+                    row.collectionStats.numDenominations = colRows[found].numDenominations;
+                    row.collectionStats.numVariants = colRows[found].numVariants;
+                    row.collectionStats.price = colRows[found].price;
+                } else {
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
+    });
+}
+
 // // ==> /territory/:territoryId/items/stats?grouping=<grouping>'
 // function territoryByIdItemsStatsGET(request, response) {
 //     let territoryId = request.params.territoryId;
@@ -465,10 +546,7 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
 
 //     let sqlStats = "";
 //     switch (grouping) {
-//         case "currency":
-//             break;
-//             // case "series":
-//             //     break;
+//         
 //             // case "denomination":
 //             //     let yearFilter = "";
 

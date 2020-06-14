@@ -107,6 +107,10 @@ function loadTable(option) {
             });
             break;
         case "Series":
+            $("#results-table").load("./_series/table.html", (responseTxt, statusTxt, xhr) => {
+                if (statusTxt == "success")
+                    loadSeriesTable(countryId);
+            });
             break;
         case "Denominations":
             break;
@@ -124,19 +128,3 @@ function selectView(option) {
     }
 
 }
-
-// function loadCurrency(currencyId) {
-//     $(".selected-view").removeClass("selected-view");
-//     $("#currencies-table-section").slideUp(500);
-//     $("#currency-section").load("/_countries/_currencies/currency.html", function(response, status, xmlReq){
-//         if(status === "success"){
-//             // find currency stats
-//             let currencies = $("#currencies-table-section").data("data");
-//             let pos = currencies.findIndex((value) => {
-//                 return value.id == currencyId;
-//             });
-//             $("#currency-section").data("stats",currencies[pos].stats);
-//             initializeCurrency(currencyId);
-//         }
-//     });
-// }
