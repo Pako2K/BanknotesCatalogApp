@@ -89,12 +89,7 @@ paths:
       description: Returns the info about a country or territory.
       operationId: territoryByIdGET
       parameters:
-      - in: path
-        required: true
-        name: territoryId
-        schema:
-          type: integer
-        description: Id of the territory
+      - $ref: '#/components/parameters/territoryId'
       responses:
         "200":
           description: Country or territory complete info
@@ -416,22 +411,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-                
-                
-  /territory/{territoryId}/currencies:
+
+  
+  /territory/{territoryId}/currencies/variants/stats:
     get:
       tags: 
-      - Currencies
-      summary: Get list of currencies for a specific country.
-      description: Returns a list of currencies used by a country with their main features and statistics about their banknotes.
-      operationId: territoryByIdCurrenciesGET
+       - Statistics
+      summary: Get statistics about banknotes in catalogue for each currency used in a specific territory.
+      description: Returns a list of currencies in the catalogue used in a specific territory, with their main features and statistics.
+      operationId: territoryByIdCurrenciesVariantsStatsGET
       parameters:
-      - in: path
-        required: true
-        name: territoryId
-        schema:
-          type: integer
-        description: Id of the territory      
+      - $ref: '#/components/parameters/territoryId'  
       responses:
         "200":
           description: List of currencies
@@ -440,7 +430,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/currencyCatStats'
+                  $ref: '#/components/schemas/currencyByTerCatStats'
         "500":
           description: Internal server error
           content:
@@ -448,6 +438,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
   
+  
+  /territory/{territoryId}/currencies/items/stats:
+    get:
+      tags: 
+      - Statistics
+      summary: Get statistics about banknotes in collection for each currency used in a territory.
+      description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session). used in a territory.
+      operationId: territoryByIdCurrenciesItemssStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of currencies with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/currencyByTerColStats'
+        "400":
+          description: Invalid request. Missing cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: Session id or username is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
   
   /currency/{currencyId}:
     get:
@@ -721,67 +751,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-  
-  
-  /territory/{territoryId}/items/stats:
-    get:
-      tags: 
-      - Items
-      summary: Get Collection stats for a specific territory
-      description: Retrieves the collection statistics for the active sesion's user and the provided territory and grouping critera
-      operationId: territoryByIdItemsStatsGET
-      parameters:
-      - in: path
-        required: true
-        name: territoryId
-        schema:
-          type: integer
-        description: Id of the territory
-      - in: cookie
-        name: banknotes.ODB.username
-        schema:
-          type: string
-        required: true
-        description: user for whom the statistics are retrieved
-      - in: query
-        name: grouping
-        schema:
-          type: string
-          enum:
-          - currencies
-          - series
-          - denomination
-          - year
-        required: true
-        description: Statistics based on this grouping criteria
-      responses:
-        "200":
-          description: Success. Statistics returned
-          content:
-            application/json:
-               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/itemStats'
-        "400":
-          description: Invalid request. Query or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "403":
-          description: User not logged-in or invalid session
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'  
-                
+
   
   /currency/{currencyId}/items/stats:
     get:
@@ -931,6 +901,13 @@ paths:
                 
 components:
   parameters:
+    territoryId:
+      in: path
+      name: territoryId
+      required: true
+      description: Id of the territory
+      schema:
+        type: integer
     cookieUsername:
       in: cookie
       name: banknotes.ODB.username
@@ -1351,7 +1328,65 @@ components:
               price:
                 type: number
             
+    
+    currencyByTerCatStats:
+      allOf:    
+      - $ref: '#/components/schemas/currencyKey'
+      - type: object
+        required:
+        - currencyType
+        - start
+        - numSeries
+        - numDenominations
+        - numNotes
+        - numVariants
+        properties:
+          currencyType:
+            $ref: '#/components/schemas/currencyType'
+          symbol:
+            type: string
+          start:
+            type: integer
+          end:
+            type: integer
+          numSeries:
+            type: integer
+          numDenominations:
+            type: integer
+          numNotes:
+            type: integer
+          numVariants:
+            type: integer
             
+      
+    currencyByTerColStats:
+      allOf:    
+      - $ref: '#/components/schemas/currencyByTerCatStats'
+      - type: object
+        required:
+        - collectionStats
+        properties:
+          collectionStats:
+            type: object
+            required:
+            - numSeries
+            - numDenominations
+            - numNotes
+            - numVariants
+            - price
+            properties:
+              numSeries:
+                type: integer
+              numDenominations:
+                type: integer
+              numNotes:
+                type: integer
+              numVariants:
+                type: integer
+              price:
+                type: number
+                
+                
     denominationCatStats:
       type: object
       required:

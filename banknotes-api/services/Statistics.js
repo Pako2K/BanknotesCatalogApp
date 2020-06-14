@@ -11,23 +11,24 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/territories/variants/stats', territoriesVariantsStatsGET);
+    app.get('/territories/variants/stats', addOnlyVariants, territoriesItemsStatsGET);
     app.get('/territories/items/stats', users.validateSessionUser, territoriesItemsStatsGET);
-    app.get('/currencies/variants/stats', currenciesVariantsStatsGET);
+    app.get('/currencies/variants/stats', addOnlyVariants, currenciesItemsStatsGET);
     app.get('/currencies/items/stats', users.validateSessionUser, currenciesItemsStatsGET);
-    app.get('/denominations/variants/stats', denominationsVariantsStatsGET);
+    app.get('/denominations/variants/stats', addOnlyVariants, denominationsItemsStatsGET);
     app.get('/denominations/items/stats', users.validateSessionUser, denominationsItemsStatsGET);
-    app.get('/issue-years/variants/stats', issueYearsVariantsStatsGET);
+    app.get('/issue-years/variants/stats', addOnlyVariants, issueYearsItemsStatsGET);
     app.get('/issue-years/items/stats', users.validateSessionUser, issueYearsItemsStatsGET);
+    app.get('/territory/:territoryId/currencies/variants/stats', addOnlyVariants, territoryByIdCurrenciesItemsStatsGET);
+    app.get('/territory/:territoryId/currencies/items/stats', users.validateSessionUser, territoryByIdCurrenciesItemsStatsGET);
+
     log.debug("Statistics service initialized");
 };
 
 
-
-// ===> /territories/variants/stats
-function territoriesVariantsStatsGET(request, response) {
+function addOnlyVariants(request, response, next) {
     request.onlyVariants = true;
-    territoriesItemsStatsGET(request, response);
+    next();
 }
 
 const territoriesStats_commonSELECT = ` count(DISTINCT TEC.tec_cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
@@ -56,7 +57,6 @@ function territoriesItemsStatsGET(request, response) {
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [], (err, catRows) => {
         if (err) {
-            err.message += `\nSQL Query: ${sql}`;
             new Exception(500, err.code, err.message).send(response);
             return;
         }
@@ -70,7 +70,6 @@ function territoriesItemsStatsGET(request, response) {
         // Retrieve the collection statistics for the session user
         catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
             if (err) {
-                err.message += `\nSQL Query: ${sql}`;
                 new Exception(500, err.code, err.message).send(response);
                 return;
             }
@@ -118,12 +117,6 @@ const currenciesStats_commonFROM = `FROM cur_currency CUR
                                     LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
                                     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
                                     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
-// ===> /currencies/variants/stats
-function currenciesVariantsStatsGET(request, response) {
-    request.onlyVariants = true;
-    currenciesItemsStatsGET(request, response);
-}
-
 
 // ===> /currencies/items/stats
 function currenciesItemsStatsGET(request, response) {
@@ -138,7 +131,6 @@ function currenciesItemsStatsGET(request, response) {
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [], (err, catRows) => {
         if (err) {
-            err.message += `\nSQL Query: ${sql}`;
             new Exception(500, err.code, err.message).send(response);
             return;
         }
@@ -181,7 +173,6 @@ function currenciesItemsStatsGET(request, response) {
         // Retrieve the collection statistics for the session user
         catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
             if (err) {
-                err.message += `\nSQL Query: ${sql}`;
                 new Exception(500, err.code, err.message).send(response);
                 return;
             }
@@ -225,11 +216,6 @@ const denominationStats_commonFROM = `  FROM ban_banknote BAN
                                         LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
                                         LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
                                         `;
-// ===> /denominations/variants/stats?continentId&fromYear&toYear
-function denominationsVariantsStatsGET(request, response) {
-    request.onlyVariants = true;
-    denominationsItemsStatsGET(request, response);
-}
 
 // ===> /denominations/items/stats?continentId&fromYear&toYear
 function denominationsItemsStatsGET(request, response) {
@@ -261,7 +247,6 @@ function denominationsItemsStatsGET(request, response) {
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [], (err, catRows) => {
         if (err) {
-            err.message += `\nSQL Query: ${sql}`;
             new Exception(500, err.code, err.message).send(response);
             return;
         }
@@ -276,7 +261,6 @@ function denominationsItemsStatsGET(request, response) {
                         GROUP BY denomination`;
         catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
             if (err) {
-                err.message += `\nSQL Query: ${sql}`;
                 new Exception(500, err.code, err.message).send(response);
                 return;
             }
@@ -321,11 +305,6 @@ const issueYearStats_commonFROM = ` FROM bva_variant BVA
                                     LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
                                     LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
                                     `;
-// ===> /issue-years/variants/stats?continentId&fromYear&toYear
-function issueYearsVariantsStatsGET(request, response) {
-    request.onlyVariants = true;
-    issueYearsItemsStatsGET(request, response);
-}
 
 // ===> /issue-years/items/stats?continentId&fromYear&toYear
 function issueYearsItemsStatsGET(request, response) {
@@ -348,7 +327,6 @@ function issueYearsItemsStatsGET(request, response) {
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [], (err, catRows) => {
         if (err) {
-            err.message += `\nSQL Query: ${sql}`;
             new Exception(500, err.code, err.message).send(response);
             return;
         }
@@ -362,7 +340,6 @@ function issueYearsItemsStatsGET(request, response) {
                     GROUP BY "issueYear"`;
         catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
             if (err) {
-                err.message += `\nSQL Query: ${sql}`;
                 new Exception(500, err.code, err.message).send(response);
                 return;
             }
@@ -398,3 +375,152 @@ function issueYearsItemsStatsGET(request, response) {
         });
     });
 }
+
+
+
+const territoryCurrenciesStats_commonFROM =
+    `FROM cur_currency CUR
+    INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = $1
+    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+    LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
+
+// ===> /territory/:territoryId/currencies/items/stats
+function territoryByIdCurrenciesItemsStatsGET(request, response) {
+    let territoryId = request.params.territoryId;
+
+    let sql = ` SELECT  CUR.cur_id AS "id", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", TEC.tec_cur_type AS "currencyType", CUR.cur_symbol AS "symbol", 
+                        CASE WHEN TEC.tec_start IS NULL THEN CUR.cur_start ELSE TEC.tec_start END AS "start",
+                        CASE WHEN TEC.tec_end IS NULL THEN CUR.cur_end ELSE TEC.tec_end END AS "end", ${currenciesStats_commonSELECT}
+                ${territoryCurrenciesStats_commonFROM}
+                GROUP BY "id", "iso3", "currencyType", "start", "end"
+                ORDER BY "start", "end"`;
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [territoryId], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        if (request.onlyVariants) {
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+            return;
+        }
+
+        sql = ` SELECT CUR.cur_id AS "id", ${currenciesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                ${territoryCurrenciesStats_commonFROM}
+                INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
+                GROUP BY "id"`;
+
+        catalogueDB.execSQL(sql, [territoryId, request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics, taking into account the the ordering is different in both resultsets
+            for (let row of catRows) {
+                row.collectionStats = {};
+                // Try to find id in the Collection resultset
+                let found = colRows.findIndex((elem) => { return elem.id === row.id });
+                if (found !== -1) {
+                    row.collectionStats.numSeries = colRows[found].numSeries;
+                    row.collectionStats.numDenominations = colRows[found].numDenominations;
+                    row.collectionStats.numNotes = colRows[found].numNotes;
+                    row.collectionStats.numVariants = colRows[found].numVariants;
+                    row.collectionStats.price = colRows[found].price;
+                } else {
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
+    });
+}
+
+
+
+// // ==> /territory/:territoryId/items/stats?grouping=<grouping>'
+// function territoryByIdItemsStatsGET(request, response) {
+//     let territoryId = request.params.territoryId;
+//     let grouping = url.parse(request.url, true).query.grouping;
+//     const GROUPINGS = ['currency', 'series', 'denomination', 'year'];
+//     if (grouping === undefined || grouping === '' || GROUPINGS.indexOf(grouping) === -1) {
+//         // Invalid parameter
+//         new Exception(400, "ITEM-1", "Query parameter missing or not valid").send(response);
+//         return;
+//     }
+
+//     let sqlStats = "";
+//     switch (grouping) {
+//         case "currency":
+//             break;
+//             // case "series":
+//             //     break;
+//             // case "denomination":
+//             //     let yearFilter = "";
+
+//             //     let fromYear = parseInt(url.parse(request.url, true).query.fromYear);
+//             //     if (!isNaN(fromYear))
+//             //         yearFilter = `AND BVA.bva_issue_year >= ${fromYear}`;
+
+//             //     let toYear = parseInt(url.parse(request.url, true).query.toYear);
+//             //     if (!isNaN(toYear))
+//             //         yearFilter += ` AND BVA.bva_issue_year <= ${toYear}`;
+
+//             //     sqlStats = `SELECT  CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS denomination,
+//             //                         count (DISTINCT TER.ter_id) AS numTerritories, count (DISTINCT CUR.cur_id) AS numCurrencies,
+//             //                         count (DISTINCT SER.ser_id) AS numSeries, count(BVA.bva_id) AS numVariants, sum(BIT.bit_price) AS price
+//             //                 FROM ban_banknote BAN
+//             //                 LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+//             //                 LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
+//             //                 LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
+//             //                 LEFT JOIN ter_territory TER ON (TER.ter_id = TEC.tec_ter_id AND TER.ter_con_id <> 1)
+//             //                 INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id ${yearFilter}
+//             //                 LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
+//             //                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+//             //                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = ?
+//             //                 GROUP BY denomination`;
+//             //     break;
+//             // case "year":
+//             //     sqlStats = `SELECT  BVA.bva_issue_year AS issueYear,
+//             //                         TER.ter_con_id AS continentId, count (DISTINCT TER.ter_id) AS numTerritories, 
+//             //                         count (DISTINCT CUR.cur_id) AS numCurrencies, count (DISTINCT SER.ser_id) AS numSeries, 
+//             //                         count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS numDenominations, 
+//             //                         count(DISTINCT BAN.ban_id) AS numNotes, count(BVA.bva_id) AS numVariants,
+//             //                         sum(BIT.bit_price) AS price
+//             //                 FROM bva_variant BVA
+//             //                 LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+//             //                 LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+//             //                 LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
+//             //                 LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
+//             //                 LEFT JOIN ter_territory TER ON (TER.ter_id = TEC.tec_ter_id AND TER.ter_con_id <> 1)
+//             //                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+//             //                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = ?
+//             //                 GROUP BY issueYear`;
+//             //     break;
+//     }
+
+//     catalogueDB.execSQL(sqlStats, [request.session.user], (err, rows) => {
+//         if (err) {
+//             new Exception(500, err.code, err.message).send(response);
+//             return;
+//         }
+
+//         response.writeHead(200, { 'Content-Type': 'application/json' });
+//         response.write(JSON.stringify(rows));
+//         response.send();
+//     });
+// }

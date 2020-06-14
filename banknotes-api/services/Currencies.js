@@ -11,34 +11,11 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/territory/:territoryId/currencies', territoryByIdCurrenciesGET);
     app.get('/currency/:currencyId', currencyByIdGET);
 
     log.debug("Currencies service initialized");
 };
 
-
-// ===> /territory/:territoryId/currencies
-function territoryByIdCurrenciesGET(request, response) {
-    let territoryId = request.params.territoryId;
-
-    let sql = ` SELECT   CUR.cur_id AS id, TER.ter_con_id AS "continentId", TER.ter_id AS "territoryId",
-                        TER.ter_name AS "territoryName", TEC.tec_cur_type AS "currencyType", 
-                        CUR.cur_symbol AS "symbol", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", 
-                        CUR.cur_start AS "start", CUR.cur_end AS "end", count (DISTINCT SER.ser_id) AS "numSeries", 
-                        count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                        count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"
-                FROM cur_currency CUR
-                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = ${territoryId}
-                LEFT JOIN ter_territory TER ON (TER.ter_id = TEC.tec_ter_id)
-                LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
-                LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
-                LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
-                GROUP BY id, "continentId","territoryId","territoryName","currencyType","iso3"
-                ORDER BY "start", "end"`;
-
-    catalogueDB.getAndReply(response, sql);
-}
 
 
 // ===> /currency/:currencyId

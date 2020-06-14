@@ -66,6 +66,7 @@ table.list-table tbody th {
 
 table.list-table tbody td {
   font-family: "sans-serif";
+  white-space: nowrap;
 }
 
 table.list-table tbody th,

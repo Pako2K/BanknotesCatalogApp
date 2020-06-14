@@ -36,6 +36,7 @@ table.list-table {
     }
     & tbody td {
         font-family: $FONT_DATA;
+        white-space: nowrap;
     }
     & tbody th,
     & tbody td {
