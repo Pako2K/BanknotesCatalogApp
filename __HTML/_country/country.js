@@ -113,8 +113,16 @@ function loadTable(option) {
             });
             break;
         case "Denominations":
+            $("#results-table").load("./_denominations/table.html", (responseTxt, statusTxt, xhr) => {
+                if (statusTxt == "success")
+                    loadDenominationsTable(countryId);
+            });
             break;
         case "Years":
+            $("#results-table").load("./_years/table.html", (responseTxt, statusTxt, xhr) => {
+                if (statusTxt == "success")
+                    loadYearsTable(countryId);
+            });
             break;
     }
 }
