@@ -10,27 +10,8 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/currency/:currencyId/series', currencyByIdSeriesGET);
-
     log.debug("Series service initialized");
 };
-
-// ===> /currency/<ID>/series
-function currencyByIdSeriesGET(request, response) {
-    let currencyId = request.params.currencyId;
-
-    let sql = ` SELECT SER.ser_id AS id, SER.ser_name AS name, SER.ser_start AS start, SER.ser_end AS end,
-                        count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                        count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"
-                FROM ser_series SER
-                INNER JOIN cur_currency CUR ON CUR.cur_id = ${currencyId}
-                LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
-                LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
-                GROUP BY "start", "end", "name", "id"`;
-
-    catalogueDB.getAndReply(response, sql);
-}
-
 
 
 // // ===> /currency/series?currencyId=<id>

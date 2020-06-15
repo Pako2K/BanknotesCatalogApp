@@ -12,7 +12,6 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/currency/:currencyId/variants/years', currencyByIdVariantsYearsGET);
     app.get('/series/:seriesId/variants', seriesByIdVariantsGET);
     app.get('/variants', variantsGET);
     app.get('/items', itemsGET);
@@ -21,21 +20,6 @@ module.exports.initialize = function(app) {
     log.debug("Variants service initialized");
 
 };
-
-
-// ===> /currency/:currencyId/variants/years
-function currencyByIdVariantsYearsGET(request, response) {
-    let currencyId = request.params.currencyId;
-
-    let sql = ` SELECT  BVA.bva_issue_year AS "issueYear", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                        count(BVA.bva_id) AS "numVariants"
-                FROM bva_variant BVA
-                LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-                LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = ${currencyId}
-                GROUP BY "issueYear"`;
-
-    catalogueDB.getAndReply(response, sql);
-}
 
 
 //===> /variants?continentId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType

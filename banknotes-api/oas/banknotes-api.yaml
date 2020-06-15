@@ -676,6 +676,204 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
                 
+         
+  /currency/{currencyId}/series/variants/stats:
+    get:
+      tags: 
+       - Statistics
+      summary: Get statistics about banknotes in catalogue for each series of a specific currency.
+      description: Returns a list of series in the catalogue used in a specific currency, with their main features and statistics.
+      operationId: currencyByIdSeriesVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'  
+      responses:
+        "200":
+          description: List of series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesByCurCatStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
+  
+  /currency/{currencyId}/series/items/stats:
+    get:
+      tags: 
+      - Statistics
+      summary: Get statistics about banknotes in collection for each series of a currency.
+      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      operationId: currencyByIdSeriesItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of series with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesByCurColStats'
+        "400":
+          description: Invalid request. Missing cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: Session id or username is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+
+  /currency/{currencyId}/denominations/variants/stats:
+    get:
+      tags: 
+       - Statistics
+      summary: Get statistics about denominations in catalogue for a specific currency.
+      description: Returns a list of denominations in the catalogue used in a specific currency, with their statistics.
+      operationId: currencyByIdDenominationsVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'  
+      responses:
+        "200":
+          description: List of denominations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/denominationByCurCatStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
+  
+  /currency/{currencyId}/denominations/items/stats:
+    get:
+      tags: 
+      - Statistics
+      summary: Get statistics about denominations in collection for a currency.
+      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      operationId: currencyByIdDenominationsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of denominations with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/denominationByCurColStats'
+        "400":
+          description: Invalid request. Missing cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: Session id or username is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                
+  /currency/{currencyId}/issue-years/variants/stats:
+    get:
+      tags: 
+       - Statistics
+      summary: Get statistics about issue years in catalogue for a specific currency.
+      description: Returns a list of issue years in the catalogue used in a specific currency, with their statistics.
+      operationId: currencyByIdIssueYearsVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'  
+      responses:
+        "200":
+          description: List of issue years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearByCurCatStats'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+  
+  
+  /currency/{currencyId}/issue-years/items/stats:
+    get:
+      tags: 
+      - Statistics
+      summary: Get statistics about issue years in collection for a currency.
+      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      operationId: currencyByIdIssueYearsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of denominations with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearByCurColStats'
+        "400":
+          description: Invalid request. Missing cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: Session id or username is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
                 
   /currency/{currencyId}:
     get:
@@ -735,70 +933,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
-                
-  
-  /currency/{currencyId}/banknotes:
-    get:
-      tags:
-      - Banknotes
-      summary: Get summary of banknotes(denominations) for a currency
-      description: Returns the info about the different banknotes of a currency.
-      operationId: currencyByIdBanknotesGET
-      parameters:
-      - in: path
-        required: true
-        name: currencyId
-        schema:
-          type: integer
-        description: Id of the currency
-      responses:
-        "200":
-          description: Summary and stats of the banknotes belonging to the specified currency ID
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/banknoteStats'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-                
 
-  /currency/{currencyId}/variants/years:
-    get:
-      tags:
-      - Variants
-      summary: Get summary of banknotes per issued year for a currency
-      description: Returns the info about the different years when variants were issued for a currency.
-      operationId: currencyByIdVariantsYearsGET
-      parameters:
-      - in: path
-        required: true
-        name: currencyId
-        schema:
-          type: integer
-        description: Id of the currency
-      responses:
-        "200":
-          description: Summary and stats of the banknotes belonging to the specified currency ID
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearCatStats'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-                
-                
+
   /series/{seriesId}/variants:
     get:
       tags:
@@ -950,65 +1086,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
 
-  
-  /currency/{currencyId}/items/stats:
-    get:
-      tags: 
-      - Items
-      summary: Get Collection stats for a specific currency
-      description: Retrieves the collection statistics for the active sesion's user and the provided currency and grouping critera
-      operationId: currencyByIdItemsStatsGET
-      parameters:
-      - in: path
-        required: true
-        name: currencyId
-        schema:
-          type: integer
-        description: Id of the currency
-      - in: cookie
-        name: banknotes.ODB.username
-        schema:
-          type: string
-        required: true
-        description: user for whom the statistics are retrieved
-      - in: query
-        name: grouping
-        schema:
-          type: string
-          enum:
-          - series
-          - denomination
-          - year
-        required: true
-        description: Statistics based on this grouping criteria
-      responses:
-        "200":
-          description: Success. Statistics returned
-          content:
-            application/json:
-               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/itemStats'
-        "400":
-          description: Invalid request. Query or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "403":
-          description: User not logged-in or invalid session
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'  
-       
                 
   /series/{seriesId}/items:
     get:
@@ -1105,6 +1182,13 @@ components:
       name: territoryId
       required: true
       description: Id of the territory
+      schema:
+        type: integer
+    currencyId:
+      in: path
+      name: currencyId
+      required: true
+      description: Id of the currency
       schema:
         type: integer
     cookieUsername:
@@ -1678,6 +1762,43 @@ components:
                 type: number
 
 
+    denominationByCurCatStats:
+      type: object
+      required:
+      - denomination
+      - numSeries
+      - numVariants
+      properties:
+        denomination:
+          type: number
+        numSeries:
+          type: integer
+        numVariants:
+          type: integer
+
+
+    denominationByCurColStats:
+      allOf:    
+      - $ref: '#/components/schemas/denominationByCurCatStats'
+      - type: object
+        required:
+        - collectionStats
+        properties:
+          collectionStats:
+            type: object
+            required:
+            - numSeries
+            - numVariants
+            - price
+            properties:
+              numSeries:
+                type: integer
+              numVariants:
+                type: integer
+              price:
+                type: number
+
+
     issueYearCatStats:
       type: object
       required:
@@ -1773,6 +1894,42 @@ components:
               price:
                 type: number
                 
+        
+    issueYearByCurCatStats:
+      type: object
+      required:
+      - issueYear
+      - numDenominations
+      - numVariants
+      properties:
+        issueYear:
+          type: integer
+        numDenominations:
+          type: integer
+        numVariants:
+          type: integer
+
+    issueYearByCurColStats:
+      allOf:    
+      - $ref: '#/components/schemas/issueYearByCurCatStats'
+      - type: object
+        required:
+        - collectionStats
+        properties:
+          collectionStats:
+            type: object
+            required:
+            - numDenominations
+            - numVariants
+            - price
+            properties:
+              numDenominations:
+                type: integer
+              numVariants:
+                type: integer
+              price:
+                type: number
+                
                 
     seriesKey:
       type: object
@@ -1828,20 +1985,45 @@ components:
               price:
                 type: number
   
-  
-    banknoteStats:
-      type: object
-      required:
-      - denomination
-      - numSeries
-      - numVariants
-      properties:
-        denomination:
-          type: number
-        numSeries:
-          type: integer
-        numVariants:
-          type: integer
+
+    seriesByCurCatStats:
+      allOf:    
+      - $ref: '#/components/schemas/seriesKey'
+      - type: object
+        required:
+        - start
+        - numDenominations
+        - numVariants
+        properties:
+          start:
+            type: integer
+          end:
+            type: integer
+          numDenominations:
+            type: integer
+          numVariants:
+            type: integer
+
+    seriesByCurColStats:
+      allOf:    
+      - $ref: '#/components/schemas/seriesByCurCatStats'
+      - type: object
+        required:
+        - collectionStats
+        properties:
+          collectionStats:
+            type: object
+            required:
+            - numDenominations
+            - numVariants
+            - price
+            properties:
+              numDenominations:
+                type: integer
+              numVariants:
+                type: integer
+              price:
+                type: number
 
 
     variantKey:
@@ -1931,32 +2113,6 @@ components:
             description:
               type: string
           
-          
-    itemStats:
-      type: object
-      required:
-      - id
-      - numVariants
-      - price
-      properties:
-        id:
-          type: integer
-          description: "id of the grouping field: territoryId, currencyId, denomination or year"  
-        numTerritories:
-          type: integer
-        numCurrencies:
-          type: integer
-        numSeries:
-          type: integer
-        numDenominations:
-          type: integer
-        numNotes:
-          type: integer
-        numVariants:
-          type: integer
-        price:
-          type: number
-
 
     grade:
       type: object

@@ -3,49 +3,47 @@
 $("#series-stats").ready(() => {
     let currencyId = window.location.search.substr("?currencyId=".length);
 
-    let seriesJSON = JSON.parse($(document).data("series-stats"));
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = `/currency/${currencyId}/series/items/stats`;
+    else
+        variantsUri = `/currency/${currencyId}/series/variants/stats`;
 
-    if (getCookie("banknotes.ODB.username")) {
-        $.ajax({
-            type: "GET",
-            url: `/currency/${currencyId}/items/stats?grouping=series`,
-            async: true,
-            cache: false,
-            timeout: 5000,
-            dataType: 'json',
-
-            success: function(collecResult, status) {
-                // Consolidate results with the currency info
-                let collecIndex = 0;
-                for (let row of collecResult) {
-                    // Find position in the results
-                    let pos = seriesJSON.findIndex((elem) => { return elem.id === row.id; });
-                    if (pos !== -1) {
-                        seriesJSON[pos].numDenominationsCol = row.numDenominations;
-                        seriesJSON[pos].numVariantsCol = row.numVariants;
-                        seriesJSON[pos].priceCol = row.price;
-                    }
-                }
-
-                loadSeriesTable(seriesJSON);
-            },
-            error: function(xhr, status, error) {
-                switch (xhr.status) {
-                    case 403:
-                        if (getCookie("banknotes.ODB.username")) {
-                            alert("Your session is not valid or has expired.");
-                            deleteCookie("banknotes.ODB.username");
-                            location.reload();
-                        }
-                        break;
-                    default:
-                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    $.ajax({
+        type: "GET",
+        url: variantsUri || itemsUri,
+        async: true,
+        cache: false,
+        timeout: 5000,
+        dataType: 'json',
+        success: function(seriesJSON, status) {
+            if (variantsUri) {
+                // Add null collectionStats
+                for (let row of seriesJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
                 }
             }
-        });
-    } else {
-        loadSeriesTable(seriesJSON);
-    }
+
+            loadSeriesTable(seriesJSON);
+        },
+        error: function(xhr, status, error) {
+            switch (xhr.status) {
+                case 403:
+                    if (getCookie("banknotes.ODB.username")) {
+                        alert("Your session is not valid or has expired.");
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        }
+    });
 });
 
 
@@ -56,20 +54,17 @@ function loadSeriesTable(seriesJSON) {
     let record = "";
     let count = seriesJSON.length;
     for (let i = count - 1; i >= 0; i--) {
-        var startDate = seriesJSON[i].start;
-        var endDate = seriesJSON[i].end;
-        if (endDate == null)
-            endDate = "";
+        var endDate = seriesJSON[i].end != null ? seriesJSON[i].end : "";
 
         record = `  <tr>
                         <th class="name" onclick="$('#series-id').text(` + seriesJSON[i].id + `);$('#series-list-view').trigger('click')">` + seriesJSON[i].name + `</th>
-                        <th>` + startDate + `</th>
+                        <th>` + seriesJSON[i].start + `</th>
                         <th>` + endDate + `</th>
                         <td>${seriesJSON[i].numDenominations}</td>
-                        <td class="only-logged-in">${seriesJSON[i].numDenominationsCol || 0}</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.numDenominations || 0}</td>
                         <td>${seriesJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${seriesJSON[i].numVariantsCol || 0}</td>
-                        <td class="only-logged-in">${seriesJSON[i].priceCol || 0} €</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.numVariants || 0}</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.price || 0} €</td>
                     </tr>`;
         $("#series-stats>tbody").prepend(record);
     }
@@ -85,62 +80,37 @@ function loadSeriesTable(seriesJSON) {
 $("#denominations-stats").ready(() => {
     let currencyId = window.location.search.substr("?currencyId=".length);
 
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = `/currency/${currencyId}/denominations/items/stats`;
+    else
+        variantsUri = `/currency/${currencyId}/denominations/variants/stats`;
+
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/banknotes`,
+        url: variantsUri || itemsUri,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
-        success: function(result, status) {
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/currency/${currencyId}/items/stats?grouping=denomination`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results with the currency info
-                        let collecIndex = 0;
-                        for (let row of collecResult) {
-                            // Find position in the results
-                            let pos = result.findIndex((elem) => { return elem.denomination === row.denomination; });
-                            if (pos !== -1) {
-                                result[pos].numSeriesCol = row.numSeries;
-                                result[pos].numVariantsCol = row.numVariants;
-                                result[pos].priceCol = row.price;
-                            }
-                        }
-
-                        loadDenominationsTable(result);
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                if (getCookie("banknotes.ODB.username")) {
-                                    alert("Your session is not valid or has expired.");
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
-                    }
-                });
-            } else {
-                loadDenominationsTable(result);
+        success: function(denomJSON, status) {
+            if (variantsUri) {
+                // Add null collectionStats
+                for (let row of denomJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
             }
-        },
 
+            loadDenominationsTable(denomJSON);
+        },
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    // Check whether the cookie has alredy been deleted
                     if (getCookie("banknotes.ODB.username")) {
                         alert("Your session is not valid or has expired.");
                         deleteCookie("banknotes.ODB.username");
@@ -155,20 +125,20 @@ $("#denominations-stats").ready(() => {
 });
 
 
-function loadDenominationsTable(banknotesJSON) {
+function loadDenominationsTable(denomJSON) {
     // Clean table body
     $("#denominations-stats>tbody").empty();
 
     let record = "";
-    let count = banknotesJSON.length;
+    let count = denomJSON.length;
     for (let i = count - 1; i >= 0; i--) {
         record = `  <tr>
-                        <th>` + banknotesJSON[i].denomination + `</th>
-                        <td>${banknotesJSON[i].numSeries}</td>
-                        <td class="only-logged-in">${banknotesJSON[i].numSeriesCol || 0}</td>
-                        <td>${banknotesJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${banknotesJSON[i].numVariantsCol || 0}</td>
-                        <td class="only-logged-in">${banknotesJSON[i].priceCol || 0} €</td>
+                        <th>` + denomJSON[i].denomination + `</th>
+                        <td>${denomJSON[i].numSeries}</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.numSeries || 0}</td>
+                        <td>${denomJSON[i].numVariants}</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.numVariants || 0}</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.price || 0} €</td>
                     </tr>`;
         $("#denominations-stats>tbody").prepend(record);
     }
@@ -183,62 +153,37 @@ function loadDenominationsTable(banknotesJSON) {
 $("#years-stats").ready(() => {
     let currencyId = window.location.search.substr("?currencyId=".length);
 
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = `/currency/${currencyId}/issue-years/items/stats`;
+    else
+        variantsUri = `/currency/${currencyId}/issue-years/variants/stats`;
+
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/variants/years`,
+        url: variantsUri || itemsUri,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
-        success: function(result, status) {
-            if (getCookie("banknotes.ODB.username")) {
-                $.ajax({
-                    type: "GET",
-                    url: `/currency/${currencyId}/items/stats?grouping=year`,
-                    async: true,
-                    cache: false,
-                    timeout: 5000,
-                    dataType: 'json',
-
-                    success: function(collecResult, status) {
-                        // Consolidate results 
-                        let collecIndex = 0;
-                        for (let row of collecResult) {
-                            // Find position in the results
-                            let pos = result.findIndex((elem) => { return elem.issueYear === row.issueYear; });
-                            if (pos !== -1) {
-                                result[pos].numDenominationsCol = row.numDenominations;
-                                result[pos].numVariantsCol = row.numVariants;
-                                result[pos].priceCol = row.price;
-                            }
-                        }
-
-                        loadYearsTable(result);
-                    },
-                    error: function(xhr, status, error) {
-                        switch (xhr.status) {
-                            case 403:
-                                if (getCookie("banknotes.ODB.username")) {
-                                    alert("Your session is not valid or has expired.");
-                                    deleteCookie("banknotes.ODB.username");
-                                    location.reload();
-                                }
-                                break;
-                            default:
-                                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        }
-                    }
-                });
-            } else {
-                loadYearsTable(result);
+        success: function(yearsJSON, status) {
+            if (variantsUri) {
+                // Add null collectionStats
+                for (let row of yearsJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
             }
-        },
 
+            loadYearsTable(yearsJSON);
+        },
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    // Check whether the cookie has alredy been deleted
                     if (getCookie("banknotes.ODB.username")) {
                         alert("Your session is not valid or has expired.");
                         deleteCookie("banknotes.ODB.username");
@@ -263,10 +208,10 @@ function loadYearsTable(yearsJSON) {
         record = `  <tr>
                         <th>` + yearsJSON[i].issueYear + `</th>
                         <td>${yearsJSON[i].numDenominations}</td>
-                        <td class="only-logged-in">${yearsJSON[i].numDenominationsCol || 0}</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || 0}</td>
                         <td>${yearsJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${yearsJSON[i].numVariantsCol || 0}</td>
-                        <td class="only-logged-in">${yearsJSON[i].priceCol || 0} €</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || 0}</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price || 0} €</td>
                     </tr>`;
         $("#years-stats>tbody").prepend(record);
     }
