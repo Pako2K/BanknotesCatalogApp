@@ -10,52 +10,30 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
+    app.get('/currency/:currencyId/series', currencyByIdSeriesGET);
+
     log.debug("Series service initialized");
 };
 
 
-// // ===> /currency/series?currencyId=<id>
-// module.exports.currencySeriesGET = function(request, response) {
-//     console.log(request.url);
-//     console.log(url.parse(request.url, true).query);
+// ===> /currency/:currencyId/series
+function currencyByIdSeriesGET(request, response) {
+    let currencyId = parseInt(request.params.currencyId);
 
-//     let id = url.parse(request.url, true).query.currencyId;
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "CUR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        return;
+    }
 
-//     if (id === undefined || id === '') {
-//         response.writeHead(400);
-//         response.send();
-//         return;
-//     }
+    let sql = `SELECT ser_id AS "id", ser_name AS "name", ser_start AS "start", ser_end AS "end"
+                FROM ser_series
+                WHERE ser_cur_id = ${currencyId}
+                ORDER BY "start", "end", "name"`;
 
-//     db.all(sqlSeries, [id], (err, rows) => {
-//         if (err) {
-//             response.writeHead(500, { 'Content-Type': 'application/json' });
-//             response.write(JSON.stringify({ "Error": err.errno, "ErrorMsg": err.message }));
-//             response.send();
-//             return;
-//         }
+    catalogueDB.getAndReply(response, sql);
+}
 
-//         console.log(rows);
-
-//         let resultJson = [];
-//         let row;
-//         for (row of rows) {
-//             resultJson.push({
-//                 "id": row.ser_id,
-//                 "name": row.ser_name,
-//                 "start": row.ser_start,
-//                 "end": row.ser_end,
-//                 "issuer": row.ser_issuer,
-//                 "lawDate": row.ser_law_date,
-//                 "description": row.ser_description
-//             });
-//         }
-
-//         response.writeHead(200, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify(resultJson));
-//         response.send();
-//     });
-// }
 
 
 // let sqlSeriesByID =

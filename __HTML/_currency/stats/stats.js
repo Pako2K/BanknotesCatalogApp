@@ -1,24 +1,23 @@
 "use strict"
 
-$("#series-stats").ready(() => {
+function initializeStats() {
     let currencyId = window.location.search.substr("?currencyId=".length);
 
-    let variantsUri;
-    let itemsUri;
+    let uriToken;
     if (getCookie("banknotes.ODB.username"))
-        itemsUri = `/currency/${currencyId}/series/items/stats`;
+        uriToken = "items";
     else
-        variantsUri = `/currency/${currencyId}/series/variants/stats`;
+        uriToken = "variants";
 
     $.ajax({
         type: "GET",
-        url: variantsUri || itemsUri,
+        url: `/currency/${currencyId}/series/${uriToken}/stats`,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
         success: function(seriesJSON, status) {
-            if (variantsUri) {
+            if (uriToken === "variants") {
                 // Add null collectionStats
                 for (let row of seriesJSON) {
                     row.collectionStats = {};
@@ -44,7 +43,81 @@ $("#series-stats").ready(() => {
             }
         }
     });
-});
+
+
+    $.ajax({
+        type: "GET",
+        url: `/currency/${currencyId}/denominations/${uriToken}/stats`,
+        async: true,
+        cache: false,
+        timeout: 5000,
+        dataType: 'json',
+
+        success: function(denomJSON, status) {
+            if (uriToken === "variants") {
+                // Add null collectionStats
+                for (let row of denomJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            loadDenominationsTable(denomJSON);
+        },
+        error: function(xhr, status, error) {
+            switch (xhr.status) {
+                case 403:
+                    if (getCookie("banknotes.ODB.username")) {
+                        alert("Your session is not valid or has expired.");
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        }
+    });
+
+
+    $.ajax({
+        type: "GET",
+        url: `/currency/${currencyId}/issue-years/${uriToken}/stats`,
+        async: true,
+        cache: false,
+        timeout: 5000,
+        dataType: 'json',
+
+        success: function(yearsJSON, status) {
+            if (uriToken === "variants") {
+                // Add null collectionStats
+                for (let row of yearsJSON) {
+                    row.collectionStats = {};
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            loadYearsTable(yearsJSON);
+        },
+        error: function(xhr, status, error) {
+            switch (xhr.status) {
+                case 403:
+                    if (getCookie("banknotes.ODB.username")) {
+                        alert("Your session is not valid or has expired.");
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        }
+    });
+}
 
 
 function loadSeriesTable(seriesJSON) {
@@ -76,55 +149,6 @@ function loadSeriesTable(seriesJSON) {
 }
 
 
-
-$("#denominations-stats").ready(() => {
-    let currencyId = window.location.search.substr("?currencyId=".length);
-
-    let variantsUri;
-    let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
-        itemsUri = `/currency/${currencyId}/denominations/items/stats`;
-    else
-        variantsUri = `/currency/${currencyId}/denominations/variants/stats`;
-
-    $.ajax({
-        type: "GET",
-        url: variantsUri || itemsUri,
-        async: true,
-        cache: false,
-        timeout: 5000,
-        dataType: 'json',
-
-        success: function(denomJSON, status) {
-            if (variantsUri) {
-                // Add null collectionStats
-                for (let row of denomJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numSeries = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            loadDenominationsTable(denomJSON);
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            }
-        }
-    });
-});
-
-
 function loadDenominationsTable(denomJSON) {
     // Clean table body
     $("#denominations-stats>tbody").empty();
@@ -148,54 +172,6 @@ function loadDenominationsTable(denomJSON) {
         $('#denominations-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
     }
 }
-
-
-$("#years-stats").ready(() => {
-    let currencyId = window.location.search.substr("?currencyId=".length);
-
-    let variantsUri;
-    let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
-        itemsUri = `/currency/${currencyId}/issue-years/items/stats`;
-    else
-        variantsUri = `/currency/${currencyId}/issue-years/variants/stats`;
-
-    $.ajax({
-        type: "GET",
-        url: variantsUri || itemsUri,
-        async: true,
-        cache: false,
-        timeout: 5000,
-        dataType: 'json',
-
-        success: function(yearsJSON, status) {
-            if (variantsUri) {
-                // Add null collectionStats
-                for (let row of yearsJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            loadYearsTable(yearsJSON);
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            }
-        }
-    });
-});
 
 
 function loadYearsTable(yearsJSON) {

@@ -4,6 +4,7 @@ const url = require('url');
 const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
+const users = require('./Users');
 
 
 let catalogueDB;
@@ -12,22 +13,19 @@ let catalogueDB;
 module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
-    app.get('/series/:seriesId/variants', seriesByIdVariantsGET);
-    app.get('/variants', variantsGET);
-    app.get('/items', itemsGET);
-
+    app.get('/variants', addOnlyVariants, itemsGET);
+    app.get('/items', users.validateSessionUser, itemsGET);
+    app.get('/series/:seriesId/variants', addOnlyVariants, seriesByIdItemsGET);
+    app.get('/series/:seriesId/items', users.validateSessionUser, seriesByIdItemsGET);
 
     log.debug("Variants service initialized");
-
 };
 
-
-//===> /variants?continentId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
-//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
-function variantsGET(request, response) {
+function addOnlyVariants(request, response, next) {
     request.onlyVariants = true;
-    itemsGET(request, response);
+    next();
 }
+
 
 //===> /items?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
 //               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
@@ -194,60 +192,78 @@ function itemsGET(request, response) {
 }
 
 
+// ==> /series/:seriesId/items
+function seriesByIdItemsGET(request, response) {
+    let seriesId = request.params.seriesId;
 
+    // Check that the Id is an integer
+    if (Number.isNaN(seriesId) || seriesId.toString() !== request.params.seriesId) {
+        new Exception(400, "VAR-1", "Invalid Series Id, " + request.params.seriesId).send(response);
+        return;
+    }
 
-// ===> /series/:seriesId/variants
-// Returns: [{"denomination":20, "variants":[{ "variantId": , "printedDate": , "issueYear": , "catalogueId": , "description": }]}]
-function seriesByIdVariantsGET(request, response) {
-    let seriesId = request.params.currencyId;
-
-    const sql = `
-            SELECT BAN.ban_id BAN.ban_face_value, UNI.cus_value, BVA.bva_id, BVA.bva_printed_date, BVA.bva_issue_year, BVA.bva_cat_id, BVA.bva_description
+    let sql = ` SELECT  CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                        BVA.bva_id AS "id", BVA.bva_cat_id AS "catalogueId", BVA.bva_printed_date AS "printedDate", 
+                        BVA.bva_issue_year AS "issueYear", BVA.bva_description as "description"
                 FROM ban_banknote BAN
-                LEFT JOIN cus_currency_unit UNI ON BAN.ban_cus_id = UNI.cus_id
+                LEFT JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
                 LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
-                WHERE BAN.ban_ser_id = ?1
-            ORDER BY ban_face_value, bva_issue_year, bva_printed_date
-            `;
+                WHERE BAN.ban_ser_id = ${seriesId}
+                ORDER BY "denomination", "issueYear", "printedDate"`;
 
-    catalogueDB.execSQL(sql, [seriesId], (err, rows) => {
+    if (request.onlyVariants) {
+        catalogueDB.getAndReply(response, sql);
+        return;
+    }
+
+    // Retrieve the catalogue data
+    catalogueDB.execSQL(sql, [], (err, catRows) => {
         if (err) {
             new Exception(500, err.code, err.message).send(response);
             return;
         }
 
-        let variant = {};
-        let variants = [];
-        let denomination = {};
-        let denominations = [];
-        let prevDen = 0;
-        let prevVariant = 0;
-        for (let row of rows) {
-            if (row.ban_id !== prevDen) {
-                if (prevDen !== 0)
-                    denominations.push(denomination);
-                // Insert denomination info
-                let den = row.ban_face_value;
-                if (row.cus_value != null && row.cus_value != 0) {
-                    den /= row.cus_value;
+        // Retrieve the collection data
+        sql = ` SELECT BIT.bit_id AS "id", GRA.gra_value AS "gradeValue", GRA.gra_grade AS "grade", 
+                        BIT.bit_price AS "price", BVA.bva_id AS "variantId"
+                FROM ban_banknote BAN
+                LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
+                LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                INNER JOIN gra_grade GRA ON GRA.gra_grade = BIT.bit_gra_grade           
+                LEFT JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                WHERE BAN.ban_ser_id = ${seriesId}
+                ORDER BY "variantId"`;
+
+        catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue data
+            for (let row of catRows) {
+                let item = {};
+                let collecIndex = colRows.findIndex((elem) => { return elem.variantId === row.id; });
+                if (collecIndex !== -1) {
+                    while (collecIndex < colRows.length && row.id === colRows[collecIndex].variantId) {
+                        // Take the collection item with the highest grade (min grade value) and price
+                        if (!item.id || item.gradeValue > colRows[collecIndex].gradeValue ||
+                            (item.gradeValue === colRows[collecIndex].gradeValue && item.price < colRows[collecIndex].price)) {
+                            item.id = colRows[collecIndex].id;
+                            item.gradeValue = colRows[collecIndex].gradeValue;
+                            item.grade = colRows[collecIndex].grade;
+                            item.price = colRows[collecIndex].price;
+                        }
+                        collecIndex++;
+                    }
+                    if (item.id) row.item = { id: item.id, grade: item.grade, price: item.price };
                 }
-                denomination = { "denomination": den, "variants": [] };
-                prevDen = row.ban_id;
             }
 
-            if (row.bva_id != null && row.bva_id !== prevVariant) {
-                variant = { "variantId": row.bva_id, "printedDate": row.bva_printed_date, "issueYear": row.bva_issue_year, "catalogueId": row.bva_cat_id, "description": row.bva_description };
-                prevVariant = row.bva_id;
-                denomination.variants.push(variant);
-            }
-        }
-        denominations.push(denomination);
-
-        // Sort the denominations by value
-        denominations.sort((a, b) => { return a.denomination - b.denomination; });
-
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.write(JSON.stringify(denominations));
-        response.send();
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
     });
 }

@@ -58,10 +58,44 @@
     background: rgb(33, 89, 104);
     padding: 0.5em 2em;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    & #currency-data>div>p:first-child {
-        margin: 0.5em 0;
-        display: inline-block;
+    & #currency-data {
+        margin-right: 0.6em;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        &>div:first-of-type {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            &>p:not(:first-of-type) {
+                font-size: 0.65em;
+                color: whitesmoke;
+                margin-top: 0;
+                margin-bottom: 0.4em;
+            }
+        }
+        // Description
+        &>div:last-of-type {
+            font-size: 0.7em;
+            color: rgb(199, 220, 199);
+            display: none;
+            & a:link {
+                color: rgb(209, 215, 209);
+                font-weight: normal;
+            }
+            & a:visited {
+                color: rgb(209, 215, 209);
+            }
+            & a:hover {
+                color: whitesmoke;
+            }
+        }
+        &>div>p:first-child {
+            margin: 0.5em 0;
+            display: inline-block;
+        }
     }
     & #currency-symbol {
         font-size: 1.5em;
@@ -82,33 +116,11 @@
         vertical-align: super;
         cursor: pointer;
     }
-    & #currency-data>div:first-of-type>p:not(:first-of-type) {
-        font-size: 0.65em;
-        color: whitesmoke;
-        margin-top: 0;
-        margin-bottom: 0.4em;
-    }
-    // Description
-    & #currency-data>div:last-of-type {
-        display: none;
-    }
-    & #currency-desc {
-        font-size: 0.7em;
-        color: rgb(199, 220, 199);
-        & a:link {
-            color: rgb(209, 215, 209);
-            font-weight: normal;
-        }
-        & a:visited {
-            color: rgb(209, 215, 209);
-        }
-        & a:hover {
-            color: whitesmoke;
-        }
-    }
     & #currency-relatives {
         color: whitesmoke;
         text-align: right;
+        display: flex;
+        flex-direction: column;
     }
     & #currency-relatives p:nth-of-type(odd) {
         font-size: 0.65em;
@@ -117,12 +129,14 @@
     & #currency-relatives p:nth-of-type(even) {
         font-size: 0.65em;
         margin-top: 0.5em;
+        white-space: nowrap;
     }
     .currency-link {
         font-size: 0.7em;
         font-style: italic;
         text-decoration: none;
         font-weight: bold;
+        white-space: nowrap;
     }
     .currency-link:link {
         color: white;

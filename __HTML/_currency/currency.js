@@ -28,10 +28,10 @@ $(document).ready(function() {
 
         success: function(result, status) {
             // Store the data in the currency main page
-            $(document).data("series-stats", JSON.stringify(result));
+            $(document).data("series-summary", JSON.stringify(result));
 
             // Load default navigation option
-            $("#view-section").load("./summary/__summary.html");
+            $("#view-section").load("./summary/__summary.html", initializeSummary);
         },
 
         error: function(xhr, status, error) {
@@ -98,7 +98,7 @@ function setHeaders(currencyData) {
         if (currencyData.predecessor.iso3)
             name += " (" + currencyData.predecessor.iso3 + ")";
         $("#currency-predecessor").text(name)
-        $("#predecessorRate").text("1 " + currencyData.iso3 + " = " + currencyData.predecessor.rate.toLocaleString("de-DE") + " " + currencyData.predecessor.iso3);
+        $("#predecessorRate").text("1 " + currencyData.iso3 + " = " + currencyData.predecessor.rate.toLocaleString("de-DE") + " " + (currencyData.predecessor.iso3 || currencyData.predecessor.name));
     } else {
         $("#currency-predecessor").parent().hide();
     }
@@ -109,7 +109,7 @@ function setHeaders(currencyData) {
         if (currencyData.successor.iso3)
             name += " (" + currencyData.successor.iso3 + ")";
         $("#currency-successor").text(name);
-        $("#successorRate").text("1 " + currencyData.successor.iso3 + " = " + currencyData.successor.rate.toLocaleString("de-DE") + " " + currencyData.iso3);
+        $("#successorRate").text("1 " + currencyData.successor.iso3 + " = " + currencyData.successor.rate.toLocaleString("de-DE") + " " + (currencyData.iso3 || currencyData.name));
     } else {
         $("#currency-successor").parent().hide();
     }
@@ -136,7 +136,18 @@ function selectView(optionElem) {
     let option = $(optionElem).text().toLowerCase();
     $(".selected-view").removeClass('selected-view');
     $(optionElem).addClass('selected-view');
-    $("#view-section").load(`./${option}/__${option}.html`);
+    switch (option) {
+        case "summary":
+            $("#view-section").load(`./${option}/__${option}.html`, initializeSummary);
+            break;
+        case "details":
+            $("#view-section").load(`./${option}/__${option}.html`);
+            break;
+        case "stats":
+            $("#view-section").load(`./${option}/__${option}.html`, initializeStats);
+            break;
+    }
+
 }
 
 

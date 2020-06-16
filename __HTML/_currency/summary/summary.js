@@ -1,7 +1,7 @@
-$('#summary-main-div').ready(() => {
+function initializeSummary() {
     let currencyId = window.location.search.substr("?currencyId=".length);
 
-    let seriesJSON = JSON.parse($(document).data("series-stats"));
+    let seriesJSON = JSON.parse($(document).data("series-summary"));
 
     // Create one section for each series
     if (seriesJSON.length === 0) {
@@ -27,34 +27,38 @@ $('#summary-main-div').ready(() => {
         $("#summary-main-div").append(section);
     }
 
-    // Load grades from DB
-    $.ajax({
-        type: "GET",
-        url: `/grades`,
-        async: true,
-        cache: true,
-        timeout: 5000,
-        dataType: 'json',
+    if (getCookie("banknotes.ODB.username")) {
+        // Load grades from DB
+        $.ajax({
+            type: "GET",
+            url: `/grades`,
+            async: true,
+            cache: true,
+            timeout: 5000,
+            dataType: 'json',
 
-        success: function(grades, status) {
-            // store info so it can be reused in the upsert-collection form
-            // $("#grades-div").data("grades", grades);
+            success: function(grades, status) {
+                // store info so it can be reused in the upsert-collection form
+                // $("#grades-div").data("grades", grades);
 
-            let gradesHTML = "";
-            for (let grade of grades) {
-                gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
+                let gradesHTML = "";
+                for (let grade of grades) {
+                    gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
+                }
+                $("#grades-div>div").append(gradesHTML);
+            },
+
+            error: function(xhr, status, error) {
+                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
             }
-            $("#grades-div>div").append(gradesHTML);
-        },
-
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-        }
-    });
+        });
+    } else {
+        $("#grades-div").hide();
+    }
 
     // // Load Upsert-Collection form
     // $("#upsert-collection-dialog").load("_series/_notes/upsert-collection.html");
-});
+};
 
 
 
@@ -81,192 +85,218 @@ function toggleDiv(divElem) {
 function loadBanknotesInfo(seriesSection) {
     let seriesId = $(seriesSection).data("series-id");
 
+    let variantsUri;
+    let itemsUri;
+    if (getCookie("banknotes.ODB.username"))
+        itemsUri = `/series/${seriesId}/items`;
+    else
+        variantsUri = `/series/${seriesId}/variants`;
+
+
     $.ajax({
         type: "GET",
-        url: `/collection/series?seriesId=${seriesId}`,
+        url: variantsUri || itemsUri,
         async: true,
         cache: false,
         timeout: 5000,
         dataType: 'json',
 
-        //         success: function(notesJSON, status) {
-        //             console.log(JSON.stringify(notesJSON));
-        //             // Clean-up table
-        //             $(seriesSection).find("div>table").remove();
+        success: function(notesJSON, status) {
+            // Clean-up table
+            $(seriesSection).find("table.summary-table").remove();
 
-        //             // Collect all the different "Issue Years"
-        //             let issueYears = []; // "Columns": 1 columns for each issue year
-        //             let rowIndex = []; // One for each column: to be used later to insert the values of each variant
-        //             let denom;
-        //             let variant;
-        //             for (denom of notesJSON) {
-        //                 for (variant of denom.variants) {
-        //                     if (issueYears.indexOf(variant.issueYear) === -1) {
-        //                         issueYears.push(variant.issueYear);
-        //                         rowIndex.push(0);
-        //                     }
-        //                 }
-        //             }
-        //             issueYears.sort();
+            // Collect all the different "Issue Years"
+            let issueYears = []; // "Columns": 1 columns for each issue year
+            let rowIndex = []; // One for each column: to be used later to insert the values of each variant
+            for (let variant of notesJSON) {
+                if (issueYears.indexOf(variant.issueYear) === -1) {
+                    issueYears.push(variant.issueYear);
+                    rowIndex.push(0);
+                }
+            }
+            issueYears.sort();
 
-        //             let year;
-        //             let tableHTML = `<table class="variants-table">
-        //                                 <thead>
-        //                                     <tr>`;
-        //             if (issueYears.length > 0)
-        //                 tableHTML += `<td></td>`; // DENOMINATION COLUMN
-        //             for (year of issueYears) {
-        //                 tableHTML += `<th colspan="3">` + year + `</th>`;
-        //             }
-        //             tableHTML += `</tr>
-        //                                     <tr>`;
-        //             if (issueYears.length > 0)
-        //                 tableHTML += `<td></td>`; // DENOMINATION COLUMN
-        //             for (year of issueYears) {
-        //                 tableHTML += `<td class="subcol-1">Date</td>
-        //                                         <td>Cat Id</td>
-        //                                         <td>Price</td>`
-        //             }
-        //             tableHTML += `</tr>
-        //                                 </thead>
-        //                                 <tbody>`;
-        //             for (denom of notesJSON) {
-        //                 let totalVariants = denom.variants.length;
-        //                 if (totalVariants > 0) {
-        //                     // Calculate the maximum number of rows for this denomination
-        //                     let issueYear = denom.variants[0].issueYear;
-        //                     let rowsMax = 0;
-        //                     let rowCount = 0;
-        //                     for (variant of denom.variants) {
-        //                         if (variant.issueYear == issueYear) {
-        //                             rowCount++;
-        //                         } else {
-        //                             if (rowCount > rowsMax)
-        //                                 rowsMax = rowCount;
-        //                             issueYear = variant.issueYear;
-        //                             rowCount = 1;
-        //                         }
-        //                     }
-        //                     // For the last issue year
-        //                     if (rowCount > rowsMax)
-        //                         rowsMax = rowCount;
+            // Transform rows resultset into JSON tree
+            // table = [denom, variants:[id, catId, year, printedDate, desc, item:{id,price, grade}]]
+            let tableJSON = [];
+            let denomObj = {};
+            for (let variant of notesJSON) {
+                if (denomObj.denomination !== variant.denomination) {
+                    if (denomObj.denomination) tableJSON.push(denomObj);
+                    denomObj = {};
+                    denomObj.denomination = variant.denomination;
+                    denomObj.variants = [];
+                }
+                delete variant.denomination;
+                denomObj.variants.push(variant);
+            }
+            tableJSON.push(denomObj);
 
-        //                     // Create a table with the html for each cell, initially with empty values
-        //                     let table = [];
-        //                     for (let row = 0; row < rowsMax; row++) {
-        //                         let htmlRowCells = [];
-        //                         for (let year in issueYears) {
-        //                             htmlRowCells.push('<td class="subcol-1"></td><td></td><td></td>');
-        //                         }
-        //                         table.push(htmlRowCells);
-        //                     }
+            // Group Variants per issueYear and sort per printedDate and catalogueId
+            let newTableJSON = [];
+            for (let denom of tableJSON) {
+                let years = [];
+                let yearObj = {};
+                for (let variant of denom.variants) {
+                    if (yearObj.issueYear !== variant.issueYear) {
+                        if (yearObj.issueYear) {
+                            yearObj.variants = sortJSON(yearObj.variants, ["printedDate", "catIdInt", "catIdSuffix"], true);
+                            years.push(yearObj);
+                        }
+                        yearObj = {};
+                        yearObj.issueYear = variant.issueYear;
+                        yearObj.variants = [];
+                    }
+                    delete variant.issueYear;
+                    variant.catIdInt = parseInt(variant.catalogueId.slice(2)); // Remove "P-" and convert to integer
+                    variant.catIdSuffix = variant.catalogueId.slice(2 + variant.catIdInt.toString().length);
+                    yearObj.variants.push(variant);
+                }
+                yearObj.variants = sortJSON(yearObj.variants, ["printedDate", "catIdInt", "catIdSuffix"], true);
+                years.push(yearObj);
+                newTableJSON.push({ denomination: denom.denomination, issueYears: years })
+            }
 
-        //                     // Iterate through the variants and reset the html cell with the values
-        //                     rowIndex.fill(0);
-        //                     for (variant of denom.variants) {
-        //                         // This is the column index
-        //                         let colIndex = issueYears.indexOf(variant.issueYear);
 
-        //                         //Check the items: take the one with the highest grade and the highest price
-        //                         let items = variant.items;
-        //                         let maxGradeValue = 100;
-        //                         let maxGrade = "none";
-        //                         let price = 0;
-        //                         let itemId = 0;
-        //                         for (let item of items) {
-        //                             if (item.gradeValue < maxGradeValue) {
-        //                                 maxGradeValue = item.gradeValue;
-        //                                 maxGrade = item.grade;
-        //                                 price = Math.max(price, item.price);
-        //                                 itemId = item.id;
-        //                             }
-        //                         }
-        //                         let gradeClass = ` ${maxGrade}-grade`;
-        //                         let priceStr = price ? price + " €" : "";
-        //                         table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
-        //                                                                 <td class="subcol-2${gradeClass}" data-variantid="${variant.id}" data-itemid="${itemId}" title="${variant.description}">${variant.catId}</td>
-        //                                                                 <td class="subcol-3${gradeClass}">${priceStr}</td>`;
-        //                         rowIndex[colIndex]++;
-        //                     }
+            let tableHTML = `<table class="summary-table">
+                                <thead>
+                                    <tr>`;
+            if (issueYears.length > 0)
+                tableHTML += `<td></td>`; // DENOMINATION COLUMN
+            for (let year of issueYears) {
+                tableHTML += `<th colspan="3">` + year + `</th>`;
+            }
+            tableHTML += `</tr>
+                          <tr>`;
+            if (issueYears.length > 0)
+                tableHTML += `<td></td>`; // DENOMINATION COLUMN
+            for (let year of issueYears) {
+                tableHTML += `<td class="subcol-1">Date</td>
+                                                    <td>Cat Id</td>
+                                                    <td>Price</td>`
+            }
+            tableHTML += `</tr>
+                       </thead>
+                    <tbody>`;
 
-        //                     if (rowsMax === 1)
-        //                         tableHTML += `<tr class="last-subrow" data-denom="${denom.denomination}">`;
-        //                     else
-        //                         tableHTML += `<tr data-denom="${denom.denomination}">`;
 
-        //                     let i = 0;
-        //                     tableHTML += `<th class="last-subrow" rowspan="${rowsMax}">${denom.denomination}</th>
-        //                                         ${table[i].join('')}
-        //                                     </tr>`;
-        //                     for (i = 1; i < table.length - 1; i++) {
-        //                         tableHTML += `<tr data-denom="${denom.denomination}">
-        //                                         ${table[i].join('')}
-        //                                     </tr>`;
-        //                     }
-        //                     if (rowsMax > 1) {
-        //                         tableHTML += `<tr class="last-subrow" data-denom="${denom.denomination}">
-        //                                         ${table[i].join('')}
-        //                                       </tr>`;
-        //                     }
-        //                 }
-        //             }
+            for (denom of newTableJSON) {
+                // Calculate the maximum number of rows for this denomination
+                let rowsMax = 0;
+                for (let year of denom.issueYears) {
+                    if (year.variants.length > rowsMax)
+                        rowsMax = year.variants.length;
+                }
 
-        //             tableHTML += `</tbody>
-        //                             </table>`;
+                // Create a table with the html for each cell, initially with empty values
+                let table = [];
+                for (let row = 0; row < rowsMax; row++) {
+                    let htmlRowCells = [];
+                    for (let year in issueYears) {
+                        htmlRowCells.push('<td class="subcol-1"></td><td></td><td></td>');
+                    }
+                    table.push(htmlRowCells);
+                }
 
-        //             $(seriesSection).children("div").last().append(tableHTML);
+                // Iterate through the variants and reset the html cell with the values
+                rowIndex.fill(0);
+                for (let year of denom.issueYears) {
+                    // This is the column index
+                    let colIndex = issueYears.indexOf(year.issueYear);
+                    for (let variant of year.variants) {
+                        //Check the items: 
+                        let itemId = "";
+                        let gradeClass = "";
+                        let priceStr = "";
+                        if (variant.item) {
+                            itemId = variant.item.id;
+                            gradeClass = ` ${variant.item.grade}-grade`;
+                            priceStr = variant.item.price + " €";
+                        }
+                        table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
+                                                            <td class="subcol-2${gradeClass}" data-variantid="${variant.id}" data-itemid="${itemId}" title="${variant.description}">${variant.catalogueId}</td>
+                                                            <td class="subcol-3${gradeClass}">${priceStr}</td>`;
+                        rowIndex[colIndex]++;
+                    }
+                }
 
-        //             // Add hover events and click events
-        //             for (let i = 1; i <= 3; i++) {
-        //                 $(".subcol-" + i).mouseenter(highlightRow);
-        //                 $(".subcol-" + i).mouseleave(highlightRowOff);
-        //                 $(".subcol-" + i).click(openUpsertCollection);
-        //             }
-        //         },
+                if (rowsMax === 1)
+                    tableHTML += `<tr class="last-subrow" data-denom="${denom.denomination}">`;
+                else
+                    tableHTML += `<tr data-denom="${denom.denomination}">`;
 
-        //         error: function(xhr, status, error) {
-        //             switch (xhr.status) {
-        //                 case 403:
-        //                     // Check whether the cookie has alredy been deleted
-        //                     if (getCookie("banknotes.ODB.username")) {
-        //                         alert("Your session is not valid or has expired.");
-        //                         deleteCookie("banknotes.ODB.username");
-        //                         location.reload();
-        //                     }
-        //                     break;
-        //                 default:
-        //                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-        //             }
-        //         }
+                let i = 0;
+                tableHTML += `<th class="last-subrow" rowspan="${rowsMax}">${denom.denomination}</th>
+                                ${table[i].join('')}
+                            </tr>`;
+                for (i = 1; i < table.length - 1; i++) {
+                    tableHTML += `<tr data-denom="${denom.denomination}">
+                                    ${table[i].join('')}
+                                </tr>`;
+                }
+                if (rowsMax > 1) {
+                    tableHTML += `<tr class="last-subrow" data-denom="${denom.denomination}">
+                                    ${table[i].join('')}
+                                    </tr>`;
+                }
+            }
+
+            tableHTML += `</tbody>
+                        </table>`;
+
+            $(seriesSection).children("div").last().append(tableHTML);
+
+            // Add hover events and click events
+            for (let i = 1; i <= 3; i++) {
+                $(".subcol-" + i).mouseenter(highlightRow);
+                $(".subcol-" + i).mouseleave(highlightRowOff);
+                //    $(".subcol-" + i).click(openUpsertCollection);
+            }
+        },
+
+        error: function(xhr, status, error) {
+            switch (xhr.status) {
+                case 403:
+                    // Check whether the cookie has alredy been deleted
+                    if (getCookie("banknotes.ODB.username")) {
+                        alert("Your session is not valid or has expired.");
+                        deleteCookie("banknotes.ODB.username");
+                        location.reload();
+                    }
+                    break;
+                default:
+                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        }
     });
 }
 
 
-// function highlightRow() {
-//     $(this).addClass("highlight");
+function highlightRow() {
+    $(this).addClass("highlight");
 
-//     if ($(this).hasClass("subcol-1")) {
-//         $(this).next().addClass("highlight").next().addClass("highlight");
-//     } else if ($(this).hasClass("subcol-2")) {
-//         $(this).prev().addClass("highlight");
-//         $(this).next().addClass("highlight");
-//     } else if ($(this).hasClass("subcol-3")) {
-//         $(this).prev().addClass("highlight").prev().addClass("highlight");
-//     }
-// }
+    if ($(this).hasClass("subcol-1")) {
+        $(this).next().addClass("highlight").next().addClass("highlight");
+    } else if ($(this).hasClass("subcol-2")) {
+        $(this).prev().addClass("highlight");
+        $(this).next().addClass("highlight");
+    } else if ($(this).hasClass("subcol-3")) {
+        $(this).prev().addClass("highlight").prev().addClass("highlight");
+    }
+}
 
-// function highlightRowOff() {
-//     $(this).removeClass("highlight");
+function highlightRowOff() {
+    $(this).removeClass("highlight");
 
-//     if ($(this).hasClass("subcol-1")) {
-//         $(this).next().removeClass("highlight").next().removeClass("highlight");
-//     } else if ($(this).hasClass("subcol-2")) {
-//         $(this).prev().removeClass("highlight");
-//         $(this).next().removeClass("highlight");
-//     } else if ($(this).hasClass("subcol-3")) {
-//         $(this).prev().removeClass("highlight").prev().removeClass("highlight");
-//     }
-// }
+    if ($(this).hasClass("subcol-1")) {
+        $(this).next().removeClass("highlight").next().removeClass("highlight");
+    } else if ($(this).hasClass("subcol-2")) {
+        $(this).prev().removeClass("highlight");
+        $(this).next().removeClass("highlight");
+    } else if ($(this).hasClass("subcol-3")) {
+        $(this).prev().removeClass("highlight").prev().removeClass("highlight");
+    }
+}
 
 
 // function openUpsertCollection() {

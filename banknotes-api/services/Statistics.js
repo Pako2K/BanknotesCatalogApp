@@ -765,7 +765,7 @@ const currencyDenominationsStats_commonSELECT =
 
 const currencyIdDenominationsStats_commonFROM =
     `FROM ban_banknote BAN
-    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1
     INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
     LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id`;
 
@@ -830,8 +830,8 @@ function currencyByIdDenominationsItemsStatsGET(request, response) {
 
 const currencyYearsStats_commonFROM =
     `FROM bva_variant BVA
-    LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1`;
+    INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1`;
 
 // ===> /currency/:currencyId/issue-years/items/stats
 function currencyByIdIssueYearsItemsStatsGET(request, response) {

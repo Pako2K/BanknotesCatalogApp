@@ -883,12 +883,7 @@ paths:
       description: Returns the info about a currency.
       operationId: currencyByIdGET
       parameters:
-      - in: path
-        required: true
-        name: currencyId
-        schema:
-          type: integer
-        description: Id of the currency
+      - $ref: '#/components/parameters/currencyId'
       responses:
         "200":
           description: Currency complete info
@@ -896,6 +891,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/currency'
+        "400":
+          description: Invalid request. The currency Id must be an integer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
         "500":
           description: Internal server error
           content:
@@ -912,21 +913,22 @@ paths:
       description: Returns the info about the different series of a currency.
       operationId: currencyByIdSeriesGET
       parameters:
-      - in: path
-        required: true
-        name: currencyId
-        schema:
-          type: integer
-        description: Id of the currency
+      - $ref: '#/components/parameters/currencyId'
       responses:
         "200":
-          description: Summary and stats of the Series belonging to the specified currency ID
+          description: Summary of the Series belonging to the specified currency ID
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/seriesCatStats'
+                  $ref: '#/components/schemas/seriesSummary'
+        "400":
+          description: Invalid request. The currency Id must be an integer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
         "500":
           description: Internal server error
           content:
@@ -940,15 +942,10 @@ paths:
       tags:
       - Variants
       summary: Get all variants for a given series
-      description: Returns the info about the different variants belonging to the giving series.
+      description: Returns a summary of the different variants belonging to the giving series.
       operationId: seriesByIdVariantsGET
       parameters:
-      - in: path
-        required: true
-        name: seriesId
-        schema:
-          type: integer
-        description: Id of the series
+      - $ref: '#/components/parameters/seriesId'
       responses:
         "200":
           description: List of variants for the given series ID
@@ -957,17 +954,13 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    denomination:
-                      type: integer
-                    variants:
-                      allOf:
-                        - $ref: '#/components/schemas/variantKey'
-                        - type: object
-                          properties:
-                            description:
-                              type: string
+                  $ref: '#/components/schemas/variantSummary'
+        "400":
+          description: Invalid request. The series Id must be an integer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
         "500":
           description: Internal server error
           content:
@@ -975,7 +968,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
                 
-                 
+
+  /series/{seriesId}/items:
+    get:
+      tags: 
+      - Variants
+      summary: Get Collection items for a specific series
+      description: Retrieves the catalogue variants and collection items for the active sesion's user and the provided series
+      operationId: seriesByIdItemsGET
+      parameters:
+      - $ref: '#/components/parameters/seriesId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: Success. List of Items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/itemSummary'
+        "400":
+          description: Invalid request. Query or cookie parameter is missing or has no valid value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          description: User not logged-in or invalid session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+                
+                                 
   /variants:
     get:
       tags: 
@@ -1087,70 +1120,6 @@ paths:
                 $ref: '#/components/schemas/exception'
 
                 
-  /series/{seriesId}/items:
-    get:
-      tags: 
-      - Items
-      summary: Get Collection items for a specific series
-      description: Retrieves the collection items for the active sesion's user and the provided series
-      operationId: seriesByIdItemsGET
-      parameters:
-      - in: path
-        required: true
-        name: seriesId
-        schema:
-          type: integer
-        description: Id of the series
-      - in: cookie
-        name: banknotes.ODB.username
-        schema:
-          type: string
-        required: true
-        description: user for whom the items are retrieved
-      responses:
-        "200":
-          description: Success. List of Items
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denomination:
-                      type: integer
-                    variants:
-                      allOf:
-                        - $ref: '#/components/schemas/variantKey'
-                        - type: object
-                          properties:
-                            description:
-                              type: string
-                            items:
-                              type: array
-                              items:
-                                $ref: '#/components/schemas/itemKey'
-        "400":
-          description: Invalid request. Query or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "403":
-          description: User not logged-in or invalid session
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-                
-                
-                
   /grades:              
     get:
       tags: 
@@ -1189,6 +1158,13 @@ components:
       name: currencyId
       required: true
       description: Id of the currency
+      schema:
+        type: integer
+    seriesId:
+      in: path
+      name: seriesId
+      required: true
+      description: Id of the series
       schema:
         type: integer
     cookieUsername:
@@ -1501,10 +1477,6 @@ components:
               properties:
                 continent:
                   $ref: '#/components/schemas/continent'
-          symbol:
-            type: string
-          iso3:
-            $ref: '#/components/schemas/iso3'
           fullName:
             type: string
           units:
@@ -1941,21 +1913,30 @@ components:
           type: integer
         name:
           type: string
-          
-    seriesCatStats:
+
+
+    seriesSummary:
       allOf:    
       - $ref: '#/components/schemas/seriesKey'
       - type: object
         required:
         - start
-        - currency
-        - numDenominations
-        - numVariants
         properties:
           start:
             type: integer
           end:
             type: integer
+
+          
+    seriesCatStats:
+      allOf:    
+      - $ref: '#/components/schemas/seriesSummary'
+      - type: object
+        required:
+        - currency
+        - numDenominations
+        - numVariants
+        properties:
           currency:
             $ref: '#/components/schemas/currencyKey'
           numDenominations:
@@ -1988,17 +1969,12 @@ components:
 
     seriesByCurCatStats:
       allOf:    
-      - $ref: '#/components/schemas/seriesKey'
+      - $ref: '#/components/schemas/seriesSummary'
       - type: object
         required:
-        - start
         - numDenominations
         - numVariants
         properties:
-          start:
-            type: integer
-          end:
-            type: integer
           numDenominations:
             type: integer
           numVariants:
@@ -2031,23 +2007,33 @@ components:
       required:
       - variantId
       - catalogueId
+      - denomination
       - issueYear
       properties:
         variantId:
           type: integer
         catalogueId:
           type: integer
+        denomination:
+          type: number
         issueYear:
           type: integer
         printedDate:
           type: string
+
+    variantSummary:
+      allOf:
+        - $ref: '#/components/schemas/variantKey'
+        - type: object
+          properties:
+            description:
+              type: string
 
     variantTree:
       allOf:    
         - $ref: '#/components/schemas/variantKey'
         - type: object
           required:
-          - denomination
           - seriesId
           - seriesName
           - currencyId
@@ -2055,8 +2041,6 @@ components:
           - territoryId
           - territoryName
           properties:
-            denomination:
-              type: integer
             seriesId:
               type: integer
             seriesName:
@@ -2084,6 +2068,15 @@ components:
           type: string
         price:
           type: number
+
+    itemSummary:
+     allOf:    
+        - $ref: '#/components/schemas/variantSummary'
+        - type: object
+          properties:
+            item:
+              $ref: '#/components/schemas/itemKey'
+            
 
     itemTree: 
       allOf:    
