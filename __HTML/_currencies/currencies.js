@@ -213,7 +213,7 @@ function loadCurrenciesTable() {
             totals.price += currency.collectionStats.price;
 
             // Statistics:
-            if (existing && currency.end === "") {
+            if (existing && (!currency.end || currency.end === "")) {
                 statsCurType[curTypeMap[currency.currencyType]].existing.catalog++;
                 if (currency.collectionStats.numVariants)
                     statsCurType[curTypeMap[currency.currencyType]].existing.col++;
