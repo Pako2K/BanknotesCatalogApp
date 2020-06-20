@@ -27,8 +27,6 @@ tags:
     description: Manage banknote variants information
   - name: Items
     description: Manage banknotes in the user collection
-  - name: Statistics
-    description: Retrieve statistics about the catalogue and the user collection
   - name: Miscellanea
     description: Set of operations to retrieve static data
 
@@ -98,7 +96,7 @@ paths:
   /territories/variants/stats:
     get:
       tags:
-      - Statistics
+      - Territories
       summary: Get statistics about banknotes in catalogue for each territory.
       description: Returns statistics for the existing banknotes in the catalogue, based on territories.
       operationId: territoriesVariantsStatsGET
@@ -118,7 +116,7 @@ paths:
   /territories/items/stats:
     get:
       tags:
-      - Statistics
+      - Territories
       summary: Get statistics about banknotes in collection for each territory.
       description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session).
       operationId: territoriesItemsStatsGET
@@ -140,12 +138,34 @@ paths:
           $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
+  
           
+  /currency/{currencyId}:
+    get:
+      tags:
+      - Currencies
+      summary: Get all the info about a currency
+      description: Returns the info about a currency.
+      operationId: currencyByIdGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      responses:
+        "200":
+          description: Currency complete info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/currency'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
   
   /currencies/variants/stats:
     get:
       tags: 
-      - Statistics
+      - Currencies
       summary: Get statistics about banknotes in catalogue for each currency.
       description: Returns a list of currencies in the catalogue with their main features and statistics.
       operationId: currenciesVariantsStatsGET
@@ -165,7 +185,7 @@ paths:
   /currencies/items/stats:
     get:
       tags:
-      - Statistics
+      - Currencies
       summary: Get statistics about banknotes in collection for each currency.
       description: Returns statistics for the existing banknotes in the catalogue and in the user collection (the user must have an active session).
       operationId: currenciesItemsStatsGET
@@ -192,7 +212,7 @@ paths:
   /denominations/variants/stats:
     get:
       tags: 
-      - Statistics
+      - Banknotes
       summary: Get statistics about banknotes in catalogue for each denomination.
       description: Returns a list of denominations in the catalogue with statistics.
       operationId: denominationsVariantsStatsGET
@@ -231,7 +251,7 @@ paths:
   /denominations/items/stats:
     get:
       tags: 
-      - Statistics
+      - Banknotes
       summary: Get statistics about banknotes in the user collection for each denomination.
       description: Returns a list of denominations in the catalogue with statistics including the user collection.
       operationId: denominationsItemsStatsGET
@@ -272,498 +292,6 @@ paths:
         "500":
           $ref: '#/components/responses/500'
           
-
-  /issue-years/variants/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about banknotes in catalogue based on the year of issue.
-      description: Returns a list of issue-years for banknotes in the catalogue with statistics.
-      operationId: issueYearsVariantsStatsGET
-      parameters:
-      - in: query
-        name: continentId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve issue-years from countries in this continent
-      responses:
-        "200":
-          description: List of years
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearCatStats'
-        "500":
-          $ref: '#/components/responses/500'         
-         
-         
-  /issue-years/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about banknotes in collection based on the year of issue.
-      description: Returns a list of issue-years for banknotes in the catalogue and the user collection with statistics.
-      operationId: issueYearsItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      - in: query
-        name: continentId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve issue-years from countries in this continent
-      responses:
-        "200":
-          description: List of years
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-          
-  
-  /territory/{territoryId}/currencies/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about banknotes in catalogue for each currency used in a specific territory.
-      description: Returns a list of currencies in the catalogue used in a specific territory, with their main features and statistics.
-      operationId: territoryByIdCurrenciesVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'  
-      responses:
-        "200":
-          description: List of currencies
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/currencyByTerCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'  
-  
-  
-  /territory/{territoryId}/currencies/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about banknotes in collection for each currency used in a territory.
-      description: Returns statistics per currency for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
-      operationId: territoryByIdCurrenciesItemssStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of currencies with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/currencyByTerColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-  
-  /territory/{territoryId}/series/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about banknotes in catalogue for each series of a specific territory.
-      description: Returns a list of series in the catalogue used in a specific territory, with their main features and statistics.
-      operationId: territoryByIdSeriesVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'  
-      responses:
-        "200":
-          description: List of series
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/seriesCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /territory/{territoryId}/series/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about banknotes in collection for each series of a territory.
-      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
-      operationId: territoryByIdSeriesItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of series with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/seriesColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-              
-  /territory/{territoryId}/denominations/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about denominations in catalogue for a specific territory.
-      description: Returns a list of denominations in the catalogue used in a specific territory, with their statistics.
-      operationId: territoryByIdDenominationsVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'  
-      responses:
-        "200":
-          description: List of denominations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/denominationByTerCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /territory/{territoryId}/denominations/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about denominations in collection for a territory.
-      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
-      operationId: territoryByIdDenominationsItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of denominations with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/denominationByTerColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-
-  /territory/{territoryId}/issue-years/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about issue years in catalogue for a specific territory.
-      description: Returns a list of issue years in the catalogue used in a specific territory, with their statistics.
-      operationId: territoryByIdIssueYearsVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'  
-      responses:
-        "200":
-          description: List of issue years
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearByTerCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /territory/{territoryId}/issue-years/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about issue years in collection for a territory.
-      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
-      operationId: territoryByIdIssueYearsItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/territoryId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of denominations with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearByTerColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-         
-  /currency/{currencyId}/series/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about banknotes in catalogue for each series of a specific currency.
-      description: Returns a list of series in the catalogue used in a specific currency, with their main features and statistics.
-      operationId: currencyByIdSeriesVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'  
-      responses:
-        "200":
-          description: List of series
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/seriesByCurCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /currency/{currencyId}/series/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about banknotes in collection for each series of a currency.
-      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
-      operationId: currencyByIdSeriesItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of series with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/seriesByCurColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-
-  /currency/{currencyId}/denominations/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about denominations in catalogue for a specific currency.
-      description: Returns a list of denominations in the catalogue used in a specific currency, with their statistics.
-      operationId: currencyByIdDenominationsVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'  
-      responses:
-        "200":
-          description: List of denominations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/denominationByCurCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /currency/{currencyId}/denominations/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about denominations in collection for a currency.
-      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
-      operationId: currencyByIdDenominationsItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of denominations with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/denominationByCurColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-                
-  /currency/{currencyId}/issue-years/variants/stats:
-    get:
-      tags: 
-       - Statistics
-      summary: Get statistics about issue years in catalogue for a specific currency.
-      description: Returns a list of issue years in the catalogue used in a specific currency, with their statistics.
-      operationId: currencyByIdIssueYearsVariantsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'  
-      responses:
-        "200":
-          description: List of issue years
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearByCurCatStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /currency/{currencyId}/issue-years/items/stats:
-    get:
-      tags: 
-      - Statistics
-      summary: Get statistics about issue years in collection for a currency.
-      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
-      operationId: currencyByIdIssueYearsItemsStatsGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'
-      - $ref: '#/components/parameters/cookieUsername'
-      - $ref: '#/components/parameters/cookieSessionId'
-      responses:
-        "200":
-          description: List of denominations with statistics
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/issueYearByCurColStats'
-        "400":
-          $ref: '#/components/responses/400'
-        "403":
-          $ref: '#/components/responses/403'
-        "500":
-          $ref: '#/components/responses/500'
-                
-                
-  /currency/{currencyId}:
-    get:
-      tags:
-      - Currencies
-      summary: Get all the info about a currency
-      description: Returns the info about a currency.
-      operationId: currencyByIdGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'
-      responses:
-        "200":
-          description: Currency complete info
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/currency'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-  
-  
-  /currency/{currencyId}/series:
-    get:
-      tags:
-      - Series
-      summary: Get summary of series for a currency
-      description: Returns the info about the different series of a currency.
-      operationId: currencyByIdSeriesGET
-      parameters:
-      - $ref: '#/components/parameters/currencyId'
-      responses:
-        "200":
-          description: Summary of the Series belonging to the specified currency ID
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/seriesSummary'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-
-
-  /series/{seriesId}:
-    get:
-      tags:
-      - Series
-      summary: Get info about a specific series
-      description: Returns all the the info for a series.
-      operationId: seriesByIdGET
-      parameters:
-      - $ref: '#/components/parameters/seriesId'
-      responses:
-        "200":
-          description: Series detailed info
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/series'
-        "400":
-          $ref: '#/components/responses/400'
-        "500":
-          $ref: '#/components/responses/500'
-
 
   /series/{seriesId}/variants:
     get:
@@ -942,6 +470,477 @@ paths:
         "500":
           $ref: '#/components/responses/500'
                 
+                
+  /issue-years/variants/stats:
+    get:
+      tags: 
+      - Variants
+      summary: Get statistics about banknotes in catalogue based on the year of issue.
+      description: Returns a list of issue-years for banknotes in the catalogue with statistics.
+      operationId: issueYearsVariantsStatsGET
+      parameters:
+      - in: query
+        name: continentId
+        schema:
+          type: integer
+        required: false
+        description: Retrieve issue-years from countries in this continent
+      responses:
+        "200":
+          description: List of years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearCatStats'
+        "500":
+          $ref: '#/components/responses/500'         
+         
+         
+  /issue-years/items/stats:
+    get:
+      tags: 
+      - Variants
+      summary: Get statistics about banknotes in collection based on the year of issue.
+      description: Returns a list of issue-years for banknotes in the catalogue and the user collection with statistics.
+      operationId: issueYearsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      - in: query
+        name: continentId
+        schema:
+          type: integer
+        required: false
+        description: Retrieve issue-years from countries in this continent
+      responses:
+        "200":
+          description: List of years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+          
+  
+  /territory/{territoryId}/currencies/variants/stats:
+    get:
+      tags: 
+       - Currencies
+      summary: Get statistics about banknotes in catalogue for each currency used in a specific territory.
+      description: Returns a list of currencies in the catalogue used in a specific territory, with their main features and statistics.
+      operationId: territoryByIdCurrenciesVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'  
+      responses:
+        "200":
+          description: List of currencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/currencyByTerCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'  
+  
+  
+  /territory/{territoryId}/currencies/items/stats:
+    get:
+      tags: 
+      - Currencies
+      summary: Get statistics about banknotes in collection for each currency used in a territory.
+      description: Returns statistics per currency for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
+      operationId: territoryByIdCurrenciesItemssStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of currencies with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/currencyByTerColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+
+  /currency/{currencyId}/series:
+    get:
+      tags:
+      - Series
+      summary: Get summary of series for a currency
+      description: Returns the info about the different series of a currency.
+      operationId: currencyByIdSeriesGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      responses:
+        "200":
+          description: Summary of the Series belonging to the specified currency ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesSummary'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+
+
+  /series/{seriesId}:
+    get:
+      tags:
+      - Series
+      summary: Get info about a specific series
+      description: Returns all the the info for a series.
+      operationId: seriesByIdGET
+      parameters:
+      - $ref: '#/components/parameters/seriesId'
+      responses:
+        "200":
+          description: Series detailed info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/series'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+
+
+  /territory/{territoryId}/series/variants/stats:
+    get:
+      tags: 
+       - Series
+      summary: Get statistics about banknotes in catalogue for each series of a specific territory.
+      description: Returns a list of series in the catalogue used in a specific territory, with their main features and statistics.
+      operationId: territoryByIdSeriesVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'  
+      responses:
+        "200":
+          description: List of series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /territory/{territoryId}/series/items/stats:
+    get:
+      tags: 
+      - Series
+      summary: Get statistics about banknotes in collection for each series of a territory.
+      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
+      operationId: territoryByIdSeriesItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of series with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+              
+  /territory/{territoryId}/denominations/variants/stats:
+    get:
+      tags: 
+       - Banknotes
+      summary: Get statistics about denominations in catalogue for a specific territory.
+      description: Returns a list of denominations in the catalogue used in a specific territory, with their statistics.
+      operationId: territoryByIdDenominationsVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'  
+      responses:
+        "200":
+          description: List of denominations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/denominationByTerCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /territory/{territoryId}/denominations/items/stats:
+    get:
+      tags: 
+      - Banknotes
+      summary: Get statistics about denominations in collection for a territory.
+      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
+      operationId: territoryByIdDenominationsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of denominations with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/denominationByTerColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+
+  /territory/{territoryId}/issue-years/variants/stats:
+    get:
+      tags: 
+       - Variants
+      summary: Get statistics about issue years in catalogue for a specific territory.
+      description: Returns a list of issue years in the catalogue used in a specific territory, with their statistics.
+      operationId: territoryByIdIssueYearsVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'  
+      responses:
+        "200":
+          description: List of issue years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearByTerCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /territory/{territoryId}/issue-years/items/stats:
+    get:
+      tags: 
+      - Variants
+      summary: Get statistics about issue years in collection for a territory.
+      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
+      operationId: territoryByIdIssueYearsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of denominations with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearByTerColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+         
+  /currency/{currencyId}/series/variants/stats:
+    get:
+      tags: 
+       - Series
+      summary: Get statistics about banknotes in catalogue for each series of a specific currency.
+      description: Returns a list of series in the catalogue used in a specific currency, with their main features and statistics.
+      operationId: currencyByIdSeriesVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'  
+      responses:
+        "200":
+          description: List of series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesByCurCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /currency/{currencyId}/series/items/stats:
+    get:
+      tags: 
+      - Series
+      summary: Get statistics about banknotes in collection for each series of a currency.
+      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      operationId: currencyByIdSeriesItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of series with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/seriesByCurColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+
+  /currency/{currencyId}/denominations/variants/stats:
+    get:
+      tags: 
+       - Banknotes
+      summary: Get statistics about denominations in catalogue for a specific currency.
+      description: Returns a list of denominations in the catalogue used in a specific currency, with their statistics.
+      operationId: currencyByIdDenominationsVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'  
+      responses:
+        "200":
+          description: List of denominations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/denominationByCurCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /currency/{currencyId}/denominations/items/stats:
+    get:
+      tags: 
+      - Banknotes
+      summary: Get statistics about denominations in collection for a currency.
+      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      operationId: currencyByIdDenominationsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of denominations with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/denominationByCurColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+                
+  /currency/{currencyId}/issue-years/variants/stats:
+    get:
+      tags: 
+       - Variants
+      summary: Get statistics about issue years in catalogue for a specific currency.
+      description: Returns a list of issue years in the catalogue used in a specific currency, with their statistics.
+      operationId: currencyByIdIssueYearsVariantsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'  
+      responses:
+        "200":
+          description: List of issue years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearByCurCatStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /currency/{currencyId}/issue-years/items/stats:
+    get:
+      tags: 
+      - Variants
+      summary: Get statistics about issue years in collection for a currency.
+      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      operationId: currencyByIdIssueYearsItemsStatsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of denominations with statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issueYearByCurColStats'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+
   /grades:              
     get:
       tags: 

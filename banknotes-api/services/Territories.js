@@ -3,6 +3,7 @@
 const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
+const users = require('./Users');
 
 
 let catalogueDB;
@@ -13,9 +14,16 @@ module.exports.initialize = function(app) {
     app.get('/continents', continentsGET);
     app.get('/territory-types', territoryTypesGET);
     app.get('/territory/:territoryId', territoryByIdGET);
+    app.get('/territories/variants/stats', addOnlyVariants, territoriesItemsStatsGET);
+    app.get('/territories/items/stats', users.validateSessionUser, territoriesItemsStatsGET);
 
     log.debug("Territories service initialized");
 };
+
+function addOnlyVariants(request, response, next) {
+    request.onlyVariants = true;
+    next();
+}
 
 
 // ===> /continents
@@ -131,5 +139,80 @@ function territoryByIdGET(request, response) {
             response.write(JSON.stringify(replyJSON));
             response.send();
         }
+    });
+}
+
+
+
+const territoriesStats_commonSELECT = ` count(DISTINCT TEC.tec_cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
+                                        count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                                        count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+const territoriesStats_commonFROM = `FROM ter_territory TER
+                                    INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                                    LEFT JOIN tec_territory_currency TEC ON (TEC.tec_ter_id = TER.ter_id AND TEC.tec_cur_type='OWNED')
+                                    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+                                    LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                                    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
+// ===> /territories/items/stats
+function territoriesItemsStatsGET(request, response) {
+    let sql = ` SELECT  TER.ter_id AS "id", TER.ter_iso3 AS "iso3", TER.ter_name AS "name", TER.ter_con_id AS "continentId", 
+                        TER.ter_tty_id AS "territoryTypeId", TER.ter_start AS "start", TER.ter_end AS "end", 
+                        ${territoriesStats_commonSELECT}
+                ${territoriesStats_commonFROM}
+                GROUP BY TER.ter_id
+                ORDER BY TER.ter_name`;
+
+    if (request.onlyVariants) {
+        catalogueDB.getAndReply(response, sql);
+        return;
+    }
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        sql = ` SELECT  TER.ter_id AS id, ${territoriesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                ${territoriesStats_commonFROM}
+                INNER JOIN bit_item BIT ON bit_bva_id = bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
+                GROUP BY TER.ter_id`;
+
+        // Retrieve the collection statistics for the session user
+        catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics
+            let collecIndex = 0;
+            for (let row of catRows) {
+                row.collectionStats = {};
+                if (collecIndex < colRows.length && row.id === colRows[collecIndex].id) {
+                    row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
+                    row.collectionStats.numSeries = colRows[collecIndex].numSeries;
+                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
+                    row.collectionStats.numNotes = colRows[collecIndex].numNotes;
+                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.price = colRows[collecIndex].price;
+                    collecIndex++;
+                } else {
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
     });
 }

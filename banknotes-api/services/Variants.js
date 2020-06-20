@@ -18,13 +18,56 @@ module.exports.initialize = function(app) {
     app.get('/series/:seriesId/variants', addOnlyVariants, seriesByIdItemsGET);
     app.get('/series/:seriesId/items', users.validateSessionUser, seriesByIdItemsGET);
 
+    app.get('/issue-years/variants/stats', addOnlyVariants, issueYearsItemsStatsGET);
+    app.get('/issue-years/items/stats', users.validateSessionUser, issueYearsItemsStatsGET);
+    app.get('/territory/:territoryId/issue-years/variants/stats', addOnlyVariants, territoryByIdIssueYearsItemsStatsGET);
+    app.get('/territory/:territoryId/issue-years/items/stats', users.validateSessionUser, territoryByIdIssueYearsItemsStatsGET);
+    app.get('/currency/:currencyId/issue-years/variants/stats', addOnlyVariants, currencyByIdIssueYearsItemsStatsGET);
+    app.get('/currency/:currencyId/issue-years/items/stats', users.validateSessionUser, currencyByIdIssueYearsItemsStatsGET);
+
+
     log.debug("Variants service initialized");
 };
+
 
 function addOnlyVariants(request, response, next) {
     request.onlyVariants = true;
     next();
 }
+
+
+function sortVariants(jsonObj) {
+    jsonObj.forEach(denom => {
+        denom.variants.sort((a, b) => {
+            // Compare the issue year
+            let result = a.issueYear - b.issueYear;
+
+            if (result === 0) {
+                //Compare the printedDate
+                if (a.printedDate && b.printedDate) result = a.toString().localeCompare(b.toString());
+                else if (!a.printedDate && !b.printedDate) result = 0;
+                else if (!a.printedDate) result = 1
+                else result = -1;
+
+                if (result === 0) {
+                    // Compare the catalogue Id
+                    let a_catalogueIdInt = parseInt(a.catalogueId.slice(2));
+                    let b_catalogueIdInt = parseInt(b.catalogueId.slice(2));
+                    result = a_catalogueIdInt - b_catalogueIdInt;
+                    if (result === 0) {
+                        let a_catalogueIdSuffix = a.catalogueId.slice(2 + a_catalogueIdInt.toString().length);
+                        let b_catalogueIdSuffix = b.catalogueId.slice(2 + b_catalogueIdInt.toString().length);
+                        result = a_catalogueIdSuffix.localeCompare(b_catalogueIdSuffix);
+                    }
+                }
+            }
+            return result;
+        });
+    });
+
+    return jsonObj;
+}
+
 
 
 //===> /items?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
@@ -339,35 +382,240 @@ function seriesByIdItemsGET(request, response) {
 }
 
 
-function sortVariants(jsonObj) {
 
-    jsonObj.forEach(denom => {
-        denom.variants.sort((a, b) => {
-            // Compare the issue year
-            let result = a.issueYear - b.issueYear;
 
-            if (result === 0) {
-                //Compare the printedDate
-                if (a.printedDate && b.printedDate) result = a.toString().localeCompare(b.toString());
-                else if (!a.printedDate && !b.printedDate) result = 0;
-                else if (!a.printedDate) result = 1
-                else result = -1;
 
-                if (result === 0) {
-                    // Compare the catalogue Id
-                    let a_catalogueIdInt = parseInt(a.catalogueId.slice(2));
-                    let b_catalogueIdInt = parseInt(b.catalogueId.slice(2));
-                    result = a_catalogueIdInt - b_catalogueIdInt;
-                    if (result === 0) {
-                        let a_catalogueIdSuffix = a.catalogueId.slice(2 + a_catalogueIdInt.toString().length);
-                        let b_catalogueIdSuffix = b.catalogueId.slice(2 + b_catalogueIdInt.toString().length);
-                        result = a_catalogueIdSuffix.localeCompare(b_catalogueIdSuffix);
-                    }
+
+const issueYearStats_commonSELECT = `BVA.bva_issue_year AS "issueYear", count (DISTINCT TER.ter_id) AS "numTerritories", 
+                                    count (DISTINCT CUR.cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
+                                    count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                                    count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+const issueYearStats_commonFROM = ` FROM bva_variant BVA
+                                    LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                                    LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
+                                    LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
+                                    `;
+
+// ===> /issue-years/items/stats?continentId&fromYear&toYear
+function issueYearsItemsStatsGET(request, response) {
+    let continentFilter = "";
+    let continentId = parseInt(url.parse(request.url, true).query.continentId);
+    if (!isNaN(continentId))
+        continentFilter = `AND TER.ter_con_id = ${continentId}`;
+
+    let sql = ` SELECT  ${issueYearStats_commonSELECT}
+                ${issueYearStats_commonFROM}
+                LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                GROUP BY "issueYear"`;
+
+    if (request.onlyVariants) {
+        catalogueDB.getAndReply(response, sql);
+        return;
+    }
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        sql = `SELECT  ${issueYearStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                    ${issueYearStats_commonFROM}
+                    LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
+                    INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                    INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                    INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
+                    GROUP BY "issueYear"`;
+        catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics
+            let collecIndex = 0;
+            for (let row of catRows) {
+                row.collectionStats = {};
+                if (collecIndex < colRows.length && row.denomination === colRows[collecIndex].denomination) {
+                    row.collectionStats.numTerritories = colRows[collecIndex].numTerritories;
+                    row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
+                    row.collectionStats.numSeries = colRows[collecIndex].numSeries;
+                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
+                    row.collectionStats.numNotes = colRows[collecIndex].numNotes;
+                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.price = colRows[collecIndex].price;
+                    collecIndex++;
+                } else {
+                    row.collectionStats.numTerritories = 0;
+                    row.collectionStats.numCurrencies = 0;
+                    row.collectionStats.numSeries = 0;
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numNotes = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
                 }
             }
-            return result;
+
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
         });
     });
+}
 
-    return jsonObj;
+
+
+
+
+
+
+const yearsStats_commonSELECT =
+    `BVA.bva_issue_year AS "issueYear", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+    count(BVA.bva_id) AS "numVariants"`;
+
+const territoryYearsStats_commonFROM =
+    `FROM bva_variant BVA
+    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND TEC.tec_cur_type='OWNED'
+    LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = TEC.tec_cur_id`;
+
+// ===> /territory/:territoryId/issue-years/items/stats
+function territoryByIdIssueYearsItemsStatsGET(request, response) {
+    let territoryId = request.params.territoryId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        return;
+    }
+
+    let sql = ` SELECT  ${yearsStats_commonSELECT}
+                ${territoryYearsStats_commonFROM}
+                GROUP BY "issueYear"`;
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [territoryId], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        if (request.onlyVariants) {
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+            return;
+        }
+
+        sql = ` SELECT ${yearsStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                ${territoryYearsStats_commonFROM}
+                INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
+                GROUP BY "issueYear"`;
+
+        catalogueDB.execSQL(sql, [territoryId, request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics
+            let collecIndex = 0;
+            for (let row of catRows) {
+                row.collectionStats = {};
+                if (collecIndex < colRows.length && row.issueYear === colRows[collecIndex].issueYear) {
+                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
+                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.price = colRows[collecIndex].price;
+                    collecIndex++;
+                } else {
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
+    });
+}
+
+
+
+
+
+
+
+const currencyYearsStats_commonFROM =
+    `FROM bva_variant BVA
+    INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1`;
+
+// ===> /currency/:currencyId/issue-years/items/stats
+function currencyByIdIssueYearsItemsStatsGET(request, response) {
+    let currencyId = request.params.currencyId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "VAR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        return;
+    }
+
+    let sql = ` SELECT  ${yearsStats_commonSELECT}
+                ${currencyYearsStats_commonFROM}
+                GROUP BY "issueYear"`;
+
+    // Retrieve the catalogue statistics
+    catalogueDB.execSQL(sql, [currencyId], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        if (request.onlyVariants) {
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+            return;
+        }
+
+        sql = ` SELECT ${yearsStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+                ${currencyYearsStats_commonFROM}
+                INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
+                GROUP BY "issueYear"`;
+
+        catalogueDB.execSQL(sql, [currencyId, request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue statistics
+            let collecIndex = 0;
+            for (let row of catRows) {
+                row.collectionStats = {};
+                if (collecIndex < colRows.length && row.issueYear === colRows[collecIndex].issueYear) {
+                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
+                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.price = colRows[collecIndex].price;
+                    collecIndex++;
+                } else {
+                    row.collectionStats.numDenominations = 0;
+                    row.collectionStats.numVariants = 0;
+                    row.collectionStats.price = 0;
+                }
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+        });
+    });
 }
