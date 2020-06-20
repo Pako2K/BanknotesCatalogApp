@@ -85,29 +85,3 @@ module.exports.initialize = function(app) {
 //         });
 //     });
 // }
-
-
-
-// let sqlSelectUsr = `SELECT usr_id FROM usr_user
-//                     WHERE usr_name = ?`;
-
-// function getUserId(username) {
-//     return new Promise((resolve, reject) => {
-//         db.get(sqlSelectUsr, [username], (err, row) => {
-//             if (err) {
-//                 if (err) {
-//                     logger.error(err.message);
-//                     reject({ status: 500, code: err.code, message: err.message });
-//                 }
-//             }
-
-//             console.log(row);
-
-//             if (row === undefined) {
-//                 reject({ status: 400, code: "COL-1", message: "User does not exist!" });
-//             } else {
-//                 resolve(row.usr_id);
-//             }
-//         });
-//     });
-// }

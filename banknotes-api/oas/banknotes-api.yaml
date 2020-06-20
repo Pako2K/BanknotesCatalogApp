@@ -51,11 +51,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/continent'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
+
 
   /territory-types:
     get:
@@ -74,12 +71,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/territoryType'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
+          $ref: '#/components/responses/500'
 
   /territory/{territoryId}:
     get:
@@ -104,12 +96,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-  
+          $ref: '#/components/responses/500'
+                    
 
   /territories/variants/stats:
     get:
@@ -128,12 +116,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/territoryCatStats'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
+          $ref: '#/components/responses/500'
+  
   
   /territories/items/stats:
     get:
@@ -167,12 +151,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
+          $ref: '#/components/responses/500'
+          
   
   /currencies/variants/stats:
     get:
@@ -191,11 +171,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/currencyCatStats'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
   
   
   /currencies/items/stats:
@@ -230,11 +206,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
        
   /denominations/variants/stats:
@@ -273,11 +245,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationCatStats'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
            
   /denominations/items/stats:
@@ -330,12 +298,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-                
+          $ref: '#/components/responses/500'
+          
 
   /issue-years/variants/stats:
     get:
@@ -361,11 +325,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearCatStats'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'         
          
          
   /issue-years/items/stats:
@@ -406,12 +366,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
+          $ref: '#/components/responses/500'
+          
   
   /territory/{territoryId}/currencies/variants/stats:
     get:
@@ -431,12 +387,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/currencyByTerCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'  
   
   
   /territory/{territoryId}/currencies/items/stats:
@@ -460,7 +418,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/currencyByTerColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -472,11 +430,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
   
   /territory/{territoryId}/series/variants/stats:
@@ -497,12 +451,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/seriesCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'
   
   
   /territory/{territoryId}/series/items/stats:
@@ -526,7 +482,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -538,11 +494,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
               
   /territory/{territoryId}/denominations/variants/stats:
@@ -563,12 +515,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/denominationByTerCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'
   
   
   /territory/{territoryId}/denominations/items/stats:
@@ -592,7 +546,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationByTerColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -604,11 +558,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
 
   /territory/{territoryId}/issue-years/variants/stats:
@@ -629,12 +579,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/issueYearByTerCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'
   
   
   /territory/{territoryId}/issue-years/items/stats:
@@ -658,7 +610,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearByTerColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -670,11 +622,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
          
   /currency/{currencyId}/series/variants/stats:
@@ -695,12 +643,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/seriesByCurCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'
   
   
   /currency/{currencyId}/series/items/stats:
@@ -724,7 +674,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesByCurColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -736,11 +686,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
 
   /currency/{currencyId}/denominations/variants/stats:
@@ -761,12 +707,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/denominationByCurCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'
   
   
   /currency/{currencyId}/denominations/items/stats:
@@ -790,7 +738,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationByCurColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -802,11 +750,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
                 
   /currency/{currencyId}/issue-years/variants/stats:
@@ -827,12 +771,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/issueYearByCurCatStats'
-        "500":
-          description: Internal server error
+        "400":
+          description: Invalid request. The currency Id must be an integer.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
+        "500":
+          $ref: '#/components/responses/500'
   
   
   /currency/{currencyId}/issue-years/items/stats:
@@ -856,7 +802,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearByCurColStats'
         "400":
-          description: Invalid request. Missing cookie
+          description: Invalid request. Path or cookie parameter is missing or has no valid value
           content:
             application/json:
               schema:
@@ -868,11 +814,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
                 
   /currency/{currencyId}:
@@ -898,11 +840,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
   
   
   /currency/{currencyId}/series:
@@ -930,11 +868,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
 
 
   /series/{seriesId}:
@@ -960,11 +894,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
 
 
   /series/{seriesId}/variants:
@@ -1001,11 +931,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
 
   /series/{seriesId}/items:
@@ -1059,11 +985,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
                 
                                  
   /variants:
@@ -1111,11 +1033,7 @@ paths:
                 $ref: '#/components/schemas/exception'
         
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/500'
   
   
   /items:
@@ -1170,12 +1088,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-
+          $ref: '#/components/responses/500'
                 
   /grades:              
     get:
@@ -1194,11 +1107,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/grade'
         "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'          
+          $ref: '#/components/responses/500'
               
                 
 components:
@@ -1337,7 +1246,16 @@ components:
       schema:
         type: integer
 
+  
+  responses:
+    500:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/exception'
 
+  
   schemas:
     continent:
       type: object

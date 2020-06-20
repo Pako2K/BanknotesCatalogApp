@@ -23,7 +23,7 @@ function currencyByIdSeriesGET(request, response) {
 
     // Check that the Id is an integer
     if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
-        new Exception(400, "CUR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        new Exception(400, "SER-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
         return;
     }
 
@@ -42,7 +42,7 @@ function seriesByIdGET(request, response) {
 
     // Check that the Id is an integer
     if (Number.isNaN(seriesId) || seriesId.toString() !== request.params.seriesId) {
-        new Exception(400, "CUR-1", "Invalid Currency Id, " + request.params.seriesId).send(response);
+        new Exception(400, "SER-1", "Invalid Series Id, " + request.params.seriesId).send(response);
         return;
     }
 

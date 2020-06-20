@@ -403,6 +403,12 @@ const territoryCurrenciesStats_commonFROM =
 function territoryByIdCurrenciesItemsStatsGET(request, response) {
     let territoryId = request.params.territoryId;
 
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        return;
+    }
+
     let sql = ` SELECT  CUR.cur_id AS "id", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", TEC.tec_cur_type AS "currencyType", CUR.cur_symbol AS "symbol", 
                         CASE WHEN TEC.tec_start IS NULL THEN CUR.cur_start ELSE TEC.tec_start END AS "start",
                         CASE WHEN TEC.tec_end IS NULL THEN CUR.cur_end ELSE TEC.tec_end END AS "end", ${currenciesStats_commonSELECT}
@@ -480,6 +486,12 @@ const territorySerieStats_commonFROM =
 // ===> /territory/:territoryId/series/items/stats
 function territoryByIdSeriesItemsStatsGET(request, response) {
     let territoryId = request.params.territoryId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        return;
+    }
 
     let sql = ` SELECT  SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end", CUR.cur_id, CUR.cur_name, TEC.tec_iso3,
                 ${seriesStats_commonSELECT}
@@ -563,6 +575,12 @@ const territoryDenominationsStats_commonFROM =
 function territoryByIdDenominationsItemsStatsGET(request, response) {
     let territoryId = request.params.territoryId;
 
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        return;
+    }
+
     let sql = ` SELECT  ${denominationsStats_commonSELECT}
                 ${territoryDenominationsStats_commonFROM}
                 GROUP BY "denomination"`;
@@ -634,6 +652,12 @@ const territoryYearsStats_commonFROM =
 function territoryByIdIssueYearsItemsStatsGET(request, response) {
     let territoryId = request.params.territoryId;
 
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        return;
+    }
+
     let sql = ` SELECT  ${yearsStats_commonSELECT}
                 ${territoryYearsStats_commonFROM}
                 GROUP BY "issueYear"`;
@@ -698,6 +722,12 @@ const currencySeriesStats_commonFROM =
 // ===> /currency/:currencyId/series/items/stats
 function currencyByIdSeriesItemsStatsGET(request, response) {
     let currencyId = request.params.currencyId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "VAR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        return;
+    }
 
     let sql = ` SELECT  SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end",
                 ${seriesStats_commonSELECT}
@@ -773,6 +803,12 @@ const currencyIdDenominationsStats_commonFROM =
 function currencyByIdDenominationsItemsStatsGET(request, response) {
     let currencyId = request.params.currencyId;
 
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "VAR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        return;
+    }
+
     let sql = ` SELECT  ${currencyDenominationsStats_commonSELECT}
                 ${currencyIdDenominationsStats_commonFROM}
                 GROUP BY "denomination"`;
@@ -836,6 +872,12 @@ const currencyYearsStats_commonFROM =
 // ===> /currency/:currencyId/issue-years/items/stats
 function currencyByIdIssueYearsItemsStatsGET(request, response) {
     let currencyId = request.params.currencyId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "VAR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        return;
+    }
 
     let sql = ` SELECT  ${yearsStats_commonSELECT}
                 ${currencyYearsStats_commonFROM}
