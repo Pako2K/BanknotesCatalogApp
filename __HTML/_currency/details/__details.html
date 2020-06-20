@@ -1,1 +1,93 @@
-<p>Details</p>
+<div id="details-main-div">
+    <div class="drop-down-list">
+        <script>
+            window.seriesDropdown = new SelectFilter($("#details-main-div>div.drop-down-list"), "Series", selectSeriesChanged, [], calcFontSize());
+            loadSeries(seriesDropdown);
+        </script>
+    </div>
+
+    <div class="series-info">
+        <!-- <p>Issued by: <span></span></p>
+        <p><span></span></p>
+        <p>Description: <span></span></p> -->
+    </div>
+
+    <div class="banknotes-section">
+        <!-- <div class="banknote-section">
+            <div class="banknote-title section-title">
+                <p>5 Euro</p>
+                <img class="sqr-button clickable-button" src="./details/edit.png" onclick="upsertBanknote()" alt="Edit Denomination" />
+            </div>
+
+            <div class="banknote-info">
+                <div>
+                    <p>Material: <span></span></p>
+                    <p>Size: <span></span></p>
+                    <p>Notes: <span></span></p>
+                </div>
+                <div>
+                    <p>Obverse: [<span>Architecture, Bridges</span>] - <span>asde efwfjfoiewjfoi easdasdad</span></p>
+                    <p>Reverse: [<span>Architecture, Arches</span>] - <span>asdjkasd hausdai shdask dhaksdhak sdhk</span></p>
+                </div>
+            </div>
+
+            <div class="variants-section">
+                <div class="variant-box section-title">
+                    <p>5 Euro, 2002.03.24 (2002), P-102c.1</p>
+                    <img class="sqr-button clickable-button" src="./details/edit.png" onclick="upsertVariant()" alt="Edit Variant" />
+                    <div class="variant-pictures">
+                        <img src="" alt="obverse" />
+                        <img src="" alt="reverse" />
+                        <img src="" alt="variant feature" />
+                    </div>
+                    <div class="variant-info">
+                        <p><b>Description:</b> Variant description asdjoia m aooas aoaiaosian asas asijasaioa janaioasijdaah, soasdh aoshdoahdaho asd</p>
+                        <p><b>Printer:</b> asdaio aosi aoiasdoi</p>
+                        <p><b>[Overstamped note:]</b> 5 Euro 2002.02.01 (1999), P-212a</p>
+                        <p><b>Signature type:</b></p>
+                        <p>Signature desc</p>
+                        <p>Watermark</p>
+                        <p>Security Thread</p>
+                        <p>Additional Security</p>
+                        <p class="variant-flag">[Specimen]</p>
+                        <p class="variant-flag">[Commemorative]</p>
+                        <p class="variant-flag">[Numismatic Product]</p>
+                        <p class="variant-flag">[Replacement Note]</p>
+                        <p class="variant-flag">[Error Variant]</p>
+                    </div>
+                    <div class="item-info">
+                        <table>
+                        </table>
+                        <img class="sqr-button clickable-button" src="./details/edit.png" onclick="upsertItem()" alt="Edit item" />
+                    </div>
+                </div>
+
+                <div class="variant-add-box">
+                    <div class="clickable-button">
+                        <div>
+                            <img src="./details/add-blue.png" alt="Add variant" />
+                            <p>New Variant</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <div>
+        <div id="denomination-add-box" class="only-admin">
+            <div class="clickable-button" onclick="openUpsertNoteForInsert()">
+                <div>
+                    <img src="./details/add-green.png" alt="Add Denomination" />
+                    <p>New Denomination</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div id="upsert-note-dialog" class="modal-wnd">
+    </div>
+
+    <div id="upsert-variant-dialog" class="modal-wnd">
+    </div> -->
+</div>

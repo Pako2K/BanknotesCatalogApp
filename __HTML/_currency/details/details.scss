@@ -1,0 +1,319 @@
+#details-main-div {
+    align-self: flex-start;
+    margin-bottom: 1em;
+}
+
+.series-info {
+    padding: 0.5em 1em;
+    &>p {
+        font-family: Lucida sans, sans-serif;
+        font-size: 0.7em;
+        margin: 0.2em 0;
+        font-weight: bold;
+        &>span {
+            font-weight: normal;
+        }
+    }
+}
+
+.banknote-title {
+    border-bottom: 2px solid darkgreen;
+    &>p {
+        margin-bottom: 0.2em;
+        color: darkgreen;
+        font-size: 1em;
+    }
+    &>img {
+        width: 1.6em;
+        position: absolute;
+        right: 5px;
+        cursor: pointer;
+        &:hover {
+            border: 0.5px solid lightgray;
+        }
+    }
+}
+
+.banknote-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    &>div:first-of-type {
+        max-width: 50%;
+    }
+    & p {
+        font-family: Lucida sans, sans-serif;
+        font-size: 0.7em;
+        margin: 0.4em 1em;
+        font-weight: bold;
+        &>span {
+            font-weight: normal;
+        }
+    }
+}
+
+.variants-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.variant-box {
+    border: 0.5px solid grey;
+    background: white;
+    width: 400px;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    &>p {
+        color: darkblue;
+        font-size: 0.8em;
+    }
+    &>img {
+        width: 1.4em;
+        position: absolute;
+        right: 5px;
+        top: 4px;
+        cursor: pointer;
+        &:hover {
+            border: 0.5px solid lightgray;
+        }
+    }
+}
+
+.variant-pictures {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 0.4em;
+    &>img:not(:last-of-type) {
+        border: 0.5px solid lightgrey;
+        width: 35%;
+    }
+    &>img:last-of-type {
+        border: 0.5px solid lightgrey;
+        width: 25%;
+    }
+    &>img[src=""] {
+        display: none;
+    }
+}
+
+.variant-info {
+    border: 0.5px solid lightgrey;
+    padding: 0.5em 1em;
+    &>p {
+        font-size: 0.7em;
+        font-weight: normal;
+        margin: 0.2em 0;
+        &.variant-flag {
+            font-weight: bold;
+            font-style: italic;
+        }
+    }
+}
+
+.items-info {
+    margin-top: 0.1em;
+    border: 0.5px solid lightgrey;
+    padding: 0.5em 1em;
+    position: relative;
+    &>table {
+        border-collapse: collapse;
+        & thead {
+            font-size: 0.7em;
+            font-weight: bold;
+            &>th {
+                text-align: center;
+            }
+        }
+        & tbody {
+            font-size: 0.7em;
+            font-weight: normal;
+        }
+    }
+    &>img {
+        box-sizing: content-box;
+        width: 1em;
+        position: absolute;
+        right: 5px;
+        top: 6px;
+        cursor: pointer;
+        &:hover {
+            border: 0.5px solid lightgray;
+        }
+    }
+}
+
+.item-add-box {
+    margin-top: 0.1em;
+    padding: 0.5em 0;
+    &>div {
+        background: white;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
+        &>div {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            &>img {
+                width: 0.6em;
+            }
+            &>p {
+                font-family: Lucida sans, sans-serif;
+                color: black;
+                font-size: 0.6em;
+                margin: 0.8em 0em;
+                padding-left: 0.8em;
+            }
+        }
+    }
+}
+
+.variant-add-box {
+    display: flex;
+    width: 400px;
+    padding: 0.8em;
+    justify-content: center;
+    align-items: center;
+    &>div {
+        background: white;
+        width: 110px;
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
+        &>div {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            &>img {
+                width: 0.8em;
+            }
+            &>p {
+                font-family: Lucida sans, sans-serif;
+                color: rgb(50, 50, 150);
+                font-weight: bold;
+                font-size: 0.6em;
+                margin: 0.8em 0em;
+                padding-left: 0.8em;
+            }
+        }
+    }
+}
+
+#denomination-add-box {
+    padding-top: 1em;
+    display: flex;
+    justify-content: center;
+    border-top: 0.5px solid darkgreen;
+    &>div {
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
+        background-color: white;
+        &>div {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            &>img {
+                width: 1.2em;
+            }
+            &>p {
+                font-family: Lucida sans, sans-serif;
+                color: darkgreen;
+                font-weight: bold;
+                font-size: 0.8em;
+                margin: 1.2em 0em;
+                padding-left: 0.9em;
+            }
+        }
+    }
+}
+
+.sqr-button {
+    background-color: white;
+    padding: 3px;
+}
+
+.clickable-button {
+    border: 0.5px solid lightgrey;
+    box-shadow: 2px 2px 2px grey;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    /* Safari 3.1+ */
+    -moz-user-select: none;
+    /* Firefox 2+ */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Standard syntax */
+    &:hover {
+        cursor: pointer;
+        border-color: gray;
+    }
+    &:active {
+        border-color: black;
+        box-shadow: none;
+        transform: translate(2px, 2px);
+    }
+}
+
+.section-title {
+    font-family: Lucida sans, sans-serif;
+    font-weight: bold;
+    position: relative;
+    &>p {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.UNC-grade {
+    background-color: green;
+    color: whitesmoke;
+}
+
+.XF-grade {
+    background-color: greenyellow;
+    color: rgb(70, 70, 70);
+}
+
+.VF-grade {
+    background-color: yellow;
+    color: rgb(70, 70, 70);
+}
+
+.F-grade {
+    background-color: orange;
+    color: rgb(70, 70, 70);
+}
+
+.VG-grade {
+    background-color: rgb(120, 80, 0);
+    ;
+    color: lightgrey;
+}
+
+.G-grade {
+    background-color: rgb(90, 80, 0);
+    ;
+    color: lightgrey;
+}
+
+.P-grade {
+    background-color: rgb(60, 50, 0);
+    ;
+    color: lightgrey;
+}
+
+.REP-grade {
+    background-color: lightgray;
+    color: rgb(70, 70, 70);
+}

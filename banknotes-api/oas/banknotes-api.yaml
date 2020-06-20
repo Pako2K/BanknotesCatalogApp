@@ -937,6 +937,36 @@ paths:
                 $ref: '#/components/schemas/exception'
 
 
+  /series/{seriesId}:
+    get:
+      tags:
+      - Series
+      summary: Get info about a specific series
+      description: Returns all the the info for a series.
+      operationId: seriesByIdGET
+      parameters:
+      - $ref: '#/components/parameters/seriesId'
+      responses:
+        "200":
+          description: Series detailed info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/series'
+        "400":
+          description: Invalid request. The series Id must be an integer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+
+
   /series/{seriesId}/variants:
     get:
       tags:
@@ -954,7 +984,16 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/variantSummary'
+                  allOf:    
+                  - $ref: '#/components/schemas/denomination'
+                  - type: object
+                    required:
+                    - variants
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/variant'
         "400":
           description: Invalid request. The series Id must be an integer.
           content:
@@ -988,7 +1027,25 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/itemSummary'
+                  allOf:    
+                  - $ref: '#/components/schemas/denomination'
+                  - type: object
+                    required:
+                    - variants
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          allOf:
+                          - $ref: '#/components/schemas/variant'
+                          - type: object
+                            required:
+                            - items
+                            properties:
+                              items:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/item'
         "400":
           description: Invalid request. Query or cookie parameter is missing or has no valid value
           content:
@@ -1927,6 +1984,19 @@ components:
           end:
             type: integer
 
+
+    series:
+      allOf:    
+      - $ref: '#/components/schemas/seriesSummary'
+      - type: object
+        properties:
+          issuer:
+            type: string
+          lawDate:
+            type: string
+          description:
+            type: string
+    
           
     seriesCatStats:
       allOf:    
@@ -2001,31 +2071,81 @@ components:
               price:
                 type: number
 
-
+  
+    denomination:
+      type: object
+      required:
+      - denomination
+      properties:
+        denomination:
+          type: number
+        faceValue:
+          type: number
+        unitValue:
+          type: number
+        unitName:
+          type: string
+        unitSymbol:
+          type: string
+        material:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+        obverseDescription:
+          type: string
+        reverseDescription:
+          type: string
+        description:
+          type: string
+          
+          
     variantKey:
       type: object
       required:
       - variantId
-      - catalogueId
-      - denomination
       - issueYear
+      - catalogueId
       properties:
         variantId:
           type: integer
-        catalogueId:
-          type: integer
-        denomination:
-          type: number
         issueYear:
           type: integer
         printedDate:
           type: string
+        catalogueId:
+          type: integer
 
-    variantSummary:
+    variant:
       allOf:
         - $ref: '#/components/schemas/variantKey'
         - type: object
           properties:
+            overstampedVariantId:
+              type: integer
+            printer:
+              type: string
+            signature:
+              type: string
+            signatureExt:
+              type: string
+            watermark:
+              type: string
+            securityThread:
+              type: string
+            securityExt:
+              type: string
+            isReplacement:
+              type: boolean
+            isSpecimen:
+              type: boolean
+            isError:
+              type: boolean
+            isCommemorative:
+              type: boolean
+            isNumismaticsProduct:
+              type: boolean
             description:
               type: string
 
@@ -2069,14 +2189,6 @@ components:
         price:
           type: number
 
-    itemSummary:
-     allOf:    
-        - $ref: '#/components/schemas/variantSummary'
-        - type: object
-          properties:
-            item:
-              $ref: '#/components/schemas/itemKey'
-            
 
     itemTree: 
       allOf:    
@@ -2092,11 +2204,8 @@ components:
         - $ref: '#/components/schemas/itemKey'
         - type: object
           required:
-          - variantId
           - quantity
           properties:
-            variantId:
-              type: integer
             quantity:
               type: integer
             seller:

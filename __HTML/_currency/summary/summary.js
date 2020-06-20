@@ -108,39 +108,24 @@ function loadBanknotesInfo(seriesSection) {
             // Collect all the different "Issue Years"
             let issueYears = []; // "Columns": 1 columns for each issue year
             let rowIndex = []; // One for each column: to be used later to insert the values of each variant
-            for (let variant of notesJSON) {
-                if (issueYears.indexOf(variant.issueYear) === -1) {
-                    issueYears.push(variant.issueYear);
-                    rowIndex.push(0);
+            for (let denom of notesJSON) {
+                for (let variant of denom.variants) {
+                    if (issueYears.indexOf(variant.issueYear) === -1) {
+                        issueYears.push(variant.issueYear);
+                        rowIndex.push(0);
+                    }
                 }
             }
             issueYears.sort();
 
-            // Transform rows resultset into JSON tree
-            // table = [denom, variants:[id, catId, year, printedDate, desc, item:{id,price, grade}]]
-            let tableJSON = [];
-            let denomObj = {};
-            for (let variant of notesJSON) {
-                if (denomObj.denomination !== variant.denomination) {
-                    if (denomObj.denomination) tableJSON.push(denomObj);
-                    denomObj = {};
-                    denomObj.denomination = variant.denomination;
-                    denomObj.variants = [];
-                }
-                delete variant.denomination;
-                denomObj.variants.push(variant);
-            }
-            tableJSON.push(denomObj);
-
-            // Group Variants per issueYear and sort per printedDate and catalogueId
+            // Group Variants per issueYear 
             let newTableJSON = [];
-            for (let denom of tableJSON) {
+            for (let denom of notesJSON) {
                 let years = [];
                 let yearObj = {};
                 for (let variant of denom.variants) {
                     if (yearObj.issueYear !== variant.issueYear) {
                         if (yearObj.issueYear) {
-                            yearObj.variants = sortJSON(yearObj.variants, ["printedDate", "catIdInt", "catIdSuffix"], true);
                             years.push(yearObj);
                         }
                         yearObj = {};
@@ -148,11 +133,8 @@ function loadBanknotesInfo(seriesSection) {
                         yearObj.variants = [];
                     }
                     delete variant.issueYear;
-                    variant.catIdInt = parseInt(variant.catalogueId.slice(2)); // Remove "P-" and convert to integer
-                    variant.catIdSuffix = variant.catalogueId.slice(2 + variant.catIdInt.toString().length);
                     yearObj.variants.push(variant);
                 }
-                yearObj.variants = sortJSON(yearObj.variants, ["printedDate", "catIdInt", "catIdSuffix"], true);
                 years.push(yearObj);
                 newTableJSON.push({ denomination: denom.denomination, issueYears: years })
             }
@@ -208,10 +190,10 @@ function loadBanknotesInfo(seriesSection) {
                         let itemId = "";
                         let gradeClass = "";
                         let priceStr = "";
-                        if (variant.item) {
-                            itemId = variant.item.id;
-                            gradeClass = ` ${variant.item.grade}-grade`;
-                            priceStr = variant.item.price + " €";
+                        if (variant.items && variant.items.length) {
+                            itemId = variant.items[0].id;
+                            gradeClass = ` ${variant.items[0].grade}-grade`;
+                            priceStr = variant.items[0].price + " €";
                         }
                         table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
                                                             <td class="subcol-2${gradeClass}" data-variantid="${variant.id}" data-itemid="${itemId}" title="${variant.description}">${variant.catalogueId}</td>

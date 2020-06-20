@@ -11,6 +11,7 @@ module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
     app.get('/currency/:currencyId/series', currencyByIdSeriesGET);
+    app.get('/series/:seriesId/', seriesByIdGET);
 
     log.debug("Series service initialized");
 };
@@ -35,49 +36,24 @@ function currencyByIdSeriesGET(request, response) {
 }
 
 
+// ===> /series/:seriesId
+function seriesByIdGET(request, response) {
+    let seriesId = parseInt(request.params.seriesId);
 
-// let sqlSeriesByID =
-//     `SELECT * 
-//     FROM ser_series
-//     WHERE ser_id = ?`;
+    // Check that the Id is an integer
+    if (Number.isNaN(seriesId) || seriesId.toString() !== request.params.seriesId) {
+        new Exception(400, "CUR-1", "Invalid Currency Id, " + request.params.seriesId).send(response);
+        return;
+    }
 
-// // ===> /series?seriesId=$id
-// module.exports.seriesGET = function(request, response) {
-//     console.log(request.url);
-//     console.log(url.parse(request.url, true).query);
+    let sql = ` SELECT ser_id AS "id", ser_name AS "name", ser_start AS "start", ser_end AS "end", ser_issuer AS "issuer", 
+                    ser_law_date AS "lawDate", ser_description AS "description"
+                FROM ser_series
+                WHERE ser_id = ${seriesId}`;
 
-//     let id = url.parse(request.url, true).query.seriesId;
+    catalogueDB.getAndReply(response, sql);
+}
 
-//     if (id === undefined || id === '') {
-//         response.writeHead(400);
-//         response.send();
-//         return;
-//     }
-
-//     db.get(sqlSeriesByID, [id], (err, row) => {
-//         if (err) {
-//             response.writeHead(500, { 'Content-Type': 'application/json' });
-//             response.write(JSON.stringify({ "Error": err.errno, "ErrorMsg": err.message }));
-//             response.send();
-//             return;
-//         }
-
-//         console.log(row);
-
-//         let resultJson = {
-//             "id": row.ser_id,
-//             "name": row.ser_name,
-//             "start": row.ser_start,
-//             "end": row.ser_end,
-//             "issuer": row.ser_issuer,
-//             "lawDate": row.ser_law_date,
-//             "description": row.ser_description
-//         };
-//         response.writeHead(200, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify(resultJson));
-//         response.send();
-//     });
-// }
 
 
 // let sqlInsertSeries = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_issuer, ser_law_date, ser_description) 

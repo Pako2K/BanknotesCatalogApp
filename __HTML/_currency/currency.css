@@ -255,7 +255,7 @@ hr {
 }
 
 #view-section {
-  padding: 2em 0em;
+  padding: 1em 2em;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
