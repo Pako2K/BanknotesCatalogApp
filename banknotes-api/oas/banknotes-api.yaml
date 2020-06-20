@@ -90,11 +90,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/territory'
         "400":
-          description: Invalid request. The territory Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
                     
@@ -139,17 +135,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/territoryColStats'
         "400":
-          description: Invalid request. Missing cookie
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
           
@@ -194,17 +182,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/currencyColStats'
         "400":
-          description: Invalid request. Missing cookie
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -286,17 +266,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationColStats'
         "400":
-          description: Invalid request. Missing cookie
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
           
@@ -354,17 +326,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearColStats'
         "400":
-          description: Invalid request. Missing cookie
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
           
@@ -388,11 +352,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/currencyByTerCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'  
   
@@ -418,17 +378,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/currencyByTerColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -452,11 +404,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -482,17 +430,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -516,11 +456,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationByTerCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -546,17 +482,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationByTerColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -580,11 +508,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearByTerCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -610,17 +534,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearByTerColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -644,11 +560,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesByCurCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -674,17 +586,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesByCurColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -708,11 +612,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationByCurCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -738,17 +638,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/denominationByCurColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -772,11 +664,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearByCurCatStats'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -802,17 +690,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/issueYearByCurColStats'
         "400":
-          description: Invalid request. Path or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: Session id or username is not valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -834,11 +714,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/currency'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
@@ -862,11 +738,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/seriesSummary'
         "400":
-          description: Invalid request. The currency Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
 
@@ -888,11 +760,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/series'
         "400":
-          description: Invalid request. The series Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
 
@@ -925,11 +793,7 @@ paths:
                         items:
                           $ref: '#/components/schemas/variant'
         "400":
-          description: Invalid request. The series Id must be an integer.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -973,17 +837,9 @@ paths:
                                 items:
                                   $ref: '#/components/schemas/item'
         "400":
-          description: Invalid request. Query or cookie parameter is missing or has no valid value
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/400'
         "403":
-          description: User not logged-in or invalid session
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
                 
@@ -1076,11 +932,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         "403":
-          description: User not logged-in or invalid session
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
+          $ref: '#/components/responses/403'
         "413":
           description: The search has found too many results. Additional filters must be provided in the search criteria
           content:
@@ -1248,6 +1100,18 @@ components:
 
   
   responses:
+    400:
+      description: Invalid request. A parameter is missing or not valid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/exception'
+    403:
+      description: Session id or username is not valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/exception'
     500:
       description: Internal server error
       content:
