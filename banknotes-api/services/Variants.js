@@ -294,7 +294,7 @@ function seriesByIdItemsGET(request, response) {
                 LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
                 LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN gra_grade GRA ON GRA.gra_grade = BIT.bit_gra_grade           
-                LEFT JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
+                INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
                 WHERE BAN.ban_ser_id = $1
                 ORDER BY "variantId", "gradeValue", "price" DESC`;
 
