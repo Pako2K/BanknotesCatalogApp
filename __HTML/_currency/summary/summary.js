@@ -196,7 +196,7 @@ function loadBanknotesInfo(seriesSection) {
                             priceStr = variant.items[0].price + " €";
                         }
                         table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
-                                                            <td class="subcol-2${gradeClass}" data-variantid="${variant.id}" data-itemid="${itemId}" title="${variant.description}">${variant.catalogueId}</td>
+                                                            <td class="subcol-2${gradeClass}" data-variantid="${variant.id}" data-itemid="${itemId}" title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
                                                             <td class="subcol-3${gradeClass}">${priceStr}</td>`;
                         rowIndex[colIndex]++;
                     }

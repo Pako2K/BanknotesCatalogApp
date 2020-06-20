@@ -107,11 +107,10 @@
     padding: 0.5em 1em;
     &>p {
         font-size: 0.7em;
-        font-weight: normal;
+        font-weight: bold;
         margin: 0.2em 0;
-        &.variant-flag {
-            font-weight: bold;
-            font-style: italic;
+        &>span {
+            font-weight: normal;
         }
     }
 }

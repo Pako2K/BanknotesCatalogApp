@@ -145,13 +145,12 @@
 
 .variant-info > p {
   font-size: 0.7em;
-  font-weight: normal;
+  font-weight: bold;
   margin: 0.2em 0;
 }
 
-.variant-info > p.variant-flag {
-  font-weight: bold;
-  font-style: italic;
+.variant-info > p > span {
+  font-weight: normal;
 }
 
 .items-info {

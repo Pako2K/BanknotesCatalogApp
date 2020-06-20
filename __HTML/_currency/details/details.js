@@ -120,7 +120,7 @@ function selectSeriesChanged(filterName, id, value) {
                         let itemRows = "";
                         for (let item of variant.items) {
                             itemRows += `<tr class="${item.grade}-grade">
-                                            <td>${item.quantity}</td><td>${item.grade}</td><td>${item.price + " €"}</td><td>${item.purchaseDate || ""}</td><td>${item.seller || ""}</td><td>${item.description || ""}</td>
+                                            <td>${item.quantity}</td><td><b>${item.grade}</b></td><td>${item.price + " €"}</td><td>${item.purchaseDate || ""}</td><td>${item.seller || ""}</td><td>${item.description || ""}</td>
                                         </tr>`;
                         }
 
@@ -171,7 +171,7 @@ function selectSeriesChanged(filterName, id, value) {
                                 ${addInfoBoolean("Error Note", variant.isError)}
                                 ${addInfoBoolean("Commemorative", variant.isCommemorative)}
                                 ${addInfoBoolean("Numismatic Product", variant.isNumismaticsProduct)}
-                                ${addInfo("Description", variant.description)}
+                                ${addInfo("Description", variant.variantDescription)}
                             </div>
                             ${itemsBoxHTML}
                         </div>`;

@@ -204,7 +204,7 @@ hr {
         }
     }
     #view-section {
-        padding: 2em*$WIDTH_FACTOR_SMALL_TABLET 0em;
+        padding: 1em*$WIDTH_FACTOR_SMALL_TABLET 2em*$WIDTH_FACTOR_SMALL_TABLET;
     }
 }
 
@@ -268,6 +268,6 @@ hr {
         }
     }
     #view-section {
-        padding: 2em*$WIDTH_FACTOR_BIG_PHONE 0em;
+        padding: 1em*$WIDTH_FACTOR_BIG_PHONE 2em*$WIDTH_FACTOR_BIG_PHONE;
     }
 }
