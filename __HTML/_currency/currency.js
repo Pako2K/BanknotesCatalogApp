@@ -117,7 +117,7 @@ function setHeaders(currencyData) {
 
 
 function flagFileName(territory) {
-    let path = "/_countries/img/flags/";
+    let path = "/data/_flags_/";
     if (territory.iso3)
         return path + territory.iso3.toLowerCase() + ".png";
     else
