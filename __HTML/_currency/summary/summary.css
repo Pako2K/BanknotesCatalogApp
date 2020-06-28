@@ -1,209 +1,207 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
 #summary-main-div {
-    min-width: 20em;
+  min-width: 20em;
 }
 
 .series-detail-section {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    margin-bottom: 2px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  margin-bottom: 2px;
 }
 
-.series-detail-section>.col-expand-contract {
-    background-color: #f0f5f0;
-    border: solid 0.5px black;
-    min-width: 1.6em;
-    min-height: 1.7em;
-    max-height: 1.7em;
-    cursor: pointer;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-shadow: 3px 3px 3px grey;
-    box-shadow: 3px 3px 3px grey;
-    margin-right: 1px;
+.series-detail-section > .col-expand-contract {
+  background-color: #f0f5f0;
+  border: solid 0.5px black;
+  min-width: 1.6em;
+  min-height: 1.7em;
+  max-height: 1.7em;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-shadow: 3px 3px 3px grey;
+          box-shadow: 3px 3px 3px grey;
+  margin-right: 1px;
 }
 
-.series-detail-section>.col-expand-contract>img {
-    width: 1em;
-    margin: auto;
+.series-detail-section > .col-expand-contract > img {
+  width: 1em;
+  margin: auto;
 }
 
-.series-detail-section>div:nth-of-type(2) {
-    background-color: #f0f5f0;
-    border: solid 0.5px black;
-    overflow: auto;
-    padding: 0.24em 0.5em;
-    -webkit-box-shadow: 3px 3px 3px grey;
-    box-shadow: 3px 3px 3px grey;
-    min-height: 1.7em;
-    width: 95%;
+.series-detail-section > div:nth-of-type(2) {
+  background-color: #f0f5f0;
+  border: solid 0.5px black;
+  overflow: auto;
+  padding: 0.24em 0.5em;
+  -webkit-box-shadow: 3px 3px 3px grey;
+          box-shadow: 3px 3px 3px grey;
+  min-height: 1.7em;
+  width: 95%;
 }
 
-.series-detail-section>div:nth-of-type(2)>h4 {
-    font-family: Times New Roman, serif;
-    font-size: 1em;
-    margin: 0;
+.series-detail-section > div:nth-of-type(2) > h4 {
+  font-family: Times New Roman, serif;
+  font-size: 1em;
+  margin: 0;
 }
 
 .summary-table {
-    margin: 0.7em;
-    border-right: solid 1px darkgrey;
-    border-bottom: solid 1px darkgrey;
-    border-collapse: collapse;
+  margin: 0.7em;
+  border-right: solid 1px darkgrey;
+  border-bottom: solid 1px darkgrey;
+  border-collapse: collapse;
 }
 
-.summary-table>thead>tr:first-child>th {
-    font-family: Lucida sans, sans-serif;
-    font-size: 0.8em;
-    border-top: solid 1px darkgrey;
-    border-left: solid 1px darkgrey;
-    color: #326432;
-    text-align: center;
-    background-color: whitesmoke;
+.summary-table > thead > tr:first-child > th {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.8em;
+  border-top: solid 1px darkgrey;
+  border-left: solid 1px darkgrey;
+  color: #326432;
+  text-align: center;
+  background-color: whitesmoke;
 }
 
-.summary-table>thead>tr:nth-child(2) {
-    white-space: nowrap;
+.summary-table > thead > tr:nth-child(2) {
+  white-space: nowrap;
 }
 
-.summary-table>thead>tr:nth-child(2)>td:first-of-type {
-    border-bottom: solid 1px darkgrey;
-    border-right: solid 1px darkgrey;
+.summary-table > thead > tr:nth-child(2) > td:first-of-type {
+  border-bottom: solid 1px darkgrey;
+  border-right: solid 1px darkgrey;
 }
 
-.summary-table>thead>tr:nth-child(2)>td:not(:first-of-type) {
-    font-family: Lucida sans, sans-serif;
-    font-size: 0.6em;
-    padding: 0.3em 1em;
-    color: #326432;
-    border-bottom: solid 1px darkgrey;
-    text-align: center;
-    background-color: whitesmoke;
+.summary-table > thead > tr:nth-child(2) > td:not(:first-of-type) {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.6em;
+  padding: 0.3em 1em;
+  color: #326432;
+  border-bottom: solid 1px darkgrey;
+  text-align: center;
+  background-color: whitesmoke;
 }
 
-.summary-table>tbody th {
-    font-family: Lucida sans, sans-serif;
-    font-size: 0.8em;
-    color: #326432;
-    text-align: center;
-    border-left: solid 1px darkgray;
-    border-right: solid 1px darkgray;
-    padding: 0.2em 0.6em;
-    background-color: whitesmoke;
+.summary-table > tbody th {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.8em;
+  color: #326432;
+  text-align: center;
+  border-left: solid 1px darkgray;
+  border-right: solid 1px darkgray;
+  padding: 0.2em 0.6em;
+  background-color: whitesmoke;
 }
 
-.summary-table>tbody>tr>td {
-    font-family: Lucida sans, sans-serif;
-    font-size: 0.6em;
-    text-align: center;
-    padding: 0.3em 0.6em;
-    white-space: nowrap;
-    cursor: pointer;
+.summary-table > tbody > tr > td {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.6em;
+  text-align: center;
+  padding: 0.3em 0.6em;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-.summary-table>tbody>tr>td.highlight {
-    text-decoration: underline;
-    text-shadow: 1px 1px 1px grey;
+.summary-table > tbody > tr > td.highlight {
+  text-decoration: underline;
+  text-shadow: 1px 1px 1px grey;
 }
 
-.summary-table>tbody .last-subrow {
-    border-bottom: dotted 1px grey;
+.summary-table > tbody .last-subrow {
+  border-bottom: dotted 1px grey;
 }
 
 .summary-table .subcol-1 {
-    border-left: solid 1px darkgray;
+  border-left: solid 1px darkgray;
 }
 
 .UNC-grade {
-    background-color: green;
-    color: whitesmoke;
+  background-color: green;
+  color: whitesmoke;
 }
 
 .XF-grade {
-    background-color: greenyellow;
-    color: #464646;
+  background-color: greenyellow;
+  color: #464646;
 }
 
 .VF-grade {
-    background-color: yellow;
-    color: #464646;
+  background-color: yellow;
+  color: #464646;
 }
 
 .F-grade {
-    background-color: orange;
-    color: #464646;
+  background-color: orange;
+  color: #464646;
 }
 
 .VG-grade {
-    background-color: #785000;
-    color: lightgrey;
+  background-color: #785000;
+  color: lightgrey;
 }
 
 .G-grade {
-    background-color: #5a5000;
-    color: lightgrey;
+  background-color: #5a5000;
+  color: lightgrey;
 }
 
 .P-grade {
-    background-color: #3c3200;
-    color: lightgrey;
+  background-color: #3c3200;
+  color: lightgrey;
 }
 
 .REP-grade {
-    background-color: lightgray;
-    color: #464646;
+  background-color: lightgray;
+  color: #464646;
 }
 
 .none-grade {
-    background-color: whitesmoke;
-    color: black;
+  background-color: whitesmoke;
+  color: black;
 }
 
 #grades-div {
-    margin-top: 2em;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    font-family: Times New Roman, serif;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
+  margin-top: 2em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: Times New Roman, serif;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 #grades-div div {
-    border: solid 1px lightgray;
-    padding: 1em;
-    background-color: ghostwhite;
+  border: solid 1px lightgray;
+  padding: 1em;
+  background-color: ghostwhite;
 }
 
 #grades-div h3 {
-    margin: 0;
-    margin-bottom: 1em;
-    font-size: 1em;
-    text-align: center;
+  margin: 0;
+  margin-bottom: 1em;
+  font-size: 1em;
+  text-align: center;
 }
 
 #grades-div p {
-    font-size: 0.8em;
-    margin: 0;
-    padding: 0.4em;
-    min-width: 10em;
-    text-align: center;
-    cursor: help;
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0.4em;
+  min-width: 10em;
+  text-align: center;
+  cursor: help;
 }
-
-
 /*# sourceMappingURL=summary.css.map */

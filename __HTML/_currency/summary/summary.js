@@ -202,8 +202,10 @@ function loadBanknotesInfo(seriesSection) {
                         }
                         // Store the issue year as well
                         variant.issueYear = year.issueYear;
+                        let variantStr = JSON.stringify(variant);
+                        variantStr = variantStr.replace(/'/g, "&#39");
                         table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
-                                                            <td class="subcol-2${gradeClass}" data-variant='${JSON.stringify(variant)}' title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
+                                                            <td class="subcol-2${gradeClass}" data-variant='${variantStr}' title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
                                                             <td class="subcol-3${gradeClass}">${priceStr}</td>`;
                         rowIndex[colIndex]++;
                     }
@@ -298,21 +300,10 @@ function openUpsertCollection() {
     // "this" identifies the sub-column!
     if ($(this).hasClass("subcol-1")) {
         variantJSON = $(this).next().data("variant");
-        // date = $(this).text();
-        // catId = $(this).next().text();
-        // price = $(this).next().next().text();
     } else if ($(this).hasClass("subcol-2")) {
         variantJSON = $(this).data("variant");
-        // varId = $(this).data("variantid");
-        // date = $(this).prev().text();
-        // catId = $(this).text();
-        // price = $(this).next().text();
     } else if ($(this).hasClass("subcol-3")) {
         variantJSON = $(this).prev().data("variant");
-        // varId = $(this).prev().data("variantid");
-        // date = $(this).prev().prev().text();
-        // catId = $(this).prev().text();
-        // price = $(this).text();
     }
     variantJSON.denominationStr = $(this).parent().data("denom") + " " + $("#currency-name").text();
 

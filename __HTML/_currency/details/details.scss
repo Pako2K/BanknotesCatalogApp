@@ -118,20 +118,28 @@
 .items-info {
     margin-top: 0.1em;
     border: 0.5px solid lightgrey;
-    padding: 0.5em 1em;
+    padding: 0.5em 1.8em 0.6em 1em;
     position: relative;
     &>table {
         border-collapse: collapse;
         & thead {
             font-size: 0.7em;
             font-weight: bold;
-            &>th {
-                text-align: center;
+            &>tr:last-of-type {
+                text-align: left;
+                font-size: 0.9em;
+                &>th {
+                    padding: 0.2em 0.4em;
+                }
             }
         }
         & tbody {
-            font-size: 0.7em;
+            font-size: 0.65em;
             font-weight: normal;
+            &>tr>td {
+                padding: 0.4em 0.4em;
+                min-width: 3em;
+            }
         }
     }
     &>img {

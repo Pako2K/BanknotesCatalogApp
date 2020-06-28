@@ -20,13 +20,16 @@ function initializeUpsertCollection(seriesId, variantJSON, gradesJSON) {
                             </td>
                             <td><input type="number" id="price" name="price" value="${item.price}" min="0" step=0.01 required></td>
                             <td><input type="date" id="date" name="date" value="${item.purchaseDate || ""}"></td>
-                            <td><input type="text" id="seller" name="seller" placeholder="Seller" size=8 maxlength="20" autocomplete="on" value="${item.seller || ""}"></td>
+                            <td><input type="text" id="seller" name="seller" placeholder="Seller" size=8 maxlength="20" autocomplete="on"></td>
                             <td rowspan="2"><img src="./collection/delete.png" alt="delete item" onclick="deleteCollectionRow(this)"></td>
                         </tr>
                         <tr>
-                            <td colspan="5"><input type="text" id="description" name="description" placeholder="Item description" autocomplete="off" maxlength="40" value="${item.description || ""}"></td>
+                            <td colspan="5"><input type="text" id="description" name="description" placeholder="Item description" autocomplete="off" maxlength="40"></td>
                         </tr>`;
         $("#collection-items-table>tbody").append(itemRow);
+        // T0 avoid problems with the quotes!
+        $("#collection-items-table>tbody input[name='seller']").last().val(item.seller || "");
+        $("#collection-items-table>tbody input[name='description']").last().val(item.description || "");
         $(`#grade-${item.id}`).val(item.grade);
     });
 }

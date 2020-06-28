@@ -120,7 +120,12 @@ function selectSeriesChanged(filterName, id, value) {
                         let itemRows = "";
                         for (let item of variant.items) {
                             itemRows += `<tr class="${item.grade}-grade">
-                                            <td>${item.quantity}</td><td><b>${item.grade}</b></td><td>${item.price + " €"}</td><td>${item.purchaseDate || ""}</td><td>${item.seller || ""}</td><td>${item.description || ""}</td>
+                                            <td>${item.quantity}</td>
+                                            <td><b>${item.grade}</b></td>
+                                            <td>${item.price + " €"}</td>
+                                            <td>${item.purchaseDate || ""}</td>
+                                            <td>${item.seller || ""}</td>
+                                            <td>${item.description || ""}</td>
                                         </tr>`;
                         }
 
@@ -128,8 +133,14 @@ function selectSeriesChanged(filterName, id, value) {
                                             <table>
                                                 <thead>
                                                     <tr>
-                                                        <th colspan="6">My Collection</th>
+                                                        <th>Qty</th>
+                                                        <th>Gr.</th>
+                                                        <th>Price</th>
+                                                        <th>Pur. Date</th>
+                                                        <th>Seller</th>
+                                                        <th>Description</th>
                                                     </tr>
+                                                </thead>
                                                 <thead>
                                                 <tbody>
                                                     ${itemRows}
@@ -237,75 +248,75 @@ function selectSeriesChanged(filterName, id, value) {
 
 
 
-function openUpsertNoteForInsert() {
-    let seriesId = $("#select-series").val();
-    $('#upsert-note-dialog').data("banknote-id", "");
-    $('#upsert-note-dialog').data("series-id", seriesId);
+// function openUpsertNoteForInsert() {
+//     let seriesId = $("#select-series").val();
+//     $('#upsert-note-dialog').data("banknote-id", "");
+//     $('#upsert-note-dialog').data("series-id", seriesId);
 
-    // In case there was an update before:
-    $("#upsert-note-dialog input[name='note-face-value']").removeAttr("disabled");
-    $("#upsert-note-dialog input[name='note-face-value']").attr("required", "");
-    $("#note-units-select").removeAttr("disabled");
+//     // In case there was an update before:
+//     $("#upsert-note-dialog input[name='note-face-value']").removeAttr("disabled");
+//     $("#upsert-note-dialog input[name='note-face-value']").attr("required", "");
+//     $("#note-units-select").removeAttr("disabled");
 
-    $('#upsert-note-dialog').show();
-}
+//     $('#upsert-note-dialog').show();
+// }
 
-function openUpsertNoteForUpdate(banknoteId) {
-    // Retrieve banknote info
-    // NOTE: The other option would be to store all the info about banknotes and variants in the page!!
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            let banknote = JSON.parse(this.responseText);
+// function openUpsertNoteForUpdate(banknoteId) {
+//     // Retrieve banknote info
+//     // NOTE: The other option would be to store all the info about banknotes and variants in the page!!
+//     var xhttp = new XMLHttpRequest();
+//     xhttp.onreadystatechange = function() {
+//         if (this.readyState === 4 && this.status === 200) {
+//             let banknote = JSON.parse(this.responseText);
 
-            $('#upsert-note-dialog').data("banknote-id", banknoteId);
+//             $('#upsert-note-dialog').data("banknote-id", banknoteId);
 
-            $("#upsert-note-dialog input[name='note-face-value']").val(banknote.faceValue);
-            $("#note-units-select").val(banknote.subunit.id);
-            $("#upsert-note-dialog input[name='note-width']").val(banknote.width);
-            $("#upsert-note-dialog input[name='note-height']").val(banknote.height);
-            $("#upsert-note-dialog input[name='note-material']").val(banknote.material);
-            $("#upsert-note-dialog textarea[name='note-obverse-desc']").val(banknote.obverseDesc);
-            $("#upsert-note-dialog textarea[name='note-reverse-desc']").val(banknote.reverseDesc);
-            $("#upsert-note-dialog textarea[name='note-desc']").val(banknote.notes);
+//             $("#upsert-note-dialog input[name='note-face-value']").val(banknote.faceValue);
+//             $("#note-units-select").val(banknote.subunit.id);
+//             $("#upsert-note-dialog input[name='note-width']").val(banknote.width);
+//             $("#upsert-note-dialog input[name='note-height']").val(banknote.height);
+//             $("#upsert-note-dialog input[name='note-material']").val(banknote.material);
+//             $("#upsert-note-dialog textarea[name='note-obverse-desc']").val(banknote.obverseDesc);
+//             $("#upsert-note-dialog textarea[name='note-reverse-desc']").val(banknote.reverseDesc);
+//             $("#upsert-note-dialog textarea[name='note-desc']").val(banknote.notes);
 
-            $("#upsert-note-dialog input[name='note-face-value']").attr("disabled", "");
-            $("#upsert-note-dialog input[name='note-face-value']").removeAttr("required");
-            $("#note-units-select").attr("disabled", "");
+//             $("#upsert-note-dialog input[name='note-face-value']").attr("disabled", "");
+//             $("#upsert-note-dialog input[name='note-face-value']").removeAttr("required");
+//             $("#note-units-select").attr("disabled", "");
 
-            $('#upsert-note-dialog').show();
-        }
-    };
-    xhttp.open("GET", "/note?banknoteId=" + banknoteId, true);
-    xhttp.send();
-}
-
-
-function openUpsertVariantForInsert(banknoteId, banknoteDenomination) {
-    $('#upsert-variant-dialog').data("variant-id", "");
-    $('#upsert-variant-dialog').data("banknote-id", banknoteId);
-    $('#upsert-variant-dialog form>div').first().children("input").val(banknoteDenomination);
-
-    $('#upsert-variant-dialog').show();
-}
+//             $('#upsert-note-dialog').show();
+//         }
+//     };
+//     xhttp.open("GET", "/note?banknoteId=" + banknoteId, true);
+//     xhttp.send();
+// }
 
 
-function openUpsertVariantForUpdate(elem, variantDenomination) {
-    let variant = $(elem).data("variant");
-    $('#upsert-variant-dialog').data("variant-id", variant.id);
-    $('#note-denomination>input').val(variantDenomination);
+// function openUpsertVariantForInsert(banknoteId, banknoteDenomination) {
+//     $('#upsert-variant-dialog').data("variant-id", "");
+//     $('#upsert-variant-dialog').data("banknote-id", banknoteId);
+//     $('#upsert-variant-dialog form>div').first().children("input").val(banknoteDenomination);
 
-    $("#upsert-variant-dialog input[name='variant-printed-date']").val(variant.printedDate);
-    $("#upsert-variant-dialog input[name='variant-issue-year']").val(variant.issueYear);
-    $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catId);
-    $("#upsert-variant-dialog input[name='variant-printer']").val(variant.printer);
-    $("#upsert-variant-dialog input[name='variant-signature']").val(variant.signature);
-    $("#upsert-variant-dialog input[name='variant-watermark']").val(variant.watermark);
-    $("#upsert-variant-dialog input[name='variant-security']").val(variant.security);
-    $("#upsert-variant-dialog textarea[name='variant-description']").val(variant.description);
+//     $('#upsert-variant-dialog').show();
+// }
 
-    $('#upsert-variant-dialog').show();
-}
+
+// function openUpsertVariantForUpdate(elem, variantDenomination) {
+//     let variant = $(elem).data("variant");
+//     $('#upsert-variant-dialog').data("variant-id", variant.id);
+//     $('#note-denomination>input').val(variantDenomination);
+
+//     $("#upsert-variant-dialog input[name='variant-printed-date']").val(variant.printedDate);
+//     $("#upsert-variant-dialog input[name='variant-issue-year']").val(variant.issueYear);
+//     $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catId);
+//     $("#upsert-variant-dialog input[name='variant-printer']").val(variant.printer);
+//     $("#upsert-variant-dialog input[name='variant-signature']").val(variant.signature);
+//     $("#upsert-variant-dialog input[name='variant-watermark']").val(variant.watermark);
+//     $("#upsert-variant-dialog input[name='variant-security']").val(variant.security);
+//     $("#upsert-variant-dialog textarea[name='variant-description']").val(variant.description);
+
+//     $('#upsert-variant-dialog').show();
+// }
 
 
 function addInfo(title, value) {
