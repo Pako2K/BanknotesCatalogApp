@@ -10,7 +10,6 @@ const currencies = require("./services/Currencies");
 const series = require("./services/Series");
 const banknotes = require("./services/Banknotes");
 const variants = require("./services/Variants");
-const items = require("./services/Items");
 const misc = require("./services/Miscellanea");
 
 const JsonValidator = require('jsonschema').Validator;
@@ -37,8 +36,7 @@ module.exports.initialize = function(app, usersOAS, banknotesOAS) {
     currencies.initialize(app);
     series.initialize(app);
     banknotes.initialize(app);
-    variants.initialize(app);
-    items.initialize(app);
+    variants.initialize(app, banknotesOAS, banknotesValidator);
     misc.initialize(app);
 
     log.debug(`API Services initialized`);

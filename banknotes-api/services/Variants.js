@@ -4,19 +4,29 @@ const url = require('url');
 const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
+const jsonParser = require('body-parser').json();
 const users = require('./Users');
 
 
 let catalogueDB;
+let serviceValidator;
+let schemas = {};
 
 
-module.exports.initialize = function(app) {
+module.exports.initialize = function(app, banknotesOAS, validator) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
+    serviceValidator = validator;
 
     app.get('/variants', addOnlyVariants, itemsGET);
     app.get('/items', users.validateSessionUser, itemsGET);
     app.get('/series/:seriesId/variants', addOnlyVariants, seriesByIdItemsGET);
     app.get('/series/:seriesId/items', users.validateSessionUser, seriesByIdItemsGET);
+
+    app.post('/variant/:variantId/item', users.validateSessionUser, jsonParser, variantItemPOST);
+    schemas.variantItemPOST = getReqJSONSchema(banknotesOAS, "/variant/{variantId}/item", "post");
+    app.put('/item', users.validateSessionUser, jsonParser, itemPUT);
+    schemas.itemPUT = getReqJSONSchema(banknotesOAS, "/item", "put");
+    app.delete('/item/:itemId', users.validateSessionUser, itemDELETE);
 
     app.get('/issue-years/variants/stats', addOnlyVariants, issueYearsItemsStatsGET);
     app.get('/issue-years/items/stats', users.validateSessionUser, issueYearsItemsStatsGET);
@@ -28,6 +38,10 @@ module.exports.initialize = function(app) {
 
     log.debug("Variants service initialized");
 };
+
+function getReqJSONSchema(swaggerObj, path, operation) {
+    return swaggerObj["paths"][path][operation]["requestBody"]["content"]["application/json"]["schema"];
+}
 
 
 function addOnlyVariants(request, response, next) {
@@ -354,7 +368,7 @@ function seriesByIdItemsGET(request, response) {
                 for (let variant of denom.variants) {
                     variant.items = [];
                     // Check if the variant is in the collection
-                    if (collecIndex < colRows.length && colRows[collecIndex].variantId === variant.id) {
+                    while (collecIndex < colRows.length && colRows[collecIndex].variantId === variant.id) {
                         // Add item
                         let item = {};
                         item.id = colRows[collecIndex].id;
@@ -382,6 +396,119 @@ function seriesByIdItemsGET(request, response) {
 }
 
 
+
+const sqlInsertItem = `INSERT INTO bit_item (bit_usr_id, bit_bva_id, bit_quantity, bit_gra_grade, bit_price, bit_seller, bit_purchase_date, bit_description)
+                       SELECT usr.usr_id, $2 AS bva_id, $3 AS quantity, $4 AS grade, $5 AS proce, $6 AS seller, $7 AS date, $8 AS desc
+                       FROM usr_user usr
+                       WHERE usr_name = $1`;
+
+// ==> /variant/:variantId/item
+function variantItemPOST(request, response) {
+    let variantId = request.params.variantId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(variantId) || variantId.toString() !== request.params.variantId) {
+        new Exception(400, "VAR-1", "Invalid variant id, " + request.params.variantId).send(response);
+        return;
+    }
+
+    // Validate item info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.variantItemPOST);
+    if (valResult.errors.length) {
+        new Exception(400, "VAR-2", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let item = request.body;
+
+    // Execute the insertion
+    catalogueDB.execSQLUpsert(sqlInsertItem, [request.session.user, variantId, item.quantity, item.grade, item.price, item.seller, item.purchaseDate, item.description], (err, result) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        // Get the new item id
+        let sql = ` SELECT max(bit_id) AS itemId
+                    FROM bit_item b
+                    INNER JOIN usr_user u ON b.bit_usr_id = u.usr_id AND u.usr_name = $1`;
+        catalogueDB.execSQL(sql, [request.session.user], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            let replyJSON = { itemId: rows[0].itemId };
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+        });
+    });
+}
+
+
+
+const sqlUpdateItem = ` UPDATE bit_item 
+                        SET bit_quantity = $2, bit_gra_grade = $3, bit_price = $4, bit_seller = $5, bit_purchase_date = $6, bit_description = $7
+                        WHERE bit_id = $1 AND bit_usr_id = (SELECT usr_id FROM usr_user WHERE usr_name = $8)`;
+
+// ==> /item
+function itemPUT(request, response) {
+    // Validate item info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.itemPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "VAR-2", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let item = request.body;
+
+    // Execute the update
+    catalogueDB.execSQLUpsert(sqlUpdateItem, [item.id, item.quantity, item.grade, item.price, item.seller, item.purchaseDate, item.description, request.session.user], (err, result) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+        if (result.rowCount) {
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write("{}");
+            response.send();
+        } else {
+            new Exception(404, "VAR-3", "Item not found: " + item.id).send(response);
+            return;
+        }
+    });
+}
+
+
+// ==> /item/:itemId
+function itemDELETE(request, response) {
+    let itemId = request.params.itemId;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(itemId) || itemId.toString() !== request.params.itemId) {
+        new Exception(400, "VAR-1", "Invalid item id, " + request.params.itemId).send(response);
+        return;
+    }
+
+    const sql = `DELETE FROM bit_item WHERE bit_id = $1 AND bit_usr_id = (SELECT usr_id FROM usr_user WHERE usr_name = $2)`
+        // Execute the deletion
+    catalogueDB.execSQLUpsert(sql, [itemId, request.session.user], (err, result) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+        if (result.rowCount) {
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write("{}");
+            response.send();
+        } else {
+            new Exception(404, "ITEM-1", "Item not found: " + item.id).send(response);
+            return;
+        }
+    });
+}
 
 
 

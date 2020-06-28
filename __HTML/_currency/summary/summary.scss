@@ -11,8 +11,8 @@
         background-color: rgb(240, 245, 240);
         border: solid 0.5px black;
         min-width: 1.6em;
-        min-height: 1.6em;
-        max-height: 1.6em;
+        min-height: 1.7em;
+        max-height: 1.7em;
         cursor: pointer;
         display: flex;
         justify-content: center;
@@ -29,6 +29,7 @@
         overflow: auto;
         padding: 0.24em 0.5em;
         box-shadow: 3px 3px 3px grey;
+        min-height: 1.7em;
         width: 95%;
         &>h4 {
             font-family: Times New Roman, serif;

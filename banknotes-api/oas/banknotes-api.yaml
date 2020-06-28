@@ -470,7 +470,73 @@ paths:
         "500":
           $ref: '#/components/responses/500'
                 
-                
+
+  /variant/{variantId}/item:
+    post:
+      tags: 
+      - Variants
+      summary: Add a new item to the collection.
+      description: For the current session's user it adds the specified variant to the collection.
+      operationId: variantItemPost
+      parameters:
+      - $ref: '#/components/parameters/variantId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The item Id in the provided object can have any value. It will be ignored. 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/item'
+      responses:
+        "200":
+          description: Operation executed successfully. Item added to collection.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - itemId
+                properties:
+                  itemId:
+                    description: The id of the created item
+                    type: integer
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+          
+          
+  /item:
+    put:
+      tags: 
+      - Variants
+      summary: Modifies this item in the collection.
+      description: For the current session's user it modifies the features of the specified item in the collection.
+      operationId: itemPut
+      parameters:
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/item'
+      responses:
+        "200":
+          description: Operation executed successfully
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+          
+    
   /issue-years/variants/stats:
     get:
       tags: 
@@ -982,6 +1048,13 @@ components:
       name: seriesId
       required: true
       description: Id of the series
+      schema:
+        type: integer
+    variantId:
+      in: path
+      name: variantId
+      required: true
+      description: Id of the variant
       schema:
         type: integer
     cookieUsername:

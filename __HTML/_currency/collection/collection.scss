@@ -1,0 +1,149 @@
+#upsert-collection-dialog {
+    padding: 1em 1.5em 2em 1.5em;
+    background-color: rgb(235, 235, 235);
+    &>h3 {
+        text-align: left;
+        margin-top: 0.2em;
+        margin-bottom: 1em;
+        padding: 0.5em 1em;
+        font-size: 0.9em;
+        border-radius: 0.4em;
+        background-color: rgb(50, 80, 50);
+        color: white;
+    }
+    &>h4 {
+        text-align: center;
+        color: black;
+        margin-bottom: 1em;
+        font-family: Lucida sans, sans-serif;
+        font-size: 1em;
+        text-shadow: gray 2px 2px 3px;
+    }
+    & table {
+        border-collapse: collapse;
+        &>thead>tr>th {
+            background-color: black;
+            color: whitesmoke;
+            font-size: 0.9em;
+            font-weight: normal;
+            padding: 0.4em 0.8em;
+            text-align: left;
+        }
+        &>tbody {
+            background-color: white;
+            &>tr.delete-item * {
+                display: none;
+            }
+            &>tr>td>* {
+                padding: 0.3em 0.5em;
+                margin: 0;
+                border: none;
+                height: 2em;
+                font-size: 0.9em;
+                font-family: Lucida sans, sans-serif;
+                &:focus {
+                    outline: solid 1px lightgrey;
+                }
+                &::placeholder {
+                    /* Chrome, Firefox, Opera, Safari 10.1+ */
+                    color: rgb(200, 200, 220);
+                    font-style: italic;
+                    opacity: 1;
+                    /* Firefox */
+                }
+                &:-ms-input-placeholder {
+                    /* Internet Explorer 10-11 */
+                    color: rgb(200, 200, 220);
+                    font-style: italic;
+                }
+                &::-ms-input-placeholder {
+                    /* Microsoft Edge */
+                    color: rgb(200, 200, 220);
+                    font-style: italic;
+                }
+                &:invalid {
+                    outline: solid 1px red;
+                }
+            }
+            &>tr>td>input[type="number"] {
+                text-align: center;
+                max-width: 6em;
+            }
+            &>tr>td>input[type="date"] {
+                max-width: 11em;
+            }
+            &>tr:nth-of-type(even) {
+                border-bottom: 1px solid black;
+                &>td>* {
+                    width: 100%;
+                }
+            }
+            &>tr:nth-of-type(odd)>td:last-of-type {
+                border-bottom: 1px solid black;
+                padding: 0 0.2em;
+            }
+            & img {
+                width: 2.5em;
+                &:hover {
+                    cursor: pointer;
+                    border: 0.5px solid whitesmoke;
+                    box-shadow: gray 1px 1px 2px;
+                }
+            }
+        }
+        &>tfoot {
+            border-bottom: 2px solid black;
+            background-color: white;
+            &>tr>td>* {
+                display: inline-block;
+                font-size: 0.9em;
+                font-weight: bold;
+                color: darkslategrey;
+                padding: 0em 0.5em;
+                margin: 0.4em 0;
+                cursor: pointer;
+            }
+        }
+    }
+    &>form>div {
+        margin-top: 1.4em;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        &>button {
+            background: rgb(159, 92, 92);
+            color: whitesmoke;
+        }
+        &>input {
+            &:focus {
+                outline: none;
+            }
+            background: rgb(146, 188, 70);
+            color: white;
+        }
+    }
+}
+
+.button-style {
+    border-radius: 2em;
+    border: none;
+    margin-left: 0.8em;
+    margin-right: 0.8em;
+    box-shadow: rgb(50, 50, 50) 2px 2px 3px;
+    cursor: pointer;
+    height: 2.2em;
+    width: 7em;
+    font-size: 0.9em;
+    &:active {
+        box-shadow: none;
+        position: relative;
+        top: 2px;
+        left: 2px;
+    }
+    &:focus {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        outline: none;
+    }
+}

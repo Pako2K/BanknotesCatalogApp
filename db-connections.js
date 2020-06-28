@@ -84,6 +84,16 @@ class PostgresDB {
         });
     }
 
+    execSQLUpsert(sqlStr, params, callback) {
+        this.pool.query(sqlStr, params, (err, result) => {
+            if (err) {
+                err.message += `\nSQL Query: ${sqlStr}\nSQL Params: ${params}`;
+                callback(err);
+            } else
+                callback(err, result);
+        });
+    }
+
     disconnect() {
         this.pool.end();
     }

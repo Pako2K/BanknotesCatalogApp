@@ -1,0 +1,214 @@
+#upsert-collection-dialog {
+  padding: 1em 1.5em 2em 1.5em;
+  background-color: #ebebeb;
+}
+
+#upsert-collection-dialog > h3 {
+  text-align: left;
+  margin-top: 0.2em;
+  margin-bottom: 1em;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  border-radius: 0.4em;
+  background-color: #325032;
+  color: white;
+}
+
+#upsert-collection-dialog > h4 {
+  text-align: center;
+  color: black;
+  margin-bottom: 1em;
+  font-family: Lucida sans, sans-serif;
+  font-size: 1em;
+  text-shadow: gray 2px 2px 3px;
+}
+
+#upsert-collection-dialog table {
+  border-collapse: collapse;
+}
+
+#upsert-collection-dialog table > thead > tr > th {
+  background-color: black;
+  color: whitesmoke;
+  font-size: 0.9em;
+  font-weight: normal;
+  padding: 0.4em 0.8em;
+  text-align: left;
+}
+
+#upsert-collection-dialog table > tbody {
+  background-color: white;
+}
+
+#upsert-collection-dialog table > tbody > tr.delete-item * {
+  display: none;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > * {
+  padding: 0.3em 0.5em;
+  margin: 0;
+  border: none;
+  height: 2em;
+  font-size: 0.9em;
+  font-family: Lucida sans, sans-serif;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *:focus {
+  outline: solid 1px lightgrey;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *::-webkit-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #c8c8dc;
+  font-style: italic;
+  opacity: 1;
+  /* Firefox */
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *:-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #c8c8dc;
+  font-style: italic;
+  opacity: 1;
+  /* Firefox */
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *::-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #c8c8dc;
+  font-style: italic;
+  opacity: 1;
+  /* Firefox */
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #c8c8dc;
+  font-style: italic;
+  opacity: 1;
+  /* Firefox */
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #c8c8dc;
+  font-style: italic;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #c8c8dc;
+  font-style: italic;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > *:invalid {
+  outline: solid 1px red;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > input[type="number"] {
+  text-align: center;
+  max-width: 6em;
+}
+
+#upsert-collection-dialog table > tbody > tr > td > input[type="date"] {
+  max-width: 11em;
+}
+
+#upsert-collection-dialog table > tbody > tr:nth-of-type(even) {
+  border-bottom: 1px solid black;
+}
+
+#upsert-collection-dialog table > tbody > tr:nth-of-type(even) > td > * {
+  width: 100%;
+}
+
+#upsert-collection-dialog table > tbody > tr:nth-of-type(odd) > td:last-of-type {
+  border-bottom: 1px solid black;
+  padding: 0 0.2em;
+}
+
+#upsert-collection-dialog table > tbody img {
+  width: 2.5em;
+}
+
+#upsert-collection-dialog table > tbody img:hover {
+  cursor: pointer;
+  border: 0.5px solid whitesmoke;
+  -webkit-box-shadow: gray 1px 1px 2px;
+          box-shadow: gray 1px 1px 2px;
+}
+
+#upsert-collection-dialog table > tfoot {
+  border-bottom: 2px solid black;
+  background-color: white;
+}
+
+#upsert-collection-dialog table > tfoot > tr > td > * {
+  display: inline-block;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: darkslategrey;
+  padding: 0em 0.5em;
+  margin: 0.4em 0;
+  cursor: pointer;
+}
+
+#upsert-collection-dialog > form > div {
+  margin-top: 1.4em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#upsert-collection-dialog > form > div > button {
+  background: #9f5c5c;
+  color: whitesmoke;
+}
+
+#upsert-collection-dialog > form > div > input {
+  background: #92bc46;
+  color: white;
+}
+
+#upsert-collection-dialog > form > div > input:focus {
+  outline: none;
+}
+
+.button-style {
+  border-radius: 2em;
+  border: none;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  -webkit-box-shadow: #323232 2px 2px 3px;
+          box-shadow: #323232 2px 2px 3px;
+  cursor: pointer;
+  height: 2.2em;
+  width: 7em;
+  font-size: 0.9em;
+}
+
+.button-style:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.button-style:focus {
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+  outline: none;
+}
+/*# sourceMappingURL=collection.css.map */

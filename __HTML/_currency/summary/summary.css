@@ -18,8 +18,8 @@
   background-color: #f0f5f0;
   border: solid 0.5px black;
   min-width: 1.6em;
-  min-height: 1.6em;
-  max-height: 1.6em;
+  min-height: 1.7em;
+  max-height: 1.7em;
   cursor: pointer;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -44,6 +44,7 @@
   padding: 0.24em 0.5em;
   -webkit-box-shadow: 3px 3px 3px grey;
           box-shadow: 3px 3px 3px grey;
+  min-height: 1.7em;
   width: 95%;
 }
 

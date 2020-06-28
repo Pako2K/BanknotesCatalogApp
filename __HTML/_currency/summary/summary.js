@@ -1,6 +1,4 @@
 function initializeSummary() {
-    let currencyId = window.location.search.substr("?currencyId=".length);
-
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
     // Create one section for each series
@@ -39,7 +37,7 @@ function initializeSummary() {
 
             success: function(grades, status) {
                 // store info so it can be reused in the upsert-collection form
-                // $("#grades-div").data("grades", grades);
+                $("#grades-div").data("grades", grades);
 
                 let gradesHTML = "";
                 for (let grade of grades) {
@@ -55,9 +53,6 @@ function initializeSummary() {
     } else {
         $("#grades-div").hide();
     }
-
-    // // Load Upsert-Collection form
-    // $("#upsert-collection-dialog").load("_series/_notes/upsert-collection.html");
 };
 
 
@@ -78,6 +73,13 @@ function toggleDiv(divElem) {
         img.alt = "plus-expand";
         img.src = "summary/plus-expand.png";
     }
+}
+
+// Reload Banknotes info when items are updated
+function reloadBanknotesInfo(seriesId) {
+    let seriesSection = $(`section.series-detail-section[data-series-id="${seriesId}"`);
+
+    loadBanknotesInfo(seriesSection);
 }
 
 
@@ -195,8 +197,10 @@ function loadBanknotesInfo(seriesSection) {
                             gradeClass = ` ${variant.items[0].grade}-grade`;
                             priceStr = variant.items[0].price + " €";
                         }
+                        // Store the issue year as well
+                        variant.issueYear = year.issueYear;
                         table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
-                                                            <td class="subcol-2${gradeClass}" data-variantid="${variant.id}" data-itemid="${itemId}" title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
+                                                            <td class="subcol-2${gradeClass}" data-variant='${JSON.stringify(variant)}' title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
                                                             <td class="subcol-3${gradeClass}">${priceStr}</td>`;
                         rowIndex[colIndex]++;
                     }
@@ -229,10 +233,14 @@ function loadBanknotesInfo(seriesSection) {
             $(seriesSection).children("div").last().append(tableHTML);
 
             // Add hover events and click events
-            for (let i = 1; i <= 3; i++) {
-                $(".subcol-" + i).mouseenter(highlightRow);
-                $(".subcol-" + i).mouseleave(highlightRowOff);
-                //    $(".subcol-" + i).click(openUpsertCollection);
+            if (itemsUri) {
+                for (let i = 1; i <= 3; i++) {
+                    $(".subcol-" + i).mouseenter(highlightRow);
+                    $(".subcol-" + i).mouseleave(highlightRowOff);
+                    $(".subcol-" + i).click(openUpsertCollection);
+                }
+            } else {
+                $("table.summary-table td").css("cursor", "auto");
             }
         },
 
@@ -281,38 +289,48 @@ function highlightRowOff() {
 }
 
 
-// function openUpsertCollection() {
-//     let varId;
-//     let denom;
-//     let date;
-//     let catId;
-//     let price;
+function openUpsertCollection() {
+    let variantJSON;
 
-//     // "this" identifies the sub-column!
-//     if ($(this).hasClass("subcol-1")) {
-//         varId = $(this).next().data("variantid");
-//         date = $(this).text();
-//         catId = $(this).next().text();
-//         price = $(this).next().next().text();
-//     } else if ($(this).hasClass("subcol-2")) {
-//         varId = $(this).data("variantid");
-//         date = $(this).prev().text();
-//         catId = $(this).text();
-//         price = $(this).next().text();
-//     } else if ($(this).hasClass("subcol-3")) {
-//         varId = $(this).prev().data("variantid");
-//         date = $(this).prev().prev().text();
-//         catId = $(this).prev().text();
-//         price = $(this).text();
-//     }
+    // "this" identifies the sub-column!
+    if ($(this).hasClass("subcol-1")) {
+        variantJSON = $(this).next().data("variant");
+        // date = $(this).text();
+        // catId = $(this).next().text();
+        // price = $(this).next().next().text();
+    } else if ($(this).hasClass("subcol-2")) {
+        variantJSON = $(this).data("variant");
+        // varId = $(this).data("variantid");
+        // date = $(this).prev().text();
+        // catId = $(this).text();
+        // price = $(this).next().text();
+    } else if ($(this).hasClass("subcol-3")) {
+        variantJSON = $(this).prev().data("variant");
+        // varId = $(this).prev().data("variantid");
+        // date = $(this).prev().prev().text();
+        // catId = $(this).prev().text();
+        // price = $(this).text();
+    }
+    variantJSON.denominationStr = $(this).parent().data("denom") + " " + $("#currency-name").text();
 
-//     denom = $(this).parent().data("denom") + " " + $("#currency-name").text();
+    let gradesJSON = $("#grades-div").data("grades");
+    let seriesId = $(this).parents("section.series-detail-section").data("series-id");
 
-//     $('#upsert-collection-dialog input[name="variant-title"]').val(`${denom}, ${date}, ${catId}`);
-//     $('#upsert-collection-dialog input[name="collection-quantity"]').val(1);
-//     $('#upsert-collection-dialog input[name="collection-price"]').val(price);
-//     $('#upsert-collection-dialog').data('variantId', varId);
-//     $('#upsert-collection-dialog').data('series-id', $(this).parents("section").eq(0).data("series-id"));
-//     $('#upsert-collection-dialog input[value="Modify"]').hide();
-//     $('#upsert-collection-dialog').show();
-// }
+    $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
+    $("div.modal-form-placeholder").show();
+
+    //     let varId;
+    //     let denom;
+    //     let date;
+    //     let catId;
+    //     let price;
+
+
+    //     $('#upsert-collection-dialog input[name="variant-title"]').val(`${denom}, ${date}, ${catId}`);
+    //     $('#upsert-collection-dialog input[name="collection-quantity"]').val(1);
+    //     $('#upsert-collection-dialog input[name="collection-price"]').val(price);
+    //     $('#upsert-collection-dialog').data('variantId', varId);
+    //     $('#upsert-collection-dialog').data('series-id', $(this).parents("section").eq(0).data("series-id"));
+    //     $('#upsert-collection-dialog input[value="Modify"]').hide();
+    //     $('#upsert-collection-dialog').show();
+}
