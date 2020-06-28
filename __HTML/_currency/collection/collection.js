@@ -63,9 +63,15 @@ function addCollectionRow() {
 
 function deleteCollectionRow(tdElem) {
     let rowElem = $(tdElem).parent().parent();
-    // Mark for deletion
-    $(rowElem).addClass("delete-item");
-    $(rowElem).next().addClass("delete-item");
+
+    if ($(rowElem).find("select").attr("id") === "grade-NEW") {
+        $(rowElem).next().remove();
+        $(rowElem).remove();
+    } else {
+        // Mark for deletion
+        $(rowElem).addClass("delete-item");
+        $(rowElem).next().addClass("delete-item");
+    }
 }
 
 

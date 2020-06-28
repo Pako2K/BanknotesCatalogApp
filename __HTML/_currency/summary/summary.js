@@ -53,6 +53,9 @@ function initializeSummary() {
     } else {
         $("#grades-div").hide();
     }
+
+    if (seriesJSON.length < 5)
+        $("#summary-main-div>section>div.col-expand-contract").click();
 };
 
 

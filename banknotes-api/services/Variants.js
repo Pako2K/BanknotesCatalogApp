@@ -362,26 +362,28 @@ function seriesByIdItemsGET(request, response) {
                 return;
             }
 
-            let collecIndex = 0;
             // Join the collection results into the catalogue data
             for (let denom of replyJSON) {
                 for (let variant of denom.variants) {
                     variant.items = [];
                     // Check if the variant is in the collection
-                    while (collecIndex < colRows.length && colRows[collecIndex].variantId === variant.id) {
+                    let foundIndex = colRows.findIndex((element) => {
+                        return element.variantId === variant.id;
+                    });
+                    while (foundIndex !== -1 && foundIndex < colRows.length && colRows[foundIndex].variantId === variant.id) {
                         // Add item
                         let item = {};
-                        item.id = colRows[collecIndex].id;
-                        item.grade = colRows[collecIndex].grade;
-                        item.price = colRows[collecIndex].price;
-                        item.quantity = colRows[collecIndex].quantity;
-                        item.seller = colRows[collecIndex].seller;
-                        item.purchaseDate = colRows[collecIndex].purchaseDate;
-                        item.description = colRows[collecIndex].description;
+                        item.id = colRows[foundIndex].id;
+                        item.grade = colRows[foundIndex].grade;
+                        item.price = colRows[foundIndex].price;
+                        item.quantity = colRows[foundIndex].quantity;
+                        item.seller = colRows[foundIndex].seller;
+                        item.purchaseDate = colRows[foundIndex].purchaseDate;
+                        item.description = colRows[foundIndex].description;
 
                         variant.items.push(item);
 
-                        collecIndex++;
+                        foundIndex++;
                     }
                 }
             }
