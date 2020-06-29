@@ -47,20 +47,28 @@ function loadSeries(dropdownElem) {
 
 
 function selectSeriesChanged(filterName, id, value) {
+
     if (!id) {
         $("#details-main-div>div:not(:first-of-type)").hide();
         return;
     }
+    loadSeriesDetails(id);
+}
+
+function loadSeriesDetails(seriesId) {
     $("#details-main-div>div:not(:first-of-type)").show();
 
     // Clean-up series info
     $("div.series-info").empty();
+    // Store series id
+    $("div.series-info").data("series-id", seriesId);
+
     // Clean-up all banknotes
     $("div.banknotes-section").empty();
 
     $.ajax({
         type: "GET",
-        url: `/series/${id}`,
+        url: `/series/${seriesId}`,
         async: true,
         cache: true,
         timeout: 5000,
@@ -82,9 +90,9 @@ function selectSeriesChanged(filterName, id, value) {
     let variantsUri;
     let itemsUri;
     if (getCookie("banknotes.ODB.username"))
-        itemsUri = `/series/${id}/items`;
+        itemsUri = `/series/${seriesId}/items`;
     else
-        variantsUri = `/series/${id}/variants`;
+        variantsUri = `/series/${seriesId}/variants`;
 
 
     $.ajax({
@@ -116,6 +124,8 @@ function selectSeriesChanged(filterName, id, value) {
                         dateStr += ` (${variant.issueYear})`;
 
                     let itemsBoxHTML = "";
+                    let variantStr = JSON.stringify(variant);
+                    variantStr = variantStr.replace(/'/g, "&#39");
                     if (variant.items && variant.items.length) {
                         let itemRows = "";
                         for (let item of variant.items) {
@@ -129,7 +139,7 @@ function selectSeriesChanged(filterName, id, value) {
                                         </tr>`;
                         }
 
-                        itemsBoxHTML = `<div class="items-info">
+                        itemsBoxHTML = `<div class="items-info" data-variant='${variantStr}'>
                                             <table>
                                                 <thead>
                                                     <tr>
@@ -146,12 +156,12 @@ function selectSeriesChanged(filterName, id, value) {
                                                     ${itemRows}
                                                 </tbody>
                                             </table>
-                                            <img src="./details/edit.png" onclick="openUpsertItemForUpdate(this)" alt="Edit Items"/>
+                                            <img src="./details/edit.png" onclick='openUpsertCollectionFromDetails(this, "${denomStr}")' alt="Edit Items"/>
                                         </div>`;
                     } else {
                         if (itemsUri)
-                            itemsBoxHTML = `<div class="item-add-box not-logged-in" >
-                                                <div class="clickable-button" onclick="openUpsertItemForInsert(${denom.id}, '${denomStr}')">
+                            itemsBoxHTML = `<div class="item-add-box not-logged-in" data-variant='${variantStr}'>
+                                                <div class="clickable-button" onclick='openUpsertCollectionFromDetails(this, "${denomStr}")'>
                                                     <div>
                                                         <img src="./details/add-black.png" alt="Add new item"/>
                                                         <p>Add to Collection</p>
@@ -246,6 +256,16 @@ function selectSeriesChanged(filterName, id, value) {
 }
 
 
+function openUpsertCollectionFromDetails(imgElem, denomStr) {
+    let variantJSON = $(imgElem).parent().data("variant");
+    variantJSON.denominationStr = denomStr;
+
+    let gradesJSON = $("#grades-div").data("grades");
+    let seriesId = $("div.series-info").data("series-id");
+
+    $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
+    $("div.modal-form-placeholder").show();
+}
 
 
 // function openUpsertNoteForInsert() {

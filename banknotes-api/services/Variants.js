@@ -252,7 +252,7 @@ function itemsGET(request, response) {
 
 // ==> /series/:seriesId/items
 function seriesByIdItemsGET(request, response) {
-    let seriesId = request.params.seriesId;
+    let seriesId = parseInt(request.params.seriesId);
 
     // Check that the Id is an integer
     if (Number.isNaN(seriesId) || seriesId.toString() !== request.params.seriesId) {
@@ -406,7 +406,7 @@ const sqlInsertItem = `INSERT INTO bit_item (bit_usr_id, bit_bva_id, bit_quantit
 
 // ==> /variant/:variantId/item
 function variantItemPOST(request, response) {
-    let variantId = request.params.variantId;
+    let variantId = parseInt(request.params.variantId);
 
     // Check that the Id is an integer
     if (Number.isNaN(variantId) || variantId.toString() !== request.params.variantId) {
@@ -486,7 +486,7 @@ function itemPUT(request, response) {
 
 // ==> /item/:itemId
 function itemDELETE(request, response) {
-    let itemId = request.params.itemId;
+    let itemId = parseInt(request.params.itemId);
 
     // Check that the Id is an integer
     if (Number.isNaN(itemId) || itemId.toString() !== request.params.itemId) {
@@ -614,7 +614,7 @@ const territoryYearsStats_commonFROM =
 
 // ===> /territory/:territoryId/issue-years/items/stats
 function territoryByIdIssueYearsItemsStatsGET(request, response) {
-    let territoryId = request.params.territoryId;
+    let territoryId = parseInt(request.params.territoryId);
 
     // Check that the Id is an integer
     if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
@@ -688,7 +688,7 @@ const currencyYearsStats_commonFROM =
 
 // ===> /currency/:currencyId/issue-years/items/stats
 function currencyByIdIssueYearsItemsStatsGET(request, response) {
-    let currencyId = request.params.currencyId;
+    let currencyId = parseInt(request.params.currencyId);
 
     // Check that the Id is an integer
     if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {

@@ -256,6 +256,7 @@ hr {
 
 #view-section {
   padding: 1em 2em;
+  margin: 0em;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -269,6 +270,90 @@ hr {
       -ms-flex-align: center;
           align-items: center;
   background-color: whitesmoke;
+}
+
+.UNC-grade {
+  background-color: green;
+  color: whitesmoke;
+}
+
+.XF-grade {
+  background-color: greenyellow;
+  color: #464646;
+}
+
+.VF-grade {
+  background-color: yellow;
+  color: #464646;
+}
+
+.F-grade {
+  background-color: orange;
+  color: #464646;
+}
+
+.VG-grade {
+  background-color: #785000;
+  color: lightgrey;
+}
+
+.G-grade {
+  background-color: #5a5000;
+  color: lightgrey;
+}
+
+.P-grade {
+  background-color: #3c3200;
+  color: lightgrey;
+}
+
+.REP-grade {
+  background-color: lightgray;
+  color: #464646;
+}
+
+.none-grade {
+  background-color: whitesmoke;
+  color: black;
+}
+
+#grades-div {
+  margin-top: 0em;
+  padding: 1.2em 0em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: Times New Roman, serif;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: whitesmoke;
+}
+
+#grades-div div {
+  border: solid 1px lightgray;
+  padding: 1em;
+  background-color: ghostwhite;
+}
+
+#grades-div h3 {
+  margin: 0;
+  margin-bottom: 1em;
+  font-size: 1em;
+  text-align: center;
+}
+
+#grades-div p {
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0.4em;
+  min-width: 10em;
+  text-align: center;
+  cursor: help;
 }
 
 @media screen and (max-width: 800px) {

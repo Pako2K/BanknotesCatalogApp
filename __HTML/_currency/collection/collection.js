@@ -27,7 +27,7 @@ function initializeUpsertCollection(seriesId, variantJSON, gradesJSON) {
                             <td colspan="5"><input type="text" id="description" name="description" placeholder="Item description" autocomplete="off" maxlength="40"></td>
                         </tr>`;
         $("#collection-items-table>tbody").append(itemRow);
-        // T0 avoid problems with the quotes!
+        // To avoid problems with the quotes!
         $("#collection-items-table>tbody input[name='seller']").last().val(item.seller || "");
         $("#collection-items-table>tbody input[name='description']").last().val(item.description || "");
         $(`#grade-${item.id}`).val(item.grade);
@@ -188,9 +188,11 @@ function submitItems() {
         }
     });
 
-    let wi = $("#upsert-collection-dialog");
     let seriesId = $("#upsert-collection-dialog").data("series-id");
-    reloadBanknotesInfo(seriesId);
+    if ($("#currency-nav>p.selected-view").text() === "Summary")
+        reloadBanknotesInfo(seriesId);
+    else
+        loadSeriesDetails(seriesId);
 
     // Close the window
     closeUpsertCollection();

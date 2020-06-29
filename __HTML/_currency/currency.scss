@@ -185,11 +185,92 @@ hr {
 
 #view-section {
     padding: 1em 2em;
+    margin: 0em;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
     background-color: whitesmoke;
+}
+
+.UNC-grade {
+    background-color: green;
+    color: whitesmoke;
+}
+
+.XF-grade {
+    background-color: greenyellow;
+    color: rgb(70, 70, 70);
+}
+
+.VF-grade {
+    background-color: yellow;
+    color: rgb(70, 70, 70);
+}
+
+.F-grade {
+    background-color: orange;
+    color: rgb(70, 70, 70);
+}
+
+.VG-grade {
+    background-color: rgb(120, 80, 0);
+    ;
+    color: lightgrey;
+}
+
+.G-grade {
+    background-color: rgb(90, 80, 0);
+    ;
+    color: lightgrey;
+}
+
+.P-grade {
+    background-color: rgb(60, 50, 0);
+    ;
+    color: lightgrey;
+}
+
+.REP-grade {
+    background-color: lightgray;
+    color: rgb(70, 70, 70);
+}
+
+.none-grade {
+    background-color: whitesmoke;
+    color: black;
+}
+
+#grades-div {
+    margin-top: 0em;
+    padding: 1.2em 0em;
+    display: flex;
+    font-family: Times New Roman, serif;
+    flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
+}
+
+#grades-div div {
+    border: solid 1px lightgray;
+    padding: 1em;
+    background-color: ghostwhite;
+}
+
+#grades-div h3 {
+    margin: 0;
+    margin-bottom: 1em;
+    font-size: 1em;
+    text-align: center;
+}
+
+#grades-div p {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0.4em;
+    min-width: 10em;
+    text-align: center;
+    cursor: help;
 }
 
 @media screen and (max-width: $WIDTH_BIG_TABLET) {}

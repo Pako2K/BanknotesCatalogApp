@@ -25,35 +25,6 @@ function initializeSummary() {
         $("#summary-main-div").append(section);
     }
 
-    if (getCookie("banknotes.ODB.username")) {
-        // Load grades from DB
-        $.ajax({
-            type: "GET",
-            url: `/grades`,
-            async: true,
-            cache: true,
-            timeout: 5000,
-            dataType: 'json',
-
-            success: function(grades, status) {
-                // store info so it can be reused in the upsert-collection form
-                $("#grades-div").data("grades", grades);
-
-                let gradesHTML = "";
-                for (let grade of grades) {
-                    gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
-                }
-                $("#grades-div>div").append(gradesHTML);
-            },
-
-            error: function(xhr, status, error) {
-                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            }
-        });
-    } else {
-        $("#grades-div").hide();
-    }
-
     if (seriesJSON.length < 5)
         $("#summary-main-div>section>div.col-expand-contract").click();
 };
@@ -312,19 +283,4 @@ function openUpsertCollection() {
 
     $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
     $("div.modal-form-placeholder").show();
-
-    //     let varId;
-    //     let denom;
-    //     let date;
-    //     let catId;
-    //     let price;
-
-
-    //     $('#upsert-collection-dialog input[name="variant-title"]').val(`${denom}, ${date}, ${catId}`);
-    //     $('#upsert-collection-dialog input[name="collection-quantity"]').val(1);
-    //     $('#upsert-collection-dialog input[name="collection-price"]').val(price);
-    //     $('#upsert-collection-dialog').data('variantId', varId);
-    //     $('#upsert-collection-dialog').data('series-id', $(this).parents("section").eq(0).data("series-id"));
-    //     $('#upsert-collection-dialog input[value="Modify"]').hide();
-    //     $('#upsert-collection-dialog').show();
 }
