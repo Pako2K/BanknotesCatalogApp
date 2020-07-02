@@ -31,7 +31,7 @@ function addOnlyVariants(request, response, next) {
 
 const denominationStats_commonSELECT = ` CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                                         count (DISTINCT TER.ter_id) AS "numTerritories", count (DISTINCT CUR.cur_id) AS "numCurrencies",
-                                        count (DISTINCT SER.ser_id) AS "numSeries", count(BVA.bva_id) AS "numVariants"`;
+                                        count (DISTINCT SER.ser_id) AS "numSeries", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const denominationStats_commonFROM = `  FROM ban_banknote BAN
                                         LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
                                         LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
@@ -73,7 +73,7 @@ function denominationsItemsStatsGET(request, response) {
             return;
         }
 
-        sql = `SELECT  ${denominationStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = `SELECT  ${denominationStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                         ${denominationStats_commonFROM}
                         LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
                         INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
@@ -158,7 +158,7 @@ function territoryByIdDenominationsItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT ${denominationsStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT ${denominationsStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${territoryDenominationsStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
@@ -200,7 +200,7 @@ function territoryByIdDenominationsItemsStatsGET(request, response) {
 
 const currencyDenominationsStats_commonSELECT =
     `CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS denomination,
-    count (DISTINCT SER.ser_id) AS "numSeries", count(BVA.bva_id) AS "numVariants"`;
+    count (DISTINCT SER.ser_id) AS "numSeries", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
 const currencyIdDenominationsStats_commonFROM =
     `FROM ban_banknote BAN
@@ -236,7 +236,7 @@ function currencyByIdDenominationsItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT ${currencyDenominationsStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT ${currencyDenominationsStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${currencyIdDenominationsStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2

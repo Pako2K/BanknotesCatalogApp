@@ -130,7 +130,7 @@ function loadSeriesTable(seriesJSON) {
         var endDate = seriesJSON[i].end != null ? seriesJSON[i].end : "";
 
         record = `  <tr>
-                        <th class="name" onclick="$('#series-id').text(` + seriesJSON[i].id + `);$('#series-list-view').trigger('click')">` + seriesJSON[i].name + `</th>
+                        <th class="name" onclick="showSeriesDetail(${seriesJSON[i].id})">` + seriesJSON[i].name + `</th>
                         <th>` + seriesJSON[i].start + `</th>
                         <th>` + endDate + `</th>
                         <td>${seriesJSON[i].numDenominations}</td>
@@ -196,4 +196,9 @@ function loadYearsTable(yearsJSON) {
         $(".only-logged-in").hide();
         $('#years-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
     }
+}
+
+
+function showSeriesDetail(seriesId) {
+    $('#currency-nav>p').eq(1).data('series-id', seriesId).trigger('click');
 }

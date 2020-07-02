@@ -146,7 +146,7 @@ function territoryByIdGET(request, response) {
 
 const territoriesStats_commonSELECT = ` count(DISTINCT TEC.tec_cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
                                         count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                                        count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+                                        count(DISTINCT BAN.ban_id) AS "numNotes", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const territoriesStats_commonFROM = `FROM ter_territory TER
                                     INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
                                     LEFT JOIN tec_territory_currency TEC ON (TEC.tec_ter_id = TER.ter_id AND TEC.tec_cur_type='OWNED')
@@ -174,7 +174,7 @@ function territoriesItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT  TER.ter_id AS id, ${territoriesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT  TER.ter_id AS id, ${territoriesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${territoriesStats_commonFROM}
                 INNER JOIN bit_item BIT ON bit_bva_id = bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1

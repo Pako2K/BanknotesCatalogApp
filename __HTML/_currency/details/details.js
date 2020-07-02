@@ -25,25 +25,16 @@ function loadSeries(dropdownElem) {
     }
 }
 
-// function initializeSeriesList(currencyId) {
-//     // In case the user selected a series in the summary view, select that series
-//     let seriesId = $("#series-id").text();
-//     if (seriesId === "")
-//         seriesId = series[0].id;
+function initializeDetails() {
+    // In case the user selected a series the option in the navigation will contain a series-id
+    let seriesId = $('#currency-nav>p').eq(1).data("series-id");
 
-//     $("#select-series>option[value=" + seriesId + "]").prop('selected', true);
-//     $("#select-series").trigger("onchange");
+    if (seriesId !== "") {
+        window.seriesDropdown.setValueById(seriesId);
+    }
 
-//     // Load Upsert-Note form
-//     $("#upsert-note-dialog").load("_series/_notes/upsert-note.html", () => initializeUpsertNoteForm(currencyId));
-
-//     // Load Upsert-Variant form
-//     $("#upsert-variant-dialog").load("_series/_notes/upsert-variant.html");
-
-//     if (getCookie("banknotes.ODB.username") === undefined) {
-//         $(".only-admin").hide();
-//     }
-// }
+    $('#currency-nav>p').eq(1).data("series-id", "");
+}
 
 
 function selectSeriesChanged(filterName, id, value) {

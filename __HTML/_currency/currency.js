@@ -170,7 +170,7 @@ function selectView(optionElem) {
             $("#view-section").load(`./${option}/__${option}.html`, initializeSummary);
             break;
         case "details":
-            $("#view-section").load(`./${option}/__${option}.html`);
+            $("#view-section").load(`./${option}/__${option}.html`, initializeDetails);
             break;
         case "stats":
             $("#view-section").load(`./${option}/__${option}.html`, initializeStats);

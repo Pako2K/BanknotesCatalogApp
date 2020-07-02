@@ -518,7 +518,7 @@ function itemDELETE(request, response) {
 const issueYearStats_commonSELECT = `BVA.bva_issue_year AS "issueYear", count (DISTINCT TER.ter_id) AS "numTerritories", 
                                     count (DISTINCT CUR.cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
                                     count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                                    count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+                                    count(DISTINCT BAN.ban_id) AS "numNotes", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const issueYearStats_commonFROM = ` FROM bva_variant BVA
                                     LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
                                     LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
@@ -551,7 +551,7 @@ function issueYearsItemsStatsGET(request, response) {
             return;
         }
 
-        sql = `SELECT  ${issueYearStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = `SELECT  ${issueYearStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                     ${issueYearStats_commonFROM}
                     LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
                     INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
@@ -604,7 +604,7 @@ function issueYearsItemsStatsGET(request, response) {
 
 const yearsStats_commonSELECT =
     `BVA.bva_issue_year AS "issueYear", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-    count(BVA.bva_id) AS "numVariants"`;
+    count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
 const territoryYearsStats_commonFROM =
     `FROM bva_variant BVA
@@ -640,7 +640,7 @@ function territoryByIdIssueYearsItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT ${yearsStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT ${yearsStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${territoryYearsStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
@@ -714,7 +714,7 @@ function currencyByIdIssueYearsItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT ${yearsStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT ${yearsStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${currencyYearsStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2

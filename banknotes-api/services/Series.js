@@ -70,7 +70,7 @@ function seriesByIdGET(request, response) {
 
 const seriesStats_commonSELECT =
     `SER.ser_id AS "id", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-    count(BVA.bva_id) AS "numVariants"`;
+    count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
 const territorySerieStats_commonFROM =
     `FROM ser_series SER
@@ -118,7 +118,7 @@ function territoryByIdSeriesItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT ${seriesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT ${seriesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${territorySerieStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
@@ -192,7 +192,7 @@ function currencyByIdSeriesItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT ${seriesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT ${seriesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${currencySeriesStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2

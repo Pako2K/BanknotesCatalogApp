@@ -104,7 +104,7 @@ function currencyByIdGET(request, response) {
 
 const currenciesStats_commonSELECT = ` count (DISTINCT SER.ser_id) AS "numSeries", 
                                         count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
-                                        count(DISTINCT BAN.ban_id) AS "numNotes", count(BVA.bva_id) AS "numVariants"`;
+                                        count(DISTINCT BAN.ban_id) AS "numNotes", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const currenciesStats_commonFROM = `FROM cur_currency CUR
                                     LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
                                     LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id
@@ -159,7 +159,7 @@ function currenciesItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT  CUR.cur_id AS id, ${currenciesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT  CUR.cur_id AS id, ${currenciesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${currenciesStats_commonFROM}
                 INNER JOIN bit_item BIT ON bit_bva_id = bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
@@ -242,7 +242,7 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT CUR.cur_id AS "id", ${currenciesStats_commonSELECT}, sum(BIT.bit_price) AS "price"
+        sql = ` SELECT CUR.cur_id AS "id", ${currenciesStats_commonSELECT}, sum(BIT.bit_price*BIT.bit_quantity) AS "price"
                 ${territoryCurrenciesStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
