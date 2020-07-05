@@ -1,16 +1,23 @@
 "use strict";
 
 const url = require('url');
+const jsonParser = require('body-parser').json();
 const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
 const users = require('./Users');
 
 let catalogueDB;
+let serviceValidator;
+let schemas = {};
 
 
-module.exports.initialize = function(app) {
+module.exports.initialize = function(app, banknotesOAS, validator) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
+    serviceValidator = validator;
+
+    app.put('/series/:seriesId/denomination', users.validateSessionUser, users.validateAdminUser, jsonParser, seriesDenominationPUT);
+    schemas.seriesDenominationPUT = getReqJSONSchema(banknotesOAS, "/series/{seriesId}/denomination", "put");
 
     app.get('/denominations/variants/stats', addOnlyVariants, denominationsItemsStatsGET);
     app.get('/denominations/items/stats', users.validateSessionUser, denominationsItemsStatsGET);
@@ -23,10 +30,72 @@ module.exports.initialize = function(app) {
 };
 
 
+function getReqJSONSchema(swaggerObj, path, operation) {
+    return swaggerObj["paths"][path][operation]["requestBody"]["content"]["application/json"]["schema"];
+}
+
+
 function addOnlyVariants(request, response, next) {
     request.onlyVariants = true;
     next();
 }
+
+
+// ==> series/:seriesId/denomination
+function seriesDenominationPUT(request, response) {
+    let seriesId = parseInt(request.params.seriesId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(seriesId) || seriesId.toString() !== request.params.seriesId) {
+        new Exception(400, "BAN-01", "Invalid series id, " + request.params.seriesId).send(response);
+        return;
+    }
+
+    // Validate banknote info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.seriesDenominationPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "BAN-02", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let banknote = request.body;
+
+    const sqlInsert = `INSERT INTO ban_banknote (ban_ser_id, ban_cus_id, ban_face_value, ban_material, ban_obverse_desc, ban_reverse_desc, ban_size_width, ban_size_height, ban_description)
+                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+    catalogueDB.execSQLUpsert(sqlInsert, [seriesId, banknote.unitId, banknote.faceValue, banknote.material, banknote.obverseDescription, banknote.reverseDescription, banknote.width, banknote.height, banknote.description], (err, result) => {
+        if (err) {
+            if (err.code === "23505")
+                new Exception(400, "BAN-03", "Denomination already exists in this series").send(response);
+            else if (err.code === "23503")
+                new Exception(404, "BAN-04", "Series not found: " + seriesId).send(response);
+            else
+                new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        // Get the new banknote id
+        let sql = ` SELECT ban_id AS id
+                    FROM ban_banknote
+                    WHERE ban_ser_id = $1 
+                    AND ban_face_value = $2
+                    AND ban_cus_id = $3`;
+        catalogueDB.execSQL(sql, [seriesId, banknote.faceValue, banknote.unitId], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            let replyJSON = { id: rows[0].id };
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+        });
+    });
+}
+
+
+
 
 
 const denominationStats_commonSELECT = ` CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
@@ -276,54 +345,7 @@ function currencyByIdDenominationsItemsStatsGET(request, response) {
 
 
 
-// let sqlInsertNote = `INSERT INTO ban_banknote(ban_ser_id, ban_cus_id, ban_face_value, ban_size_width, ban_size_height,
-//                             ban_material, ban_obverse_desc, ban_reverse_desc, ban_description)
-//                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-// // ===> /currency/series/note
-// module.exports.currencySeriesNotePOST = function(request, response) {
-//     console.log(request.url);
-//     console.log(request.body);
-
-//     let newNote = request.body;
-
-//     // Validate fields
-//     let errorMsg = "";
-//     if (newNote.seriesId == null || newNote.seriesId === "" || Number.isNaN(Number(newNote.seriesId)))
-//         errorMsg = "SeriesID not provided";
-//     if (newNote.unitId == null || newNote.unitId === "" || Number.isNaN(Number(newNote.unitId)))
-//         errorMsg = "Unit not provided or invalid";
-//     if (newNote.face_value != null && (Number.isNaN(Number(newNote.face_value))))
-//         errorMsg = "Face value is invalid";
-//     if (newNote.size_width != null && (Number.isNaN(Number(newNote.size_width))))
-//         errorMsg = "Width is invalid";
-//     if (newNote.size_height != null && (Number.isNaN(Number(newNote.size_height))))
-//         errorMsg = "Height is invalid";
-//     if (newNote.material == null || newNote.material === "")
-//         errorMsg = "Material not provided";
-
-//     if (errorMsg !== "") {
-//         response.writeHead(500, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify({ "ErrorMsg": errorMsg }));
-//         response.send();
-//         return;
-//     }
-
-
-//     db.run(sqlInsertNote, [newNote.seriesId, newNote.unitId, newNote.faceValue, newNote.width, newNote.height,
-//         newNote.material, newNote.obverseDesc, newNote.reverseDesc, newNote.notes
-//     ], function(err) {
-//         if (err) {
-//             response.writeHead(500, { 'Content-Type': 'application/json' });
-//             response.write(JSON.stringify({ "Error": err.errno, "ErrorMsg": err.message }));
-//             response.send();
-//             return;
-//         }
-
-//         response.writeHead(200);
-//         response.send();
-//     });
-// }
 
 
 

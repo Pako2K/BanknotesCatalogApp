@@ -92,7 +92,11 @@ function loadBanknotesInfo(seriesSection) {
                     }
                 }
             }
-            issueYears.sort();
+
+            if (issueYears.length === 0)
+                issueYears.push("N.A.");
+            else
+                issueYears.sort();
 
             // Group Variants per issueYear 
             let newTableJSON = [];
@@ -111,7 +115,7 @@ function loadBanknotesInfo(seriesSection) {
                     delete variant.issueYear;
                     yearObj.variants.push(variant);
                 }
-                years.push(yearObj);
+                if (yearObj.variants) years.push(yearObj);
                 newTableJSON.push({ denomination: denom.denomination, issueYears: years })
             }
 
@@ -140,7 +144,7 @@ function loadBanknotesInfo(seriesSection) {
 
             for (denom of newTableJSON) {
                 // Calculate the maximum number of rows for this denomination
-                let rowsMax = 0;
+                let rowsMax = 1;
                 for (let year of denom.issueYears) {
                     if (year.variants.length > rowsMax)
                         rowsMax = year.variants.length;
@@ -189,7 +193,7 @@ function loadBanknotesInfo(seriesSection) {
 
                 let i = 0;
                 tableHTML += `<th class="last-subrow" rowspan="${rowsMax}">${denom.denomination}</th>
-                                ${table[i].join('')}
+                                ${table[i] ? table[i].join('') : ''}
                             </tr>`;
                 for (i = 1; i < table.length - 1; i++) {
                     tableHTML += `<tr data-denom="${denom.denomination}">
@@ -223,12 +227,9 @@ function loadBanknotesInfo(seriesSection) {
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    // Check whether the cookie has alredy been deleted
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
+                    alert("Your session is not valid or has expired.");
+                    _clearSessionCookies();
+                    location.reload();
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);

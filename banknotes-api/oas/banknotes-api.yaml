@@ -208,7 +208,48 @@ paths:
         "500":
           $ref: '#/components/responses/500'
                 
-       
+
+  /series/{seriesId}/denomination:
+    put:
+      tags: 
+      - Banknotes
+      summary: Add new denomination to a series.
+      description: Inserts a new denomination for the given series. If a denomination with the same value already exists an error will be returned. <b>Only Admin users can invoke this operation.</b>
+      operationId: seriesDenominationPUT
+      parameters:
+      - $ref: '#/components/parameters/seriesId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The denomination note object. 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/banknote'
+      responses:
+        "200":
+          description: Operation executed successfully. Denomination added to collection.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - id
+                properties:
+                  id:
+                    description: The id of the created denomination
+                    type: integer
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    
+    
   /denominations/variants/stats:
     get:
       tags: 
@@ -506,6 +547,8 @@ paths:
           $ref: '#/components/responses/400'
         "403":
           $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
           
@@ -535,8 +578,32 @@ paths:
           $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
-          
     
+    
+  /item/{itemId}:      
+    delete:
+      tags: 
+      - Variants
+      summary: Removes this item from the collection.
+      description: For the current session's user it deletes  the specified item from the collection.
+      operationId: itemDelete
+      parameters:
+      - $ref: '#/components/parameters/itemId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: Operation executed successfully
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+          
+          
   /issue-years/variants/stats:
     get:
       tags: 
@@ -1057,6 +1124,13 @@ components:
       description: Id of the variant
       schema:
         type: integer
+    itemId:
+      in: path
+      name: itemId
+      required: true
+      description: Id of the item
+      schema:
+        type: integer
     cookieUsername:
       in: cookie
       name: banknotes.ODB.username
@@ -1180,6 +1254,12 @@ components:
             $ref: '#/components/schemas/exception'
     403:
       description: Session id or username is not valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/exception'
+    404:
+      description: Resource not found
       content:
         application/json:
           schema:
@@ -1394,7 +1474,13 @@ components:
             type: array
             items:
               type: object
+              required:
+              - id
+              - name
+              - value
               properties:
+                id:
+                  type: integer
                 name:
                   type: string
                 value:
@@ -1925,6 +2011,31 @@ components:
               price:
                 type: number
 
+
+    banknote:
+      type: object
+      required:
+      - faceValue
+      - unitId
+      - material
+      properties:
+        faceValue:
+          type: number
+        unitId:
+          type: integer
+        material:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+        obverseDescription:
+          type: string
+        reverseDescription:
+          type: string
+        description:
+          type: string
+  
   
     denomination:
       type: object

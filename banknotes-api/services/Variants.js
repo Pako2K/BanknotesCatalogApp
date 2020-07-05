@@ -263,7 +263,7 @@ function seriesByIdItemsGET(request, response) {
     let sql = ` SELECT  BAN.ban_id AS "id", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE BAN.ban_face_value END AS "faceValue", 
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_value END AS "unitValue",
-                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_name END AS "unitValue",
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_name END AS "unitName",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_abbreviation END AS "unitSymbol",
                         BAN.ban_material AS "material", BAN.ban_size_width AS "width", BAN.ban_size_height AS "height", 
                         BAN.ban_obverse_desc as "obverseDescription", BAN.ban_reverse_desc as "reverseDescription", BAN.ban_description AS "description",
@@ -298,6 +298,7 @@ function seriesByIdItemsGET(request, response) {
                 denominationJSON.denomination = row.denomination;
                 if (row.faceValue) denominationJSON.faceValue = row.faceValue;
                 if (row.unitValue) denominationJSON.unitValue = row.unitValue;
+                if (row.unitName) denominationJSON.unitName = row.unitName;
                 if (row.unitSymbol) denominationJSON.unitSymbol = row.unitSymbol;
                 if (row.material) denominationJSON.material = row.material;
                 if (row.width) denominationJSON.width = row.width;
@@ -399,11 +400,6 @@ function seriesByIdItemsGET(request, response) {
 
 
 
-const sqlInsertItem = `INSERT INTO bit_item (bit_usr_id, bit_bva_id, bit_quantity, bit_gra_grade, bit_price, bit_seller, bit_purchase_date, bit_description)
-                       SELECT usr.usr_id, $2 AS bva_id, $3 AS quantity, $4 AS grade, $5 AS proce, $6 AS seller, $7 AS date, $8 AS desc
-                       FROM usr_user usr
-                       WHERE usr_name = $1`;
-
 // ==> /variant/:variantId/item
 function variantItemPOST(request, response) {
     let variantId = parseInt(request.params.variantId);
@@ -424,6 +420,10 @@ function variantItemPOST(request, response) {
     let item = request.body;
 
     // Execute the insertion
+    const sqlInsertItem = `INSERT INTO bit_item (bit_usr_id, bit_bva_id, bit_quantity, bit_gra_grade, bit_price, bit_seller, bit_purchase_date, bit_description)
+                       SELECT usr.usr_id, $2 AS bva_id, $3 AS quantity, $4 AS grade, $5 AS proce, $6 AS seller, $7 AS date, $8 AS desc
+                       FROM usr_user usr
+                       WHERE usr_name = $1`;
     catalogueDB.execSQLUpsert(sqlInsertItem, [request.session.user, variantId, item.quantity, item.grade, item.price, item.seller, item.purchaseDate, item.description], (err, result) => {
         if (err) {
             new Exception(500, err.code, err.message).send(response);

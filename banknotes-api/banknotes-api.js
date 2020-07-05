@@ -35,7 +35,7 @@ module.exports.initialize = function(app, usersOAS, banknotesOAS) {
     territories.initialize(app);
     currencies.initialize(app);
     series.initialize(app);
-    banknotes.initialize(app);
+    banknotes.initialize(app, banknotesOAS, banknotesValidator);
     variants.initialize(app, banknotesOAS, banknotesValidator);
     misc.initialize(app);
 

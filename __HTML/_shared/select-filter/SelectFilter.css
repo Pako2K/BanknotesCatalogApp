@@ -81,6 +81,7 @@
 }
 
 .select-filter > div.input-box > input {
+  cursor: default;
   border: none;
   font-size: 1em;
   font-weight: bold;

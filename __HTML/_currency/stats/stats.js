@@ -32,11 +32,9 @@ function initializeStats() {
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
+                    alert("Your session is not valid or has expired.");
+                    _clearSessionCookies();
+                    location.reload();
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
@@ -69,11 +67,9 @@ function initializeStats() {
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
+                    alert("Your session is not valid or has expired.");
+                    _clearSessionCookies();
+                    location.reload();
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
@@ -106,11 +102,9 @@ function initializeStats() {
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
+                    alert("Your session is not valid or has expired.");
+                    _clearSessionCookies();
+                    location.reload();
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);

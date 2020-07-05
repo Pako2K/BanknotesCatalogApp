@@ -28,8 +28,8 @@ $("nav").ready(() => {
 
 
 
-function _header_logout() {
-    let user = getCookie("banknotes.ODB.username");
+function _logout() {
+
     $.ajax({
         type: "DELETE",
         url: `/user/session`,
@@ -39,17 +39,24 @@ function _header_logout() {
         dataType: 'json',
 
         success: function(result, status) {
-            deleteCookie("banknotes.ODB.username");
+            _clearSessionCookies();
         },
 
         error: function(xhr, status, error) {
+            _clearSessionCookies();
             switch (xhr.status) {
                 case 403:
-                    deleteCookie("banknotes.ODB.username");
                     break;
                 default:
                     alert(`Logout failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
             }
         }
     });
+}
+
+function _clearSessionCookies() {
+    deleteCookie("banknotes.ODB.username");
+    deleteCookie("banknotes.ODB.isAdmin");
+    deleteCookie("banknotes.ODB.lastConnection");
+
 }

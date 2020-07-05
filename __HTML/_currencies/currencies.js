@@ -36,10 +36,8 @@ $("#currencies-table").ready(() => {
             switch (xhr.status) {
                 case 403:
                     alert("Your session is not valid or has expired.");
-                    if (getCookie("banknotes.ODB.username")) {
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
+                    _clearSessionCookies();
+                    location.reload();
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);

@@ -71,74 +71,75 @@ $(document).ready(function() {
 
 
 
-function setHeaders(currencyData) {
+function setHeaders(currencyJSON) {
     // Load country info into page
-    $("#continent-div>img").attr("src", "/_shared/continents-filter/img/" + currencyData.territory.continentName.replace(" ", "").toLowerCase() + ".svg");
-    $("#continent-div>p").text(currencyData.territory.continentName);
+    $("#continent-div>img").attr("src", "/_shared/continents-filter/img/" + currencyJSON.territory.continentName.replace(" ", "").toLowerCase() + ".svg");
+    $("#continent-div>p").text(currencyJSON.territory.continentName);
 
-    $("#flag-div>a").attr("href", "/_country/index.html?countryId=" + currencyData.territory.id);
-    $("#flag-div>a>img").attr("src", flagFileName(currencyData.territory));
-    $("#country-data #name").text(currencyData.territory.name);
-    $("#country-data>a").attr("href", "/_country/index.html?countryId=" + currencyData.territory.id);
-    if (currencyData.territory.iso3)
-        $("#country-data #iso3").text(currencyData.territory.iso3);
+    $("#flag-div>a").attr("href", "/_country/index.html?countryId=" + currencyJSON.territory.id);
+    $("#flag-div>a>img").attr("src", flagFileName(currencyJSON.territory));
+    $("#country-data #name").text(currencyJSON.territory.name);
+    $("#country-data>a").attr("href", "/_country/index.html?countryId=" + currencyJSON.territory.id);
+    if (currencyJSON.territory.iso3)
+        $("#country-data #iso3").text(currencyJSON.territory.iso3);
     else
         $("#country-data #name").next().hide();
 
 
     // Load currency info into page
-    if (currencyData.symbol)
-        $("#currency-symbol").text(currencyData.symbol);
+    if (currencyJSON.symbol)
+        $("#currency-symbol").text(currencyJSON.symbol);
     else
         $("#currency-symbol").hide();
 
-    $("#currency-name").text(currencyData.name);
-    if (currencyData.iso3)
-        $("#currency-iso3").text(currencyData.iso3);
+    $("#currency-name").text(currencyJSON.name);
+    if (currencyJSON.iso3)
+        $("#currency-iso3").text(currencyJSON.iso3);
     else
         $("#currency-name").next().hide();
 
-    let period = "From " + currencyData.start.replace("-", ".").replace("-", ".");
-    if (currencyData.end)
-        period += " to " + currencyData.end.replace("-", ".").replace("-", ".");
+    let period = "From " + currencyJSON.start.replace("-", ".").replace("-", ".");
+    if (currencyJSON.end)
+        period += " to " + currencyJSON.end.replace("-", ".").replace("-", ".");
     period += "";
     $("#currency-period").text(period);
 
-    if (currencyData.units.length) {
+    if (currencyJSON.units.length) {
         let subunits = "";
-        for (let unit of currencyData.units) {
-            subunits += "1 " + (currencyData.iso3 || currencyData.name) + " = " + unit.value + " " + unit.name;
+        for (let unit of currencyJSON.units) {
+            subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value + " " + unit.name;
             if (unit.abbreviation)
                 subunits += " (" + unit.abbreviation + ")";
             subunits += "<br>";
         }
         $("#currency-subunit").html(subunits);
+        $("#currency-subunit").data("units", currencyJSON.units);
     }
 
-    if (currencyData.description)
-        $("#currency-desc").html(currencyData.description);
+    if (currencyJSON.description)
+        $("#currency-desc").html(currencyJSON.description);
     else
         $("#currency-data>div img").hide();
 
 
-    if (currencyData.predecessor) {
-        $("#currency-predecessor").attr("href", "/_currency/index.html?currencyId=" + currencyData.predecessor.id);
-        let name = currencyData.predecessor.name;
-        if (currencyData.predecessor.iso3)
-            name += " (" + currencyData.predecessor.iso3 + ")";
+    if (currencyJSON.predecessor) {
+        $("#currency-predecessor").attr("href", "/_currency/index.html?currencyId=" + currencyJSON.predecessor.id);
+        let name = currencyJSON.predecessor.name;
+        if (currencyJSON.predecessor.iso3)
+            name += " (" + currencyJSON.predecessor.iso3 + ")";
         $("#currency-predecessor").text(name)
-        $("#predecessorRate").text("1 " + currencyData.iso3 + " = " + currencyData.predecessor.rate.toLocaleString("de-DE") + " " + (currencyData.predecessor.iso3 || currencyData.predecessor.name));
+        $("#predecessorRate").text("1 " + currencyJSON.iso3 + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
     } else {
         $("#currency-predecessor").parent().hide();
     }
 
-    if (currencyData.successor) {
-        $("#currency-successor").attr("href", "/_currency/index.html?currencyId=" + currencyData.successor.id);
-        let name = currencyData.successor.name;
-        if (currencyData.successor.iso3)
-            name += " (" + currencyData.successor.iso3 + ")";
+    if (currencyJSON.successor) {
+        $("#currency-successor").attr("href", "/_currency/index.html?currencyId=" + currencyJSON.successor.id);
+        let name = currencyJSON.successor.name;
+        if (currencyJSON.successor.iso3)
+            name += " (" + currencyJSON.successor.iso3 + ")";
         $("#currency-successor").text(name);
-        $("#successorRate").text("1 " + currencyData.successor.iso3 + " = " + currencyData.successor.rate.toLocaleString("de-DE") + " " + (currencyData.iso3 || currencyData.name));
+        $("#successorRate").text("1 " + currencyJSON.successor.iso3 + " = " + currencyJSON.successor.rate.toLocaleString("de-DE") + " " + (currencyJSON.iso3 || currencyJSON.name));
     } else {
         $("#currency-successor").parent().hide();
     }

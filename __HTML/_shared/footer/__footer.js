@@ -42,6 +42,6 @@ $(".main-footer").ready(function() {
 
 function _footer_logout() {
     alert("For security reasons, your session has expired.\nPlease log in again");
-    deleteCookie("banknotes.ODB.username");
+    _clearSessionCookies();
     location.assign("/index.html");
 }

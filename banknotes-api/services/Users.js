@@ -615,6 +615,7 @@ function setUserSession(request, username) {
     });
 }
 
+
 module.exports.validateSessionUser = function(request, response, next) {
     // Extract username from the cookie:
     let username = getHeaderCookie(request.headers.cookie, "banknotes.ODB.username");
@@ -633,37 +634,35 @@ module.exports.validateSessionUser = function(request, response, next) {
 }
 
 
-// module.exports.validateAdmin = function(req, res, next) {
-//     // Validate that the user has admin rights
+module.exports.validateAdminUser = function(request, response, next) {
+    // Validate that the user has admin rights
 
-//     // Extract username from the cookie and check tha it is the same as the current session user:
-//     let username = getHeaderCookie(req.headers.cookie, "banknotes.ODB.username");
-//     if (!username || !req.session.user || username !== req.session.user) {
-//         log.info("Username does not match or session has expired. Disconnecting current session for " + req.session.user);
-//         // Cancel current session and sent error
-//         destroySession(req, res, 403, "SES-2", "Invalid session");
-//         return;
-//     }
+    // Extract username from the cookie and check tha it is the same as the current session user:
+    let username = getHeaderCookie(request.headers.cookie, "banknotes.ODB.username");
 
-//     let sqlUser = `SELECT usr_isAdmin FROM usr_user WHERE usr_name = "${username}"`;
+    let sqlUser = `SELECT cre_username FROM cre_credentials WHERE cre_username = $1 AND cre_is_admin = 1`;
 
-//     catalogDB.get(sqlUser, [], (err, row) => {
-//         if (err) {
-//             let exception = new Exception(500, err.code, err.message);
-//             exception.send(res);
-//             return;
-//         }
+    credDB.execSQL(sqlUser, [username], (err, rows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        if (rows.length === 0) {
+            new Exception(403, "SES-03", `User ${username} is not allowed to perform changes in the Catalogue`).send(response);
+            // Destroy this session
+            request.session.destroy((err) => {
+                if (err) {
+                    let exception = new Exception(500, err.code, err.message);
+                }
+            });
+            return;
+        }
+        next();
+    });
+}
 
 
-//         if (!row.usr_isAdmin) {
-//             let exception = new Exception(403, "AUT-2", `User ${username} is not allowed to perform changes in the Catalogue`);
-//             exception.send(res);
-//             return;
-//         }
-
-//         next();
-//     });
-// }
 
 function getHeaderCookie(cookie, cookieName) {
     let pos = cookie.indexOf(cookieName);
@@ -680,18 +679,3 @@ function getHeaderCookie(cookie, cookieName) {
 
     return username;
 }
-
-
-// function destroySession(req, res, status, errCode, errMsg) {
-//     // Cancel current session and sent error
-//     req.session.destroy((err) => {
-//         if (err) {
-//             let exception = new Exception(500, err.code, err.message);
-//             exception.send(res);
-//             return;
-//         }
-
-//         let exception = new Exception(status, errCode, errMsg);
-//         exception.send(res);
-//     });
-// }

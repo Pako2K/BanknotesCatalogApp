@@ -51,8 +51,6 @@ function loadSeriesDetails(seriesId) {
 
     // Clean-up series info
     $("div.series-info").empty();
-    // Store series id
-    $("div.series-info").data("series-id", seriesId);
 
     // Clean-up all banknotes
     $("div.banknotes-section").empty();
@@ -65,6 +63,10 @@ function loadSeriesDetails(seriesId) {
         timeout: 5000,
         dataType: 'json',
         success: function(result, status) {
+            // Store series id and name
+            $("div.series-info").data("series-id", seriesId);
+            $("div.series-info").data("series-name", result[0].name);
+
             // Set series Info
             $("div.series-info").append(`<p>Issued by: <span>${result[0].issuer}</span>`);
             if (result[0].lawDate) {
@@ -232,12 +234,9 @@ function loadSeriesDetails(seriesId) {
         error: function(xhr, status, error) {
             switch (xhr.status) {
                 case 403:
-                    // Check whether the cookie has alredy been deleted
-                    if (getCookie("banknotes.ODB.username")) {
-                        alert("Your session is not valid or has expired.");
-                        deleteCookie("banknotes.ODB.username");
-                        location.reload();
-                    }
+                    alert("Your session is not valid or has expired.");
+                    _clearSessionCookies();
+                    location.reload();
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
@@ -259,6 +258,13 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
 }
 
 
+function openUpsertDenomination() {
+    let seriesJSON = { id: $("div.series-info").data("series-id"), name: $("div.series-info").data("series-name") };
+    let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text(), units: $("#currency-subunit").data("units") };
+
+    $("div.modal-form-placeholder").load("./forms/denomination/__denomination.html", () => { initializeUpsertDenomination(currencyJSON, seriesJSON) });
+    $("div.modal-form-placeholder").show();
+}
 // function openUpsertNoteForInsert() {
 //     let seriesId = $("#select-series").val();
 //     $('#upsert-note-dialog').data("banknote-id", "");
