@@ -610,7 +610,7 @@ const territoryYearsStats_commonFROM =
     `FROM bva_variant BVA
     INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND TEC.tec_cur_type='OWNED'
     LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = TEC.tec_cur_id`;
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = TEC.tec_cur_id`;
 
 // ===> /territory/:territoryId/issue-years/items/stats
 function territoryByIdIssueYearsItemsStatsGET(request, response) {

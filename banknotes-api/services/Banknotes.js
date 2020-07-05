@@ -127,7 +127,7 @@ function denominationsItemsStatsGET(request, response) {
                 ${denominationStats_commonFROM}
                 LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
                 INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
-                INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id ${yearFilter}
+                ${yearFilter === "" ? "LEFT" : "INNER"} JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id ${yearFilter}
                 GROUP BY "denomination"`;
 
     if (request.onlyVariants) {
@@ -194,9 +194,9 @@ const denominationsStats_commonSELECT =
 const territoryDenominationsStats_commonFROM =
     `FROM ban_banknote BAN
     INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND TEC.tec_cur_type='OWNED'
-    LEFT JOIN cur_currency CUR ON CUR.cur_id = TEC.tec_cur_id
-    LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
-    LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = CUR.cur_id
+    INNER JOIN cur_currency CUR ON CUR.cur_id = TEC.tec_cur_id
+    INNER JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = CUR.cur_id
     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
 
 // ===> /territory/:territoryId/denominations/items/stats
@@ -274,7 +274,7 @@ const currencyDenominationsStats_commonSELECT =
 const currencyIdDenominationsStats_commonFROM =
     `FROM ban_banknote BAN
     INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1
-    INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
     LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id`;
 
 // ===> /currencyId/:currencyId/denominations/items/stats
