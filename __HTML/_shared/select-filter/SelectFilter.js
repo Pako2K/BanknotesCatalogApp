@@ -16,8 +16,10 @@ class SelectFilter {
 
         let html = `<p><span>${filterName}</span></p>
                     <div class="input-box">
-                        <span>X</span>
-                        <input tabindex="-1" type="text" value="" readonly>
+                        <div class="delete-value">
+                            <span>X</span>
+                        </div>
+                        <div class="selected-value"></div>
                         <div class="drop-down-arrow"></div>
                     </div>
                     <div class="options-list">`;
@@ -30,13 +32,18 @@ class SelectFilter {
 
         parentDiv.append(html);
 
-        parentDiv.find("input").attr("size", this.maxLength * 0.9);
+        parentDiv.find("div.selected-value").css("width", (this.maxLength - 3) * 0.7 + "em");
 
         this.setSize(fontSize);
 
+        parentDiv.find("div.selected-value").click(function() {
+            parentDiv.addClass("input-focus");
+            parentDiv.children("div.options-list").slideToggle(500);
+        });
+
         parentDiv.find("div.drop-down-arrow").click(function() {
-            $(this).parent().parent().addClass("input-focus");
-            $(this).parent().next().slideToggle(500);
+            parentDiv.addClass("input-focus");
+            parentDiv.children("div.options-list").slideToggle(500);
         });
 
         let thisAlias = this;
@@ -45,10 +52,11 @@ class SelectFilter {
             $(this).parent().slideUp(500);
         });
 
-        parentDiv.find(".input-box>span").click(function() {
-            $(this).next("input").val("");
-            $(this).parent().parent().removeClass("selected");
-            $(this).parent().next().children(".selected").removeClass("selected");
+        parentDiv.find("div.delete-value>span").click(function() {
+            parentDiv.find("div.selected-value").text("");
+            $(this).parents(".selected").removeClass("selected");
+            parentDiv.find("div.options-list").children(".selected").removeClass("selected");
+            parentDiv.find("div.options-list").slideUp(500);
             callback(parentDiv.children("p").children("span").text(), "", "");
         });
 
@@ -61,10 +69,10 @@ class SelectFilter {
                 case 46: // delete
                 case 8: // backspace
                     if (code === 46 || code === 8 && $(this).hasClass("selected"))
-                        $(this).find("div.input-box>span").click();
+                        $(this).find("div.delete-value>span").click();
                     break;
                 case 13: // enter
-                    $(this).find("div.input-box>div.drop-down-arrow").click();
+                    $(this).find("div.drop-down-arrow").click();
                     break;
                 case 38: // up arrow
                     if ($(this).hasClass("selected")) {
@@ -111,7 +119,7 @@ class SelectFilter {
     selectOption(optionId) {
         let option = this.parentDiv.find(`div.options-list>div[data-id=${optionId}]`);
         let newValue = $(option).text();
-        this.parentDiv.find("input").val(newValue);
+        this.parentDiv.find("div.selected-value").text(newValue);
         this.parentDiv.addClass("selected");
 
         option.siblings(".selected").removeClass("selected");
@@ -120,7 +128,7 @@ class SelectFilter {
     };
 
     getValue() {
-        return this.parentDiv.find("input").val();
+        return this.parentDiv.find("div.selected-value").text();
     }
 
     setValue(value) {
@@ -153,7 +161,7 @@ class SelectFilter {
         let html = `<div data-id="${id}">${value}</div>`;
 
         this.maxLength = Math.max(this.maxLength, value.length);
-        this.parentDiv.find("input").attr("size", this.maxLength * 0.9);
+        this.parentDiv.find("div.selected-value").css("width", (this.maxLength - 3) * 0.7 + "em");
 
         this.parentDiv.find("div.options-list").append(html);
         let thisAlias = this;

@@ -42,44 +42,40 @@
     }
     &>div.input-box {
         @include no-user-select;
-        display: inline-block;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         border: 0.5px solid black;
         background-color: rgb(238, 236, 228);
-        white-space: nowrap;
+        height: 2em;
         transition: 0.5s;
-        &>span {
+        & div.delete-value>span {
             font-family: sans-serif;
             font-weight: bold;
             font-size: 0.7em;
             color: transparent;
             padding: 0.1em 0.3em;
-            margin: 0.1em 0 0 0.4em;
+            margin: 0em 0 0 0.4em;
             border: 0.5px dotted transparent;
-            display: inline-block;
-            vertical-align: text-top;
             @include no-user-select;
         }
-        &>input {
+        & div.selected-value {
+            display: inline-block;
+            white-space: nowrap;
             cursor: default;
-            border: none;
             font-size: 1em;
             font-weight: bold;
-            padding: 0.4em 0;
-            min-width: 4em;
-            background-color: transparent;
-            &:focus {
-                outline: none;
-            }
+            padding-left: 0.3em;
+            height: 1.2em;
         }
         &>div.drop-down-arrow {
-            display: inline-block;
             margin: 0 0.5em;
             box-sizing: border-box;
             border-top: 0.6em solid lightgrey;
             border-left: 0.25em solid transparent;
             border-right: 0.25em solid transparent;
             width: 0.6em;
-            vertical-align: middle;
             &:hover {
                 border-top-color: rgb(0, 62, 0);
                 cursor: pointer;
@@ -92,7 +88,7 @@
     }
     &.selected>div.input-box {
         background-color: white;
-        &>span {
+        & div.delete-value>span {
             color: rgb(151, 151, 151);
             border-color: lightgray;
             &:hover {

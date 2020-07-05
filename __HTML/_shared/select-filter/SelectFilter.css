@@ -49,24 +49,34 @@
   /* IE 10+ */
   user-select: none;
   /* Standard syntax */
-  display: inline-block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border: 0.5px solid black;
   background-color: #eeece4;
-  white-space: nowrap;
+  height: 2em;
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
 
-.select-filter > div.input-box > span {
+.select-filter > div.input-box div.delete-value > span {
   font-family: sans-serif;
   font-weight: bold;
   font-size: 0.7em;
   color: transparent;
   padding: 0.1em 0.3em;
-  margin: 0.1em 0 0 0.4em;
+  margin: 0em 0 0 0.4em;
   border: 0.5px dotted transparent;
-  display: inline-block;
-  vertical-align: text-top;
   -webkit-touch-callout: none;
   /* iOS Safari */
   -webkit-user-select: none;
@@ -80,22 +90,17 @@
   /* Standard syntax */
 }
 
-.select-filter > div.input-box > input {
+.select-filter > div.input-box div.selected-value {
+  display: inline-block;
+  white-space: nowrap;
   cursor: default;
-  border: none;
   font-size: 1em;
   font-weight: bold;
-  padding: 0.4em 0;
-  min-width: 4em;
-  background-color: transparent;
-}
-
-.select-filter > div.input-box > input:focus {
-  outline: none;
+  padding-left: 0.3em;
+  height: 1.2em;
 }
 
 .select-filter > div.input-box > div.drop-down-arrow {
-  display: inline-block;
   margin: 0 0.5em;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -103,7 +108,6 @@
   border-left: 0.25em solid transparent;
   border-right: 0.25em solid transparent;
   width: 0.6em;
-  vertical-align: middle;
 }
 
 .select-filter > div.input-box > div.drop-down-arrow:hover {
@@ -121,12 +125,12 @@
   background-color: white;
 }
 
-.select-filter.selected > div.input-box > span {
+.select-filter.selected > div.input-box div.delete-value > span {
   color: #979797;
   border-color: lightgray;
 }
 
-.select-filter.selected > div.input-box > span:hover {
+.select-filter.selected > div.input-box div.delete-value > span:hover {
   -webkit-box-shadow: 1px 1px 2px gray;
           box-shadow: 1px 1px 2px gray;
   position: relative;
