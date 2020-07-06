@@ -229,7 +229,7 @@ paths:
               $ref: '#/components/schemas/banknote'
       responses:
         "200":
-          description: Operation executed successfully. Denomination added to collection.
+          description: Operation executed successfully. Denomination added to catalogue.
           content:
             application/json:
               schema:
@@ -249,7 +249,38 @@ paths:
         "500":
           $ref: '#/components/responses/500'
     
+  
+  /denomination/{denominationId}:
+    put:
+      tags: 
+      - Banknotes
+      summary: Updates a denomination banknote.
+      description: Updates the features of an existing denomination. <b>Only Admin users can invoke this operation.</b>
+      operationId: denominationPUT
+      parameters:
+      - $ref: '#/components/parameters/denominationId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The denomination banknote object. Note that the faceValue and the unitId cannot be modified.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/banknote'
+      responses:
+        "200":
+          description: Operation executed successfully. Denomination updated.
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
     
+      
   /denominations/variants/stats:
     get:
       tags: 
@@ -1113,6 +1144,13 @@ components:
     seriesId:
       in: path
       name: seriesId
+      required: true
+      description: Id of the series
+      schema:
+        type: integer
+    denominationId:
+      in: path
+      name: denominationId
       required: true
       description: Id of the series
       schema:

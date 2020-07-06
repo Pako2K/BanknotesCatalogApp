@@ -196,7 +196,7 @@ function loadSeriesDetails(seriesId) {
                     `<div class="banknote-section">
                         <div class="banknote-title section-title">
                             <p>${denomStr}</p>
-                            <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertNoteForUpdate(` + denom.id + `)" alt="Edit Denomination"/>
+                            <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertDenomination($(this).parent().parent().data('denomination'))" alt="Edit Denomination"/>
                         </div>
                         <div class="banknote-info">
                             <div>
@@ -221,8 +221,8 @@ function loadSeriesDetails(seriesId) {
                                 </div>
                             </div>
                         </div>
-                        
                     </div>`);
+                banknotesSection.children().last().data("denomination", denom);
             }
 
             let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
@@ -258,55 +258,16 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
 }
 
 
-function openUpsertDenomination() {
+function openUpsertDenomination(denom) {
     let seriesJSON = { id: $("div.series-info").data("series-id"), name: $("div.series-info").data("series-name") };
     let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text(), units: $("#currency-subunit").data("units") };
 
-    $("div.modal-form-placeholder").load("./forms/denomination/__denomination.html", () => { initializeUpsertDenomination(currencyJSON, seriesJSON) });
+    $("div.modal-form-placeholder").load("./forms/denomination/__denomination.html", () => {
+        initializeUpsertDenomination(currencyJSON, seriesJSON, denom)
+    });
     $("div.modal-form-placeholder").show();
 }
-// function openUpsertNoteForInsert() {
-//     let seriesId = $("#select-series").val();
-//     $('#upsert-note-dialog').data("banknote-id", "");
-//     $('#upsert-note-dialog').data("series-id", seriesId);
 
-//     // In case there was an update before:
-//     $("#upsert-note-dialog input[name='note-face-value']").removeAttr("disabled");
-//     $("#upsert-note-dialog input[name='note-face-value']").attr("required", "");
-//     $("#note-units-select").removeAttr("disabled");
-
-//     $('#upsert-note-dialog').show();
-// }
-
-// function openUpsertNoteForUpdate(banknoteId) {
-//     // Retrieve banknote info
-//     // NOTE: The other option would be to store all the info about banknotes and variants in the page!!
-//     var xhttp = new XMLHttpRequest();
-//     xhttp.onreadystatechange = function() {
-//         if (this.readyState === 4 && this.status === 200) {
-//             let banknote = JSON.parse(this.responseText);
-
-//             $('#upsert-note-dialog').data("banknote-id", banknoteId);
-
-//             $("#upsert-note-dialog input[name='note-face-value']").val(banknote.faceValue);
-//             $("#note-units-select").val(banknote.subunit.id);
-//             $("#upsert-note-dialog input[name='note-width']").val(banknote.width);
-//             $("#upsert-note-dialog input[name='note-height']").val(banknote.height);
-//             $("#upsert-note-dialog input[name='note-material']").val(banknote.material);
-//             $("#upsert-note-dialog textarea[name='note-obverse-desc']").val(banknote.obverseDesc);
-//             $("#upsert-note-dialog textarea[name='note-reverse-desc']").val(banknote.reverseDesc);
-//             $("#upsert-note-dialog textarea[name='note-desc']").val(banknote.notes);
-
-//             $("#upsert-note-dialog input[name='note-face-value']").attr("disabled", "");
-//             $("#upsert-note-dialog input[name='note-face-value']").removeAttr("required");
-//             $("#note-units-select").attr("disabled", "");
-
-//             $('#upsert-note-dialog').show();
-//         }
-//     };
-//     xhttp.open("GET", "/note?banknoteId=" + banknoteId, true);
-//     xhttp.send();
-// }
 
 
 // function openUpsertVariantForInsert(banknoteId, banknoteDenomination) {

@@ -1,20 +1,38 @@
 function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
     if (noteJSON) {
-        $("#upsert-note-dialog>h3").text(`Update Denomination`);
+        $("#upsert-note-dialog>h3").text('Update Denomination');
         $("#upsert-note-dialog").data("banknote-id", noteJSON.id);
-    } else
+
+        // Show values in the form
+        $("#upsert-note-dialog input[name='note-face-value']").val(noteJSON.faceValue || noteJSON.denomination);
+
+        $("#note-units-select").append(`<option value='${noteJSON.unitId || 0}'>${noteJSON.unitName || currencyJSON.name}</option>`);
+        $("#note-units-select").val(noteJSON.unitId || 0);
+
+        $("#upsert-note-dialog input[name='note-material']").val(noteJSON.material);
+        $("#upsert-note-dialog input[name='note-width']").val(noteJSON.width);
+        $("#upsert-note-dialog input[name='note-height']").val(noteJSON.height);
+        $("#upsert-note-dialog textarea[name='note-obverse-desc']").val(noteJSON.obverseDescription);
+        $("#upsert-note-dialog textarea[name='note-reverse-desc']").val(noteJSON.reverseDescription);
+        $("#upsert-note-dialog textarea[name='note-desc']").val(noteJSON.description);
+        // Disable key fields
+        $("#upsert-note-dialog input[name='note-face-value']").attr("disabled", "");
+        $("#note-units-select").attr("disabled", "");
+    } else {
         $("#upsert-note-dialog>h3").text(`Add New Denomination`);
+        // Fill the select options
+        $("#note-units-select").append(`<option value='0'>${currencyJSON.name}</option>`);
+        for (let unit of currencyJSON.units)
+            $("#note-units-select").append(`<option value='${unit.id}'>${unit.name}</option>`);
+        $("#note-units-select").val("0");
+    }
 
     $("#upsert-note-dialog>h4").text(`${currencyJSON.name} - ${seriesJSON.name}`);
 
     $("#upsert-note-dialog").data("currency-id", currencyJSON.id);
     $("#upsert-note-dialog").data("series-id", seriesJSON.id);
 
-    // Fill the select options
-    $("#note-units-select").append(`<option value='0'>${currencyJSON.name}</option>`);
-    for (let unit of currencyJSON.units)
-        $("#note-units-select").append(`<option value='${unit.id}'>${unit.name}</option>`);
-    $("#note-units-select").val("0");
+
 }
 
 
@@ -78,10 +96,40 @@ function upsertNote() {
                 }
             }
         });
-    } else {}
+    } else {
+        // Update denomination
 
+        $.ajax({
+            type: "PUT",
+            url: `/denomination/${banknoteId}`,
+            contentType: "application/json",
+            async: false,
+            cache: false,
+            data: JSON.stringify(banknote),
+            timeout: 5000,
+            dataType: 'json',
 
+            success: function(result, status) {
+                loadSeriesDetails(seriesId);
 
+                // Close the window
+                closeUpsertDenomination();
+            },
 
-
+            error: function(xhr, status, error) {
+                switch (xhr.status) {
+                    case 400:
+                        alert("Data is not correct.\n" + xhr.responseJSON.code + ": " + xhr.responseJSON.description);
+                        break;
+                    case 403:
+                        alert("Your session is not a valid Admin session or has expired.");
+                        _clearSessionCookies();
+                        location.reload();
+                        break;
+                    default:
+                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                }
+            }
+        });
+    }
 }

@@ -19,6 +19,9 @@ module.exports.initialize = function(app, banknotesOAS, validator) {
     app.put('/series/:seriesId/denomination', users.validateSessionUser, users.validateAdminUser, jsonParser, seriesDenominationPUT);
     schemas.seriesDenominationPUT = getReqJSONSchema(banknotesOAS, "/series/{seriesId}/denomination", "put");
 
+    app.put('/denomination/:denominationId', users.validateSessionUser, users.validateAdminUser, jsonParser, denominationPUT);
+    schemas.denominationPUT = getReqJSONSchema(banknotesOAS, "/denomination/{denominationId}", "put");
+
     app.get('/denominations/variants/stats', addOnlyVariants, denominationsItemsStatsGET);
     app.get('/denominations/items/stats', users.validateSessionUser, denominationsItemsStatsGET);
     app.get('/territory/:territoryId/denominations/variants/stats', addOnlyVariants, territoryByIdDenominationsItemsStatsGET);
@@ -94,6 +97,44 @@ function seriesDenominationPUT(request, response) {
     });
 }
 
+
+
+// ==> denomination/:denominationId
+function denominationPUT(request, response) {
+    let denominationId = parseInt(request.params.denominationId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(denominationId) || denominationId.toString() !== request.params.denominationId) {
+        new Exception(400, "BAN-01", "Invalid denomination id, " + request.params.denominationId).send(response);
+        return;
+    }
+
+    // Validate banknote info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.denominationPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "BAN-02", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let banknote = request.body;
+
+    const sqlUpdate = ` UPDATE ban_banknote 
+                        SET ban_material = $4, ban_obverse_desc = $5, ban_reverse_desc = $6, ban_size_width = $7, ban_size_height = $8, ban_description = $9
+                        WHERE ban_id = $1 AND ban_cus_id = $2 AND ban_face_value = $3`;
+    catalogueDB.execSQLUpsert(sqlUpdate, [denominationId, banknote.unitId, banknote.faceValue, banknote.material, banknote.obverseDescription, banknote.reverseDescription, banknote.width, banknote.height, banknote.description], (err, result) => {
+        if (err) {
+            if (err.code === "23503")
+                new Exception(404, "BAN-04", "Denomination not found for the given id, face value and unit: " + denominationId).send(response);
+            else
+                new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.write("{}");
+        response.send();
+    });
+}
 
 
 
@@ -346,50 +387,6 @@ function currencyByIdDenominationsItemsStatsGET(request, response) {
 
 
 
-
-
-
-
-// let sqlUpdateNote = `UPDATE ban_banknote 
-//     SET ban_size_width = ?, ban_size_height = ?, ban_material = ?, ban_obverse_desc = ?, ban_reverse_desc = ?, ban_description = ?
-//     WHERE ban_id = ?`;
-
-// // ===> /note   (Update Note)
-// module.exports.notePUT = function(request, response) {
-//     console.log(request.url);
-//     console.log(request.body);
-
-//     let note = request.body;
-
-//     // Validate fields
-//     let errorMsg = "";
-//     if (note.size_width != null && (Number.isNaN(Number(note.size_width))))
-//         errorMsg = "Width is invalid";
-//     if (note.size_height != null && (Number.isNaN(Number(note.size_height))))
-//         errorMsg = "Height is invalid";
-//     if (note.material == null || note.material === "")
-//         errorMsg = "Material not provided";
-
-//     if (errorMsg !== "") {
-//         response.writeHead(500, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify({ "ErrorMsg": errorMsg }));
-//         response.send();
-//         return;
-//     }
-
-
-//     db.run(sqlUpdateNote, [note.width, note.height, note.material, note.obverseDesc, note.reverseDesc, note.notes, note.id], function(err) {
-//         if (err) {
-//             response.writeHead(500, { 'Content-Type': 'application/json' });
-//             response.write(JSON.stringify({ "Error": err.errno, "ErrorMsg": err.message }));
-//             response.send();
-//             return;
-//         }
-
-//         response.writeHead(200);
-//         response.send();
-//     });
-// }
 
 
 
