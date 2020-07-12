@@ -93,10 +93,11 @@ function loadBanknotesInfo(seriesSection) {
                 }
             }
 
+            // Sort numerically
             if (issueYears.length === 0)
                 issueYears.push("N.A.");
             else
-                issueYears.sort();
+                issueYears.sort((a, b) => { return a - b });
 
             // Group Variants per issueYear 
             let newTableJSON = [];
@@ -179,7 +180,7 @@ function loadBanknotesInfo(seriesSection) {
                         variant.issueYear = year.issueYear;
                         let variantStr = JSON.stringify(variant);
                         variantStr = variantStr.replace(/'/g, "&#39");
-                        table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate}</td>
+                        table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate || "ND"}</td>
                                                             <td class="subcol-2${gradeClass}" data-variant='${variantStr}' title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
                                                             <td class="subcol-3${gradeClass}">${priceStr}</td>`;
                         rowIndex[colIndex]++;

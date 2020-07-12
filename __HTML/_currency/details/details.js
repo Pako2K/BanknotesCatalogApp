@@ -166,7 +166,7 @@ function loadSeriesDetails(seriesId) {
                     variantsHTML +=
                         `<div class="variant-box section-title">
                             <p>${denomStr}, ${dateStr}, ${variant.catalogueId}</p>
-                            <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariantForUpdate(this, '${denomStr}')" alt="Edit Variant"/>
+                            <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}', ${variant.id})" alt="Edit Variant"/>
                             <div class="variant-pictures">
                                 <img src="" alt="obverse"/>
                                 <img src="" alt="reverse"/>
@@ -184,7 +184,7 @@ function loadSeriesDetails(seriesId) {
                                 ${addInfoBoolean("Specimen", variant.isSpecimen)}
                                 ${addInfoBoolean("Error Note", variant.isError)}
                                 ${addInfoBoolean("Commemorative", variant.isCommemorative)}
-                                ${addInfoBoolean("Numismatic Product", variant.isNumismaticsProduct)}
+                                ${addInfoBoolean("Numismatic Product", variant.isNumismaticProduct)}
                                 ${addInfo("Description", variant.variantDescription)}
                             </div>
                             ${itemsBoxHTML}
@@ -213,7 +213,7 @@ function loadSeriesDetails(seriesId) {
                         <div class="variants-section">
                             ${variantsHTML}
                             <div class="variant-add-box only-admin" >
-                                <div class="clickable-button" onclick="openUpsertVariantForInsert(${denom.id}, '${denomStr}')">
+                                <div class="clickable-button" onclick="openUpsertVariant(${denom.id}, '${denomStr}')">
                                     <div>
                                         <img src="./details/add-blue.png" alt="Add variant"/>
                                         <p>New Variant</p>
@@ -253,7 +253,7 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
     let gradesJSON = $("#grades-div").data("grades");
     let seriesId = $("div.series-info").data("series-id");
 
-    $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
+    $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
     $("div.modal-form-placeholder").show();
 }
 
@@ -263,38 +263,23 @@ function openUpsertDenomination(denom) {
     let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text(), units: $("#currency-subunit").data("units") };
 
     $("div.modal-form-placeholder").load("./forms/denomination/__denomination.html", () => {
-        initializeUpsertDenomination(currencyJSON, seriesJSON, denom)
+        initializeUpsertDenomination(currencyJSON, seriesJSON, denom);
     });
     $("div.modal-form-placeholder").show();
 }
 
 
 
-// function openUpsertVariantForInsert(banknoteId, banknoteDenomination) {
-//     $('#upsert-variant-dialog').data("variant-id", "");
-//     $('#upsert-variant-dialog').data("banknote-id", banknoteId);
-//     $('#upsert-variant-dialog form>div').first().children("input").val(banknoteDenomination);
+function openUpsertVariant(banknoteId, banknoteDenomination, variantId) {
+    let seriesId = $("div.series-info").data("series-id");
 
-//     $('#upsert-variant-dialog').show();
-// }
+    $("div.modal-form-placeholder").load("./forms/variant/__variant.html", () => {
+        initializeUpsertVariant(seriesId, banknoteId, banknoteDenomination, variantId);
+    });
 
+    $("div.modal-form-placeholder").show();
+}
 
-// function openUpsertVariantForUpdate(elem, variantDenomination) {
-//     let variant = $(elem).data("variant");
-//     $('#upsert-variant-dialog').data("variant-id", variant.id);
-//     $('#note-denomination>input').val(variantDenomination);
-
-//     $("#upsert-variant-dialog input[name='variant-printed-date']").val(variant.printedDate);
-//     $("#upsert-variant-dialog input[name='variant-issue-year']").val(variant.issueYear);
-//     $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catId);
-//     $("#upsert-variant-dialog input[name='variant-printer']").val(variant.printer);
-//     $("#upsert-variant-dialog input[name='variant-signature']").val(variant.signature);
-//     $("#upsert-variant-dialog input[name='variant-watermark']").val(variant.watermark);
-//     $("#upsert-variant-dialog input[name='variant-security']").val(variant.security);
-//     $("#upsert-variant-dialog textarea[name='variant-description']").val(variant.description);
-
-//     $('#upsert-variant-dialog').show();
-// }
 
 
 function addInfo(title, value) {
@@ -307,7 +292,7 @@ function addInfo(title, value) {
 
 
 function addInfoBoolean(title, value) {
-    if (value === true) {
+    if (value) {
         return `<p>${title}</p>`;
     } else {
         return "";

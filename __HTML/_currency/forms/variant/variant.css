@@ -1,0 +1,173 @@
+#upsert-variant-dialog {
+  padding: 1em 1.5em 2em 1.5em;
+  background-color: #ebebeb;
+}
+
+#upsert-variant-dialog > h3 {
+  text-align: left;
+  margin-top: 0.2em;
+  margin-bottom: 1em;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  border-radius: 0.4em;
+  background-color: #325032;
+  color: white;
+}
+
+#upsert-variant-dialog > h4 {
+  text-align: center;
+  color: black;
+  margin-bottom: 0.5em;
+  font-family: Lucida sans, sans-serif;
+  font-size: 1em;
+  text-shadow: gray 2px 2px 3px;
+}
+
+#upsert-variant-dialog > form > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+#upsert-variant-dialog > form > div p {
+  font-size: 0.9em;
+  margin-bottom: 0.3em;
+  margin-left: 0.3em;
+}
+
+#upsert-variant-dialog > form > div p.required-input {
+  font-weight: bold;
+}
+
+#upsert-variant-dialog > form > div input {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.9em;
+  padding: 0.4em 0.2em;
+}
+
+#upsert-variant-dialog > form > div input:required:valid {
+  background-color: #d0f7d0;
+  border: solid 1px darkgray;
+}
+
+#upsert-variant-dialog > form > div input:invalid {
+  background-color: #fdf2bd;
+  border: solid 1px black;
+}
+
+#upsert-variant-dialog > form > div label {
+  font-size: 0.9em;
+}
+
+#upsert-variant-dialog > form > div select {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.9em;
+  padding: 0.4em 0.2em;
+  width: 10em;
+  border: solid 1px darkgray;
+}
+
+#upsert-variant-dialog > form > div textarea {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.9em;
+  padding: 0.4em 0.2em;
+}
+
+#upsert-variant-dialog > form > div.inline-fields {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+#upsert-variant-dialog > form > div.flag-fields {
+  margin-top: 1em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  max-width: 22em;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+#upsert-variant-dialog > form > div.flag-fields > div {
+  margin-right: 2em;
+  margin-bottom: 0.4em;
+}
+
+#upsert-variant-dialog > form > div:last-of-type {
+  margin-top: 1.4em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#upsert-variant-dialog > form > div:last-of-type > button {
+  background: #9f5c5c;
+  color: whitesmoke;
+}
+
+#upsert-variant-dialog > form > div:last-of-type > input {
+  background: #92bc46;
+  color: white;
+}
+
+#upsert-variant-dialog > form > div:last-of-type > input:focus {
+  outline: none;
+}
+
+.button-style {
+  border-radius: 2em;
+  border: none;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  -webkit-box-shadow: #323232 2px 2px 3px;
+          box-shadow: #323232 2px 2px 3px;
+  cursor: pointer;
+  height: 2.2em;
+  width: 7em;
+  font-size: 0.9em;
+}
+
+.button-style:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.button-style:focus {
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+  outline: none;
+}
+/*# sourceMappingURL=variant.css.map */

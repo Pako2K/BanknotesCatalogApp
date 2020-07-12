@@ -1,4 +1,9 @@
 function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
+    $("#upsert-note-dialog").data("currency-id", currencyJSON.id);
+    $("#upsert-note-dialog").data("series-id", seriesJSON.id);
+
+    $("#upsert-note-dialog>h4").text(`${currencyJSON.name} - ${seriesJSON.name}`);
+
     if (noteJSON) {
         $("#upsert-note-dialog>h3").text('Update Denomination');
         $("#upsert-note-dialog").data("banknote-id", noteJSON.id);
@@ -26,13 +31,6 @@ function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
             $("#note-units-select").append(`<option value='${unit.id}'>${unit.name}</option>`);
         $("#note-units-select").val("0");
     }
-
-    $("#upsert-note-dialog>h4").text(`${currencyJSON.name} - ${seriesJSON.name}`);
-
-    $("#upsert-note-dialog").data("currency-id", currencyJSON.id);
-    $("#upsert-note-dialog").data("series-id", seriesJSON.id);
-
-
 }
 
 

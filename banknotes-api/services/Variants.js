@@ -17,6 +17,13 @@ module.exports.initialize = function(app, banknotesOAS, validator) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
     serviceValidator = validator;
 
+    app.put('/denomination/:denominationId/variant', users.validateSessionUser, users.validateAdminUser, jsonParser, denominationVariantPUT);
+    schemas.denominationVariantPUT = getReqJSONSchema(banknotesOAS, "/denomination/{denominationId}/variant", "put");
+
+    app.get('/variant/:variantId', variantGET);
+    app.put('/variant/:variantId', users.validateSessionUser, users.validateAdminUser, jsonParser, variantPUT);
+    schemas.variantPUT = getReqJSONSchema(banknotesOAS, "/variant/{variantId}", "put");
+
     app.get('/variants', addOnlyVariants, itemsGET);
     app.get('/items', users.validateSessionUser, itemsGET);
     app.get('/series/:seriesId/variants', addOnlyVariants, seriesByIdItemsGET);
@@ -81,6 +88,141 @@ function sortVariants(jsonObj) {
 
     return jsonObj;
 }
+
+
+
+// ==> denomination/:denominationId/variant
+function denominationVariantPUT(request, response) {
+    let denominationId = parseInt(request.params.denominationId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(denominationId) || denominationId.toString() !== request.params.denominationId) {
+        new Exception(400, "VAR-01", "Invalid denomination id, " + request.params.denominationId).send(response);
+        return;
+    }
+
+    // Validate variant info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.denominationVariantPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "VAR-02", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let variant = request.body;
+
+    const sqlInsert = `INSERT INTO bva_variant(bva_ban_id, bva_issue_year, bva_printed_date, bva_cat_id, bva_overstamped_id, bva_printer,
+                                                bva_signature, bva_signature_ext, bva_watermark, bva_security_thread, bva_added_security, 
+                                                bva_is_specimen, bva_is_commemorative, bva_is_numis_product, bva_is_replacement, bva_is_error, bva_description)
+                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`;
+    catalogueDB.execSQLUpsert(sqlInsert, [denominationId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.overstampedVariantId,
+        variant.printer, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread,
+        variant.securityExt, variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
+        variant.isError ? 1 : 0, variant.description
+    ], (err, result) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        // Get the new variant id
+        let sql = ` SELECT bva_id AS id
+                    FROM bva_variant
+                    WHERE bva_ban_id = $1 
+                    AND bva_cat_id = $2`;
+        catalogueDB.execSQL(sql, [denominationId, variant.catalogueId], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            let replyJSON = { id: rows[0].id };
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+        });
+    });
+}
+
+
+
+// ==> /variant/:variantId GET
+function variantGET(request, response) {
+    let variantId = parseInt(request.params.variantId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(variantId) || variantId.toString() !== request.params.variantId) {
+        new Exception(400, "VAR-01", "Invalid denomination id, " + request.params.variantId).send(response);
+        return;
+    }
+
+    const sql = `SELECT BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
+                        BVA.bva_overstamped_id AS "overstampedVariantId", BVA.bva_printer AS "printer",
+                        BVA.bva_signature AS "signature", BVA.bva_signature_ext AS "signatureExt", BVA.bva_watermark AS "watermark",
+                        BVA.bva_security_thread AS "securityThread", BVA.bva_added_security AS "securityExt", BVA.bva_is_specimen AS "isSpecimen",
+                        BVA.bva_is_replacement AS "isReplacement", BVA.bva_is_error AS "isError", BVA.bva_is_commemorative AS "isCommemorative",
+                        BVA.bva_is_numis_product AS "isNumismaticProduct", BVA.bva_description AS "description"
+                FROM bva_variant BVA
+                WHERE BVA.bva_id = $1`;
+
+    catalogueDB.execSQL(sql, [variantId], (err, rows) => {
+        if (err) {
+            err.message += `\nSQL Query: ${sql}`;
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        // Build reply JSON
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.write(JSON.stringify(rows[0]));
+        response.send();
+    });
+}
+
+// ==> /variant/:variantId PUT
+function variantPUT(request, response) {
+    let variantId = parseInt(request.params.variantId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(variantId) || variantId.toString() !== request.params.variantId) {
+        new Exception(400, "VAR-01", "Invalid denomination id, " + request.params.variantId).send(response);
+        return;
+    }
+
+    // Validate variant info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.variantPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "VAR-02", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let variant = request.body;
+
+    const sqlUpdate = ` UPDATE bva_variant 
+                        SET bva_issue_year = $2, bva_printed_date = $3, bva_cat_id = $4, bva_overstamped_id = $5, bva_printer = $6,
+                            bva_signature = $7, bva_signature_ext = $8, bva_watermark = $9, bva_security_thread = $10, bva_added_security = $11, 
+                            bva_is_specimen = $12, bva_is_commemorative = $13, bva_is_numis_product = $14, bva_is_replacement = $15, bva_is_error = $16,
+                            bva_description = $17
+                        WHERE bva_id = $1`;
+    catalogueDB.execSQLUpsert(sqlUpdate, [variantId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.overstampedVariantId,
+        variant.printer, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread, variant.securityExt,
+        variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
+        variant.isError ? 1 : 0, variant.description
+    ], (err, result) => {
+        if (err) {
+            if (err.code === "23503")
+                new Exception(404, "VAR-04", "Variant not found for the given id: " + variantId).send(response);
+            else
+                new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.write("{}");
+        response.send();
+    });
+}
+
 
 
 
@@ -674,9 +816,6 @@ function territoryByIdIssueYearsItemsStatsGET(request, response) {
         });
     });
 }
-
-
-
 
 
 

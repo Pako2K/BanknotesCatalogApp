@@ -1,0 +1,83 @@
+<div id="upsert-variant-dialog" class="modal-container">
+    <h3>Insert / Update Variant</h3>
+    <h4>
+        <!-- 5000 Pesetas -->
+    </h4>
+    <form name="upsert-variant-form" action="javascript:upsertVariant()">
+        <div class="inline-fields">
+            <div>
+                <p>Printed date</p>
+                <input name="variant-printed-date" type="text" size="12" maxlength="10" autocomplete="off" />
+            </div>
+            <div>
+                <p class="required-input">Issue year</p>
+                <input name="variant-issue-year" type="number" style="width: 6em" required/>
+            </div>
+        </div>
+        <div class="inline-fields">
+            <div>
+                <p class="required-input">Catalogue Id</p>
+                <input name="variant-catalogue-id" type="text" size="10" maxlength="12" autocomplete="off" required/>
+            </div>
+            <div>
+                <p>Overstamped variant</p>
+                <input name="variant-overstamped-id" type="text" size="10" maxlength="12" autocomplete="off"></select>
+            </div>
+        </div>
+        <div>
+            <p>Printer</p>
+            <input name="variant-printer" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Signature</p>
+            <input name="variant-signature" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Signature details</p>
+            <input name="variant-signature-ext" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Watermark</p>
+            <input name="variant-watermark" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Security thread</p>
+            <input name="variant-security-thread" type="text" size="36" maxlength="35" autocomplete="off"></input>
+        </div>
+        <div>
+            <p>Other Security features</p>
+            <textarea name="variant-security" rows="2" cols="36"></textarea>
+        </div>
+        <div class="flag-fields">
+            <div>
+                <input type="checkbox" name="is-specimen" value="1">
+                <label for="is-specimen">Specimen</label>
+            </div>
+            <div>
+                <input type="checkbox" name="is-replacement" value="1">
+                <label for="is-replacement">Replacement</label>
+            </div>
+            <div>
+                <input type="checkbox" name="is-error" value="1">
+                <label for="is-error">Error</label>
+            </div>
+            <div>
+                <input type="checkbox" name="is-commemorative" value="1">
+                <label for="is-commemorative">Commemorative</label>
+            </div>
+            <div>
+                <input type="checkbox" name="is-num-product" value="1">
+                <label for="is-num-product">Numismatic Product</label>
+            </div>
+        </div>
+        <div>
+            <p>Description</p>
+            <textarea name="variant-description" rows="3" cols="36"></textarea>
+        </div>
+
+        <div>
+            <button type="button" class="button-style" onclick="closeUpsertVariant()">Cancel</button>
+            <input type="submit" class="button-style" value="Save">
+        </div>
+    </form>
+</div>

@@ -365,6 +365,100 @@ paths:
           $ref: '#/components/responses/500'
           
 
+  /denomination/{denominationId}/variant:
+    put:
+      tags: 
+      - Variants
+      summary: Add new varaint of a denomination.
+      description: Inserts a new variant for the given denomination. If a variant with the same catalogId already exists an error will be returned. <b>Only Admin users can invoke this operation.</b>
+      operationId: denominationVariantPUT
+      parameters:
+      - $ref: '#/components/parameters/denominationId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The variant note object. The variantId value in the request will be ignored. 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/variant'
+      responses:
+        "200":
+          description: Operation executed successfully. Variant added to catalogue.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - id
+                properties:
+                  id:
+                    description: The id of the created variant
+                    type: integer
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+ 
+ 
+  /variant/{variantId}:
+    get:
+      tags: 
+      - Variants
+      summary: Get a variant of a banknote.
+      description: Retrieves the features of an existing variant.
+      operationId: variantGET
+      parameters:
+      - $ref: '#/components/parameters/variantId'
+      responses:
+        "200":
+          description: The variant object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/variant'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    
+    put:
+      tags: 
+      - Variants
+      summary: Updates a variant of a banknote.
+      description: Updates the features of an existing variant. <b>Only Admin users can invoke this operation.</b>
+      operationId: variantPUT
+      parameters:
+      - $ref: '#/components/parameters/variantId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The variant object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/variant'
+      responses:
+        "200":
+          description: Operation executed successfully. Variant updated.
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    
+    
   /series/{seriesId}/variants:
     get:
       tags:
@@ -2118,7 +2212,7 @@ components:
         printedDate:
           type: string
         catalogueId:
-          type: integer
+          type: string
 
     variant:
       allOf:
@@ -2126,7 +2220,7 @@ components:
         - type: object
           properties:
             overstampedVariantId:
-              type: integer
+              type: string
             printer:
               type: string
             signature:
