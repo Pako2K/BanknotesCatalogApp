@@ -8,6 +8,12 @@ function calcFontSize() {
 
 function loadSeries(dropdownElem) {
     $("#details-main-div>div:not(:first-of-type)").hide();
+
+    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    if (!flagIsAdminStr || flagIsAdminStr === "0") {
+        $(".only-admin").hide();
+    }
+
     // Load the drop down list
     let series = JSON.parse($(document).data("series-summary"));
 
@@ -40,9 +46,11 @@ function initializeDetails() {
 function selectSeriesChanged(filterName, id, value) {
 
     if (!id) {
+        $("#details-main-div>div>img").hide();
         $("#details-main-div>div:not(:first-of-type)").hide();
         return;
     }
+    $("#details-main-div>div>img").show();
     loadSeriesDetails(id);
 }
 
@@ -66,13 +74,19 @@ function loadSeriesDetails(seriesId) {
             // Store series id and name
             $("div.series-info").data("series-id", seriesId);
             $("div.series-info").data("series-name", result[0].name);
+            $("div.series-info").data("series-start", result[0].start);
+            $("div.series-info").data("series-end", result[0].end);
 
             // Set series Info
-            $("div.series-info").append(`<p>Issued by: <span>${result[0].issuer}</span>`);
-            if (result[0].lawDate) {
-                $("div.series-info").append(`<p><span>${result[0].lawDate}</span></p>`);
+            if (result[0].issuer) {
+                $("div.series-info").append(`<p id="series-issuer">Issued by: <span>${result[0].issuer}</span>`);
             }
-            $("div.series-info").append(`<p>Description: <span>${result[0].description}</span>`);
+            if (result[0].lawDate) {
+                $("div.series-info").append(`<p id="series-law-date"><span>${result[0].lawDate}</span></p>`);
+            }
+            if (result[0].description) {
+                $("div.series-info").append(`<p id="series-description">Description: <span>${result[0].description}</span>`);
+            }
         },
         error: function(xhr, status, error) {
             alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
@@ -254,6 +268,23 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
     let seriesId = $("div.series-info").data("series-id");
 
     $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
+    $("div.modal-form-placeholder").show();
+}
+
+
+function openUpsertSeries(isNewSeries) {
+    let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text() };
+    let seriesJSON = isNewSeries ? undefined : {
+        id: $("div.series-info").data("series-id"),
+        name: $("div.series-info").data("series-name"),
+        start: $("div.series-info").data("series-start"),
+        end: $("div.series-info").data("series-end"),
+        issuer: $("div.series-info #series-issuer>span").text(),
+        lawDate: $("div.series-info #series-law-date>span").text(),
+        description: $("div.series-info #series-description>span").text()
+    };
+
+    $("div.modal-form-placeholder").load("./forms/series/__series.html", () => { initializeUpsertSeries(currencyJSON, seriesJSON); });
     $("div.modal-form-placeholder").show();
 }
 

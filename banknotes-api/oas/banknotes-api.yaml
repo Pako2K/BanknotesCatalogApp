@@ -839,9 +839,48 @@ paths:
           $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
-                
+
 
   /currency/{currencyId}/series:
+    put:
+      tags: 
+      - Series
+      summary: Add new series to a currency.
+      description: Inserts a new series for the given currency. If a series with the same name already exists an error will be returned. <b>Only Admin users can invoke this operation.</b>
+      operationId: currencySeriesPUT
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The series object. 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/series'
+      responses:
+        "200":
+          description: Operation executed successfully. Series added to catalogue.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - id
+                properties:
+                  id:
+                    description: The id of the created series
+                    type: integer
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    
     get:
       tags:
       - Series
@@ -866,6 +905,36 @@ paths:
 
 
   /series/{seriesId}:
+    put:
+      tags: 
+      - Series
+      summary: Updates a series.
+      description: Updates the features of an existing series. <b>Only Admin users can invoke this operation.</b>
+      operationId: seriesPUT
+      parameters:
+      - $ref: '#/components/parameters/seriesId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        description: The series object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/series'
+      responses:
+        "200":
+          description: Operation executed successfully. Series updated.
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+        
+        
     get:
       tags:
       - Series

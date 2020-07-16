@@ -1,0 +1,39 @@
+<div id="upsert-series-dialog" class="modal-container">
+    <h3>Insert / Update Series</h3>
+    <h4>
+        <!-- Series Name or Currency Name -->
+    </h4>
+    <form name="upsert-series-form" action="javascript:upsertSeries()">
+        <div>
+            <p class="required-input">Name</p>
+            <input name="series-name" type="text" size="36" maxlength="35" autocomplete="off" required/>
+        </div>
+        <div class="inline-fields">
+            <div>
+                <p class="required-input">Start year</p>
+                <input name="series-start" type="number" style="width: 6em" required/>
+            </div>
+            <div>
+                <p>End year</p>
+                <input name="series-end" type="number" style="width: 6em" />
+            </div>
+        </div>
+        <div>
+            <p>Issued By</p>
+            <input name="series-issuer" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Law Date or Decree</p>
+            <input name="series-law-date" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Description</p>
+            <textarea name="series-description" rows="3" cols="36"></textarea>
+        </div>
+
+        <div>
+            <button type="button" class="button-style" onclick="closeUpsertSeries()">Cancel</button>
+            <input type="submit" class="button-style" value="Save">
+        </div>
+    </form>
+</div>

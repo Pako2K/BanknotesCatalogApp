@@ -1,6 +1,45 @@
 #details-main-div {
     align-self: flex-start;
     margin-bottom: 1em;
+    &>div:first-of-type {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-end;
+        &>* {
+            margin-right: 1em;
+        }
+        &>img {
+            display: none;
+            width: 1.6em;
+            margin-bottom: 2px;
+        }
+        &>div.clickable-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            width: 110px;
+            box-sizing: border-box;
+            margin-bottom: 2px;
+            &>div {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                &>img {
+                    width: 0.8em;
+                }
+                &>p {
+                    font-family: Lucida sans, sans-serif;
+                    color: rgb(50, 50, 150);
+                    font-weight: bold;
+                    font-size: 0.7em;
+                    margin: 0.5em 0em;
+                    padding-left: 0.8em;
+                }
+            }
+        }
+    }
 }
 
 .series-info {

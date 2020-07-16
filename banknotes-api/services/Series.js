@@ -1,15 +1,24 @@
 "use strict";
 
 const log = require("../../utils/logger").logger;
+const jsonParser = require('body-parser').json();
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
 const users = require('./Users');
 
 let catalogueDB;
+let serviceValidator;
+let schemas = {};
 
-
-module.exports.initialize = function(app) {
+module.exports.initialize = function(app, banknotesOAS, validator) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
+    serviceValidator = validator;
+
+    app.put('/currency/:currencyId/series', users.validateSessionUser, users.validateAdminUser, jsonParser, currencySeriesPUT);
+    schemas.currencySeriesPUT = getReqJSONSchema(banknotesOAS, "/currency/{currencyId}/series", "put");
+
+    app.put('/series/:seriesId', users.validateSessionUser, users.validateAdminUser, jsonParser, seriesPUT);
+    schemas.seriesPUT = getReqJSONSchema(banknotesOAS, "/series/{seriesId}", "put");
 
     app.get('/currency/:currencyId/series', currencyByIdSeriesGET);
     app.get('/series/:seriesId/', seriesByIdGET);
@@ -22,10 +31,109 @@ module.exports.initialize = function(app) {
 };
 
 
+function getReqJSONSchema(swaggerObj, path, operation) {
+    return swaggerObj["paths"][path][operation]["requestBody"]["content"]["application/json"]["schema"];
+}
+
+
 function addOnlyVariants(request, response, next) {
     request.onlyVariants = true;
     next();
 }
+
+
+
+// ===> /currency/:currencyId/series PUT
+function currencySeriesPUT(request, response) {
+    let currencyId = parseInt(request.params.currencyId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "SER-01", "Invalid currency id, " + request.params.currencyId).send(response);
+        return;
+    }
+
+    // Validate series info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.currencySeriesPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "SER-02", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let series = request.body;
+
+    const sqlInsert = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_issuer, ser_law_date, ser_description)
+	                    VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+    catalogueDB.execSQLUpsert(sqlInsert, [currencyId, series.name, series.start, series.end, series.issuer, series.lawDate, series.description], (err, result) => {
+        if (err) {
+            if (err.code === "23505")
+                new Exception(400, "SER-03", "Series already exists in this currency").send(response);
+            else if (err.code === "23503")
+                new Exception(404, "SER-04", "Currency not found: " + currencyId).send(response);
+            else
+                new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        // Get the new series id
+        let sql = ` SELECT ser_id AS id
+                    FROM ser_series
+                    WHERE ser_cur_id = $1
+                    AND ser_name = $2`;
+        catalogueDB.execSQL(sql, [currencyId, series.name], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            let replyJSON = { id: rows[0].id };
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+        });
+    });
+}
+
+
+
+// ===> /series/:seriesId PUT
+function seriesPUT(request, response) {
+    let seriesId = parseInt(request.params.seriesId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(seriesId) || seriesId.toString() !== request.params.seriesId) {
+        new Exception(400, "SER-01", "Invalid series id, " + request.params.seriesId).send(response);
+        return;
+    }
+
+    // Validate series info in the body 
+    let valResult = serviceValidator.validate(request.body, schemas.seriesPUT);
+    if (valResult.errors.length) {
+        new Exception(400, "SER-02", JSON.stringify(valResult.errors)).send(response);
+        return;
+    }
+
+    let series = request.body;
+
+    const sqlUpdate = ` UPDATE ser_series 
+                        SET ser_name=$2, ser_start=$3, ser_end=$4, ser_issuer=$5, ser_law_date=$6, ser_description=$7
+	                    WHERE ser_id = $1`;
+    catalogueDB.execSQLUpsert(sqlUpdate, [seriesId, series.name, series.start, series.end, series.issuer, series.lawDate, series.description], (err, result) => {
+        if (err) {
+            if (err.code === "23503")
+                new Exception(404, "SER-03", "Series not found for the given id: " + seriesId).send(response);
+            else
+                new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.write("{}");
+        response.send();
+    });
+}
+
 
 
 // ===> /currency/:currencyId/series
