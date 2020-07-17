@@ -21,7 +21,7 @@ function initializeUpsertCollection(seriesId, variantJSON, gradesJSON) {
                             <td><input type="number" id="price" name="price" value="${item.price}" min="0" step=0.01 required></td>
                             <td><input type="date" id="date" name="date" value="${item.purchaseDate || ""}"></td>
                             <td><input type="text" id="seller" name="seller" placeholder="Seller" size=8 maxlength="20" autocomplete="on"></td>
-                            <td rowspan="2"><img src="./collection/delete.png" alt="delete item" onclick="deleteCollectionRow(this)"></td>
+                            <td rowspan="2"><img src="./forms/collection/delete.png" alt="delete item" onclick="deleteCollectionRow(this)"></td>
                         </tr>
                         <tr>
                             <td colspan="5"><input type="text" id="description" name="description" placeholder="Item description" autocomplete="off" maxlength="40"></td>
@@ -55,7 +55,7 @@ function addCollectionRow() {
                         <td><input type="number" id="price" name="price" value="0" min="0" step=0.01 required></td>
                         <td><input type="date" id="date" name="date"></td>
                         <td><input type="text" id="seller" name="seller" placeholder="Seller" size=8 maxlength="20" autocomplete="on"}"></td>
-                        <td rowspan="2"><img src="./collection/delete.png" alt="delete item" onclick="deleteCollectionRow(this)"></td>
+                        <td rowspan="2"><img src="./forms/collection/delete.png" alt="delete item" onclick="deleteCollectionRow(this)"></td>
                     </tr>
                     <tr>
                         <td colspan="5"><input type="text" id="description" name="description" placeholder="Item description" autocomplete="off" maxlength="40"></td>

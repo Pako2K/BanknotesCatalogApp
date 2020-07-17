@@ -283,6 +283,6 @@ function openUpsertCollection() {
     let gradesJSON = $("#grades-div").data("grades");
     let seriesId = $(this).parents("section.series-detail-section").data("series-id");
 
-    $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
+    $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
     $("div.modal-form-placeholder").show();
 }

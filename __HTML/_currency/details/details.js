@@ -50,7 +50,10 @@ function selectSeriesChanged(filterName, id, value) {
         $("#details-main-div>div:not(:first-of-type)").hide();
         return;
     }
-    $("#details-main-div>div>img").show();
+    if (getCookie("banknotes.ODB.isAdmin") === "1") {
+        $("#details-main-div>div>img").show();
+    }
+
     loadSeriesDetails(id);
 }
 
@@ -267,7 +270,7 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
     let gradesJSON = $("#grades-div").data("grades");
     let seriesId = $("div.series-info").data("series-id");
 
-    $("div.modal-form-placeholder").load("./collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
+    $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
     $("div.modal-form-placeholder").show();
 }
 
