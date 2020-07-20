@@ -110,12 +110,12 @@ function denominationVariantPUT(request, response) {
 
     let variant = request.body;
 
-    const sqlInsert = `INSERT INTO bva_variant(bva_ban_id, bva_issue_year, bva_printed_date, bva_cat_id, bva_overstamped_id, bva_printer,
+    const sqlInsert = `INSERT INTO bva_variant(bva_ban_id, bva_issue_year, bva_printed_date, bva_cat_id, bva_overstamped_id, bva_pri_id,
                                                 bva_signature, bva_signature_ext, bva_watermark, bva_security_thread, bva_added_security, 
                                                 bva_is_specimen, bva_is_commemorative, bva_is_numis_product, bva_is_replacement, bva_is_error, bva_description)
                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`;
     catalogueDB.execSQLUpsert(sqlInsert, [denominationId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.overstampedVariantId,
-        variant.printer, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread,
+        variant.printerId, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread,
         variant.securityExt, variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
         variant.isError ? 1 : 0, variant.description
     ], (err, result) => {
@@ -157,12 +157,13 @@ function variantGET(request, response) {
     }
 
     const sql = `SELECT BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
-                        BVA.bva_overstamped_id AS "overstampedVariantId", BVA.bva_printer AS "printer",
+                        BVA.bva_overstamped_id AS "overstampedVariantId", BVA.bva_pri_id AS "printerId", PRI.pri_name AS "printerName",
                         BVA.bva_signature AS "signature", BVA.bva_signature_ext AS "signatureExt", BVA.bva_watermark AS "watermark",
                         BVA.bva_security_thread AS "securityThread", BVA.bva_added_security AS "securityExt", BVA.bva_is_specimen AS "isSpecimen",
                         BVA.bva_is_replacement AS "isReplacement", BVA.bva_is_error AS "isError", BVA.bva_is_commemorative AS "isCommemorative",
                         BVA.bva_is_numis_product AS "isNumismaticProduct", BVA.bva_description AS "description"
                 FROM bva_variant BVA
+                LEFT JOIN pri_printer PRI ON BVA.bva_pri_id = PRI.pri_id
                 WHERE BVA.bva_id = $1`;
 
     catalogueDB.execSQL(sql, [variantId], (err, rows) => {
@@ -199,13 +200,13 @@ function variantPUT(request, response) {
     let variant = request.body;
 
     const sqlUpdate = ` UPDATE bva_variant 
-                        SET bva_issue_year = $2, bva_printed_date = $3, bva_cat_id = $4, bva_overstamped_id = $5, bva_printer = $6,
+                        SET bva_issue_year = $2, bva_printed_date = $3, bva_cat_id = $4, bva_overstamped_id = $5, bva_pri_id = $6,
                             bva_signature = $7, bva_signature_ext = $8, bva_watermark = $9, bva_security_thread = $10, bva_added_security = $11, 
                             bva_is_specimen = $12, bva_is_commemorative = $13, bva_is_numis_product = $14, bva_is_replacement = $15, bva_is_error = $16,
                             bva_description = $17
                         WHERE bva_id = $1`;
     catalogueDB.execSQLUpsert(sqlUpdate, [variantId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.overstampedVariantId,
-        variant.printer, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread, variant.securityExt,
+        variant.printerId, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread, variant.securityExt,
         variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
         variant.isError ? 1 : 0, variant.description
     ], (err, result) => {
@@ -407,10 +408,10 @@ function seriesByIdItemsGET(request, response) {
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_value END AS "unitValue",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_name END AS "unitName",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_abbreviation END AS "unitSymbol",
-                        BAN.ban_material AS "material", BAN.ban_size_width AS "width", BAN.ban_size_height AS "height", 
-                        BAN.ban_obverse_desc as "obverseDescription", BAN.ban_reverse_desc as "reverseDescription", BAN.ban_description AS "description",
+                        BAN.ban_mat_id AS "materialId", MAT.mat_name AS "materialName", BAN.ban_size_width AS "width", BAN.ban_size_height AS "height", 
+                        BAN.ban_obverse_desc AS "obverseDescription", BAN.ban_reverse_desc AS "reverseDescription", BAN.ban_description AS "description",
                         BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
-                        BVA.bva_overstamped_id AS "overstampedVariantId", BVA.bva_printer AS "printer",
+                        BVA.bva_overstamped_id AS "overstampedVariantId", BVA.bva_pri_id AS "printerId", PRI.pri_name AS "printerName",
                         BVA.bva_signature AS "signature", BVA.bva_signature_ext AS "signatureExt", BVA.bva_watermark AS "watermark",
                         BVA.bva_security_thread AS "securityThread", BVA.bva_added_security AS "securityExt", BVA.bva_is_specimen AS "isSpecimen",
                         BVA.bva_is_replacement AS "isReplacement", BVA.bva_is_error AS "isError", BVA.bva_is_commemorative AS "isCommemorative",
@@ -418,6 +419,8 @@ function seriesByIdItemsGET(request, response) {
                 FROM ban_banknote BAN
                 LEFT JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
                 LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
+                LEFT JOIN mat_material MAT ON BAN.ban_mat_id = MAT.mat_id
+                LEFT JOIN pri_printer PRI ON BVA.bva_pri_id = PRI.pri_id
                 WHERE BAN.ban_ser_id =  $1
                 ORDER BY "denomination", "variantId"`;
 
@@ -442,7 +445,8 @@ function seriesByIdItemsGET(request, response) {
                 if (row.unitValue) denominationJSON.unitValue = row.unitValue;
                 if (row.unitName) denominationJSON.unitName = row.unitName;
                 if (row.unitSymbol) denominationJSON.unitSymbol = row.unitSymbol;
-                if (row.material) denominationJSON.material = row.material;
+                if (row.materialId) denominationJSON.materialId = row.materialId;
+                if (row.materialName) denominationJSON.materialName = row.materialName;
                 if (row.width) denominationJSON.width = row.width;
                 if (row.height) denominationJSON.height = row.height;
                 if (row.obverseDescription) denominationJSON.obverseDescription = row.obverseDescription;
@@ -458,7 +462,8 @@ function seriesByIdItemsGET(request, response) {
                 if (row.printedDate) variant.printedDate = row.printedDate;
                 variant.catalogueId = row.catalogueId;
                 if (row.overstampedVariantId) variant.overstampedVariantId = row.overstampedVariantId;
-                if (row.printer) variant.printer = row.printer;
+                if (row.printerId) variant.printerId = row.printerId;
+                if (row.printerName) variant.printerName = row.printerName;
                 if (row.signature) variant.signature = row.signature;
                 if (row.signatureExt) variant.signatureExt = row.signatureExt;
                 if (row.watermark) variant.watermark = row.watermark;

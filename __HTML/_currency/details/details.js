@@ -1,5 +1,6 @@
 $(window).resize(function() {
-    window.seriesDropdown.setSize(calcFontSize());
+    if (window.seriesDropdown)
+        window.seriesDropdown.setSize(calcFontSize());
 });
 
 function calcFontSize() {
@@ -81,8 +82,8 @@ function loadSeriesDetails(seriesId) {
             $("div.series-info").data("series-end", result[0].end);
 
             // Set series Info
-            if (result[0].issuer) {
-                $("div.series-info").append(`<p id="series-issuer">Issued by: <span>${result[0].issuer}</span>`);
+            if (result[0].issuerName) {
+                $("div.series-info").append(`<p id="series-issuer">Issued by: <span data-id="${result[0].issuerId}">${result[0].issuerName}</span>`);
             }
             if (result[0].lawDate) {
                 $("div.series-info").append(`<p id="series-law-date"><span>${result[0].lawDate}</span></p>`);
@@ -191,7 +192,7 @@ function loadSeriesDetails(seriesId) {
                             </div> 
                             <div class="variant-info">
                                 ${addInfo("Overstamped note", variant.overstampedVariantId)}
-                                ${addInfo("Printer", variant.printer)}
+                                ${addInfo("Printer", variant.printerName)}
                                 ${addInfo("Signature", variant.signature)}
                                 ${addInfo("Additional Signature", variant.signatureExt)}
                                 ${addInfo("Watermark", variant.watermark)}
@@ -218,7 +219,7 @@ function loadSeriesDetails(seriesId) {
                         <div class="banknote-info">
                             <div>
                                 ${addInfo("Face Value", faceValueStr)}
-                                ${addInfo("Material", denom.material)}
+                                <p>Material: <span data-id="${denom.materialId}">${denom.materialName || ""}</span></p>
                                 ${addInfo("Size", sizeElemStr)}
                                 ${addInfo("Description", denom.description)}
                             </div>
@@ -282,7 +283,7 @@ function openUpsertSeries(isNewSeries) {
         name: $("div.series-info").data("series-name"),
         start: $("div.series-info").data("series-start"),
         end: $("div.series-info").data("series-end"),
-        issuer: $("div.series-info #series-issuer>span").text(),
+        issuerId: $("div.series-info #series-issuer>span").data("id"),
         lawDate: $("div.series-info #series-law-date>span").text(),
         description: $("div.series-info #series-description>span").text()
     };

@@ -5,47 +5,69 @@ function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantI
 
     $("#upsert-note-dialog>h4").text(`${denominationStr}`);
 
-    if (variantId) {
-        $("#upsert-note-dialog>h3").text(`Update Variant`);
+    // Fill-in the printers
+    $.ajax({
+        type: "GET",
+        url: `/printer`,
+        contentType: "application/json",
+        async: true,
+        cache: false,
+        timeout: 5000,
+        dataType: 'json',
 
-        // Retrieve variant info 
-        $.ajax({
-            type: "GET",
-            url: `/variant/${variantId}`,
-            async: true,
-            cache: false,
-            timeout: 5000,
-            dataType: 'json',
+        success: function(result, status) {
+            for (let printer of result)
+                $("#upsert-variant-dialog select[name='variant-printer']").append(`<option value='${printer.id}'>${printer.name}</option>`);
 
-            success: function(variant, status) {
-                $("#upsert-variant-dialog input[name='variant-printed-date']").val(variant.printedDate);
-                $("#upsert-variant-dialog input[name='variant-issue-year']").val(variant.issueYear);
-                $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catalogueId);
-                $("#upsert-variant-dialog input[name='variant-overstamped-id']").val(variant.overstampedVariantId);
-                $("#upsert-variant-dialog input[name='variant-printer']").val(variant.printer);
-                $("#upsert-variant-dialog input[name='variant-signature']").val(variant.signature);
-                $("#upsert-variant-dialog input[name='variant-signature-ext']").val(variant.signatureExt);
-                $("#upsert-variant-dialog input[name='variant-watermark']").val(variant.watermark);
-                $("#upsert-variant-dialog input[name='variant-security-thread']").val(variant.securityThread);
-                $("#upsert-variant-dialog input[name='variant-security']").val(variant.securityExt);
+            if (variantId) {
+                $("#upsert-variant-dialog>h3").text(`Update Variant`);
 
-                $("input[name='is-specimen']").prop("checked", variant.isSpecimen);
-                $("input[name='is-commemorative']").prop("checked", variant.isCommemorative);
-                $("input[name='is-num-product']").prop("checked", variant.isNumismaticProduct);
-                $("input[name='is-replacement']").prop("checked", variant.isReplacement);
-                $("input[name='is-error']").prop("checked", variant.isError);
+                // Retrieve variant info 
+                $.ajax({
+                    type: "GET",
+                    url: `/variant/${variantId}`,
+                    async: true,
+                    cache: false,
+                    timeout: 5000,
+                    dataType: 'json',
 
-                $("#upsert-variant-dialog textarea[name='variant-description']").val(variant.description);
-            },
-            error: function(xhr, status, error) {
-                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                    success: function(variant, status) {
+                        $("#upsert-variant-dialog input[name='variant-printed-date']").val(variant.printedDate);
+                        $("#upsert-variant-dialog input[name='variant-issue-year']").val(variant.issueYear);
+                        $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catalogueId);
+                        $("#upsert-variant-dialog select[name='variant-printer']").val(variant.printerId)
+                        $("#upsert-variant-dialog input[name='variant-overstamped-id']").val(variant.overstampedVariantId);
+                        $("#upsert-variant-dialog input[name='variant-signature']").val(variant.signature);
+                        $("#upsert-variant-dialog input[name='variant-signature-ext']").val(variant.signatureExt);
+                        $("#upsert-variant-dialog input[name='variant-watermark']").val(variant.watermark);
+                        $("#upsert-variant-dialog input[name='variant-security-thread']").val(variant.securityThread);
+                        $("#upsert-variant-dialog input[name='variant-security']").val(variant.securityExt);
+
+                        $("input[name='is-specimen']").prop("checked", variant.isSpecimen);
+                        $("input[name='is-commemorative']").prop("checked", variant.isCommemorative);
+                        $("input[name='is-num-product']").prop("checked", variant.isNumismaticProduct);
+                        $("input[name='is-replacement']").prop("checked", variant.isReplacement);
+                        $("input[name='is-error']").prop("checked", variant.isError);
+
+                        $("#upsert-variant-dialog textarea[name='variant-description']").val(variant.description);
+                    },
+                    error: function(xhr, status, error) {
+                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                    }
+                });
+
+            } else {
+                $("#upsert-note-dialog>h3").text(`Add New Variant`);
+                $("#upsert-variant-dialog select[name='variant-printer']").val(0)
             }
-        });
+        },
 
-    } else {
-        $("#upsert-note-dialog>h3").text(`Add New Variant`);
-    }
+        error: function(xhr, status, error) {
+            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+        }
+    });
 }
+
 
 function closeUpsertVariant() {
     $("div.modal-form-placeholder").empty();
@@ -68,8 +90,8 @@ function upsertVariant() {
         variant.catalogueId = $("input[name='variant-catalogue-id']").val();
     if ($("input[name='variant-overstamped-id']").val() !== "")
         variant.overstampedVariantId = $("input[name='variant-overstamped-id']").val();
-    if ($("input[name='variant-printer']").val() !== "")
-        variant.printer = $("input[name='variant-printer']").val();
+    if ($("select[name='variant-printer']").val())
+        variant.printerId = parseInt($("select[name='variant-printer']").val());
     if ($("input[name='variant-signature']").val() !== "")
         variant.signature = $("input[name='variant-signature']").val();
     if ($("input[name='variant-signature-ext']").val() !== "")

@@ -62,9 +62,9 @@ function currencySeriesPUT(request, response) {
 
     let series = request.body;
 
-    const sqlInsert = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_issuer, ser_law_date, ser_description)
+    const sqlInsert = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_iss_id, ser_law_date, ser_description)
 	                    VALUES ($1, $2, $3, $4, $5, $6, $7)`;
-    catalogueDB.execSQLUpsert(sqlInsert, [currencyId, series.name, series.start, series.end, series.issuer, series.lawDate, series.description], (err, result) => {
+    catalogueDB.execSQLUpsert(sqlInsert, [currencyId, series.name, series.start, series.end, series.issuerId, series.lawDate, series.description], (err, result) => {
         if (err) {
             if (err.code === "23505")
                 new Exception(400, "SER-03", "Series already exists in this currency").send(response);
@@ -117,9 +117,9 @@ function seriesPUT(request, response) {
     let series = request.body;
 
     const sqlUpdate = ` UPDATE ser_series 
-                        SET ser_name=$2, ser_start=$3, ser_end=$4, ser_issuer=$5, ser_law_date=$6, ser_description=$7
+                        SET ser_name=$2, ser_start=$3, ser_end=$4, ser_iss_id=$5, ser_law_date=$6, ser_description=$7
 	                    WHERE ser_id = $1`;
-    catalogueDB.execSQLUpsert(sqlUpdate, [seriesId, series.name, series.start, series.end, series.issuer, series.lawDate, series.description], (err, result) => {
+    catalogueDB.execSQLUpsert(sqlUpdate, [seriesId, series.name, series.start, series.end, series.issuerId, series.lawDate, series.description], (err, result) => {
         if (err) {
             if (err.code === "23503")
                 new Exception(404, "SER-03", "Series not found for the given id: " + seriesId).send(response);
@@ -165,10 +165,11 @@ function seriesByIdGET(request, response) {
         return;
     }
 
-    let sql = ` SELECT ser_id AS "id", ser_name AS "name", ser_start AS "start", ser_end AS "end", ser_issuer AS "issuer", 
-                    ser_law_date AS "lawDate", ser_description AS "description"
-                FROM ser_series
-                WHERE ser_id = ${seriesId}`;
+    let sql = ` SELECT SER.ser_id AS "id", SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end", SER.ser_iss_id AS "issuerId", 
+                        ISS.iss_name AS "issuerName", SER.ser_law_date AS "lawDate", SER.ser_description AS "description"
+                FROM ser_series SER
+                LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
+                WHERE SER.ser_id = ${seriesId}`;
 
     catalogueDB.getAndReply(response, sql);
 }
@@ -335,91 +336,3 @@ function currencyByIdSeriesItemsStatsGET(request, response) {
         });
     });
 }
-
-
-
-// let sqlInsertSeries = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_issuer, ser_law_date, ser_description) 
-//                        VALUES (?, ?, ?, ?, ?, ?, ?)`;
-
-// // ===> /currency/series
-// module.exports.currencySeriesPOST = function(request, response) {
-//     console.log(request.url);
-//     console.log(request.body);
-
-//     let newSeries = request.body;
-
-//     // Validate fields
-//     let errorMsg = "";
-//     if (newSeries.currencyId == null || newSeries.currencyId === "")
-//         errorMsg = "CurrencyID not provided";
-//     if (newSeries.start == null || newSeries.start === "" || Number.isNaN(Number(newSeries.start)))
-//         errorMsg = "Start year not provided or invalid";
-//     if (newSeries.end != null && (Number.isNaN(Number(newSeries.end))))
-//         errorMsg = "End year is invalid";
-//     if (newSeries.issuer == null || newSeries.issuer === "")
-//         errorMsg = "Issuer not provided or invalid";
-
-//     if (errorMsg !== "") {
-//         response.writeHead(500, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify({ "ErrorMsg": errorMsg }));
-//         response.send();
-//         return;
-//     }
-
-
-//     db.run(sqlInsertSeries, [newSeries.currencyId, newSeries.name, newSeries.start, newSeries.end,
-//         newSeries.issuer, newSeries.lawDate, newSeries.description
-//     ], function(err) {
-//         if (err) {
-//             response.writeHead(500, { 'Content-Type': 'application/json' });
-//             response.write(JSON.stringify({ "Error": err.errno, "ErrorMsg": err.message }));
-//             response.send();
-//             return;
-//         }
-
-//         response.writeHead(200);
-//         response.send();
-//     });
-// }
-
-
-// let sqlUpdateSeries = `UPDATE ser_series
-//                        SET ser_name = ?, ser_start = ?, ser_end = ?, ser_issuer = ?, ser_law_date = ?, ser_description = ? 
-//                        WHERE ser_id = ?`;
-
-// // ===> /series
-// module.exports.seriesPUT = function(request, response) {
-//     console.log(request.url);
-//     console.log(request.body);
-
-//     let series = request.body;
-
-//     // Validate fields
-//     let errorMsg = "";
-//     if (series.start == null || series.start === "" || Number.isNaN(Number(series.start)))
-//         errorMsg = "Start year not provided or invalid";
-//     if (series.end != null && (Number.isNaN(Number(series.end))))
-//         errorMsg = "End year is invalid";
-//     if (series.issuer == null || series.issuer === "")
-//         errorMsg = "Issuer not provided or invalid";
-
-//     if (errorMsg !== "") {
-//         response.writeHead(500, { 'Content-Type': 'application/json' });
-//         response.write(JSON.stringify({ "ErrorMsg": errorMsg }));
-//         response.send();
-//         return;
-//     }
-
-
-//     db.run(sqlUpdateSeries, [series.name, series.start, series.end, series.issuer, series.lawDate, series.description, series.id], function(err) {
-//         if (err) {
-//             response.writeHead(500, { 'Content-Type': 'application/json' });
-//             response.write(JSON.stringify({ "Error": err.errno, "ErrorMsg": err.message }));
-//             response.send();
-//             return;
-//         }
-
-//         response.writeHead(200);
-//         response.send();
-//     });
-// }

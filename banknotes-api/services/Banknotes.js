@@ -63,9 +63,9 @@ function seriesDenominationPUT(request, response) {
 
     let banknote = request.body;
 
-    const sqlInsert = `INSERT INTO ban_banknote (ban_ser_id, ban_cus_id, ban_face_value, ban_material, ban_obverse_desc, ban_reverse_desc, ban_size_width, ban_size_height, ban_description)
+    const sqlInsert = `INSERT INTO ban_banknote (ban_ser_id, ban_cus_id, ban_face_value, ban_mat_id, ban_obverse_desc, ban_reverse_desc, ban_size_width, ban_size_height, ban_description)
                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
-    catalogueDB.execSQLUpsert(sqlInsert, [seriesId, banknote.unitId, banknote.faceValue, banknote.material, banknote.obverseDescription, banknote.reverseDescription, banknote.width, banknote.height, banknote.description], (err, result) => {
+    catalogueDB.execSQLUpsert(sqlInsert, [seriesId, banknote.unitId, banknote.faceValue, banknote.materialId, banknote.obverseDescription, banknote.reverseDescription, banknote.width, banknote.height, banknote.description], (err, result) => {
         if (err) {
             if (err.code === "23505")
                 new Exception(400, "BAN-03", "Denomination already exists in this series").send(response);
@@ -119,9 +119,9 @@ function denominationPUT(request, response) {
     let banknote = request.body;
 
     const sqlUpdate = ` UPDATE ban_banknote 
-                        SET ban_material = $4, ban_obverse_desc = $5, ban_reverse_desc = $6, ban_size_width = $7, ban_size_height = $8, ban_description = $9
+                        SET ban_mat_id = $4, ban_obverse_desc = $5, ban_reverse_desc = $6, ban_size_width = $7, ban_size_height = $8, ban_description = $9
                         WHERE ban_id = $1 AND ban_cus_id = $2 AND ban_face_value = $3`;
-    catalogueDB.execSQLUpsert(sqlUpdate, [denominationId, banknote.unitId, banknote.faceValue, banknote.material, banknote.obverseDescription, banknote.reverseDescription, banknote.width, banknote.height, banknote.description], (err, result) => {
+    catalogueDB.execSQLUpsert(sqlUpdate, [denominationId, banknote.unitId, banknote.faceValue, banknote.materialId, banknote.obverseDescription, banknote.reverseDescription, banknote.width, banknote.height, banknote.description], (err, result) => {
         if (err) {
             if (err.code === "23503")
                 new Exception(404, "BAN-04", "Denomination not found for the given id, face value and unit: " + denominationId).send(response);

@@ -421,7 +421,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/variant'
+                $ref: '#/components/schemas/variantExt'
         "400":
           $ref: '#/components/responses/400'
         "404":
@@ -485,7 +485,7 @@ paths:
                       variants:
                         type: array
                         items:
-                          $ref: '#/components/schemas/variant'
+                          $ref: '#/components/schemas/variantExt'
         "400":
           $ref: '#/components/responses/400'
         "500":
@@ -521,7 +521,7 @@ paths:
                         type: array
                         items:
                           allOf:
-                          - $ref: '#/components/schemas/variant'
+                          - $ref: '#/components/schemas/variantExt'
                           - type: object
                             required:
                             - items
@@ -949,7 +949,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/series'
+                $ref: '#/components/schemas/seriesExt'
         "400":
           $ref: '#/components/responses/400'
         "500":
@@ -1268,7 +1268,7 @@ paths:
           $ref: '#/components/responses/500'
                 
 
-  /grades:              
+  /grades:
     get:
       tags: 
       - Miscellanea
@@ -1287,6 +1287,66 @@ paths:
         "500":
           $ref: '#/components/responses/500'
               
+  
+  /issuer:
+    get:
+      tags: 
+      - Miscellanea
+      summary: Get issuing entities
+      description: Retrieves the list of known banknotes issuing entities
+      operationId: issuerGET
+      responses:
+        "200":
+          description: Success. 
+          content:
+            application/json:
+               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issuer'
+        "500":
+          $ref: '#/components/responses/500'
+                
+  
+  /printer:
+    get:
+      tags: 
+      - Miscellanea
+      summary: Get printing entities
+      description: Retrieves the list of known banknotes printing entities
+      operationId: printerGET
+      responses:
+        "200":
+          description: Success. 
+          content:
+            application/json:
+               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/printer'
+        "500":
+          $ref: '#/components/responses/500'
+  
+  
+  /material:
+    get:
+      tags: 
+      - Miscellanea
+      summary: Get materials
+      description: Retrieves the list of known materials used to print banknotes
+      operationId: materialGET
+      responses:
+        "200":
+          description: Success. 
+          content:
+            application/json:
+               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/material'
+        "500":
+          $ref: '#/components/responses/500'
+                
                 
 components:
   parameters:
@@ -2131,7 +2191,22 @@ components:
       - $ref: '#/components/schemas/seriesSummary'
       - type: object
         properties:
-          issuer:
+          issuerId:
+            type: integer
+          lawDate:
+            type: string
+          description:
+            type: string
+    
+
+    seriesExt:
+      allOf:    
+      - $ref: '#/components/schemas/seriesSummary'
+      - type: object
+        properties:
+          issuerId:
+            type: integer
+          issuerName:
             type: string
           lawDate:
             type: string
@@ -2218,14 +2293,14 @@ components:
       required:
       - faceValue
       - unitId
-      - material
+      - materialId
       properties:
         faceValue:
           type: number
         unitId:
           type: integer
-        material:
-          type: string
+        materialId:
+          type: integer
         width:
           type: integer
         height:
@@ -2253,7 +2328,9 @@ components:
           type: string
         unitSymbol:
           type: string
-        material:
+        materialId:
+          type: integer
+        materialName:
           type: string
         width:
           type: integer
@@ -2290,7 +2367,42 @@ components:
           properties:
             overstampedVariantId:
               type: string
-            printer:
+            printerId:
+              type: integer
+            signature:
+              type: string
+            signatureExt:
+              type: string
+            watermark:
+              type: string
+            securityThread:
+              type: string
+            securityExt:
+              type: string
+            isReplacement:
+              type: boolean
+            isSpecimen:
+              type: boolean
+            isError:
+              type: boolean
+            isCommemorative:
+              type: boolean
+            isNumismaticsProduct:
+              type: boolean
+            description:
+              type: string
+
+
+    variantExt:
+      allOf:
+        - $ref: '#/components/schemas/variantKey'
+        - type: object
+          properties:
+            overstampedVariantId:
+              type: string
+            printerId:
+              type: integer
+            printerName:
               type: string
             signature:
               type: string
@@ -2314,6 +2426,7 @@ components:
               type: boolean
             description:
               type: string
+
 
     variantTree:
       allOf:    
@@ -2400,6 +2513,50 @@ components:
           type: string
           
 
+    issuer:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+
+    printer:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+          
+
+    material:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+          
     iso2:
       type: string
       maxLength: 2

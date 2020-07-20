@@ -59,6 +59,14 @@
   border: solid 1px black;
 }
 
+#upsert-series-dialog > form > div select {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.9em;
+  padding: 0.4em 0.2em;
+  width: 10em;
+  border: solid 1px darkgray;
+}
+
 #upsert-series-dialog > form > div textarea {
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;

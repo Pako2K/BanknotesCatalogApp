@@ -64,8 +64,17 @@
   font-size: 0.9em;
   padding: 0.4em 0.2em;
   width: 10em;
+  border: solid 1px darkgray;
+}
+
+#upsert-note-dialog > form > div select:valid {
   background-color: #d0f7d0;
   border: solid 1px darkgray;
+}
+
+#upsert-note-dialog > form > div select:invalid {
+  background-color: #fdf2bd;
+  border: solid 1px black;
 }
 
 #upsert-note-dialog > form > div textarea {

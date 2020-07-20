@@ -49,7 +49,14 @@
                 font-size: 0.9em;
                 padding: 0.4em 0.2em;
                 width: 10em;
-                background-color: rgb(208, 247, 208);
+                &:valid {
+                    background-color: rgb(208, 247, 208);
+                    border: solid 1px darkgray;
+                }
+                &:invalid {
+                    background-color: rgb(253, 242, 189);
+                    border: solid 1px black;
+                }
                 border: solid 1px darkgray;
             }
             & textarea {
