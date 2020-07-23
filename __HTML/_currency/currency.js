@@ -31,7 +31,7 @@ $(document).ready(function() {
             $(document).data("series-summary", JSON.stringify(result));
 
             // Load default navigation option
-            $("#view-section").load("./summary/__summary.html", initializeSummary);
+            $("#view-section").load("./details/__details.html", initializeDetails);
         },
 
         error: function(xhr, status, error) {
@@ -179,78 +179,3 @@ function selectView(optionElem) {
     }
 
 }
-
-
-
-
-// function addSeries(){
-//     let newSeries = {
-//         "currencyId": $("#currency-name").data("id"),
-//         "name": $("input[name='series-name']").val(),
-//         "issuer": $("input[name='series-issuer']").val(),
-//         "start": $("input[name='series-start']").val(),
-//         "end": $("input[name='series-end']").val(),
-//         "lawDate": $("input[name='series-law']").val(),
-//         "description": $("textarea").val()
-//     };
-
-//     var xhttp = new XMLHttpRequest();
-//     xhttp.onreadystatechange = function() {
-//         if (this.readyState === 4){
-//             if(this.status === 200){
-//                 alert("Series created / updated");
-//                 cleanSeriesForm();
-//                 initializeSeriesSummary(newSeries.currencyId);
-//             }
-//             else if (this.status === 403){
-//                 alert("Insertion / Update failed (ERR = " + this.status + ", " + this.responseText + ").");
-//             }
-//             else{
-//                 alert("Insertion / Update failed (ERR = " + this.status + ", " + this.responseText + "). Please try again");
-//             }
-//         }
-//     };
-
-//     console.log("New Series: " + JSON.stringify(newSeries));
-
-//     if ($("#series-id").text() === ""){
-//         xhttp.open("POST", "/currency/series", true);
-//     }
-//     else{
-//         newSeries.id = $("#series-id").text();
-//         xhttp.open("PUT", "/series", true);
-//     }
-//     xhttp.setRequestHeader("Content-type", "application/json");
-//     xhttp.send(payload = JSON.stringify(newSeries));
-// }
-
-
-// function prepareSeriesEdit(seriesId){
-//     let allSeries = JSON.parse($("#series-data").text());
-
-//     // Search in the array
-//     let series = allSeries.find((elem) => {return elem.id == seriesId;});
-
-
-//     $("#series-id").text(seriesId);
-//     $("input[name='series-name']").val(series.name);
-//     $("input[name='series-issuer']").val(series.issuer);
-//     $("input[name='series-start']").val(series.start);
-//     $("input[name='series-end']").val(series.end);
-//     $("input[name='series-law']").val(series.lawDate);
-//     $("textarea[name='series-description']").val(series.description);
-//     $('#add-series-dialog').show();
-// }
-
-
-// function cleanSeriesForm(){
-//     $('#add-series-dialog').hide();
-
-//     $("#series-id").text("");
-//     $("input[name='series-name']").val("");
-//     $("input[name='series-issuer']").val("");
-//     $("input[name='series-start']").val("");
-//     $("input[name='series-end']").val("");
-//     $("input[name='series-law']").val("");
-//     $("textarea[name='series-description']").val("");
-// }

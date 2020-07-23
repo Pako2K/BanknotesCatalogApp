@@ -1,244 +1,250 @@
 function initializeSummary() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
-    // Create one section for each series
     if (seriesJSON.length === 0) {
         $("#grades-div").hide();
         $("#summary-main-div").append('<p>There is no data for this currency</p>');
         return;
     }
-    let section = "";
-    for (let series of seriesJSON) {
-        let endDate = "";
-        if (series.end != null && series.end !== "" && series.end !== series.start)
-            endDate = " - " + series.end;
 
-        section = ` <section class="series-detail-section" data-series-id="` + series.id + `">
-                        <div class="col-expand-contract" onclick="toggleDiv(this)">
-                            <img src="summary/plus-expand.png" alt="plus-expand">
-                        </div>
-                        <div>
-                            <h4>${series.name}, ${series.start}${endDate}</h4>
-                        </div>
-                    </section>`;
+    // Get banknotes info for all the series
+    let notesArray = [];
+    let numReplies = 0;
+    for (let idx in seriesJSON) {
+        let variantsUri;
+        let itemsUri;
+        if (getCookie("banknotes.ODB.username"))
+            itemsUri = `/series/${seriesJSON[idx].id}/items`;
+        else
+            variantsUri = `/series/${seriesJSON[idx].id}/variants`;
 
-        $("#summary-main-div").append(section);
+        notesArray.push({});
+        $.ajax({
+            type: "GET",
+            url: variantsUri || itemsUri,
+            async: true,
+            cache: false,
+            timeout: 5000,
+            dataType: 'json',
+
+            success: function(notesJSON, status) {
+                numReplies++;
+                notesArray[idx] = notesJSON;
+                notesArray[idx].seriesName = seriesJSON[idx].name
+                if (numReplies === seriesJSON.length)
+                    drawTables(notesArray);
+            },
+
+            error: function(xhr, status, error) {
+                switch (xhr.status) {
+                    case 403:
+                        alert("Your session is not valid or has expired.");
+                        _clearSessionCookies();
+                        location.reload();
+                        break;
+                    default:
+                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                        location.reload();
+                }
+            }
+        });
     }
-
-    if (seriesJSON.length < 5)
-        $("#summary-main-div>section>div.col-expand-contract").click();
 };
 
 
-
-function toggleDiv(divElem) {
-    let chldn = $(divElem).next().children();
-    let img = $(divElem).children("img")[0];
-    if (img.alt === "plus-expand") {
-        if ($(divElem).parent().data("loaded") == null) {
-            loadBanknotesInfo($(divElem).parent());
-            $(divElem).parent().data("loaded", "");
+function drawTables(notesArray) {
+    let denominations = []; // "Rows": 1 row for each denomination
+    let issueYears = []; // Array of arrays: 1 column for each issue year of each series
+    let totalIssueYears = 0;
+    for (let series of notesArray) {
+        // Determine all the issue years
+        let seriesIssueYears = []; // "Columns": 1 column for each issue year in thsi series
+        for (let denom of series) {
+            if (!denominations.includes(denom.denomination)) {
+                denominations.push(denom.denomination);
+            }
+            for (let variant of denom.variants) {
+                if (!seriesIssueYears.includes(variant.issueYear)) {
+                    seriesIssueYears.push(variant.issueYear);
+                    totalIssueYears++;
+                }
+            }
         }
-        $(chldn).filter("table").fadeIn("slow");
-        img.alt = "minus-contract";
-        img.src = "summary/minus-collapse.png";
+
+        // Sort numerically
+        if (seriesIssueYears.length === 0) {
+            seriesIssueYears.push("0");
+            totalIssueYears++;
+        } else
+            seriesIssueYears.sort((a, b) => { return a - b });
+
+        issueYears.push(seriesIssueYears);
+    }
+    // Sort all the denominations
+    if (denominations.length === 0)
+        denominations.push("0");
+    else
+        denominations.sort((a, b) => { return a - b });
+
+
+    // Create the matrix with all the variants
+    let row = [];
+    let variantsMatrix = [];
+    // Add 1 row for each denomination
+    for (let i = 0; i < denominations.length; i++) {
+        let row = [];
+        // Create 1 row with all the columns. Each cell contains an array of cells! (when there are several variants for teh same year and denomination)
+        for (let i = 0; i < totalIssueYears; i++)
+            row.push([]);
+        variantsMatrix.push(row);
+    }
+
+
+    // Iterate through all the series again and assign the variant/item to each cell in the table
+    let totalColIdx = 0;
+    const NO_GRADE = "no-grade";
+    for (let seriesIdx in notesArray) {
+        for (let denom of notesArray[seriesIdx]) {
+            let rowIdx = denominations.indexOf(denom.denomination);
+
+            for (let variant of denom.variants) {
+                let gradeClass = NO_GRADE;
+                let priceStr = "";
+                if (variant.items && variant.items.length) {
+                    gradeClass = `${variant.items[0].grade}-grade`;
+                    priceStr = variant.items[0].price + " €";
+                }
+                let colIdx = totalColIdx + issueYears[seriesIdx].indexOf(variant.issueYear);
+                // Store the issue year as well
+                let variantStr = JSON.stringify(variant);
+                variantStr = variantStr.replace(/'/g, "&#39");
+                variantsMatrix[rowIdx][colIdx].push(`<td class="subcol-1 ${gradeClass}">${variant.printedDate || "ND"}</td>
+                                                    <td class="subcol-2 ${gradeClass}" data-variant='${variantStr}' title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
+                                                    <td class="subcol-3 ${gradeClass}">${priceStr}</td>`);
+            }
+        }
+        totalColIdx += issueYears[seriesIdx].length;
+    }
+
+    // Maximum number of issue years per table
+    const MAX_NUM_YEARS = 8;
+
+    // Number of years left in the current table
+    let yearsLeft = totalIssueYears;
+
+    let colIndex = 0;
+    let globalSeriesIndex = 0;
+    let seriesYearIndex = 0;
+    while (yearsLeft > 0) {
+        let numCols = Math.min(yearsLeft, MAX_NUM_YEARS);
+
+        // Create the HTML table
+        let rowsHTML = "";
+        for (let rowIdx in variantsMatrix) {
+            // First check the maximum number of variants in the same denomination and year
+            let maxSubrows = 0;
+            for (let i = colIndex; i < colIndex + numCols; i++) {
+                maxSubrows = Math.max(maxSubrows, variantsMatrix[rowIdx][i].length);
+            }
+
+            if (maxSubrows === 0)
+                continue;
+
+            // Create the row and subrows and iterate through all the columns
+            // First subrow
+            if (maxSubrows === 1)
+                rowsHTML += `<tr class="last-subrow" data-denom="${denominations[rowIdx]}">`;
+            else
+                rowsHTML += `<tr data-denom="${denominations[rowIdx]}">`;
+
+            rowsHTML += `       <th rowspan="${maxSubrows}">${denominations[rowIdx].toLocaleString("de-DE")}</th>`;
+            for (let i = colIndex; i < colIndex + numCols; i++) {
+                rowsHTML += variantsMatrix[rowIdx][i][0] || `<td class='subcol-1 ${NO_GRADE}'></td><td class='${NO_GRADE}'></td><td class='${NO_GRADE}'></td>`;
+            }
+            rowsHTML += `</tr>`;
+
+            // Next subrows
+            for (let subrow = 1; subrow < maxSubrows; subrow++) {
+                if (subrow === maxSubrows - 1)
+                    rowsHTML += ` <tr  class="last-subrow" data-denom="${denominations[rowIdx]}">`;
+                else
+                    rowsHTML += ` <tr data-denom="${denominations[rowIdx]}">`;
+
+                for (let i = colIndex; i < colIndex + numCols; i++) {
+                    rowsHTML += variantsMatrix[rowIdx][i][subrow] || `<td class='subcol-1 ${NO_GRADE}'></td><td class='${NO_GRADE}'></td><td class='${NO_GRADE}'></td>`;
+                }
+                rowsHTML += `</tr>`;
+            }
+        }
+
+        let firstHeaderHTML = "";
+        let secondHeaderHTML = "";
+        let thirdHeaderHTML = "";
+        let totalYears = 0;
+        let localSeriesIndex = globalSeriesIndex;
+        while (totalYears < numCols) {
+            firstHeaderHTML += `<th colspan="${Math.min(3 * issueYears[localSeriesIndex].length,3*(MAX_NUM_YEARS - totalYears))}">${notesArray[localSeriesIndex].seriesName}</th>`;
+
+            let yearIdx = seriesYearIndex;
+            for (; yearIdx < issueYears[localSeriesIndex].length; yearIdx++) {
+                let year = issueYears[localSeriesIndex][yearIdx];
+                secondHeaderHTML += `<th colspan="3">${year != 0 ? year : "N.A"}</th>`;
+                thirdHeaderHTML += `<td class="subcol-1">Dated</td>
+                                    <td>Cat Id</td>
+                                    <td>Price</td>`;
+                totalYears++;
+                if (totalYears >= numCols) {
+                    break;
+                }
+            }
+            if (yearIdx < issueYears[localSeriesIndex].length - 1) {
+                // Series not completed 
+                seriesYearIndex = yearIdx + 1;
+            } else {
+                // Series completed 
+                seriesYearIndex = 0;
+                globalSeriesIndex++;
+            }
+            localSeriesIndex++;
+        }
+
+        $("#summary-main-div").append(
+            `<table class="summary-table">
+            <thead>
+                <tr>
+                    <td></td>
+                    ${firstHeaderHTML}
+                </tr>
+                <tr>
+                    <td></td>
+                    ${secondHeaderHTML}
+                </tr>
+                <tr>
+                    <td></td>
+                    ${thirdHeaderHTML}
+                </tr>
+            </thead>
+            <tbody>
+                ${rowsHTML}
+            <tbody>
+        </table>`);
+
+        yearsLeft -= numCols;
+        colIndex += MAX_NUM_YEARS;
+    }
+
+
+    // Add hover events and click events
+    if (getCookie("banknotes.ODB.username")) {
+        for (let i = 1; i <= 3; i++) {
+            $(".subcol-" + i).mouseenter(highlightRow);
+            $(".subcol-" + i).mouseleave(highlightRowOff);
+            $(".subcol-" + i).click(openUpsertCollection);
+        }
     } else {
-        $(chldn).filter("table").fadeOut(200);
-        img.alt = "plus-expand";
-        img.src = "summary/plus-expand.png";
+        $("table.summary-table td").css("cursor", "auto");
     }
 }
-
-// Reload Banknotes info when items are updated
-function reloadBanknotesInfo(seriesId) {
-    let seriesSection = $(`section.series-detail-section[data-series-id="${seriesId}"`);
-
-    loadBanknotesInfo(seriesSection);
-}
-
-
-// Load Banknotes info when a section is expanded
-function loadBanknotesInfo(seriesSection) {
-    let seriesId = $(seriesSection).data("series-id");
-
-    let variantsUri;
-    let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
-        itemsUri = `/series/${seriesId}/items`;
-    else
-        variantsUri = `/series/${seriesId}/variants`;
-
-
-    $.ajax({
-        type: "GET",
-        url: variantsUri || itemsUri,
-        async: true,
-        cache: false,
-        timeout: 5000,
-        dataType: 'json',
-
-        success: function(notesJSON, status) {
-            // Clean-up table
-            $(seriesSection).find("table.summary-table").remove();
-
-            // Collect all the different "Issue Years"
-            let issueYears = []; // "Columns": 1 columns for each issue year
-            let rowIndex = []; // One for each column: to be used later to insert the values of each variant
-            for (let denom of notesJSON) {
-                for (let variant of denom.variants) {
-                    if (issueYears.indexOf(variant.issueYear) === -1) {
-                        issueYears.push(variant.issueYear);
-                        rowIndex.push(0);
-                    }
-                }
-            }
-
-            // Sort numerically
-            if (issueYears.length === 0)
-                issueYears.push("N.A.");
-            else
-                issueYears.sort((a, b) => { return a - b });
-
-            // Group Variants per issueYear 
-            let newTableJSON = [];
-            for (let denom of notesJSON) {
-                let years = [];
-                let yearObj = {};
-                for (let variant of denom.variants) {
-                    if (yearObj.issueYear !== variant.issueYear) {
-                        if (yearObj.issueYear) {
-                            years.push(yearObj);
-                        }
-                        yearObj = {};
-                        yearObj.issueYear = variant.issueYear;
-                        yearObj.variants = [];
-                    }
-                    delete variant.issueYear;
-                    yearObj.variants.push(variant);
-                }
-                if (yearObj.variants) years.push(yearObj);
-                newTableJSON.push({ denomination: denom.denomination, issueYears: years })
-            }
-
-
-            let tableHTML = `<table class="summary-table">
-                                <thead>
-                                    <tr>`;
-            if (issueYears.length > 0)
-                tableHTML += `<td></td>`; // DENOMINATION COLUMN
-            for (let year of issueYears) {
-                tableHTML += `<th colspan="3">` + year + `</th>`;
-            }
-            tableHTML += `</tr>
-                          <tr>`;
-            if (issueYears.length > 0)
-                tableHTML += `<td></td>`; // DENOMINATION COLUMN
-            for (let year of issueYears) {
-                tableHTML += `<td class="subcol-1">Date</td>
-                                                    <td>Cat Id</td>
-                                                    <td>Price</td>`
-            }
-            tableHTML += `</tr>
-                       </thead>
-                    <tbody>`;
-
-
-            for (denom of newTableJSON) {
-                // Calculate the maximum number of rows for this denomination
-                let rowsMax = 1;
-                for (let year of denom.issueYears) {
-                    if (year.variants.length > rowsMax)
-                        rowsMax = year.variants.length;
-                }
-
-                // Create a table with the html for each cell, initially with empty values
-                let table = [];
-                for (let row = 0; row < rowsMax; row++) {
-                    let htmlRowCells = [];
-                    for (let year in issueYears) {
-                        htmlRowCells.push('<td class="subcol-1"></td><td></td><td></td>');
-                    }
-                    table.push(htmlRowCells);
-                }
-
-                // Iterate through the variants and reset the html cell with the values
-                rowIndex.fill(0);
-                for (let year of denom.issueYears) {
-                    // This is the column index
-                    let colIndex = issueYears.indexOf(year.issueYear);
-                    for (let variant of year.variants) {
-                        //Check the items: 
-                        let itemId = "";
-                        let gradeClass = "";
-                        let priceStr = "";
-                        if (variant.items && variant.items.length) {
-                            itemId = variant.items[0].id;
-                            gradeClass = ` ${variant.items[0].grade}-grade`;
-                            priceStr = variant.items[0].price + " €";
-                        }
-                        // Store the issue year as well
-                        variant.issueYear = year.issueYear;
-                        let variantStr = JSON.stringify(variant);
-                        variantStr = variantStr.replace(/'/g, "&#39");
-                        table[rowIndex[colIndex]][colIndex] = `<td class="subcol-1${gradeClass}">${variant.printedDate || "ND"}</td>
-                                                            <td class="subcol-2${gradeClass}" data-variant='${variantStr}' title="${variant.variantDescription || ""}">${variant.catalogueId}</td>
-                                                            <td class="subcol-3${gradeClass}">${priceStr}</td>`;
-                        rowIndex[colIndex]++;
-                    }
-                }
-
-                if (rowsMax === 1)
-                    tableHTML += `<tr class="last-subrow" data-denom="${denom.denomination}">`;
-                else
-                    tableHTML += `<tr data-denom="${denom.denomination}">`;
-
-                let i = 0;
-                tableHTML += `<th class="last-subrow" rowspan="${rowsMax}">${denom.denomination}</th>
-                                ${table[i] ? table[i].join('') : ''}
-                            </tr>`;
-                for (i = 1; i < table.length - 1; i++) {
-                    tableHTML += `<tr data-denom="${denom.denomination}">
-                                    ${table[i].join('')}
-                                </tr>`;
-                }
-                if (rowsMax > 1) {
-                    tableHTML += `<tr class="last-subrow" data-denom="${denom.denomination}">
-                                    ${table[i].join('')}
-                                    </tr>`;
-                }
-            }
-
-            tableHTML += `</tbody>
-                        </table>`;
-
-            $(seriesSection).children("div").last().append(tableHTML);
-
-            // Add hover events and click events
-            if (itemsUri) {
-                for (let i = 1; i <= 3; i++) {
-                    $(".subcol-" + i).mouseenter(highlightRow);
-                    $(".subcol-" + i).mouseleave(highlightRowOff);
-                    $(".subcol-" + i).click(openUpsertCollection);
-                }
-            } else {
-                $("table.summary-table td").css("cursor", "auto");
-            }
-        },
-
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            }
-        }
-    });
-}
-
 
 function highlightRow() {
     $(this).addClass("highlight");

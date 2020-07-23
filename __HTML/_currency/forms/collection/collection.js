@@ -181,7 +181,7 @@ function submitItems() {
 
     let seriesId = $("#upsert-collection-dialog").data("series-id");
     if ($("#currency-nav>p.selected-view").text() === "Summary")
-        reloadBanknotesInfo(seriesId);
+        initializeSummary();
     else
         loadSeriesDetails(seriesId);
 
