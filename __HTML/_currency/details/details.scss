@@ -1,18 +1,24 @@
 #details-main-div {
     align-self: flex-start;
     margin-bottom: 1em;
-    &>div:first-of-type {
+    &>p {
+        margin-top: 0;
+        margin-bottom: 1em;
+        font-family: Lucida sans, sans-serif;
+        font-weight: bold;
+        font-style: italic;
+        font-size: 0.8em;
+    }
+    & div.series-options {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
-        align-items: flex-end;
-        &>* {
-            margin-right: 1em;
-        }
+        align-items: flex-start;
         &>img {
             display: none;
             width: 1.6em;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
+            margin-right: 0.5em;
         }
         &>div.clickable-button {
             display: flex;
@@ -21,22 +27,48 @@
             background: white;
             width: 110px;
             box-sizing: border-box;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             &>div {
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
                 &>img {
                     width: 0.8em;
+                    margin-left: 0.4em;
                 }
                 &>p {
                     font-family: Lucida sans, sans-serif;
                     color: rgb(50, 50, 150);
                     font-weight: bold;
                     font-size: 0.7em;
-                    margin: 0.5em 0em;
-                    padding-left: 0.8em;
+                    margin: 0.5em 0.4em;
+                    white-space: nowrap;
                 }
+            }
+        }
+    }
+    & div.series-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        &>div {
+            width: 20em;
+            font-family: Lucida sans, sans-serif;
+            font-size: 0.8em;
+            background-color: white;
+            border: 0.5px solid black;
+            padding: 0.5em 0.5em;
+            margin-right: 0.3em;
+            margin-bottom: 0.3em;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            &.selected {
+                font-weight: bold;
+                background-color: rgb(164, 248, 164);
+                box-shadow: 0px 0px 3px 2px rgb(188, 233, 188);
+                border: 0.5px solid rgb(175, 175, 175);
             }
         }
     }
@@ -44,6 +76,13 @@
 
 .series-info {
     padding: 0.5em 1em;
+    &>h5 {
+        font-family: Lucida sans, sans-serif;
+        font-size: 0.8em;
+        margin: 0.5em 0;
+        font-weight: bold;
+        border-bottom: 0.5px solid black;
+    }
     &>p {
         font-family: Lucida sans, sans-serif;
         font-size: 0.7em;

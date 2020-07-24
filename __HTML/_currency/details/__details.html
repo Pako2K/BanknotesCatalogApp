@@ -1,13 +1,11 @@
 <div id="details-main-div">
-    <div>
-        <div class="drop-down-list">
-            <script>
-                window.seriesDropdown = new SelectFilter($("#details-main-div div.drop-down-list"), "Series", selectSeriesChanged, [], calcFontSize());
-                loadSeries(seriesDropdown);
-            </script>
+    <p>Select one of the series:</p>
+    <div class="series-options">
+        <div class="series-list">
         </div>
 
         <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertSeries(false)" alt="Edit Series" />
+
         <div class="only-admin clickable-button" onclick="openUpsertSeries(true)">
             <div>
                 <img src="./details/add-blue.png" alt="Add Series" />

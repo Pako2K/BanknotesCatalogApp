@@ -183,7 +183,7 @@ function drawTables(notesArray) {
         let totalYears = 0;
         let localSeriesIndex = globalSeriesIndex;
         while (totalYears < numCols) {
-            firstHeaderHTML += `<th colspan="${Math.min(3 * issueYears[localSeriesIndex].length,3*(MAX_NUM_YEARS - totalYears))}">${notesArray[localSeriesIndex].seriesName}</th>`;
+            firstHeaderHTML += `<th colspan="${Math.min(3 * (issueYears[localSeriesIndex].length - seriesYearIndex),3*(MAX_NUM_YEARS - totalYears))}">${notesArray[localSeriesIndex].seriesName}</th>`;
 
             let yearIdx = seriesYearIndex;
             for (; yearIdx < issueYears[localSeriesIndex].length; yearIdx++) {

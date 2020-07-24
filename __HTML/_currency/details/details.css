@@ -4,7 +4,16 @@
   margin-bottom: 1em;
 }
 
-#details-main-div > div:first-of-type {
+#details-main-div > p {
+  margin-top: 0;
+  margin-bottom: 1em;
+  font-family: Lucida sans, sans-serif;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+#details-main-div div.series-options {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -15,22 +24,19 @@
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
 }
 
-#details-main-div > div:first-of-type > * {
-  margin-right: 1em;
-}
-
-#details-main-div > div:first-of-type > img {
+#details-main-div div.series-options > img {
   display: none;
   width: 1.6em;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  margin-right: 0.5em;
 }
 
-#details-main-div > div:first-of-type > div.clickable-button {
+#details-main-div div.series-options > div.clickable-button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -44,10 +50,10 @@
   width: 110px;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
-#details-main-div > div:first-of-type > div.clickable-button > div {
+#details-main-div div.series-options > div.clickable-button > div {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -58,21 +64,65 @@
       justify-content: space-around;
 }
 
-#details-main-div > div:first-of-type > div.clickable-button > div > img {
+#details-main-div div.series-options > div.clickable-button > div > img {
   width: 0.8em;
+  margin-left: 0.4em;
 }
 
-#details-main-div > div:first-of-type > div.clickable-button > div > p {
+#details-main-div div.series-options > div.clickable-button > div > p {
   font-family: Lucida sans, sans-serif;
   color: #323296;
   font-weight: bold;
   font-size: 0.7em;
-  margin: 0.5em 0em;
-  padding-left: 0.8em;
+  margin: 0.5em 0.4em;
+  white-space: nowrap;
+}
+
+#details-main-div div.series-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+#details-main-div div.series-list > div {
+  width: 20em;
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.8em;
+  background-color: white;
+  border: 0.5px solid black;
+  padding: 0.5em 0.5em;
+  margin-right: 0.3em;
+  margin-bottom: 0.3em;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#details-main-div div.series-list > div.selected {
+  font-weight: bold;
+  background-color: #a4f8a4;
+  -webkit-box-shadow: 0px 0px 3px 2px #bce9bc;
+          box-shadow: 0px 0px 3px 2px #bce9bc;
+  border: 0.5px solid #afafaf;
 }
 
 .series-info {
   padding: 0.5em 1em;
+}
+
+.series-info > h5 {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.8em;
+  margin: 0.5em 0;
+  font-weight: bold;
+  border-bottom: 0.5px solid black;
 }
 
 .series-info > p {

@@ -715,7 +715,7 @@ function issueYearsItemsStatsGET(request, response) {
             let collecIndex = 0;
             for (let row of catRows) {
                 row.collectionStats = {};
-                if (collecIndex < colRows.length && row.denomination === colRows[collecIndex].denomination) {
+                if (collecIndex < colRows.length && row.issueYear === colRows[collecIndex].issueYear) {
                     row.collectionStats.numTerritories = colRows[collecIndex].numTerritories;
                     row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
                     row.collectionStats.numSeries = colRows[collecIndex].numSeries;

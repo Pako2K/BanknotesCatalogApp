@@ -7,7 +7,8 @@ function calcFontSize() {
     return ($(window).width() < 420) ? 11 : 14;
 }
 
-function loadSeries(dropdownElem) {
+function initializeDetails() {
+    $('#currency-nav>p').eq(1).data("series-id", "");
     $("#details-main-div>div:not(:first-of-type)").hide();
 
     let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
@@ -15,48 +16,40 @@ function loadSeries(dropdownElem) {
         $(".only-admin").hide();
     }
 
-    // Load the drop down list
+    // Load the series list
     let series = JSON.parse($(document).data("series-summary"));
-
-    if (series.length === 0) {
-        $("div.drop-down-list").hide();
-        return;
-    }
-
     for (let elem of series) {
         let endDate = "";
         if (elem.end != null && elem.end != "" && elem.end !== elem.start)
             endDate = " - " + elem.end;
 
-        dropdownElem.addOption(elem.id, elem.name + ", " + elem.start + endDate);
+        $("div.series-list").append(`<div data-id='${elem.id}' onclick='seriesOptionClicked(this)'>${elem.name + " [" + elem.start + endDate + "]"}</div>`);
     }
-}
 
-function initializeDetails() {
     // In case the user selected a series the option in the navigation will contain a series-id
     let seriesId = $('#currency-nav>p').eq(1).data("series-id");
 
     if (seriesId !== "") {
-        window.seriesDropdown.setValueById(seriesId);
+        $(`div.series-list>div[data-id='${seriesId}']`).click();
     }
-
-    $('#currency-nav>p').eq(1).data("series-id", "");
 }
 
 
-function selectSeriesChanged(filterName, id, value) {
-
-    if (!id) {
+function seriesOptionClicked(elem) {
+    if ($(elem).hasClass("selected")) {
+        $("div.series-list>div.selected").removeClass("selected");
         $("#details-main-div>div>img").hide();
         $("#details-main-div>div:not(:first-of-type)").hide();
-        return;
+    } else {
+        $("div.series-list>div.selected").removeClass("selected");
+        $(elem).addClass("selected");
+        if (getCookie("banknotes.ODB.isAdmin") === "1") {
+            $("#details-main-div>div>img").show();
+        }
+        loadSeriesDetails($(elem).data("id"));
     }
-    if (getCookie("banknotes.ODB.isAdmin") === "1") {
-        $("#details-main-div>div>img").show();
-    }
+};
 
-    loadSeriesDetails(id);
-}
 
 function loadSeriesDetails(seriesId) {
     $("#details-main-div>div:not(:first-of-type)").show();
@@ -82,14 +75,20 @@ function loadSeriesDetails(seriesId) {
             $("div.series-info").data("series-end", result[0].end);
 
             // Set series Info
+            if (result[0].name) {
+                let endDate = "";
+                if (result[0].end != null && result[0].end != "" && result[0].end !== result[0].start)
+                    endDate = " - " + result[0].end;
+                $("div.series-info").append(`<h5 id="series-name">${result[0].name} [${result[0].start}${endDate}]</h5>`);
+            }
             if (result[0].issuerName) {
-                $("div.series-info").append(`<p id="series-issuer">Issued by: <span data-id="${result[0].issuerId}">${result[0].issuerName}</span>`);
+                $("div.series-info").append(`<p id="series-issuer">Issued by: <span data-id="${result[0].issuerId}">${result[0].issuerName}</span></p>`);
             }
             if (result[0].lawDate) {
                 $("div.series-info").append(`<p id="series-law-date"><span>${result[0].lawDate}</span></p>`);
             }
             if (result[0].description) {
-                $("div.series-info").append(`<p id="series-description">Description: <span>${result[0].description}</span>`);
+                $("div.series-info").append(`<p id="series-description">Description: <span>${result[0].description}</span></p>`);
             }
         },
         error: function(xhr, status, error) {
