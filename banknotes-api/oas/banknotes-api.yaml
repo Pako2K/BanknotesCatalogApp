@@ -289,12 +289,7 @@ paths:
       description: Returns a list of denominations in the catalogue with statistics.
       operationId: denominationsVariantsStatsGET
       parameters:
-      - in: query
-        name: continentId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve denominations from countries in this continent
+      - $ref: '#/components/parameters/searchContinentId'
       - in: query
         name: fromYear
         schema:
@@ -330,12 +325,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
-      - in: query
-        name: continentId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve denominations from countries in this continent
+      - $ref: '#/components/parameters/searchContinentId'
       - in: query
         name: fromYear
         schema:
@@ -729,7 +719,7 @@ paths:
           $ref: '#/components/responses/500'
           
           
-  /issue-years/variants/stats:
+  /years/variants/stats:
     get:
       tags: 
       - Variants
@@ -737,12 +727,8 @@ paths:
       description: Returns a list of issue-years for banknotes in the catalogue with statistics.
       operationId: issueYearsVariantsStatsGET
       parameters:
-      - in: query
-        name: continentId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve issue-years from countries in this continent
+      - $ref: '#/components/parameters/dateType'
+      - $ref: '#/components/parameters/searchContinentId'
       responses:
         "200":
           description: List of years
@@ -751,12 +737,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issueYearCatStats'
+                  $ref: '#/components/schemas/dateCatStats'
         "500":
           $ref: '#/components/responses/500'         
          
          
-  /issue-years/items/stats:
+  /years/items/stats:
     get:
       tags: 
       - Variants
@@ -766,12 +752,8 @@ paths:
       parameters:
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
-      - in: query
-        name: continentId
-        schema:
-          type: integer
-        required: false
-        description: Retrieve issue-years from countries in this continent
+      - $ref: '#/components/parameters/dateType'
+      - $ref: '#/components/parameters/searchContinentId'
       responses:
         "200":
           description: List of years
@@ -780,7 +762,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issueYearColStats'
+                  $ref: '#/components/schemas/dateColStats'
         "400":
           $ref: '#/components/responses/400'
         "403":
@@ -1060,7 +1042,7 @@ paths:
           $ref: '#/components/responses/500'
                 
 
-  /territory/{territoryId}/issue-years/variants/stats:
+  /territory/{territoryId}/years/variants/stats:
     get:
       tags: 
        - Variants
@@ -1068,6 +1050,7 @@ paths:
       description: Returns a list of issue years in the catalogue used in a specific territory, with their statistics.
       operationId: territoryByIdIssueYearsVariantsStatsGET
       parameters:
+      - $ref: '#/components/parameters/dateType'
       - $ref: '#/components/parameters/territoryId'  
       responses:
         "200":
@@ -1077,14 +1060,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issueYearByTerCatStats'
+                  $ref: '#/components/schemas/dateByTerCatStats'
         "400":
           $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
   
-  /territory/{territoryId}/issue-years/items/stats:
+  /territory/{territoryId}/years/items/stats:
     get:
       tags: 
       - Variants
@@ -1092,6 +1075,7 @@ paths:
       description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a territory.
       operationId: territoryByIdIssueYearsItemsStatsGET
       parameters:
+      - $ref: '#/components/parameters/dateType'
       - $ref: '#/components/parameters/territoryId'
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
@@ -1103,7 +1087,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issueYearByTerColStats'
+                  $ref: '#/components/schemas/dateByTerColStats'
         "400":
           $ref: '#/components/responses/400'
         "403":
@@ -1216,7 +1200,7 @@ paths:
           $ref: '#/components/responses/500'
                 
                 
-  /currency/{currencyId}/issue-years/variants/stats:
+  /currency/{currencyId}/years/variants/stats:
     get:
       tags: 
        - Variants
@@ -1224,6 +1208,7 @@ paths:
       description: Returns a list of issue years in the catalogue used in a specific currency, with their statistics.
       operationId: currencyByIdIssueYearsVariantsStatsGET
       parameters:
+      - $ref: '#/components/parameters/dateType'
       - $ref: '#/components/parameters/currencyId'  
       responses:
         "200":
@@ -1233,14 +1218,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issueYearByCurCatStats'
+                  $ref: '#/components/schemas/dateByCurCatStats'
         "400":
           $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
   
   
-  /currency/{currencyId}/issue-years/items/stats:
+  /currency/{currencyId}/years/items/stats:
     get:
       tags: 
       - Variants
@@ -1248,6 +1233,7 @@ paths:
       description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
       operationId: currencyByIdIssueYearsItemsStatsGET
       parameters:
+      - $ref: '#/components/parameters/dateType'
       - $ref: '#/components/parameters/currencyId'
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
@@ -1259,7 +1245,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issueYearByCurColStats'
+                  $ref: '#/components/schemas/dateByCurColStats'
         "400":
           $ref: '#/components/responses/400'
         "403":
@@ -1504,8 +1490,18 @@ components:
       description: Retrieve resource with issue date in or before this year  
       schema:
         type: integer
-
-  
+    dateType:
+      in: query
+      name: dateType
+      required: true
+      description: Specify if the issue year or the printed date is used
+      schema:
+        type: string
+        enum:
+        - "issue"
+        - "printed"
+      
+      
   responses:
     400:
       description: Invalid request. A parameter is missing or not valid.
@@ -1729,6 +1725,8 @@ components:
               properties:
                 continent:
                   $ref: '#/components/schemas/continent'
+          namePlural:
+            type: string
           fullName:
             type: string
           units:
@@ -1743,6 +1741,8 @@ components:
                 id:
                   type: integer
                 name:
+                  type: string
+                namePlural:
                   type: string
                 value:
                   type: number
@@ -2029,35 +2029,34 @@ components:
                 type: number
 
 
-    issueYearCatStats:
-      type: object
-      required:
-      - issueYear
-      - numTerritories
-      - numCurrencies
-      - numSeries
-      - numDenominations
-      - numNotes
-      - numVariants
-      properties:
-        issueYear:
-          type: integer
-        numTerritories:
-          type: integer
-        numCurrencies:
-          type: integer
-        numSeries:
-          type: integer
-        numDenominations:
-          type: integer
-        numNotes:
-          type: integer
-        numVariants:
-          type: integer
+    dateCatStats:
+      allOf:
+      - $ref: '#/components/schemas/date'
+      - type: object
+        required:
+        - numTerritories
+        - numCurrencies
+        - numSeries
+        - numDenominations
+        - numNotes
+        - numVariants
+        properties:
+          numTerritories:
+            type: integer
+          numCurrencies:
+            type: integer
+          numSeries:
+            type: integer
+          numDenominations:
+            type: integer
+          numNotes:
+            type: integer
+          numVariants:
+            type: integer
 
-    issueYearColStats:
+    dateColStats:
       allOf:    
-      - $ref: '#/components/schemas/issueYearCatStats'
+      - $ref: '#/components/schemas/dateCatStats'
       - type: object
         required:
         - collectionStats
@@ -2089,23 +2088,22 @@ components:
                 type: number
 
 
-    issueYearByTerCatStats:
-      type: object
-      required:
-      - issueYear
-      - numDenominations
-      - numVariants
-      properties:
-        issueYear:
-          type: integer
-        numDenominations:
-          type: integer
-        numVariants:
-          type: integer
+    dateByTerCatStats:
+      allOf:
+      - $ref: '#/components/schemas/date'
+      - type: object
+        required:
+        - numDenominations
+        - numVariants
+        properties:
+          numDenominations:
+            type: integer
+          numVariants:
+            type: integer
 
-    issueYearByTerColStats:
+    dateByTerColStats:
       allOf:    
-      - $ref: '#/components/schemas/issueYearByTerCatStats'
+      - $ref: '#/components/schemas/dateByTerCatStats'
       - type: object
         required:
         - collectionStats
@@ -2125,23 +2123,23 @@ components:
                 type: number
                 
         
-    issueYearByCurCatStats:
-      type: object
-      required:
-      - issueYear
-      - numDenominations
-      - numVariants
-      properties:
-        issueYear:
-          type: integer
-        numDenominations:
-          type: integer
-        numVariants:
-          type: integer
+    dateByCurCatStats:
+      allOf:
+      - $ref: '#/components/schemas/date'
+      - type: object
+        required:
+        - date
+        - numDenominations
+        - numVariants
+        properties:
+          numDenominations:
+            type: integer
+          numVariants:
+            type: integer
 
-    issueYearByCurColStats:
+    dateByCurColStats:
       allOf:    
-      - $ref: '#/components/schemas/issueYearByCurCatStats'
+      - $ref: '#/components/schemas/dateByCurCatStats'
       - type: object
         required:
         - collectionStats
@@ -2568,6 +2566,18 @@ components:
       maxLength: 3
       minLength: 3
     
+
+    date:
+      oneOf:
+      - type: object
+        properties:
+          issueYear:
+            type: integer
+      - type: object
+        properties:
+          printedDate:
+            type: string
+
 
     exception:
       type: object

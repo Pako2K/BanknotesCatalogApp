@@ -1,6 +1,8 @@
 function initializeSummary() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
+    $("#grades-div").show();
+
     if (seriesJSON.length === 0) {
         $("#grades-div").hide();
         $("#summary-main-div").append('<p>There is no data for this currency</p>');

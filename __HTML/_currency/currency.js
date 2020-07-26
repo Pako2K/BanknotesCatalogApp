@@ -93,6 +93,7 @@ function setHeaders(currencyJSON) {
         $("#currency-symbol").hide();
 
     $("#currency-name").text(currencyJSON.name);
+    $("#currency-name").data("plural", currencyJSON.namePlural);
     if (currencyJSON.iso3)
         $("#currency-iso3").text(currencyJSON.iso3);
     else
@@ -107,7 +108,7 @@ function setHeaders(currencyJSON) {
     if (currencyJSON.units.length) {
         let subunits = "";
         for (let unit of currencyJSON.units) {
-            subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value + " " + unit.name;
+            subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value + " " + unit.namePlural;
             if (unit.abbreviation)
                 subunits += " (" + unit.abbreviation + ")";
             subunits += "<br>";

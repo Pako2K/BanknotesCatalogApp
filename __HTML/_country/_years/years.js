@@ -2,9 +2,9 @@ function loadYearsTable(countryId) {
     let variantsUri;
     let itemsUri;
     if (getCookie("banknotes.ODB.username"))
-        itemsUri = `/territory/${countryId}/issue-years/items/stats`;
+        itemsUri = `/territory/${countryId}/years/items/stats?dateType=issue`;
     else
-        variantsUri = `/territory/${countryId}/issue-years/variants/stats`;
+        variantsUri = `/territory/${countryId}/years/variants/stats?dateType=issue`;
 
     // Clean table body
     $("#years-table>tbody").empty();

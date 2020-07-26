@@ -1,2 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+#stats-main-div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+#stats-main-div > div {
+  margin: 0.2em 1em;
+}
 /*# sourceMappingURL=stats.css.map */

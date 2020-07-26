@@ -1,1 +1,11 @@
 @import '../../_shared/common';
+#stats-main-div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    &>div {
+        margin: 0.2em 1em;
+    }
+}

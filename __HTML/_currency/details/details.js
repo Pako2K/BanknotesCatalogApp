@@ -11,6 +11,7 @@ function initializeDetails() {
     $('#currency-nav>p').eq(1).data("series-id", "");
     $("#details-main-div>div:not(:first-of-type)").hide();
 
+
     let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
         $(".only-admin").hide();
@@ -117,8 +118,19 @@ function loadSeriesDetails(seriesId) {
             // For each banknote
             for (let denom of notesJSON) {
                 // Create section
-                let denomStr = denom.denomination + ' ' + $("#currency-name").text();
-                let faceValueStr = denom.faceValue ? `${denom.faceValue} ${denom.unitName}` : "";
+                let denomStr = denom.denomination.toLocaleString("de-DE") + ' ';
+                if (denom.denomination != 1)
+                    denomStr += $("#currency-name").data("plural");
+                else
+                    denomStr += $("#currency-name").text();
+                let faceValueStr;
+                if (denom.faceValue) {
+                    faceValueStr = denom.faceValue + ' ';
+                    if (denom.faceValue != 1)
+                        faceValueStr += $("#currency-subunit").data("units").namePlural;
+                    else
+                        faceValueStr += denom.unitName;
+                }
                 let sizeElemStr = denom.width && denom.height ?
                     `${denom.width}mm X ${denom.height}mm` : "";
                 let obverseElem = denom.obverseDescription ?

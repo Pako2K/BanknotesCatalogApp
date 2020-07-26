@@ -36,7 +36,7 @@ function currencyByIdGET(request, response) {
     }
 
     let sql = ` SELECT cur.*, TEC.tec_iso3, TER.ter_con_id,  CON.con_name, TER.ter_id, TER.ter_iso3, TER.ter_name, 
-                        CUS.cus_id, CUS.cus_value, CUS.cus_name, CUS.cus_abbreviation,
+                        CUS.cus_id, CUS.cus_value, CUS.cus_name, CUS.cus_name_plural, CUS.cus_abbreviation,
                         pred.cur_id AS pred_cur_id, pred.cur_name AS pred_cur_name, predTEC.tec_ISO3 AS pred_tec_iso3, pred.cur_replacement_rate AS pred_cur_replacement_rate,
                         succ.cur_name AS succ_cur_name, succTEC.tec_ISO3 AS succ_tec_iso3
                 FROM cur_currency CUR
@@ -69,11 +69,12 @@ function currencyByIdGET(request, response) {
             replyJSON.symbol = rows[0].cur_symbol;
             replyJSON.iso3 = rows[0].tec_iso3;
             replyJSON.name = rows[0].cur_name;
+            replyJSON.namePlural = rows[0].cur_name_plural;
             replyJSON.fullName = rows[0].cur_full_name;
             replyJSON.units = [];
             if (rows[0].cus_value) {
                 for (let row of rows) {
-                    replyJSON.units.push({ "id": row.cus_id, "name": row.cus_name, "value": row.cus_value, "abbreviation": row.cus_abbreviation });
+                    replyJSON.units.push({ "id": row.cus_id, "name": row.cus_name, "namePlural": row.cus_name_plural, "value": row.cus_value, "abbreviation": row.cus_abbreviation });
                 }
             }
             replyJSON.start = rows[0].cur_start;

@@ -6,15 +6,15 @@ function readIssueYears() {
     let variantsUri;
     let itemsUri;
     if (getCookie("banknotes.ODB.username"))
-        itemsUri = "/issue-years/items/stats";
+        itemsUri = "/years/items/stats";
     else
-        variantsUri = "/issue-years/variants/stats";
+        variantsUri = "/years/variants/stats";
 
     // Retrieve filters from the Cookies
     let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
 
-    let queryStr = "";
-    if (filterContId) queryStr = "?continentId=" + filterContId;
+    let queryStr = "?dateType=issue";
+    if (filterContId) queryStr += "&continentId=" + filterContId;
 
     // Get years
     $.ajax({

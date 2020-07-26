@@ -236,7 +236,7 @@ function loadResultsTable() {
                         <th>${variant.seriesName}</th>
                         <th>${variant.denomination}</th>
                         <th>${variant.issueYear}</th>
-                        <th>${variant.printedDate}</th>
+                        <th>${variant.printedDate || "ND"}</th>
                         <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
                         <td class="only-logged-in">${(variant.item) ? variant.item.price.toFixed(2) + ' €' : "-"}</td>
                     </tr>`;
