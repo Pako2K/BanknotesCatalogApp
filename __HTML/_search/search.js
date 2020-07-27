@@ -234,9 +234,11 @@ function loadResultsTable() {
                         <th class="name"><a href="/_country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
                         <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}">${variant.currencyName}</a></th>
                         <th>${variant.seriesName}</th>
-                        <th>${variant.denomination}</th>
+                        <th>${variant.denomination.toLocaleString("de-DE")}</th>
                         <th>${variant.issueYear}</th>
                         <th>${variant.printedDate || "ND"}</th>
+                        <th>${variant.width || "-"}</th>
+                        <th>${variant.height || "-"}</th>
                         <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
                         <td class="only-logged-in">${(variant.item) ? variant.item.price.toFixed(2) + ' €' : "-"}</td>
                     </tr>`;
@@ -268,7 +270,9 @@ function sortClick(htmlElem, titleStr) {
         "Denomination": "denomination",
         "Issue Date": "issueYear",
         "Printed Date": "printedDate",
-        "Price": "price"
+        "Price": "price",
+        "Width (mm)": "width",
+        "Height (mm)": "height"
     };
     let flag = $(htmlElem).text() === "Collect.";
     let sortingField = mapFieldName[mapKey];

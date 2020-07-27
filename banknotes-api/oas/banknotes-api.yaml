@@ -2450,6 +2450,10 @@ components:
               type: integer
             territoryName:
               type: string
+            width:
+              type: integer
+            height:
+              type: integer
    
    
     itemKey:

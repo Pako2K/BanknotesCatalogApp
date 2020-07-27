@@ -324,7 +324,8 @@ function itemsGET(request, response) {
                             BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate",
                             CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                             SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
-                            CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName"
+                            CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName",
+                            BAN.ban_size_width AS "width", BAN.ban_size_height AS "height" 
                     FROM bva_variant BVA
                     ${commonJoinsSQL}
                 )
@@ -951,15 +952,21 @@ function sortByPrintedDate(datesArray) {
     datesArray.sort((a, b) => {
         let a_val = a.printedDate;
         if (a_val.startsWith("ND")) {
-            a_val = a_val.split(";")[1]
-            a.printedDate = "ND (" + a_val + ")";
-            a_val += ".01.01";
+            a_val = parseInt(a_val.split(";")[1]);
+        } else {
+            let elem = a_val.split(".");
+            a_val = parseInt(elem[0]) * 10000 + parseInt(elem[1]) * 100 + parseInt(elem[2])
         }
         let b_val = b.printedDate;
         if (b_val.startsWith("ND")) {
-            b_val = b_val.split(";")[1] + ".01.01";
+            b_val = parseInt(b_val.split(";")[1]);
+            b.printedDate = "ND (" + b_val + ")";
+        } else {
+            let elem = b_val.split(".");
+            b_val = parseInt(elem[0]) * 10000 + parseInt(elem[1]) * 100 + parseInt(elem[2])
         }
-        return a_val > b_val;
+
+        return a_val - b_val;
     });
 
     return datesArray;
