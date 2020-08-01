@@ -3,7 +3,9 @@ function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantI
     $("#upsert-variant-dialog").data("banknote-id", banknoteId);
     $("#upsert-variant-dialog").data("variant-id", variantId);
 
-    $("#upsert-note-dialog>h4").text(`${denominationStr}`);
+    $("#upsert-variant-dialog>h4").text(`${denominationStr}`);
+
+    $("#upsert-variant-dialog input[name='variant-printed-date']").focus();
 
     // Fill-in the printers
     $.ajax({
@@ -57,7 +59,7 @@ function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantI
                 });
 
             } else {
-                $("#upsert-note-dialog>h3").text(`Add New Variant`);
+                $("#upsert-variant-dialog>h3").text(`Add New Variant`);
                 $("#upsert-variant-dialog select[name='variant-printer']").val(0)
             }
         },

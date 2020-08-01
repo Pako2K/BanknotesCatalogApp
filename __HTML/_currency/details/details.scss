@@ -52,11 +52,14 @@
         flex-direction: row;
         flex-wrap: wrap;
         &>div {
-            width: 20em;
+            width: 22em;
             font-family: Lucida sans, sans-serif;
             font-size: 0.8em;
             background-color: white;
-            border: 0.5px solid black;
+            border-bottom: 0.5px solid black;
+            border-top: 0.5px solid black;
+            border-left: 0.5px solid darkgray;
+            border-right: 0.5px solid darkgray;
             padding: 0.5em 0.5em;
             margin-right: 0.3em;
             margin-bottom: 0.3em;
@@ -69,6 +72,10 @@
                 background-color: rgb(164, 248, 164);
                 box-shadow: 0px 0px 3px 2px rgb(188, 233, 188);
                 border: 0.5px solid rgb(175, 175, 175);
+            }
+            &:hover {
+                font-weight: bold;
+                border: 0.5px solid rgb(75, 75, 75);
             }
         }
     }

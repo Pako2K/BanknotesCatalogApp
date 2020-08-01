@@ -1,6 +1,8 @@
 function initializeUpsertSeries(currencyJSON, seriesJSON) {
     $("#upsert-series-dialog").data("currency-id", currencyJSON.id);
 
+    $("#upsert-series-dialog input[name='series-name']").focus();
+
     // Fill-in the issuers
     $.ajax({
         type: "GET",

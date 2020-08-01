@@ -15,7 +15,7 @@
   width: 12em;
   font-family: Lucida sans, sans-serif;
   font-size: 0.75em;
-  border-top: solid 1px darkgrey;
+  border-top: none;
   border-left: solid 1px darkgrey;
   color: #323232;
   text-align: center;
@@ -24,17 +24,17 @@
 }
 
 .summary-table > thead > tr:nth-child(1) > th:nth-of-type(odd) {
-  background-color: #d9ebe4;
+  background-color: #eae8e8;
 }
 
 .summary-table > thead > tr:nth-child(1) > th:nth-of-type(even) {
-  background-color: #e3ebda;
+  background-color: #dadade;
 }
 
 .summary-table > thead > tr:nth-child(2) > th {
   font-family: Lucida sans, sans-serif;
   font-size: 0.8em;
-  border-top: solid 1px darkgrey;
+  border-top: solid 0.5px darkgrey;
   border-left: solid 1px darkgrey;
   border-right: solid 1px darkgrey;
   color: #326432;
@@ -98,7 +98,7 @@
 }
 
 .summary-table > tbody *.no-grade {
-  background-color: #fafdf5;
+  background-color: #fcfcf8;
 }
 
 .summary-table .subcol-1 {

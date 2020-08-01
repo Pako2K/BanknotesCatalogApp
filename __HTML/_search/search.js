@@ -167,14 +167,10 @@ function callVariantsAPI(filters) {
                 row.price = row.price || 0;
             }
 
-            let sortingField = "catalogueIdInt";
-            let storedSortingField = $("#results-table").data("sorting-field");
-            if (storedSortingField) {
-                sortingField = storedSortingField;
-            }
+            $("#results-table").data("value", JSON.stringify(variantsJSON));
 
-            storeVariationsTable(variantsJSON, sortingField, $("#results-table .sorting-column").text() === "Collection");
-
+            // Sort by the first column
+            $("#results-table th:first-of-type>span").click();
         },
         error: function(xhr, status, error) {
             if (xhr.responseJSON) {
@@ -195,27 +191,6 @@ function callVariantsAPI(filters) {
         }
     });
 }
-
-
-function storeVariationsTable(variantsJSON, sortingField, isCollecBasedSorting) {
-    // Retrieve sorting 
-    let sortingAsc = $(".sort-selection").hasClass("sort-asc");
-
-    if (isCollecBasedSorting)
-        sortingField = "collecStats." + sortingField;
-
-    let sortingFields = [sortingField];
-    if (sortingField !== "catalogueIdInt")
-        sortingFields.push("catalogueIdInt");
-
-    variantsJSON = sortJSON(variantsJSON, sortingFields, sortingAsc);
-
-    $("#results-table").data("value", JSON.stringify(variantsJSON));
-
-    // Load denominations table body
-    loadResultsTable();
-}
-
 
 
 function loadResultsTable() {
@@ -263,7 +238,7 @@ function sortClick(htmlElem, titleStr) {
     // Load table body
     // Mapping column name - field name
     let mapFieldName = {
-        "Catalogue Id": "catalogueID",
+        "Catalogue Id": "catalogueIdInt",
         "Territory": "territoryName",
         "Currency": "currencyName",
         "Series": "seriesName",
@@ -274,9 +249,26 @@ function sortClick(htmlElem, titleStr) {
         "Width (mm)": "width",
         "Height (mm)": "height"
     };
-    let flag = $(htmlElem).text() === "Collect.";
+    let isCollecBasedSorting = $(htmlElem).text() === "Collect.";
     let sortingField = mapFieldName[mapKey];
-    storeVariationsTable(JSON.parse($("#results-table").data("value")), sortingField, flag);
+    if (isCollecBasedSorting)
+        sortingField = "collecStats." + sortingField;
+
+    // Retrieve sorting 
+    let sortingAsc = $(".sort-selection").hasClass("sort-asc");
+
+    // Sort
+    let sortingFields = [sortingField];
+    if (sortingField !== "catalogueIdInt")
+        sortingFields.push("catalogueIdInt");
+
+    let variantsJSON = sortJSON(JSON.parse($("#results-table").data("value")), sortingFields, sortingAsc);
+
+    // Store result
+    $("#results-table").data("value", JSON.stringify(variantsJSON));
+
+    // Load denominations table body
+    loadResultsTable();
 
     // Save the sorting field so it can be read after re-loading the data
     $("#results-table").data("sorting-field", sortingField);

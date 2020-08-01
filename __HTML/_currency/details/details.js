@@ -127,7 +127,7 @@ function loadSeriesDetails(seriesId) {
                 if (denom.faceValue) {
                     faceValueStr = denom.faceValue + ' ';
                     if (denom.faceValue != 1)
-                        faceValueStr += $("#currency-subunit").data("units").namePlural;
+                        faceValueStr += $("#currency-subunit").data("units")[0].namePlural;
                     else
                         faceValueStr += denom.unitName;
                 }

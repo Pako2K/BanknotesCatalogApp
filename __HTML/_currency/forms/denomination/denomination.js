@@ -4,6 +4,8 @@ function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
 
     $("#upsert-note-dialog>h4").text(`${currencyJSON.name} - ${seriesJSON.name}`);
 
+    $("#upsert-note-dialog input[name='note-face-value']").focus();
+
     // Fill-in the materials
     $.ajax({
         type: "GET",

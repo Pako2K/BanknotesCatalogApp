@@ -13,23 +13,23 @@
         width: 12em;
         font-family: Lucida sans, sans-serif;
         font-size: 0.75em;
-        border-top: solid 1px darkgrey;
+        border-top: none;
         border-left: solid 1px darkgrey;
         color: rgb(50, 50, 50);
         text-align: center;
         padding: 0.4em 0.4em;
         overflow: hidden;
         &:nth-of-type(odd) {
-            background-color: rgb(217, 235, 228);
+            background-color: rgb(234, 232, 232)
         }
         &:nth-of-type(even) {
-            background-color: rgb(227, 235, 218);
+            background-color: rgb(218, 218, 222);
         }
     }
     &>thead>tr:nth-child(2)>th {
         font-family: Lucida sans, sans-serif;
         font-size: 0.8em;
-        border-top: solid 1px darkgrey;
+        border-top: solid 0.5px darkgrey;
         border-left: solid 1px darkgrey;
         border-right: solid 1px darkgrey;
         color: rgb(50, 100, 50);
@@ -84,7 +84,7 @@
             border-bottom: dotted 1px grey;
         }
         & *.no-grade {
-            background-color: rgb(250, 253, 245);
+            background-color: rgb(252, 252, 248);
         }
     }
     & .subcol-1 {

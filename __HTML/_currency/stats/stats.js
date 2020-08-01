@@ -187,7 +187,7 @@ function loadDenominationsTable(denomJSON) {
     let count = denomJSON.length;
     for (let i = count - 1; i >= 0; i--) {
         record = `  <tr>
-                        <th>` + denomJSON[i].denomination + `</th>
+                        <th>${denomJSON[i].denomination.toLocaleString("de-DE")}</th>
                         <td>${denomJSON[i].numSeries}</td>
                         <td class="only-logged-in">${denomJSON[i].collectionStats.numSeries || 0}</td>
                         <td>${denomJSON[i].numVariants}</td>
