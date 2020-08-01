@@ -1,3 +1,30 @@
+.button-style {
+  border: none;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  -webkit-box-shadow: #323232 2px 2px 3px;
+          box-shadow: #323232 2px 2px 3px;
+  cursor: pointer;
+  height: 2.2em;
+  width: 7em;
+  font-size: 0.9em;
+}
+
+.button-style:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.button-style:focus {
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+  outline: none;
+}
+
 #upsert-variant-dialog {
   padding: 1em 1.5em 2em 1.5em;
   background-color: #ebebeb;
@@ -9,8 +36,9 @@
   margin-bottom: 1em;
   padding: 0.5em 1em;
   font-size: 0.9em;
+  font-weight: normal;
   border-radius: 0.4em;
-  background-color: #325032;
+  background-color: #3f613f;
   color: white;
 }
 
@@ -47,16 +75,23 @@
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;
   padding: 0.4em 0.2em;
+  border: none;
+  border-bottom: solid 0.5px darkgray;
+  border-radius: 2px;
+}
+
+#upsert-variant-dialog > form > div input:focus {
+  outline: none;
 }
 
 #upsert-variant-dialog > form > div input:required:valid {
   background-color: #d0f7d0;
-  border: solid 1px darkgray;
+  border-bottom: solid 0.5px darkgray;
 }
 
 #upsert-variant-dialog > form > div input:invalid {
   background-color: #fdf2bd;
-  border: solid 1px black;
+  border-bottom: solid 1px black;
 }
 
 #upsert-variant-dialog > form > div label {
@@ -68,13 +103,28 @@
   font-size: 0.9em;
   padding: 0.4em 0.2em;
   width: 10em;
-  border: solid 1px darkgray;
+  border: none;
+  border-bottom: solid 0.5px darkgray;
+  outline: none;
+}
+
+#upsert-variant-dialog > form > div select:required:valid {
+  background-color: #d0f7d0;
+  border-bottom: solid 0.5px darkgray;
+}
+
+#upsert-variant-dialog > form > div select:invalid {
+  background-color: #fdf2bd;
+  border-bottom: solid 1px black;
 }
 
 #upsert-variant-dialog > form > div textarea {
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;
   padding: 0.4em 0.2em;
+  border: none;
+  border-bottom: solid 0.5px darkgray;
+  outline: none;
 }
 
 #upsert-variant-dialog > form > div.inline-fields {
@@ -140,34 +190,6 @@
 }
 
 #upsert-variant-dialog > form > div:last-of-type > input:focus {
-  outline: none;
-}
-
-.button-style {
-  border-radius: 2em;
-  border: none;
-  margin-left: 0.8em;
-  margin-right: 0.8em;
-  -webkit-box-shadow: #323232 2px 2px 3px;
-          box-shadow: #323232 2px 2px 3px;
-  cursor: pointer;
-  height: 2.2em;
-  width: 7em;
-  font-size: 0.9em;
-}
-
-.button-style:active {
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  position: relative;
-  top: 2px;
-  left: 2px;
-}
-
-.button-style:focus {
-  text-decoration: underline;
-  -webkit-text-decoration-style: dotted;
-          text-decoration-style: dotted;
   outline: none;
 }
 /*# sourceMappingURL=variant.css.map */

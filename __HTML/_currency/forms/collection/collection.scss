@@ -1,24 +1,6 @@
+@import '../forms';
 #upsert-collection-dialog {
-    padding: 1em 1.5em 2em 1.5em;
-    background-color: rgb(235, 235, 235);
-    &>h3 {
-        text-align: left;
-        margin-top: 0.2em;
-        margin-bottom: 1em;
-        padding: 0.5em 1em;
-        font-size: 0.9em;
-        border-radius: 0.4em;
-        background-color: rgb(50, 80, 50);
-        color: white;
-    }
-    &>h4 {
-        text-align: center;
-        color: black;
-        margin-bottom: 1em;
-        font-family: Lucida sans, sans-serif;
-        font-size: 1em;
-        text-shadow: gray 2px 2px 3px;
-    }
+    @include frame-and-headers;
     & table {
         border-collapse: collapse;
         &>thead>tr>th {
@@ -106,44 +88,6 @@
         }
     }
     &>form>div {
-        margin-top: 1.4em;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        &>button {
-            background: rgb(159, 92, 92);
-            color: whitesmoke;
-        }
-        &>input {
-            &:focus {
-                outline: none;
-            }
-            background: rgb(146, 188, 70);
-            color: white;
-        }
-    }
-}
-
-.button-style {
-    border-radius: 2em;
-    border: none;
-    margin-left: 0.8em;
-    margin-right: 0.8em;
-    box-shadow: rgb(50, 50, 50) 2px 2px 3px;
-    cursor: pointer;
-    height: 2.2em;
-    width: 7em;
-    font-size: 0.9em;
-    &:active {
-        box-shadow: none;
-        position: relative;
-        top: 2px;
-        left: 2px;
-    }
-    &:focus {
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        outline: none;
+        @include form-buttons-div;
     }
 }

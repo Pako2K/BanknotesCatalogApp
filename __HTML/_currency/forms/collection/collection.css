@@ -1,3 +1,30 @@
+.button-style {
+  border: none;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  -webkit-box-shadow: #323232 2px 2px 3px;
+          box-shadow: #323232 2px 2px 3px;
+  cursor: pointer;
+  height: 2.2em;
+  width: 7em;
+  font-size: 0.9em;
+}
+
+.button-style:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
+.button-style:focus {
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+  outline: none;
+}
+
 #upsert-collection-dialog {
   padding: 1em 1.5em 2em 1.5em;
   background-color: #ebebeb;
@@ -9,15 +36,16 @@
   margin-bottom: 1em;
   padding: 0.5em 1em;
   font-size: 0.9em;
+  font-weight: normal;
   border-radius: 0.4em;
-  background-color: #325032;
+  background-color: #3f613f;
   color: white;
 }
 
 #upsert-collection-dialog > h4 {
   text-align: center;
   color: black;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   font-family: Lucida sans, sans-serif;
   font-size: 1em;
   text-shadow: gray 2px 2px 3px;
@@ -181,34 +209,6 @@
 }
 
 #upsert-collection-dialog > form > div > input:focus {
-  outline: none;
-}
-
-.button-style {
-  border-radius: 2em;
-  border: none;
-  margin-left: 0.8em;
-  margin-right: 0.8em;
-  -webkit-box-shadow: #323232 2px 2px 3px;
-          box-shadow: #323232 2px 2px 3px;
-  cursor: pointer;
-  height: 2.2em;
-  width: 7em;
-  font-size: 0.9em;
-}
-
-.button-style:active {
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  position: relative;
-  top: 2px;
-  left: 2px;
-}
-
-.button-style:focus {
-  text-decoration: underline;
-  -webkit-text-decoration-style: dotted;
-          text-decoration-style: dotted;
   outline: none;
 }
 /*# sourceMappingURL=collection.css.map */

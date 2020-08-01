@@ -97,8 +97,8 @@
   background-color: white;
   border-bottom: 0.5px solid black;
   border-top: 0.5px solid black;
-  border-left: 0.5px solid darkgray;
-  border-right: 0.5px solid darkgray;
+  border-left: 0.5px solid lightgray;
+  border-right: 0.5px solid lightgray;
   padding: 0.5em 0.5em;
   margin-right: 0.3em;
   margin-bottom: 0.3em;
@@ -209,7 +209,10 @@
 }
 
 .variant-box {
-  border: 0.5px solid grey;
+  border-bottom: 0.5px solid grey;
+  border-top: 0.5px solid grey;
+  border-left: 0.5px solid lightgrey;
+  border-right: 0.5px solid lightgrey;
   background: white;
   width: 400px;
   margin-right: 1em;
@@ -264,7 +267,6 @@
 }
 
 .variant-info {
-  border: 0.5px solid lightgrey;
   padding: 0.5em 1em;
 }
 
@@ -330,11 +332,17 @@
 .item-add-box {
   margin-top: 0.1em;
   padding: 0.5em 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .item-add-box > div {
   background: white;
-  width: 100%;
+  width: 40%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
