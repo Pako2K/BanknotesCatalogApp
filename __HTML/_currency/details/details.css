@@ -24,9 +24,9 @@
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
 }
 
 #details-main-div div.series-options > img {
@@ -93,7 +93,7 @@
 #details-main-div div.series-list > div {
   width: 22em;
   font-family: Lucida sans, sans-serif;
-  font-size: 0.8em;
+  font-size: 0.75em;
   background-color: white;
   border-bottom: 0.5px solid black;
   border-top: 0.5px solid black;
@@ -176,10 +176,6 @@
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-}
-
-.banknote-info > div:first-of-type {
-  max-width: 50%;
 }
 
 .banknote-info p {

@@ -13,7 +13,7 @@
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: flex-end;
         &>img {
             display: none;
             width: 1.6em;
@@ -54,7 +54,7 @@
         &>div {
             width: 22em;
             font-family: Lucida sans, sans-serif;
-            font-size: 0.8em;
+            font-size: 0.75em;
             background-color: white;
             border-bottom: 0.5px solid black;
             border-top: 0.5px solid black;
@@ -123,9 +123,9 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    &>div:first-of-type {
-        max-width: 50%;
-    }
+    // &>div:first-of-type {
+    //     max-width: 50%;
+    // }
     & p {
         font-family: Lucida sans, sans-serif;
         font-size: 0.7em;

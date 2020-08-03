@@ -214,7 +214,7 @@ function loadSeriesDetails(seriesId) {
                                 ${addInfo("Watermark", variant.watermark)}
                                 ${addInfo("Security Thread", variant.securityThread)}
                                 ${addInfo("Additional Security", variant.securityExt)}
-                                ${addInfo("Mintage", variant.mintage)}
+                                ${addInfo("Mintage", variant.mintage ? variant.mintage.toLocaleString("de-DE"): null)}
                                 ${addInfoBoolean("Not Issued", variant.notIssued)}
                                 ${addInfoBoolean("Replacement", variant.isReplacement)}
                                 ${addInfoBoolean("Specimen", variant.isSpecimen)}
