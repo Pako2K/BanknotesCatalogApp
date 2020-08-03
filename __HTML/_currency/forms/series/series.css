@@ -74,7 +74,7 @@
 #upsert-series-dialog > form > div input {
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;
-  padding: 0.4em 0.2em;
+  padding: 0.4em 0.5em;
   border: none;
   border-bottom: solid 0.5px darkgray;
   border-radius: 2px;
@@ -117,7 +117,7 @@
 #upsert-series-dialog > form > div textarea {
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;
-  padding: 0.4em 0.2em;
+  padding: 0.4em 0.5em;
   border: none;
   border-bottom: solid 0.5px darkgray;
   outline: none;

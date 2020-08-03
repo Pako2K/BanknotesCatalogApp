@@ -20,13 +20,27 @@
                 <input value="P-" name="variant-catalogue-id" type="text" size="12" maxlength="12" autocomplete="off" required/>
             </div>
             <div>
-                <p>Overstamped variant</p>
+                <p>Overstamped note Id</p>
                 <input name="variant-overstamped-id" type="text" size="12" maxlength="12" autocomplete="off"></select>
+            </div>
+        </div>
+        <div class="flag-fields">
+            <div>
+                <input type="checkbox" name="not-issued" value="1">
+                <span>NOT ISSUED</span>
             </div>
         </div>
         <div>
             <p>Printer</p>
             <select name="variant-printer" style="width: 25em" />
+        </div>
+        <div>
+            <p>Obverse Color</p>
+            <input name="variant-obverse-color" type="text" size="36" maxlength="35" autocomplete="off" />
+        </div>
+        <div>
+            <p>Reverse Color</p>
+            <input name="variant-reverse-color" type="text" size="36" maxlength="35" autocomplete="off" />
         </div>
         <div>
             <p>Signature</p>
@@ -51,25 +65,30 @@
         <div class="flag-fields">
             <div>
                 <input type="checkbox" name="is-specimen" value="1">
-                <label for="is-specimen">Specimen</label>
+                <span>Specimen</span>
             </div>
             <div>
                 <input type="checkbox" name="is-replacement" value="1">
-                <label for="is-replacement">Replacement</label>
+                <span>Replacement</span>
             </div>
             <div>
                 <input type="checkbox" name="is-error" value="1">
-                <label for="is-error">Error</label>
+                <span>Error</span>
             </div>
             <div>
                 <input type="checkbox" name="is-commemorative" value="1">
-                <label for="is-commemorative">Commemorative</label>
+                <span>Commemorative</span>
             </div>
             <div>
                 <input type="checkbox" name="is-num-product" value="1">
-                <label for="is-num-product">Numismatic Product</label>
+                <span>Numismatic Product</span>
             </div>
         </div>
+        <div>
+            <p>Mintage</p>
+            <input name="variant-mintage" type="number" style="width: 8em" />
+        </div>
+
         <div>
             <p>Description</p>
             <textarea name="variant-description" rows="3" cols="36"></textarea>

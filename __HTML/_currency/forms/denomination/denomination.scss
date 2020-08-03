@@ -22,6 +22,19 @@
                 flex-direction: row;
                 justify-content: space-between;
             }
+            &.fields-group {
+                &>p {
+                    margin-bottom: 0.2em;
+                }
+                &>div {
+                    margin-left: 0.3em;
+                    padding-left: 1em;
+                    border-left: solid 0.5px gray;
+                    &>p:first-of-type {
+                        margin-top: 0.3em;
+                    }
+                }
+            }
         }
         &>div:last-of-type {
             @include form-buttons-div;

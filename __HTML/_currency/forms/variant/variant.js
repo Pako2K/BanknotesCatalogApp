@@ -39,18 +39,22 @@ function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantI
                         $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catalogueId);
                         $("#upsert-variant-dialog select[name='variant-printer']").val(variant.printerId)
                         $("#upsert-variant-dialog input[name='variant-overstamped-id']").val(variant.overstampedVariantId);
+                        $("#upsert-variant-dialog input[name='not-issued']").prop("checked", parseInt(variant.notIssued));
+                        $("#upsert-variant-dialog input[name='variant-obverse-color']").val(variant.obverseColor);
+                        $("#upsert-variant-dialog input[name='variant-reverse-color']").val(variant.reverseColor);
                         $("#upsert-variant-dialog input[name='variant-signature']").val(variant.signature);
                         $("#upsert-variant-dialog input[name='variant-signature-ext']").val(variant.signatureExt);
                         $("#upsert-variant-dialog input[name='variant-watermark']").val(variant.watermark);
                         $("#upsert-variant-dialog input[name='variant-security-thread']").val(variant.securityThread);
                         $("#upsert-variant-dialog input[name='variant-security']").val(variant.securityExt);
 
-                        $("input[name='is-specimen']").prop("checked", variant.isSpecimen);
-                        $("input[name='is-commemorative']").prop("checked", variant.isCommemorative);
-                        $("input[name='is-num-product']").prop("checked", variant.isNumismaticProduct);
-                        $("input[name='is-replacement']").prop("checked", variant.isReplacement);
-                        $("input[name='is-error']").prop("checked", variant.isError);
+                        $("#upsert-variant-dialog input[name='is-specimen']").prop("checked", variant.isSpecimen);
+                        $("#upsert-variant-dialog input[name='is-commemorative']").prop("checked", variant.isCommemorative);
+                        $("#upsert-variant-dialog input[name='is-num-product']").prop("checked", variant.isNumismaticProduct);
+                        $("#upsert-variant-dialog input[name='is-replacement']").prop("checked", variant.isReplacement);
+                        $("#upsert-variant-dialog input[name='is-error']").prop("checked", variant.isError);
 
+                        $("#upsert-variant-dialog input[name='variant-mintage']").val(variant.mintage);
                         $("#upsert-variant-dialog textarea[name='variant-description']").val(variant.description);
                     },
                     error: function(xhr, status, error) {
@@ -92,8 +96,13 @@ function upsertVariant() {
         variant.catalogueId = $("input[name='variant-catalogue-id']").val();
     if ($("input[name='variant-overstamped-id']").val() !== "")
         variant.overstampedVariantId = $("input[name='variant-overstamped-id']").val();
+    variant.notIssued = $("input[name='not-issued']").prop("checked");
     if ($("select[name='variant-printer']").val())
         variant.printerId = parseInt($("select[name='variant-printer']").val());
+    if ($("input[name='variant-obverseColor']").val() !== "")
+        variant.obverseColor = $("input[name='variant-obverse-color']").val();
+    if ($("input[name='variant-reverseColor']").val() !== "")
+        variant.reverseColor = $("input[name='variant-reverse-color']").val();
     if ($("input[name='variant-signature']").val() !== "")
         variant.signature = $("input[name='variant-signature']").val();
     if ($("input[name='variant-signature-ext']").val() !== "")
@@ -109,6 +118,8 @@ function upsertVariant() {
     variant.isNumismaticProduct = $("input[name='is-num-product']").prop("checked");
     variant.isReplacement = $("input[name='is-replacement']").prop("checked");
     variant.isError = $("input[name='is-error']").prop("checked");
+    if ($("input[name='variant-mintage']").val())
+        variant.mintage = parseInt($("input[name='variant-mintage']").val());
     if ($("textarea[name='variant-description']").val() !== "")
         variant.description = $("textarea[name='variant-description']").val();
 

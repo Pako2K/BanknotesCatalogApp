@@ -43,6 +43,8 @@ function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
 
         $("#upsert-note-dialog input[name='note-width']").val(noteJSON.width);
         $("#upsert-note-dialog input[name='note-height']").val(noteJSON.height);
+        $("#upsert-note-dialog textarea[name='note-obverse-tags']").val(noteJSON.obverseTags);
+        $("#upsert-note-dialog textarea[name='note-reverse-tags']").val(noteJSON.reverseTags);
         $("#upsert-note-dialog textarea[name='note-obverse-desc']").val(noteJSON.obverseDescription);
         $("#upsert-note-dialog textarea[name='note-reverse-desc']").val(noteJSON.reverseDescription);
         $("#upsert-note-dialog textarea[name='note-desc']").val(noteJSON.description);
@@ -78,6 +80,10 @@ function upsertNote() {
         banknote.width = parseInt($("input[name='note-width']").val());
     if ($("input[name='note-height']").val() !== "")
         banknote.height = parseInt($("input[name='note-height']").val());
+    if ($("textarea[name='note-obverse-tags']").val() !== "")
+        banknote.obverseTags = $("textarea[name='note-obverse-tags']").val();
+    if ($("textarea[name='note-reverse-tags']").val() !== "")
+        banknote.reverseTags = $("textarea[name='note-reverse-tags']").val();
     if ($("textarea[name='note-obverse-desc']").val() !== "")
         banknote.obverseDescription = $("textarea[name='note-obverse-desc']").val();
     if ($("textarea[name='note-reverse-desc']").val() !== "")

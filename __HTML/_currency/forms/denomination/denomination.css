@@ -74,7 +74,7 @@
 #upsert-note-dialog > form > div input {
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;
-  padding: 0.4em 0.2em;
+  padding: 0.4em 0.5em;
   border: none;
   border-bottom: solid 0.5px darkgray;
   border-radius: 2px;
@@ -117,7 +117,7 @@
 #upsert-note-dialog > form > div textarea {
   font-family: Lucida sans, sans-serif;
   font-size: 0.9em;
-  padding: 0.4em 0.2em;
+  padding: 0.4em 0.5em;
   border: none;
   border-bottom: solid 0.5px darkgray;
   outline: none;
@@ -134,6 +134,20 @@
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+}
+
+#upsert-note-dialog > form > div.fields-group > p {
+  margin-bottom: 0.2em;
+}
+
+#upsert-note-dialog > form > div.fields-group > div {
+  margin-left: 0.3em;
+  padding-left: 1em;
+  border-left: solid 0.5px gray;
+}
+
+#upsert-note-dialog > form > div.fields-group > div > p:first-of-type {
+  margin-top: 0.3em;
 }
 
 #upsert-note-dialog > form > div:last-of-type {

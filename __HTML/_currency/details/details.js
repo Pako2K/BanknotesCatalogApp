@@ -133,10 +133,13 @@ function loadSeriesDetails(seriesId) {
                 }
                 let sizeElemStr = denom.width && denom.height ?
                     `${denom.width}mm X ${denom.height}mm` : "";
+
+                let tags = denom.obverseTags ? `[<span>${denom.obverseTags}</span>] - ` : "";
                 let obverseElem = denom.obverseDescription ?
-                    `<p>Obverse: [Tags: <span></span>] - <span>${denom.obverseDescription}</span></p>` : "";
+                    `<p>Obverse: ${tags}<span>${denom.obverseDescription}</span></p>` : "";
+                tags = denom.reverseTags ? `[<span>${denom.reverseTags}</span>] - ` : "";
                 let reverseElem = denom.reverseDescription ?
-                    `<p>Reverse: [Tags: <span></span>] - <span>${denom.reverseDescription}</span></p>` : "";
+                    `<p>Reverse: ${tags}<span>${denom.reverseDescription}</span></p>` : "";
 
                 // Create variants
                 let variantsHTML = "";
@@ -202,6 +205,8 @@ function loadSeriesDetails(seriesId) {
                                 <img src="" alt="variant feature"/>
                             </div> 
                             <div class="variant-info">
+                                ${addInfo("Obverse Color", variant.obverseColor)}
+                                ${addInfo("Reverse Color", variant.reverseColor)}
                                 ${addInfo("Overstamped note", variant.overstampedVariantId)}
                                 ${addInfo("Printer", variant.printerName)}
                                 ${addInfo("Signature", variant.signature)}
@@ -209,6 +214,8 @@ function loadSeriesDetails(seriesId) {
                                 ${addInfo("Watermark", variant.watermark)}
                                 ${addInfo("Security Thread", variant.securityThread)}
                                 ${addInfo("Additional Security", variant.securityExt)}
+                                ${addInfo("Mintage", variant.mintage)}
+                                ${addInfoBoolean("Not Issued", variant.notIssued)}
                                 ${addInfoBoolean("Replacement", variant.isReplacement)}
                                 ${addInfoBoolean("Specimen", variant.isSpecimen)}
                                 ${addInfoBoolean("Error Note", variant.isError)}
@@ -232,11 +239,9 @@ function loadSeriesDetails(seriesId) {
                                 ${addInfo("Face Value", faceValueStr)}
                                 <p>Material: <span data-id="${denom.materialId}">${denom.materialName || ""}</span></p>
                                 ${addInfo("Size", sizeElemStr)}
-                                ${addInfo("Description", denom.description)}
-                            </div>
-                            <div>
                                 ${obverseElem}
                                 ${reverseElem}
+                                ${addInfo("Description", denom.description)}
                             </div>
                         </div>
                         <div class="variants-section">
@@ -339,7 +344,7 @@ function addInfo(title, value) {
 
 function addInfoBoolean(title, value) {
     if (value) {
-        return `<p>${title}</p>`;
+        return `<p class="boolean">${title}</p>`;
     } else {
         return "";
     }

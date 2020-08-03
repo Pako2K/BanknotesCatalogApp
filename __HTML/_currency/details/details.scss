@@ -199,6 +199,9 @@
         &>span {
             font-weight: normal;
         }
+        &.boolean {
+            color: rgb(176, 0, 0);
+        }
     }
 }
 

@@ -2307,6 +2307,10 @@ components:
           type: string
         reverseDescription:
           type: string
+        obverseTags:
+          type: string
+        reverseTags:
+          type: string
         description:
           type: string
   
@@ -2338,6 +2342,10 @@ components:
           type: string
         reverseDescription:
           type: string
+        obverseTags:
+          type: string
+        reverseTags:
+          type: string
         description:
           type: string
           
@@ -2363,6 +2371,10 @@ components:
         - $ref: '#/components/schemas/variantKey'
         - type: object
           properties:
+            obverseColor:
+              type: string
+            reverseColor:
+              type: string
             overstampedVariantId:
               type: string
             printerId:
@@ -2377,6 +2389,10 @@ components:
               type: string
             securityExt:
               type: string
+            mintage:
+              type: integer
+            notIssued:
+              type: boolean
             isReplacement:
               type: boolean
             isSpecimen:
@@ -2396,6 +2412,10 @@ components:
         - $ref: '#/components/schemas/variantKey'
         - type: object
           properties:
+            obverseColor:
+              type: string
+            reverseColor:
+              type: string
             overstampedVariantId:
               type: string
             printerId:
@@ -2412,6 +2432,10 @@ components:
               type: string
             securityExt:
               type: string
+            mintage:
+              type: integer
+            notIssued:
+              type: boolean
             isReplacement:
               type: boolean
             isSpecimen:

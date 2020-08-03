@@ -34,7 +34,7 @@
 @mixin input-field {
     font-family: Lucida sans, sans-serif;
     font-size: 0.9em;
-    padding: 0.4em 0.2em;
+    padding: 0.4em 0.5em;
     border: none;
     border-bottom: solid 0.5px darkgray;
     border-radius: 2px;
@@ -54,7 +54,7 @@
 @mixin textarea-field {
     font-family: Lucida sans, sans-serif;
     font-size: 0.9em;
-    padding: 0.4em 0.2em;
+    padding: 0.4em 0.5em;
     border: none;
     border-bottom: solid 0.5px darkgray;
     outline: none;
