@@ -1,7 +1,9 @@
 "use strict"
 
 function initializeStats() {
-    let currencyId = window.location.search.substr("?currencyId=".length);
+    let searchStrArr = window.location.search.substr(1).split("&");
+    let searchParam = searchStrArr[0].split("=");
+    let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
 
     $("#grades-div").hide();
 
@@ -29,7 +31,7 @@ function initializeStats() {
                 }
             }
 
-            loadSeriesTable(seriesJSON);
+            loadSeriesTable(currencyId, seriesJSON);
         },
         error: function(xhr, status, error) {
             switch (xhr.status) {
@@ -150,7 +152,7 @@ function initializeStats() {
 }
 
 
-function loadSeriesTable(seriesJSON) {
+function loadSeriesTable(currencyId, seriesJSON) {
     // Clean table body
     $("#series-stats>tbody").empty();
 
@@ -160,7 +162,7 @@ function loadSeriesTable(seriesJSON) {
         var endDate = seriesJSON[i].end != null ? seriesJSON[i].end : "";
 
         record = `  <tr>
-                        <th class="name" onclick="showSeriesDetail(${seriesJSON[i].id})">` + seriesJSON[i].name + `</th>
+                        <th class="name"><a href="/_currency/index.html?currencyId=${currencyId}&seriesId=${seriesJSON[i].id}">${ seriesJSON[i].name}</th>
                         <th>` + seriesJSON[i].start + `</th>
                         <th>` + endDate + `</th>
                         <td>${seriesJSON[i].numDenominations}</td>
@@ -251,9 +253,4 @@ function loadPrintedTable(yearsJSON) {
         $(".only-logged-in").hide();
         $('#dated-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
     }
-}
-
-
-function showSeriesDetail(seriesId) {
-    $('#currency-nav>p').eq(1).data('series-id', seriesId).trigger('click');
 }

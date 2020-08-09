@@ -8,9 +8,7 @@ function calcFontSize() {
 }
 
 function initializeDetails() {
-    $('#currency-nav>p').eq(1).data("series-id", "");
     $("#details-main-div>div:not(:first-of-type)").hide();
-
 
     let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
@@ -28,7 +26,7 @@ function initializeDetails() {
     }
 
     // In case the user selected a series the option in the navigation will contain a series-id
-    let seriesId = $('#currency-nav>p').eq(1).data("series-id");
+    let seriesId = $('#currency-nav>p').eq(0).data("series-id");
 
     if (seriesId !== "") {
         $(`div.series-list>div[data-id='${seriesId}']`).click();
@@ -47,7 +45,16 @@ function seriesOptionClicked(elem) {
         if (getCookie("banknotes.ODB.isAdmin") === "1") {
             $("#details-main-div>div>img").show();
         }
+
         loadSeriesDetails($(elem).data("id"));
+
+        // Scrolling:
+        let seriesElem = $("div.series-info");
+        let buttonHeight = $("div.series-options>div.clickable-button").height();
+        $("html").animate({
+            scrollTop: seriesElem.offset().top - buttonHeight * 1.5
+        });
+
     }
 };
 
@@ -80,7 +87,7 @@ function loadSeriesDetails(seriesId) {
                 let endDate = "";
                 if (result[0].end != null && result[0].end != "" && result[0].end !== result[0].start)
                     endDate = " - " + result[0].end;
-                $("div.series-info").append(`<h5 id="series-name">${result[0].name} [${result[0].start}${endDate}]</h5>`);
+                $("div.series-info").append(`<h5 name="h5name" id="series-name">${result[0].name} [${result[0].start}${endDate}]</h5>`);
             }
             if (result[0].issuerName) {
                 $("div.series-info").append(`<p id="series-issuer">Issued by: <span data-id="${result[0].issuerId}">${result[0].issuerName}</span></p>`);
@@ -229,7 +236,7 @@ function loadSeriesDetails(seriesId) {
 
                 let banknotesSection = $("div.banknotes-section");
                 banknotesSection.append(
-                    `<div class="banknote-section">
+                    `<div class="banknote-section" id="banknote-id-${denom.denomination}">
                         <div class="banknote-title section-title">
                             <p>${denomStr}</p>
                             <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertDenomination($(this).parent().parent().data('denomination'))" alt="Edit Denomination"/>
@@ -262,6 +269,21 @@ function loadSeriesDetails(seriesId) {
             let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
             if (!flagIsAdminStr || flagIsAdminStr === "0") {
                 $(".only-admin").hide();
+            }
+
+            // In case the user selected a specific banknote the option in the navigation will contain a "denomination"
+            let denomination = $('#currency-nav>p').eq(0).data("denomination");
+            if (denomination !== "") {
+                // Scrolling:
+                let denomSection = $(`#banknote-id-${denomination}`);
+                if (denomSection) {
+                    $("html").animate({
+                        scrollTop: denomSection.offset().top
+                    });
+                }
+
+                // Remove the denomination
+                $('#currency-nav>p').eq(0).data("denomination", "");
             }
         },
 

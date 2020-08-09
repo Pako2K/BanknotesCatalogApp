@@ -32,6 +32,7 @@ function initializeSummary() {
             success: function(notesJSON, status) {
                 numReplies++;
                 notesArray[idx] = notesJSON;
+                notesArray[idx].seriesId = seriesJSON[idx].id
                 notesArray[idx].seriesName = seriesJSON[idx].name
                 if (numReplies === seriesJSON.length)
                     drawTables(notesArray);
@@ -55,6 +56,10 @@ function initializeSummary() {
 
 
 function drawTables(notesArray) {
+    let searchStrArr = window.location.search.substr(1).split("&");
+    let searchParam = searchStrArr[0].split("=");
+    let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
+
     let denominations = []; // "Rows": 1 row for each denomination
     let issueYears = []; // Array of arrays: 1 column for each issue year of each series
     let totalIssueYears = 0;
@@ -185,7 +190,11 @@ function drawTables(notesArray) {
         let totalYears = 0;
         let localSeriesIndex = globalSeriesIndex;
         while (totalYears < numCols) {
-            firstHeaderHTML += `<th colspan="${Math.min(3 * (issueYears[localSeriesIndex].length - seriesYearIndex),3*(MAX_NUM_YEARS - totalYears))}">${notesArray[localSeriesIndex].seriesName}</th>`;
+            firstHeaderHTML += `<th colspan="${Math.min(3 * (issueYears[localSeriesIndex].length - seriesYearIndex),3*(MAX_NUM_YEARS - totalYears))}">
+                                    <a href="/_currency/index.html?currencyId=${currencyId}&seriesId=${notesArray[localSeriesIndex].seriesId}">
+                                        ${notesArray[localSeriesIndex].seriesName}
+                                    </a>
+                                </th>`;
 
             let yearIdx = seriesYearIndex;
             for (; yearIdx < issueYears[localSeriesIndex].length; yearIdx++) {

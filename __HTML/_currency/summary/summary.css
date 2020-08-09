@@ -21,6 +21,7 @@
   text-align: center;
   padding: 0.4em 0.4em;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .summary-table > thead > tr:nth-child(1) > th:nth-of-type(odd) {
@@ -29,6 +30,28 @@
 
 .summary-table > thead > tr:nth-child(1) > th:nth-of-type(even) {
   background-color: #dadade;
+}
+
+.summary-table > thead > tr:nth-child(1) > th > a:link {
+  color: black;
+  text-decoration: none;
+}
+
+.summary-table > thead > tr:nth-child(1) > th > a:visited {
+  color: black;
+  text-decoration: none;
+}
+
+.summary-table > thead > tr:nth-child(1) > th > a:hover {
+  color: #853333;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+.summary-table > thead > tr:nth-child(1) > th > a:active {
+  color: #853333;
+  text-decoration: none;
 }
 
 .summary-table > thead > tr:nth-child(2) > th {

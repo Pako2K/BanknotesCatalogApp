@@ -2466,6 +2466,8 @@ components:
               type: integer
             seriesName:
               type: string
+            issuer:
+              type: string
             currencyId:
               type: integer
             currencyName:
@@ -2474,9 +2476,13 @@ components:
               type: integer
             territoryName:
               type: string
+            printer:
+              type: string
             width:
               type: integer
             height:
+              type: integer
+            mintage:
               type: integer
    
    

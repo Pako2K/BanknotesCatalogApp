@@ -1,5 +1,20 @@
 $(document).ready(function() {
-    let currencyId = window.location.search.substr("?currencyId=".length);
+    let searchStrArr = window.location.search.substr(1).split("&");
+    let searchParam = searchStrArr[0].split("=");
+    let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
+
+    // Optional parameters
+    let seriesId = "";
+    let denomination = "";
+    if (searchStrArr[1]) {
+        searchParam = searchStrArr[1].split("=");
+        seriesId = searchParam[0] === "seriesId" ? searchParam[1] : "";
+
+        if (searchStrArr[2]) {
+            searchParam = searchStrArr[2].split("=");
+            denomination = searchParam[0] === "denomination" ? searchParam[1] : "";
+        }
+    }
 
     // Get data for the country and currency header
     $.ajax({
@@ -31,6 +46,8 @@ $(document).ready(function() {
             $(document).data("series-summary", JSON.stringify(result));
 
             // Load default navigation option
+            $('#currency-nav>p').eq(0).data("series-id", seriesId);
+            $('#currency-nav>p').eq(0).data("denomination", denomination);
             $("#view-section").load("./details/__details.html", initializeDetails);
         },
 

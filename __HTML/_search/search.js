@@ -205,15 +205,18 @@ function loadResultsTable() {
 
     for (let variant of variantsJSON) {
         record = `  <tr>
-                        <th>${variant.catalogueId}</th>
+                        <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}&denomination=${variant.denomination}">${variant.catalogueId}</a></th>
                         <th class="name"><a href="/_country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
                         <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}">${variant.currencyName}</a></th>
-                        <th>${variant.seriesName}</th>
+                        <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}">${variant.seriesName}</a></th>
                         <th>${variant.denomination.toLocaleString("de-DE")}</th>
                         <th>${variant.issueYear}</th>
                         <th>${variant.printedDate || "ND"}</th>
+                        <th>${variant.issuer || "-"}</th>
+                        <th>${variant.printer || "-"}</th>
                         <th>${variant.width || "-"}</th>
                         <th>${variant.height || "-"}</th>
+                        <th>${variant.mintage || "-"}</th>
                         <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
                         <td class="only-logged-in">${(variant.item) ? variant.item.price.toFixed(2) + ' €' : "-"}</td>
                     </tr>`;
@@ -245,9 +248,12 @@ function sortClick(htmlElem, titleStr) {
         "Denomination": "denomination",
         "Issue Date": "issueYear",
         "Printed Date": "printedDate",
+        "Issued by": "issuer",
+        "Printer": "printer",
         "Price": "price",
         "Width (mm)": "width",
-        "Height (mm)": "height"
+        "Height (mm)": "height",
+        "Mintage": "mintage"
     };
     let isCollecBasedSorting = $(htmlElem).text() === "Collect.";
     let sortingField = mapFieldName[mapKey];
