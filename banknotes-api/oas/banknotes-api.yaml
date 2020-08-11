@@ -2324,6 +2324,8 @@ components:
           type: number
         faceValue:
           type: number
+        unitId:
+          type: integer
         unitValue:
           type: number
         unitName:

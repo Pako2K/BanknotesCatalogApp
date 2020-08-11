@@ -19,4 +19,27 @@ main {
   padding: 2em;
   color: black;
 }
-/*# sourceMappingURL=glosary.css.map */
+
+li {
+  margin: 0.5em 0;
+}
+
+a:link {
+  color: black;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+a:visited {
+  color: black;
+}
+
+a:hover {
+  color: #853333;
+}
+
+a:active {
+  color: #853333;
+}
+/*# sourceMappingURL=glossary.css.map */

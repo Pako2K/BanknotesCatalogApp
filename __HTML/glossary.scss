@@ -1,0 +1,32 @@
+@import './_shared/index',
+'./_shared/common';
+body {
+    background-color: whitesmoke;
+}
+
+main {
+    padding: 2em;
+    color: black;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+a:link {
+    color: black;
+    text-decoration: underline dotted;
+    text-underline-position: under;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover {
+    color: rgb(133, 51, 51);
+}
+
+a:active {
+    color: rgb(133, 51, 51);
+}

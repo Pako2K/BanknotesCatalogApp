@@ -409,6 +409,7 @@ function seriesByIdItemsGET(request, response) {
 
     let sql = ` SELECT  BAN.ban_id AS "id", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE BAN.ban_face_value END AS "faceValue", 
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_id END AS "unitId",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_value END AS "unitValue",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_name END AS "unitName",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_abbreviation END AS "unitSymbol",
@@ -448,6 +449,7 @@ function seriesByIdItemsGET(request, response) {
                 denominationJSON.id = row.id;
                 denominationJSON.denomination = row.denomination;
                 if (row.faceValue) denominationJSON.faceValue = row.faceValue;
+                if (row.unitId) denominationJSON.unitId = row.unitId;
                 if (row.unitValue) denominationJSON.unitValue = row.unitValue;
                 if (row.unitName) denominationJSON.unitName = row.unitName;
                 if (row.unitSymbol) denominationJSON.unitSymbol = row.unitSymbol;

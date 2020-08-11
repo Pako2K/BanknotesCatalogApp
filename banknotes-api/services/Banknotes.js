@@ -129,6 +129,10 @@ function denominationPUT(request, response) {
                 new Exception(500, err.code, err.message).send(response);
             return;
         }
+        if (result.rowCount === 0) {
+            new Exception(404, "BAN-04", "Denomination not found for the given id, face value and unit: " + denominationId).send(response);
+            return;
+        }
 
         response.writeHead(200, { 'Content-Type': 'application/json' });
         response.write("{}");
