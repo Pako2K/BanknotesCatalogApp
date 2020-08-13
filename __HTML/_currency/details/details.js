@@ -315,7 +315,11 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
 
 
 function openUpsertSeries(isNewSeries) {
-    let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text() };
+    let currencyIdParam = window.location.search.split("?")[1].split("&")[0];
+    if (currencyIdParam.split("=")[0] !== "currencyId")
+        return;
+
+    let currencyJSON = { id: currencyIdParam.split("=")[1], name: $("#currency-name").text() };
     let seriesJSON = isNewSeries ? undefined : {
         id: $("div.series-info").data("series-id"),
         name: $("div.series-info").data("series-name"),

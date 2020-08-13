@@ -146,7 +146,7 @@ function setHeaders(currencyJSON) {
         if (currencyJSON.predecessor.iso3)
             name += " (" + currencyJSON.predecessor.iso3 + ")";
         $("#currency-predecessor").text(name)
-        $("#predecessorRate").text("1 " + currencyJSON.iso3 + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
+        $("#predecessorRate").text("1 " + (currencyJSON.iso3 || name) + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
     } else {
         $("#currency-predecessor").parent().hide();
     }
@@ -157,7 +157,7 @@ function setHeaders(currencyJSON) {
         if (currencyJSON.successor.iso3)
             name += " (" + currencyJSON.successor.iso3 + ")";
         $("#currency-successor").text(name);
-        $("#successorRate").text("1 " + currencyJSON.successor.iso3 + " = " + currencyJSON.successor.rate.toLocaleString("de-DE") + " " + (currencyJSON.iso3 || currencyJSON.name));
+        $("#successorRate").text("1 " + (currencyJSON.successor.iso3 || name) + " = " + currencyJSON.successor.rate.toLocaleString("de-DE") + " " + (currencyJSON.iso3 || currencyJSON.name));
     } else {
         $("#currency-successor").parent().hide();
     }

@@ -194,3 +194,11 @@ function upsertVariant() {
         });
     }
 }
+
+
+function setIssueYear() {
+    let printedDate = $("input[name='variant-printed-date']").val();
+    let issueYear = $("input[name='variant-issue-year']").val();
+    if (printedDate !== "" && !issueYear)
+        $("input[name='variant-issue-year']").val(printedDate.split(".")[0]);
+}
