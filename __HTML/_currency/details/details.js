@@ -133,9 +133,10 @@ function loadSeriesDetails(seriesId) {
                 let faceValueStr;
                 if (denom.faceValue) {
                     faceValueStr = denom.faceValue + ' ';
-                    if (denom.faceValue != 1)
-                        faceValueStr += $("#currency-subunit").data("units")[0].namePlural;
-                    else
+                    if (denom.faceValue != 1) {
+                        let unit = $("#currency-subunit").data("units").find((unit) => { return unit.id === denom.unitId });
+                        faceValueStr += unit.namePlural;
+                    } else
                         faceValueStr += denom.unitName;
                 }
                 let sizeElemStr = denom.width && denom.height ?
@@ -204,7 +205,7 @@ function loadSeriesDetails(seriesId) {
 
                     variantsHTML +=
                         `<div class="variant-box section-title">
-                            <p>${denomStr}, ${dateStr}, ${variant.catalogueId}</p>
+                            <p>${faceValueStr?faceValueStr + ",": ""} ${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
                             <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}', ${variant.id})" alt="Edit Variant"/>
                             <div class="variant-pictures">
                                 <img src="" alt="obverse"/>
@@ -243,7 +244,6 @@ function loadSeriesDetails(seriesId) {
                         </div>
                         <div class="banknote-info">
                             <div>
-                                ${addInfo("Face Value", faceValueStr)}
                                 <p>Material: <span data-id="${denom.materialId}">${denom.materialName || ""}</span></p>
                                 ${addInfo("Size", sizeElemStr)}
                                 ${obverseElem}

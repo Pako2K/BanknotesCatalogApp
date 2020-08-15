@@ -67,8 +67,9 @@ function drawTables(notesArray) {
         // Determine all the issue years
         let seriesIssueYears = []; // "Columns": 1 column for each issue year in thsi series
         for (let denom of series) {
-            if (!denominations.includes(denom.denomination)) {
-                denominations.push(denom.denomination);
+            let obj = { d: denom.denomination, f: denom.faceValue };
+            if (!denominations.find((elem) => { return obj.d === elem.d && obj.f === elem.f })) {
+                denominations.push(obj);
             }
             for (let variant of denom.variants) {
                 if (!seriesIssueYears.includes(variant.issueYear)) {
@@ -91,8 +92,9 @@ function drawTables(notesArray) {
     if (denominations.length === 0)
         denominations.push("0");
     else
-        denominations.sort((a, b) => { return a - b });
+        denominations.sort((a, b) => { return a.d - b.d });
 
+    denominations.forEach((elem, idx) => { denominations[idx] = elem.d.toLocaleString("de-DE") + (elem.f ? " [" + elem.f + "]" : ""); });
 
     // Create the matrix with all the variants
     let row = [];
@@ -112,7 +114,7 @@ function drawTables(notesArray) {
     const NO_GRADE = "no-grade";
     for (let seriesIdx in notesArray) {
         for (let denom of notesArray[seriesIdx]) {
-            let rowIdx = denominations.indexOf(denom.denomination);
+            let rowIdx = denominations.indexOf(denom.denomination.toLocaleString("de-DE") + (denom.faceValue ? " [" + denom.faceValue + "]" : ""));
 
             for (let variant of denom.variants) {
                 let gradeClass = NO_GRADE;

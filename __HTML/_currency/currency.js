@@ -125,7 +125,10 @@ function setHeaders(currencyJSON) {
     if (currencyJSON.units.length) {
         let subunits = "";
         for (let unit of currencyJSON.units) {
-            subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value + " " + unit.namePlural;
+            if (unit.value > 1)
+                subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value + " " + unit.namePlural || unit.name;
+            else
+                subunits += 1 / unit.value + " " + (currencyJSON.iso3 || currencyJSON.namePlural || currencyJSON.name) + " = 1 " + unit.name;
             if (unit.abbreviation)
                 subunits += " (" + unit.abbreviation + ")";
             subunits += "<br>";
