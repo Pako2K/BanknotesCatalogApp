@@ -4,6 +4,7 @@ function initializeStats() {
     let searchStrArr = window.location.search.substr(1).split("&");
     let searchParam = searchStrArr[0].split("=");
     let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
+    let territoryId = $("#country-data").data("territory-id");
 
     $("#grades-div").hide();
 
@@ -15,7 +16,7 @@ function initializeStats() {
 
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/series/${uriToken}/stats`,
+        url: `/currency/${currencyId}/series/${uriToken}/stats?territoryId=${territoryId}`,
         async: true,
         cache: false,
         timeout: 5000,
@@ -49,7 +50,7 @@ function initializeStats() {
 
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/denominations/${uriToken}/stats`,
+        url: `/currency/${currencyId}/denominations/${uriToken}/stats?territoryId=${territoryId}`,
         async: true,
         cache: false,
         timeout: 5000,
@@ -84,7 +85,7 @@ function initializeStats() {
 
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=issue`,
+        url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=issue&territoryId=${territoryId}`,
         async: true,
         cache: false,
         timeout: 5000,
@@ -118,7 +119,7 @@ function initializeStats() {
 
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=printed`,
+        url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=printed&territoryId=${territoryId}`,
         async: true,
         cache: false,
         timeout: 5000,
@@ -162,7 +163,7 @@ function loadSeriesTable(currencyId, seriesJSON) {
         var endDate = seriesJSON[i].end != null ? seriesJSON[i].end : "";
 
         record = `  <tr>
-                        <th class="name"><a href="/_currency/index.html?currencyId=${currencyId}&seriesId=${seriesJSON[i].id}">${ seriesJSON[i].name}</th>
+                        <th class="name"><a href="/_currency/index.html?currencyId=${currencyId}&seriesId=${seriesJSON[i].id}">${ seriesJSON[i].name}</a></th>
                         <th>` + seriesJSON[i].start + `</th>
                         <th>` + endDate + `</th>
                         <td>${seriesJSON[i].numDenominations}</td>

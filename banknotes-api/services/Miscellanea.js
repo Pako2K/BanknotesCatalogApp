@@ -10,6 +10,7 @@ module.exports.initialize = function(app) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
 
     app.get('/grades', gradesGET);
+    app.get('/territory/:territoryId/issuer', territoryIssuerGET);
     app.get('/issuer', issuerGET);
     app.get('/printer', printerGET);
     app.get('/material', materialGET);
@@ -22,6 +23,27 @@ module.exports.initialize = function(app) {
 function printerGET(request, response) {
     const sql = `   SELECT pri_id AS id, pri_name AS name, pri_location AS location, pri_description AS description
 	                FROM pri_printer
+                    ORDER BY name`;
+
+    catalogueDB.getAndReply(response, sql);
+}
+
+
+
+// ===> /territory/{territoryId}/issuer
+function territoryIssuerGET(request, response) {
+    let territoryId = parseInt(request.params.territoryId);
+
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
+        new Exception(400, "ISS-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        return;
+    }
+
+
+    const sql = `   SELECT iss_id AS id, iss_name AS name, iss_description AS description
+                    FROM iss_issuer
+                    WHERE iss_ter_id = ${territoryId}
                     ORDER BY name`;
 
     catalogueDB.getAndReply(response, sql);

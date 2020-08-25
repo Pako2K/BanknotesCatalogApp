@@ -316,8 +316,9 @@ function itemsGET(request, response) {
     const commonJoinsSQL = `INNER JOIN ban_banknote BAN ON BVA.bva_ban_id = BAN.ban_id
                             INNER JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
                             INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                            INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
                             INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
-                            INNER JOIN tec_territory_currency TEC ON CUR.cur_id = TEC.tec_cur_id AND TEC.tec_cur_type = 'OWNED'
+                            INNER JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = ISS.iss_ter_id)
                             INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}`;
 
     let sql = ` WITH resultset AS (
@@ -330,7 +331,6 @@ function itemsGET(request, response) {
                     FROM bva_variant BVA
                     ${commonJoinsSQL}
                     LEFT JOIN pri_printer PRI ON PRI.pri_id = BVA.bva_pri_id
-                    LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
                 )
                 SELECT * FROM resultset
                 ${sqlBanknote}
@@ -684,9 +684,9 @@ const yearStats_commonSELECT = `count (DISTINCT TER.ter_id) AS "numTerritories",
 const yearStats_commonFROM = ` FROM bva_variant BVA
                                     LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
                                     LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                                    LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
                                     LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
-                                    LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
-                                    `;
+                                    LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = ISS.iss_ter_id)`;
 
 // ===> /years/items/stats?dateType&continentId
 function yearsItemsStatsGET(request, response) {
@@ -782,9 +782,10 @@ const yearsStats_commonSELECT =
 
 const territoryYearsStats_commonFROM =
     `FROM bva_variant BVA
-    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND TEC.tec_cur_type='OWNED'
-    LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = TEC.tec_cur_id`;
+    INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id 
+    INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
+    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND SER.ser_cur_id = TEC.tec_cur_id AND TEC.tec_ter_id = ISS.iss_ter_id`;
 
 // ===> /territory/:territoryId/years/items/stats?dateType
 function territoryByIdyearsItemsStatsGET(request, response) {
@@ -862,11 +863,6 @@ function territoryByIdyearsItemsStatsGET(request, response) {
 
 
 
-const currencyYearsStats_commonFROM =
-    `FROM bva_variant BVA
-    INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
-    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1`;
-
 // ===> /currency/:currencyId/years/items/stats?dateTpye
 function currencyByIdyearsItemsStatsGET(request, response) {
     let currencyId = parseInt(request.params.currencyId);
@@ -881,6 +877,19 @@ function currencyByIdyearsItemsStatsGET(request, response) {
         new Exception(400, "VAR-1", "Invalid parameter 'dateType': " + request.url).send(response);
         return;
     }
+
+    // Filter for territory
+    let territoryId = url.parse(request.url, true).query.territoryId || "";
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + territoryId).send(response);
+        return;
+    }
+
+    const currencyYearsStats_commonFROM = `FROM bva_variant BVA
+                                            INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                            INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1
+                                            INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id ${territoryId === "" ? "" :'AND ISS.iss_ter_id = ' + territoryId}`;
 
     let sql = ` SELECT  ${dateTypeObj.selectCol}, ${yearsStats_commonSELECT}
                 ${currencyYearsStats_commonFROM}

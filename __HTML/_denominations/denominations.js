@@ -151,11 +151,30 @@ function loadDenominationsTable() {
 
     let record = "";
 
-    for (let denom of denominationsJSON) {
+    // Aggregate with the denominations if the value is the same (This can happend when the units are different)
+    let aggDenominations = [];
+    aggDenominations.push(denominationsJSON[0]);
+    for (let i = 1; i < denominationsJSON.length; i++) {
+        let j = aggDenominations.length - 1;
+        if (denominationsJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
+            aggDenominations[j].numTerritories += denominationsJSON[i].numTerritories;
+            aggDenominations[j].collectionStats.numTerritories += denominationsJSON[i].collectionStats.numTerritories;
+            aggDenominations[j].numCurrencies += denominationsJSON[i].numCurrencies;
+            aggDenominations[j].collectionStats.numCurrencies += denominationsJSON[i].collectionStats.numCurrencies;
+            aggDenominations[j].numSeries += denominationsJSON[i].numSeries;
+            aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
+            aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
+            aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
+            aggDenominations[j].collectionStats.price += denominationsJSON[i].collectionStats.price;
+        } else {
+            aggDenominations.push(denominationsJSON[i]);
+        }
+    }
 
+    for (let denom of aggDenominations) {
         let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price.toFixed(2) + ' €';
         record = `  <tr>
-                        <th>${denom.denomination}</th>
+                        <th>${denom.denomination.toLocaleString("de-DE")}</th>
                         <td>${denom.numTerritories}</td>
                         <td class="only-logged-in">${denom.collectionStats.numTerritories || "-"}</td>
                         <td>${denom.numCurrencies}</td>

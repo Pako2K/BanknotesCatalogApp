@@ -207,15 +207,15 @@ function loadCountriesTable() {
                             </tr>`;
             $("#countries-table>tbody").append(record);
 
-            totals.currencies.cat += country.numCurrencies;
+            totals.currencies.cat += parseInt(country.numCurrencies);
             totals.currencies.col += country.collectionStats.numCurrencies;
-            totals.series.cat += country.numSeries;
+            totals.series.cat += parseInt(country.numSeries);
             totals.series.col += country.collectionStats.numSeries;
-            totals.denom.cat += country.numDenominations;
+            totals.denom.cat += parseInt(country.numDenominations);
             totals.denom.col += country.collectionStats.numDenominations;
-            totals.notes.cat += country.numNotes;
+            totals.notes.cat += parseInt(country.numNotes);
             totals.notes.col += country.collectionStats.numNotes;
-            totals.variants.cat += country.numVariants;
+            totals.variants.cat += parseInt(country.numVariants);
             totals.variants.col += country.collectionStats.numVariants;
             totals.price += country.collectionStats.price;
 

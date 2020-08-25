@@ -145,10 +145,11 @@ paths:
       tags:
       - Currencies
       summary: Get all the info about a currency
-      description: Returns the info about a currency.
+      description: Returns the info about a currency for the owning country. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdGET
       parameters:
       - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
       responses:
         "200":
           description: Currency complete info
@@ -867,10 +868,11 @@ paths:
       tags:
       - Series
       summary: Get summary of series for a currency
-      description: Returns the info about the different series of a currency.
+      description: Returns the info about the different series of a currency. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdSeriesGET
       parameters:
       - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
       responses:
         "200":
           description: Summary of the Series belonging to the specified currency ID
@@ -1094,17 +1096,18 @@ paths:
           $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
-                
-         
+
+
   /currency/{currencyId}/series/variants/stats:
     get:
       tags: 
        - Series
       summary: Get statistics about banknotes in catalogue for each series of a specific currency.
-      description: Returns a list of series in the catalogue used in a specific currency, with their main features and statistics.
+      description: Returns a list of series in the catalogue used in a specific currency, with their main features and statistics. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdSeriesVariantsStatsGET
       parameters:
-      - $ref: '#/components/parameters/currencyId'  
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
       responses:
         "200":
           description: List of series
@@ -1125,10 +1128,11 @@ paths:
       tags: 
       - Series
       summary: Get statistics about banknotes in collection for each series of a currency.
-      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      description: Returns statistics per series for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdSeriesItemsStatsGET
       parameters:
       - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
       responses:
@@ -1153,10 +1157,11 @@ paths:
       tags: 
        - Banknotes
       summary: Get statistics about denominations in catalogue for a specific currency.
-      description: Returns a list of denominations in the catalogue used in a specific currency, with their statistics.
+      description: Returns a list of denominations in the catalogue used in a specific currency, with their statistics. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdDenominationsVariantsStatsGET
       parameters:
-      - $ref: '#/components/parameters/currencyId'  
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
       responses:
         "200":
           description: List of denominations
@@ -1177,10 +1182,11 @@ paths:
       tags: 
       - Banknotes
       summary: Get statistics about denominations in collection for a currency.
-      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      description: Returns statistics per denomination for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdDenominationsItemsStatsGET
       parameters:
       - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
       responses:
@@ -1198,17 +1204,18 @@ paths:
           $ref: '#/components/responses/403'
         "500":
           $ref: '#/components/responses/500'
-                
+
                 
   /currency/{currencyId}/years/variants/stats:
     get:
       tags: 
        - Variants
       summary: Get statistics about issue years in catalogue for a specific currency.
-      description: Returns a list of issue years in the catalogue used in a specific currency, with their statistics.
+      description: Returns a list of issue years in the catalogue used in a specific currency, with their statistics. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdIssueYearsVariantsStatsGET
       parameters:
       - $ref: '#/components/parameters/dateType'
+      - $ref: '#/components/parameters/searchTerritoryId'
       - $ref: '#/components/parameters/currencyId'  
       responses:
         "200":
@@ -1230,10 +1237,11 @@ paths:
       tags: 
       - Variants
       summary: Get statistics about issue years in collection for a currency.
-      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency.
+      description: Returns statistics per issue year for the existing banknotes in the catalogue and in the user collection (the user must have an active session), used in a currency. If the currency is shared, the country id can be specified via a query string parameter
       operationId: currencyByIdIssueYearsItemsStatsGET
       parameters:
       - $ref: '#/components/parameters/dateType'
+      - $ref: '#/components/parameters/searchTerritoryId'
       - $ref: '#/components/parameters/currencyId'
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
@@ -1274,6 +1282,32 @@ paths:
           $ref: '#/components/responses/500'
               
   
+  
+  /territory/{territoryId}/issuer:
+    get:
+      tags:
+      - Miscellanea
+      summary: Get issuing entities for a specific territory
+      description: Retrieves the list of known banknotes issuing entities
+      operationId: territoryIssuerGET
+      parameters:
+      - $ref: '#/components/parameters/territoryId'
+      responses:
+        "200":
+          description: Success. 
+          content:
+            application/json:
+               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issuer'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+      
+
+
   /issuer:
     get:
       tags: 
@@ -1397,6 +1431,13 @@ components:
       name: continentId
       required: false
       description: Retrieve resource from countries in this Continent
+      schema:
+        type: integer
+    searchTerritoryId:
+      in: query
+      name: territoryId
+      required: false
+      description: Retrieve resource for this specific territory
       schema:
         type: integer
     searchTerTypeId:
@@ -1848,6 +1889,7 @@ components:
       - type: object
         required:
         - currencyType
+        - isIssuer
         - start
         - numSeries
         - numDenominations
@@ -1856,6 +1898,8 @@ components:
         properties:
           currencyType:
             $ref: '#/components/schemas/currencyType'
+          isIssuer:
+            type: integer
           symbol:
             type: string
           start:
@@ -2552,6 +2596,7 @@ components:
       required:
       - id
       - name
+      - territoryId
       properties:
         id:
           type: integer
@@ -2559,7 +2604,8 @@ components:
           type: string
         description:
           type: string
-
+        territoryId:
+          type: integer 
 
     printer:
       type: object

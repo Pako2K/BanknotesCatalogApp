@@ -1,5 +1,6 @@
 "use strict";
 
+const url = require('url');
 const log = require("../../utils/logger").logger;
 const jsonParser = require('body-parser').json();
 const Exception = require('../../utils/Exception').Exception;
@@ -139,6 +140,7 @@ function seriesPUT(request, response) {
 // ===> /currency/:currencyId/series
 function currencyByIdSeriesGET(request, response) {
     let currencyId = parseInt(request.params.currencyId);
+    let queryStrJSON = url.parse(request.url, true).query;
 
     // Check that the Id is an integer
     if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
@@ -146,9 +148,24 @@ function currencyByIdSeriesGET(request, response) {
         return;
     }
 
-    let sql = `SELECT ser_id AS "id", ser_name AS "name", ser_start AS "start", ser_end AS "end"
-                FROM ser_series
-                WHERE ser_cur_id = ${currencyId}
+    // Filter for territory
+    let territoryId = queryStrJSON.territoryId || "";
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== territoryId) {
+        new Exception(400, "SER-1", "Invalid Territory Id, " + territoryId).send(response);
+        return;
+    }
+
+    let sqlJoin = `INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_type = 'OWNED' AND TEC.tec_cur_id = ${currencyId}
+                    INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id = TEC.tec_ter_id`;
+    if (territoryId !== "")
+        sqlJoin = `INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id = ${territoryId}`;
+
+
+    let sql = `SELECT SER.ser_id AS "id", SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end"
+                FROM ser_series SER
+                ${sqlJoin}
+                WHERE SER.ser_cur_id = ${currencyId}
                 ORDER BY "start", "end", "name"`;
 
     catalogueDB.getAndReply(response, sql);
@@ -183,7 +200,8 @@ const seriesStats_commonSELECT =
 
 const territorySerieStats_commonFROM =
     `FROM ser_series SER
-    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND SER.ser_cur_id = TEC.tec_cur_id AND TEC.tec_cur_type='OWNED'
+    INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
+    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND SER.ser_cur_id = TEC.tec_cur_id AND TEC.tec_ter_id = ISS.iss_ter_id
     LEFT JOIN cur_currency CUR ON CUR.cur_id = TEC.tec_cur_id
     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
@@ -264,21 +282,30 @@ function territoryByIdSeriesItemsStatsGET(request, response) {
 
 
 
-
-const currencySeriesStats_commonFROM =
-    `FROM ser_series SER
-    LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
-    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
-
 // ===> /currency/:currencyId/series/items/stats
 function currencyByIdSeriesItemsStatsGET(request, response) {
     let currencyId = request.params.currencyId;
+    let queryStrJSON = url.parse(request.url, true).query;
 
     // Check that the Id is an integer
     if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
         new Exception(400, "VAR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
         return;
     }
+
+    // Filter for territory
+    let territoryId = queryStrJSON.territoryId || "";
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + territoryId).send(response);
+        return;
+    }
+
+    const currencySeriesStats_commonFROM = `FROM ser_series SER
+                                            INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id ${territoryId === "" ? "" :'AND ISS.iss_ter_id = ' + territoryId}
+                                            LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                                            LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
+
 
     let sql = ` SELECT  SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end",
                 ${seriesStats_commonSELECT}

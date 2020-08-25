@@ -319,7 +319,7 @@ function openUpsertSeries(isNewSeries) {
     if (currencyIdParam.split("=")[0] !== "currencyId")
         return;
 
-    let currencyJSON = { id: currencyIdParam.split("=")[1], name: $("#currency-name").text() };
+    let currencyJSON = { id: currencyIdParam.split("=")[1], name: $("#currency-name").text(), territoryId: $("#country-data").data("territory-id") };
     let seriesJSON = isNewSeries ? undefined : {
         id: $("div.series-info").data("series-id"),
         name: $("div.series-info").data("series-name"),

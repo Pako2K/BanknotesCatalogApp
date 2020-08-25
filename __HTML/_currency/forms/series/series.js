@@ -6,7 +6,7 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
     // Fill-in the issuers
     $.ajax({
         type: "GET",
-        url: `/issuer`,
+        url: `/territory/${currencyJSON.territoryId}/issuer`,
         contentType: "application/json",
         async: true,
         cache: false,

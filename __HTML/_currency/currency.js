@@ -6,9 +6,11 @@ $(document).ready(function() {
     // Optional parameters
     let seriesId = "";
     let denomination = "";
+    let territoryIdQueryParam = "";
     if (searchStrArr[1]) {
         searchParam = searchStrArr[1].split("=");
         seriesId = searchParam[0] === "seriesId" ? searchParam[1] : "";
+        territoryIdQueryParam = searchParam[0] === "territoryId" ? `?territoryId=${searchParam[1]}` : "";
 
         if (searchStrArr[2]) {
             searchParam = searchStrArr[2].split("=");
@@ -19,7 +21,7 @@ $(document).ready(function() {
     // Get data for the country and currency header
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}`,
+        url: `/currency/${currencyId}${territoryIdQueryParam}`,
         async: true,
         cache: false,
         timeout: 5000,
@@ -35,7 +37,7 @@ $(document).ready(function() {
     // Get basic data and stats for the currency series
     $.ajax({
         type: "GET",
-        url: `/currency/${currencyId}/series`,
+        url: `/currency/${currencyId}/series${territoryIdQueryParam}`,
         async: true,
         cache: false,
         timeout: 5000,
@@ -95,6 +97,7 @@ function setHeaders(currencyJSON) {
 
     $("#flag-div>a").attr("href", "/_country/index.html?countryId=" + currencyJSON.territory.id);
     $("#flag-div>a>img").attr("src", flagFileName(currencyJSON.territory));
+    $("#country-data").data("territory-id", currencyJSON.territory.id);
     $("#country-data #name").text(currencyJSON.territory.name);
     $("#country-data>a").attr("href", "/_country/index.html?countryId=" + currencyJSON.territory.id);
     if (currencyJSON.territory.iso3)
@@ -149,7 +152,7 @@ function setHeaders(currencyJSON) {
         if (currencyJSON.predecessor.iso3)
             name += " (" + currencyJSON.predecessor.iso3 + ")";
         $("#currency-predecessor").text(name)
-        $("#predecessorRate").text("1 " + (currencyJSON.iso3 || name) + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
+        $("#predecessorRate").text("1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
     } else {
         $("#currency-predecessor").parent().hide();
     }
@@ -171,10 +174,11 @@ function flagFileName(territory) {
     let path = "/data/_flags_/";
     if (territory.iso3)
         return path + territory.iso3.toLowerCase() + ".png";
-    else
-        return path + territory.name.split(" ").join("").toLowerCase() + ".png";
+    else {
+        // Remove spaces and commas
+        return path + territory.name.replace(/,|\s/g, "").toLowerCase() + ".png";
+    }
 }
-
 
 function showDescription() {
     $("#currency-desc").parent().slideToggle(600);

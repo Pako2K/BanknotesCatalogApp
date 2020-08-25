@@ -148,8 +148,9 @@ const denominationStats_commonSELECT = ` CASE WHEN BAN.ban_cus_id = 0 THEN BAN.b
                                         count (DISTINCT SER.ser_id) AS "numSeries", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const denominationStats_commonFROM = `  FROM ban_banknote BAN
                                         LEFT JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
+                                        LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id 
                                         LEFT JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
-                                        LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
+                                        LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = ISS.iss_ter_id)
                                         LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
                                         `;
 
@@ -238,10 +239,11 @@ const denominationsStats_commonSELECT =
 
 const territoryDenominationsStats_commonFROM =
     `FROM ban_banknote BAN
-    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND TEC.tec_cur_type='OWNED'
-    INNER JOIN cur_currency CUR ON CUR.cur_id = TEC.tec_cur_id
+    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id 
     INNER JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id
-    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = CUR.cur_id
+    INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
+    INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id
+    INNER JOIN tec_territory_currency TEC ON TEC.tec_ter_id = $1 AND CUR.cur_id = TEC.tec_cur_id AND TEC.tec_ter_id = ISS.iss_ter_id
     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
 
 // ===> /territory/:territoryId/denominations/items/stats
@@ -250,7 +252,7 @@ function territoryByIdDenominationsItemsStatsGET(request, response) {
 
     // Check that the Id is an integer
     if (Number.isNaN(territoryId) || territoryId.toString() !== request.params.territoryId) {
-        new Exception(400, "VAR-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
+        new Exception(400, "BAN-1", "Invalid Territory Id, " + request.params.territoryId).send(response);
         return;
     }
 
@@ -316,21 +318,31 @@ const currencyDenominationsStats_commonSELECT =
     `CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS denomination,
     count (DISTINCT SER.ser_id) AS "numSeries", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
-const currencyIdDenominationsStats_commonFROM =
-    `FROM ban_banknote BAN
-    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1
-    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
-    LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id`;
 
 // ===> /currencyId/:currencyId/denominations/items/stats
 function currencyByIdDenominationsItemsStatsGET(request, response) {
     let currencyId = request.params.currencyId;
+    let queryStrJSON = url.parse(request.url, true).query;
 
     // Check that the Id is an integer
     if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
-        new Exception(400, "VAR-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
+        new Exception(400, "BAN-1", "Invalid Currency Id, " + request.params.currencyId).send(response);
         return;
     }
+
+    // Filter for territory
+    let territoryId = queryStrJSON.territoryId || "";
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== territoryId) {
+        new Exception(400, "BAN-2", "Invalid Territory Id, " + territoryId).send(response);
+        return;
+    }
+
+    const currencyIdDenominationsStats_commonFROM = `FROM ban_banknote BAN
+                                                    INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id AND SER.ser_cur_id = $1
+                                                    INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id ${territoryId === "" ? "" :'AND ISS.iss_ter_id = ' + territoryId}
+                                                    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+                                                    LEFT JOIN cus_currency_unit CUS ON CUS.cus_id = BAN.ban_cus_id`;
 
     let sql = ` SELECT  ${currencyDenominationsStats_commonSELECT}
                 ${currencyIdDenominationsStats_commonFROM}

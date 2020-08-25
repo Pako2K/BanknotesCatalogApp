@@ -48,7 +48,7 @@ function fillSeriesTable(resultJSON) {
     for (let series of resultJSON) {
         let priceStr = (series.collectionStats.price === 0) ? '-' : series.collectionStats.price.toFixed(2) + ' €';
         let record = `  <tr>
-                            <th class="name"><a href="/_currency/index.html?currencyId=` + series.currency.id + `">${series.name}</a></th>
+                            <th class="name"><a href="/_currency/index.html?currencyId=${series.currency.id}&seriesId=${series.id}">${ series.name}</a></th>
                             <th>${series.currency.name}</th>
                             <th>${series.start}</th>
                             <th>${series.end || ""}</th>

@@ -1,7 +1,10 @@
 function initializeSummary() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
-    $("#grades-div").show();
+    if (getCookie("banknotes.ODB.username"))
+        $("#grades-div").show();
+    else
+        $("#grades-div").hide();
 
     if (seriesJSON.length === 0) {
         $("#grades-div").hide();

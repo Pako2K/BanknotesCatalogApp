@@ -1,5 +1,6 @@
 "use strict";
 
+const url = require('url');
 const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
@@ -28,6 +29,7 @@ function addOnlyVariants(request, response, next) {
 // ===> /currency/:currencyId
 function currencyByIdGET(request, response) {
     let currencyId = request.params.currencyId;
+    let queryStrJSON = url.parse(request.url, true).query;
 
     // Check that the Id is an integer
     if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
@@ -35,12 +37,25 @@ function currencyByIdGET(request, response) {
         return;
     }
 
-    let sql = ` SELECT cur.*, TEC.tec_iso3, TER.ter_con_id,  CON.con_name, TER.ter_id, TER.ter_iso3, TER.ter_name, 
+    // Filter for territory
+    let territoryId = queryStrJSON.territoryId || "";
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== territoryId) {
+        new Exception(400, "CUR-1", "Invalid Territory Id, " + territoryId).send(response);
+        return;
+    }
+
+    let sqlTec = "TEC.tec_cur_type = 'OWNED'";
+    if (territoryId !== "")
+        sqlTec = `TEC.tec_ter_id = ${territoryId}`;
+
+
+    let sql = ` SELECT cur.*, TEC.*, TER.ter_con_id,  CON.con_name, TER.ter_id, TER.ter_iso3, TER.ter_name, 
                         CUS.cus_id, CUS.cus_value, CUS.cus_name, CUS.cus_name_plural, CUS.cus_abbreviation,
                         pred.cur_id AS pred_cur_id, pred.cur_name AS pred_cur_name, predTEC.tec_ISO3 AS pred_tec_iso3, pred.cur_replacement_rate AS pred_cur_replacement_rate,
                         succ.cur_name AS succ_cur_name, succTEC.tec_ISO3 AS succ_tec_iso3
                 FROM cur_currency CUR
-                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type = 'OWNED'
+                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND ${sqlTec}
                 INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id
                 INNER JOIN con_continent CON ON con_id = TER.ter_con_id
                 LEFT JOIN cus_currency_unit CUS ON CUR.cur_id = CUS.cus_cur_id
@@ -77,8 +92,13 @@ function currencyByIdGET(request, response) {
                     replyJSON.units.push({ "id": row.cus_id, "name": row.cus_name, "namePlural": row.cus_name_plural, "value": row.cus_value, "abbreviation": row.cus_abbreviation });
                 }
             }
-            replyJSON.start = rows[0].cur_start;
-            replyJSON.end = rows[0].cur_end;
+            if (territoryId !== "") {
+                replyJSON.start = rows[0].tec_start;
+                replyJSON.end = rows[0].tec_end;
+            } else {
+                replyJSON.start = rows[0].cur_start;
+                replyJSON.end = rows[0].cur_end;
+            }
             if (rows[0].pred_cur_id) {
                 replyJSON.predecessor = {};
                 replyJSON.predecessor.id = rows[0].pred_cur_id;
@@ -111,7 +131,8 @@ const currenciesStats_commonFROM = `FROM cur_currency CUR
                                     LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')
                                     LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id
                                     INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
-                                    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+                                    LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = TEC.tec_ter_id
+        							LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
                                     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
                                     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
 
@@ -120,10 +141,27 @@ function currenciesItemsStatsGET(request, response) {
     let sql = ` SELECT  CUR.cur_id AS "id", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", 
                         CASE WHEN TER.ter_tty_id = 2 THEN 'SHARED' ELSE 'OWNED' END AS "currencyType", TER.ter_id AS "territoryId",
                         TER.ter_name AS "territoryName", TER.ter_name AS "territoryIso3", TER.ter_con_id AS "continentId", CON.con_name AS "continentName",
-                        CUR.cur_symbol AS "symbol", CUR.cur_start AS "start", CUR.cur_end AS "end", ${currenciesStats_commonSELECT}
+                        CUR.cur_symbol AS "symbol", CASE WHEN TEC.tec_start IS NULL THEN CUR.cur_start ELSE TEC.tec_start END AS "start", 
+                        CASE WHEN TEC.tec_end IS NULL THEN CUR.cur_end ELSE TEC.tec_end END AS "end", ${currenciesStats_commonSELECT}
                 ${currenciesStats_commonFROM}
-                GROUP BY "id", "iso3", "currencyType", "territoryId", "territoryName", "territoryIso3", "continentId", "continentName"
-                ORDER BY "name", "territoryName", "start", "end"`;
+                GROUP BY "id", "iso3", "currencyType", "territoryId", "territoryName", "territoryIso3", "continentId", "continentName", "start", "end"
+                UNION
+                SELECT  CUR.cur_id AS "id", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", 'SHARED' AS "currencyType", TER.ter_id AS "territoryId",
+                        TER.ter_name AS "territoryName", TER.ter_name AS "territoryIso3", TER.ter_con_id AS "continentId", CON.con_name AS "continentName",
+                        CUR.cur_symbol AS "symbol", CASE WHEN TEC.tec_start IS NULL THEN CUR.cur_start ELSE TEC.tec_start END AS "start", 
+                        CASE WHEN TEC.tec_end IS NULL THEN CUR.cur_end ELSE TEC.tec_end END AS "end",
+                        ${currenciesStats_commonSELECT}
+                FROM cur_currency CUR
+                LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='SHARED')
+                LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = TEC.tec_ter_id
+                INNER JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
+                LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+                GROUP BY "id", "iso3", "currencyType", "territoryId", "territoryName", "territoryIso3", "continentId", "continentName", "start", "end", "start", "end"
+                ORDER BY "name", "territoryName", "start", "end"
+                `;
 
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [], (err, catRows) => {
@@ -163,6 +201,19 @@ function currenciesItemsStatsGET(request, response) {
 
         sql = ` SELECT  CUR.cur_id AS id, ${currenciesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${currenciesStats_commonFROM}
+                INNER JOIN bit_item BIT ON bit_bva_id = bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
+                GROUP BY CUR.cur_id
+                UNION
+                SELECT  CUR.cur_id AS id, ${currenciesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
+                FROM cur_currency CUR
+                LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='SHARED')
+                LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = TEC.tec_ter_id
+                INNER JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
+                LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
                 INNER JOIN bit_item BIT ON bit_bva_id = bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
                 GROUP BY CUR.cur_id`;
@@ -208,7 +259,8 @@ function currenciesItemsStatsGET(request, response) {
 const territoryCurrenciesStats_commonFROM =
     `FROM cur_currency CUR
     INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = $1
-    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+    INNER JOIN iss_issuer ISS ON ISS.iss_ter_id = $1
+    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
 
@@ -222,11 +274,12 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
         return;
     }
 
-    let sql = ` SELECT  CUR.cur_id AS "id", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", TEC.tec_cur_type AS "currencyType", CUR.cur_symbol AS "symbol", 
+    let sql = ` SELECT  CUR.cur_id AS "id", TEC.tec_ISO3 AS "iso3", CUR.cur_name AS "name", TEC.tec_cur_type AS "currencyType", 
+                        TEC.tec_is_issuer AS "isIssuer", CUR.cur_symbol AS "symbol", 
                         CASE WHEN TEC.tec_start IS NULL THEN CUR.cur_start ELSE TEC.tec_start END AS "start",
                         CASE WHEN TEC.tec_end IS NULL THEN CUR.cur_end ELSE TEC.tec_end END AS "end", ${currenciesStats_commonSELECT}
                 ${territoryCurrenciesStats_commonFROM}
-                GROUP BY "id", "iso3", "currencyType", "start", "end"
+                GROUP BY "id", "iso3", "currencyType", "isIssuer", "start", "end"
                 ORDER BY "start", "end"`;
 
     // Retrieve the catalogue statistics

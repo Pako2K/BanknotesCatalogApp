@@ -183,7 +183,7 @@ function loadCurrenciesTable() {
             record = `<tr>
                                 <th>${currency.symbol}</th>
                                 <th>${currency.iso3}</th>
-                                <th class="name"><a href="/_currency/index.html?currencyId=${currency.id}">${currency.name}</a></th>
+                                <th class="name"><a href="/_currency/index.html?currencyId=${currency.id}&territoryId=${currency.territory.id}">${currency.name}</a></th>
                                 <th class="name"><a href="/_country/index.html?countryId=${currency.territory.id}">${currency.territory.name}</a></th>
                                 <th>${currency.start || ""}</th>
                                 <th>${currency.end || ""}</th>

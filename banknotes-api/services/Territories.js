@@ -149,18 +149,38 @@ const territoriesStats_commonSELECT = ` count(DISTINCT TEC.tec_cur_id) AS "numCu
                                         count(DISTINCT BAN.ban_id) AS "numNotes", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const territoriesStats_commonFROM = `FROM ter_territory TER
                                     INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
-                                    LEFT JOIN tec_territory_currency TEC ON (TEC.tec_ter_id = TER.ter_id AND TEC.tec_cur_type='OWNED')
-                                    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+                                    LEFT JOIN tec_territory_currency TEC ON TEC.tec_ter_id = TER.ter_id AND TEC.tec_cur_type = 'OWNED'
+                                    LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = TEC.tec_ter_id
+                                    LEFT JOIN ser_series SER ON ISS.iss_id = SER.ser_iss_id AND SER.ser_cur_id = TEC.tec_cur_id
                                     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
                                     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
 // ===> /territories/items/stats
 function territoriesItemsStatsGET(request, response) {
-    let sql = ` SELECT  TER.ter_id AS "id", TER.ter_iso3 AS "iso3", TER.ter_name AS "name", TER.ter_con_id AS "continentId", 
-                        TER.ter_tty_id AS "territoryTypeId", TER.ter_start AS "start", TER.ter_end AS "end", 
-                        ${territoriesStats_commonSELECT}
-                ${territoriesStats_commonFROM}
-                GROUP BY TER.ter_id
-                ORDER BY TER.ter_name`;
+    let sql = ` WITH resultset AS (
+                    SELECT  TER.ter_id AS "id", TER.ter_iso3 AS "iso3", TER.ter_name AS "name", TER.ter_con_id AS "continentId", 
+                            TER.ter_tty_id AS "territoryTypeId", TER.ter_start AS "start", TER.ter_end AS "end", 
+                            ${territoriesStats_commonSELECT}
+                    ${territoriesStats_commonFROM}
+                    GROUP BY TER.ter_id
+                    UNION
+                    SELECT  TER.ter_id AS "id", TER.ter_iso3 AS "iso3", TER.ter_name AS "name", TER.ter_con_id AS "continentId", 
+                            TER.ter_tty_id AS "territoryTypeId", TER.ter_start AS "start", TER.ter_end AS "end", 
+                            ${territoriesStats_commonSELECT}
+                    FROM ter_territory TER
+                    INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                    LEFT JOIN tec_territory_currency TEC ON TEC.tec_ter_id = TER.ter_id AND TEC.tec_cur_type = 'SHARED'
+                    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+                    INNER JOIN iss_issuer ISS ON (ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id = TEC.tec_ter_id)
+                    LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+                    GROUP BY TER.ter_id
+                )
+                SELECT "id", "iso3","name", "continentId", "territoryTypeId", "start", "end", sum("numCurrencies") AS "numCurrencies",
+                        sum("numSeries") AS "numSeries", sum("numDenominations") AS "numDenominations", 
+                        sum("numNotes") AS "numNotes", sum("numVariants") AS "numVariants"
+                FROM resultset
+                GROUP BY "id", "iso3","name", "continentId", "territoryTypeId", "start", "end"
+                ORDER BY "name"`;
 
     if (request.onlyVariants) {
         catalogueDB.getAndReply(response, sql);
@@ -176,6 +196,18 @@ function territoriesItemsStatsGET(request, response) {
 
         sql = ` SELECT  TER.ter_id AS id, ${territoriesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                 ${territoriesStats_commonFROM}
+                INNER JOIN bit_item BIT ON bit_bva_id = bva_id
+                INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
+                GROUP BY TER.ter_id
+                UNION
+                SELECT  TER.ter_id AS "id", ${territoriesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
+                FROM ter_territory TER
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
+                LEFT JOIN tec_territory_currency TEC ON TEC.tec_ter_id = TER.ter_id AND TEC.tec_cur_type = 'SHARED'
+                LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id
+                INNER JOIN iss_issuer ISS ON (ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id = TEC.tec_ter_id)
+                LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
+                LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
                 INNER JOIN bit_item BIT ON bit_bva_id = bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
                 GROUP BY TER.ter_id`;
