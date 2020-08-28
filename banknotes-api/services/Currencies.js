@@ -45,17 +45,12 @@ function currencyByIdGET(request, response) {
         return;
     }
 
-    let sqlTec = "TEC.tec_cur_type = 'OWNED'";
-    if (territoryId !== "")
-        sqlTec = `TEC.tec_ter_id = ${territoryId}`;
-
-
     let sql = ` SELECT cur.*, TEC.*, TER.ter_con_id,  CON.con_name, TER.ter_id, TER.ter_iso3, TER.ter_name, 
                         CUS.cus_id, CUS.cus_value, CUS.cus_name, CUS.cus_name_plural, CUS.cus_abbreviation,
                         pred.cur_id AS pred_cur_id, pred.cur_name AS pred_cur_name, predTEC.tec_ISO3 AS pred_tec_iso3, pred.cur_replacement_rate AS pred_cur_replacement_rate,
                         succ.cur_name AS succ_cur_name, succTEC.tec_ISO3 AS succ_tec_iso3
                 FROM cur_currency CUR
-                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND ${sqlTec}
+                INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id
                 INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id
                 INNER JOIN con_continent CON ON con_id = TER.ter_con_id
                 LEFT JOIN cus_currency_unit CUS ON CUR.cur_id = CUS.cus_cur_id
@@ -63,9 +58,9 @@ function currencyByIdGET(request, response) {
                 LEFT JOIN tec_territory_currency predTEC ON predTEC.tec_cur_id = pred.cur_id AND predTEC.tec_cur_type = 'OWNED'
                 LEFT JOIN cur_currency succ ON succ.cur_id = cur.cur_successor 
                 LEFT JOIN tec_territory_currency succTEC ON succTEC.tec_cur_id = succ.cur_id AND succTEC.tec_cur_type = 'OWNED'
-                WHERE CUR.cur_id = ${currencyId}`;
+                WHERE CUR.cur_id = $1`;
 
-    catalogueDB.execSQL(sql, [], (err, rows) => {
+    catalogueDB.execSQL(sql, [currencyId], (err, rows) => {
         if (err) {
             new Exception(500, err.code, err.message).send(response);
             return;
@@ -75,50 +70,100 @@ function currencyByIdGET(request, response) {
         var replyJSON = {};
         if (rows.length > 0) {
             replyJSON.id = rows[0].cur_id;
-            replyJSON.territory = {};
-            replyJSON.territory.continentId = rows[0].ter_con_id;
-            replyJSON.territory.continentName = rows[0].con_name;
-            replyJSON.territory.id = rows[0].ter_id;
-            replyJSON.territory.iso3 = rows[0].ter_iso3;
-            replyJSON.territory.name = rows[0].ter_name;
-            replyJSON.symbol = rows[0].cur_symbol;
             replyJSON.iso3 = rows[0].tec_iso3;
             replyJSON.name = rows[0].cur_name;
+            replyJSON.symbol = rows[0].cur_symbol;
             replyJSON.namePlural = rows[0].cur_name_plural;
             replyJSON.fullName = rows[0].cur_full_name;
-            replyJSON.units = [];
-            if (rows[0].cus_value) {
-                for (let row of rows) {
-                    replyJSON.units.push({ "id": row.cus_id, "name": row.cus_name, "namePlural": row.cus_name_plural, "value": row.cus_value, "abbreviation": row.cus_abbreviation });
-                }
-            }
-            if (territoryId !== "") {
-                replyJSON.start = rows[0].tec_start;
-                replyJSON.end = rows[0].tec_end;
-            } else {
-                replyJSON.start = rows[0].cur_start;
-                replyJSON.end = rows[0].cur_end;
-            }
-            if (rows[0].pred_cur_id) {
-                replyJSON.predecessor = {};
-                replyJSON.predecessor.id = rows[0].pred_cur_id;
-                replyJSON.predecessor.name = rows[0].pred_cur_name;
-                replyJSON.predecessor.iso3 = rows[0].pred_tec_iso3;
-                replyJSON.predecessor.rate = rows[0].pred_cur_replacement_rate;
-            }
-            if (rows[0].cur_successor) {
-                replyJSON.successor = {};
-                replyJSON.successor.id = rows[0].cur_successor;
-                replyJSON.successor.name = rows[0].succ_cur_name;
-                replyJSON.successor.iso3 = rows[0].succ_tec_iso3;
-                replyJSON.successor.rate = rows[0].cur_replacement_rate;
-            }
             replyJSON.description = rows[0].cur_description;
         }
 
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.write(JSON.stringify(replyJSON));
-        response.send();
+        for (let row of rows) {
+            if (territoryId !== "") {
+                // The reply uses this territory as reference
+                if (row.tec_ter_id == territoryId) {
+                    replyJSON.currencyType = row.tec_cur_type;
+                    replyJSON.territory = {};
+                    replyJSON.territory.continentId = row.ter_con_id;
+                    replyJSON.territory.continentName = row.con_name;
+                    replyJSON.territory.id = row.ter_id;
+                    replyJSON.territory.iso3 = row.ter_iso3;
+                    replyJSON.territory.name = row.ter_name;
+                    replyJSON.start = row.tec_start || row.cur_start;
+                    replyJSON.end = row.tec_end || row.cur_end;
+                } else {
+                    if (row.tec_cur_type === "OWNED") {
+                        replyJSON.ownedBy = {};
+                        replyJSON.ownedBy.id = row.ter_id;
+                        replyJSON.ownedBy.iso3 = row.ter_iso3;
+                        replyJSON.ownedBy.name = row.ter_name;
+                    } else {
+                        if (!replyJSON.sharedBy) replyJSON.sharedBy = [];
+                        let territory = {};
+                        territory.id = row.ter_id;
+                        territory.iso3 = row.ter_iso3;
+                        territory.name = row.ter_name;
+                        if (replyJSON.sharedBy.findIndex((val) => { return val.id === territory.id }) === -1)
+                            replyJSON.sharedBy.push(territory);
+                    }
+                }
+            } else {
+                // The reply uses the owning country as reference
+                if (row.tec_cur_type === "OWNED") {
+                    replyJSON.currencyType = "OWNED";
+                    replyJSON.territory = {};
+                    replyJSON.territory.continentId = row.ter_con_id;
+                    replyJSON.territory.continentName = row.con_name;
+                    replyJSON.territory.id = row.ter_id;
+                    replyJSON.territory.iso3 = row.ter_iso3;
+                    replyJSON.territory.name = row.ter_name;
+                    replyJSON.start = row.tec_start || row.cur_start;
+                    replyJSON.end = row.tec_end || row.cur_end;
+                    if (row.pred_cur_id) {
+                        replyJSON.predecessor = {};
+                        replyJSON.predecessor.id = row.pred_cur_id;
+                        replyJSON.predecessor.name = row.pred_cur_name;
+                        replyJSON.predecessor.iso3 = row.pred_tec_iso3;
+                        replyJSON.predecessor.rate = row.pred_cur_replacement_rate;
+                    }
+                    if (row.cur_successor) {
+                        replyJSON.successor = {};
+                        replyJSON.successor.id = row.cur_successor;
+                        replyJSON.successor.name = row.succ_cur_name;
+                        replyJSON.successor.iso3 = row.succ_tec_iso3;
+                        replyJSON.successor.rate = row.cur_replacement_rate;
+                    }
+                } else {
+                    if (!replyJSON.sharedBy) replyJSON.sharedBy = [];
+                    let territory = {};
+                    territory.id = row.ter_id;
+                    territory.iso3 = row.ter_iso3;
+                    territory.name = row.ter_name;
+                    if (replyJSON.sharedBy.findIndex((val) => { return val.id === territory.id }) === -1)
+                        replyJSON.sharedBy.push(territory);
+                }
+            }
+        }
+
+        let sqlUnits = `SELECT CUS.cus_id, CUS.cus_value, CUS.cus_name, CUS.cus_name_plural, CUS.cus_abbreviation
+                        FROM cus_currency_unit CUS
+                        WHERE CUS.cus_cur_id = $1`;
+        catalogueDB.execSQL(sqlUnits, [currencyId], (err, unitRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            replyJSON.units = [];
+            for (let row of unitRows) {
+                if (row.cus_value)
+                    replyJSON.units.push({ "id": row.cus_id, "name": row.cus_name, "namePlural": row.cus_name_plural, "value": row.cus_value, "abbreviation": row.cus_abbreviation });
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+        });
     });
 }
 

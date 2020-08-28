@@ -126,28 +126,44 @@
   margin-bottom: 0.4em;
 }
 
-#currency-header #currency-data > div:last-of-type {
+#currency-header #currency-data > div.info {
   font-size: 0.7em;
   color: #c7dcc7;
   display: none;
 }
 
-#currency-header #currency-data > div:last-of-type a:link {
+#currency-header #currency-data > div.info a:link {
   color: #d1d7d1;
   font-weight: normal;
 }
 
-#currency-header #currency-data > div:last-of-type a:visited {
+#currency-header #currency-data > div.info a:visited {
   color: #d1d7d1;
 }
 
-#currency-header #currency-data > div:last-of-type a:hover {
+#currency-header #currency-data > div.info a:hover {
   color: whitesmoke;
 }
 
 #currency-header #currency-data > div > p:first-child {
   margin: 0.5em 0;
   display: inline-block;
+}
+
+#currency-header #currency-data > div.related-countries {
+  display: none;
+}
+
+#currency-header #currency-data > div.related-countries > p {
+  margin: 0.5em 0;
+  font-size: 0.7em;
+  color: whitesmoke;
+}
+
+#currency-header #currency-data > div.related-countries img {
+  border-radius: 2px;
+  width: auto;
+  vertical-align: middle;
 }
 
 #currency-header #currency-symbol {
@@ -248,6 +264,33 @@
 
 #currency-nav > p:not(.selected-view):hover {
   background: #90c2c2;
+}
+
+.country-link {
+  font-size: 0.7em;
+  color: whitesmoke;
+  text-decoration: none;
+  font-weight: bold;
+  margin-right: 1em;
+  border: dotted transparent 0.5px;
+  white-space: nowrap;
+}
+
+.country-link:link {
+  color: whitesmoke;
+}
+
+.country-link:visited {
+  color: whitesmoke;
+}
+
+.country-link:hover > span {
+  color: white;
+  border-bottom: dotted whitesmoke 0.75px;
+}
+
+.country-link:active {
+  color: grey;
 }
 
 hr {

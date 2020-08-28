@@ -145,6 +145,22 @@ function setHeaders(currencyJSON) {
     else
         $("#currency-data>div img").hide();
 
+    if (currencyJSON.currencyType === "OWNED" && currencyJSON.sharedBy) {
+        $("#sharing-country").show();
+        for (let territory of currencyJSON.sharedBy)
+            $("#sharing-country").append(createCountryLink(territory));
+    }
+    if (currencyJSON.currencyType === "SHARED") {
+        $("#owning-country").show();
+        $("#owning-country").append(createCountryLink(currencyJSON.ownedBy));
+        if (currencyJSON.sharedBy) {
+            $("#sharing-country").show();
+            for (let territory of currencyJSON.sharedBy) {
+                if (territory.id !== currencyJSON.territory.id)
+                    $("#sharing-country").append(createCountryLink(territory));
+            }
+        }
+    }
 
     if (currencyJSON.predecessor) {
         $("#currency-predecessor").attr("href", "/_currency/index.html?currencyId=" + currencyJSON.predecessor.id);
@@ -203,4 +219,11 @@ function selectView(optionElem) {
             break;
     }
 
+}
+
+
+function createCountryLink(territory) {
+    let flagFile = flagFileName(territory);
+    return `<a href="/_country/index.html?countryId=${territory.id}" target="_self"><img src="${flagFile}" alt="" /></a>  
+            <a class="country-link" href="/_country/index.html?countryId=${territory.id}" target="_self">${territory.name}</a>`;
 }

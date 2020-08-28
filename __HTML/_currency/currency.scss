@@ -77,7 +77,7 @@
             }
         }
         // Description
-        &>div:last-of-type {
+        &>div.info {
             font-size: 0.7em;
             color: rgb(199, 220, 199);
             display: none;
@@ -95,6 +95,19 @@
         &>div>p:first-child {
             margin: 0.5em 0;
             display: inline-block;
+        }
+        &>div.related-countries {
+            display: none;
+            &>p {
+                margin: 0.5em 0;
+                font-size: 0.7em;
+                color: whitesmoke;
+            }
+            & img {
+                border-radius: 2px;
+                width: auto;
+                vertical-align: middle;
+            }
         }
     }
     & #currency-symbol {
@@ -176,6 +189,29 @@
         &:not(.selected-view):hover {
             background: rgb(144, 194, 194);
         }
+    }
+}
+
+.country-link {
+    font-size: 0.7em;
+    color: whitesmoke;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 1em;
+    border: dotted transparent 0.5px;
+    white-space: nowrap;
+    &:link {
+        color: whitesmoke;
+    }
+    &:visited {
+        color: whitesmoke;
+    }
+    &:hover>span {
+        color: white;
+        border-bottom: dotted whitesmoke 0.75px;
+    }
+    &:active {
+        color: grey;
     }
 }
 

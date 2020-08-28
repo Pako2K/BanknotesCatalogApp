@@ -145,7 +145,7 @@ paths:
       tags:
       - Currencies
       summary: Get all the info about a currency
-      description: Returns the info about a currency for the owning country. If the currency is shared, the country id can be specified via a query string parameter
+      description: Returns the info about a currency for the owning country. If the currency is shared, a country id can be specified via a query string parameter
       operationId: currencyByIdGET
       parameters:
       - $ref: '#/components/parameters/currencyId'
@@ -1766,6 +1766,12 @@ components:
               properties:
                 continent:
                   $ref: '#/components/schemas/continent'
+          sharedBy:
+            type: array
+            items:
+              $ref: '#/components/schemas/territoryKey'
+          ownedBy:
+            $ref: '#/components/schemas/territoryKey'
           namePlural:
             type: string
           fullName:
