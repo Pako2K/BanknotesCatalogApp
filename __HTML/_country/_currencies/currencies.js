@@ -54,7 +54,7 @@ function fillTable(currenciesJSON, territoryId) {
         let iso3 = currency.iso3 || "-";
 
         let queryParams = `currencyId=${currency.id}`;
-        if (currency.isIssuer && currency.currencyType === "SHARED") {
+        if (currency.isIssuer && territoryId) {
             queryParams += `&territoryId=${territoryId}`;
         }
 
