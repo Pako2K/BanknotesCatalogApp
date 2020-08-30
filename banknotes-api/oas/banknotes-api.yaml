@@ -2603,6 +2603,7 @@ components:
       - id
       - name
       - territoryId
+      - territoryName
       properties:
         id:
           type: integer
@@ -2611,7 +2612,9 @@ components:
         description:
           type: string
         territoryId:
-          type: integer 
+          type: integer
+        territoryName:
+          type: string
 
     printer:
       type: object

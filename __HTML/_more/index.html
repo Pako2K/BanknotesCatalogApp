@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Banknotes Database: More</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/_shared/index.css">
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+    <link rel="stylesheet" href="more.css">
+    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <script src="more.js"></script>
+    <script src="/_shared/list-table/__list-table.js"></script>
+    <script src="/_shared/utils.js"></script>
+</head>
+
+<body>
+    <header>
+        <script>
+            $("body>header").load("/_shared/header/__header.html");
+        </script>
+    </header>
+
+    <section>
+
+        <div id="issuers">
+            <p>Issuing Entities</p>
+            <div>
+                <table id="issuers-table" class="list-table">
+                    <thead>
+                        <tr>
+                            <th><span class="is-sortable sorting-column" onclick="sortIssuer(this)">Name</span>
+                                <div class="sort-div" onclick="sortIssuer(this)">
+                                    <div class="sort-asc sort-selection"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th><span class="is-sortable" onclick="sortIssuer(this)">Territory</span>
+                                <div class="sort-div" onclick="sortIssuer(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th><span>Description</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="printers">
+            <p>Printing Facilities</p>
+            <div>
+                <table id="printers-table" class="list-table">
+                    <thead>
+                        <tr>
+                            <th><span class="is-sortable sorting-column" onclick="sortPrinter(this)">Name</span>
+                                <div class="sort-div" onclick="sortPrinter(this)">
+                                    <div class="sort-asc sort-selection"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th><span>Location</span></th>
+                            <th><span>Description</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+
+    <footer>
+        <script>
+            $("body>footer").load("/_shared/footer/__footer.html");
+        </script>
+    </footer>
+</body>

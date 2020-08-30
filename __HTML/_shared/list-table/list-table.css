@@ -108,6 +108,16 @@ table.list-table tbody th > img {
   height: 1.2em;
 }
 
+table.list-table tbody th.title {
+  text-align: left;
+  color: black;
+  font-weight: bold;
+}
+
+table.list-table tbody .text {
+  text-align: left;
+}
+
 table.list-table tbody > tr:nth-child(even) {
   background-color: #e8e6e6;
 }

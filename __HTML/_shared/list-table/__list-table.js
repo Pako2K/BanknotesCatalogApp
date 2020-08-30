@@ -4,8 +4,9 @@ function listTableSetSortingColumn(sortingElem) {
     let titleElem = $(sortingElem).parent().children("span");
 
     // Select column if it was not selected
+    let table = $(titleElem).parents("table"); // This is needed just in case there are more tables in the same page!
     if (!$(titleElem).hasClass("sorting-column")) {
-        $(".sorting-column").removeClass("sorting-column");
+        $(table).find(".sorting-column").removeClass("sorting-column");
         $(titleElem).addClass("sorting-column");
     }
 
@@ -19,7 +20,7 @@ function listTableSetSortingColumn(sortingElem) {
         $(descDiv).removeClass("sort-selection");
         $(ascDiv).addClass("sort-selection");
     } else {
-        $(".sort-selection").removeClass("sort-selection");
+        $(table).find(".sort-selection").removeClass("sort-selection");
         $(ascDiv).addClass("sort-selection");
     }
 

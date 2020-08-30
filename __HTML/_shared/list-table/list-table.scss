@@ -70,6 +70,14 @@ table.list-table {
     & tbody th>img {
         height: 1.2em;
     }
+    & tbody th.title {
+        text-align: left;
+        color: black;
+        font-weight: bold;
+    }
+    & tbody .text {
+        text-align: left;
+    }
     & tbody>tr:nth-child(even) {
         background-color: rgb(232, 230, 230);
     }

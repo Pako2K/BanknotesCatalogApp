@@ -53,9 +53,10 @@ function territoryIssuerGET(request, response) {
 
 // ===> /issuer
 function issuerGET(request, response) {
-    const sql = `   SELECT iss_id AS id, iss_name AS name, iss_description AS description
-	                FROM iss_issuer
-                    ORDER BY name`;
+    const sql = `   SELECT ISS.iss_id AS id, ISS.iss_name AS name, ISS.iss_description AS description, ISS.iss_ter_id AS "territoryId", TER.ter_name AS "territoryName"
+	                FROM iss_issuer ISS
+                    INNER JOIN ter_territory TER ON TER.ter_id = ISS.iss_ter_id
+                    ORDER BY ISS.iss_name`;
 
     catalogueDB.getAndReply(response, sql);
 }
