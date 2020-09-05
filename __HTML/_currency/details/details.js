@@ -205,8 +205,8 @@ function loadSeriesDetails(seriesId) {
 
                     variantsHTML +=
                         `<div class="variant-box section-title">
-                            <p>${faceValueStr?faceValueStr + ",": ""} ${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
-                            <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}', ${variant.id})" alt="Edit Variant"/>
+                            <p>${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
+                            <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}', ${variant.id})" alt="Edit Variant"/>
                             <div class="variant-pictures">
                                 <img src="" alt="obverse"/>
                                 <img src="" alt="reverse"/>
@@ -239,7 +239,7 @@ function loadSeriesDetails(seriesId) {
                 banknotesSection.append(
                     `<div class="banknote-section" id="banknote-id-${denom.denomination}">
                         <div class="banknote-title section-title">
-                            <p>${denomStr}</p>
+                            <p>${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}</p>
                             <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertDenomination($(this).parent().parent().data('denomination'))" alt="Edit Denomination"/>
                         </div>
                         <div class="banknote-info">
@@ -254,7 +254,7 @@ function loadSeriesDetails(seriesId) {
                         <div class="variants-section">
                             ${variantsHTML}
                             <div class="variant-add-box only-admin" >
-                                <div class="clickable-button" onclick="openUpsertVariant(${denom.id}, '${denomStr}')">
+                                <div class="clickable-button" onclick="openUpsertVariant(${denom.id}, '${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}')">
                                     <div>
                                         <img src="./details/add-blue.png" alt="Add variant"/>
                                         <p>New Variant</p>
