@@ -311,6 +311,8 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
 
     $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
     $("div.modal-form-placeholder").show();
+
+    resetExpiration();
 }
 
 
@@ -343,6 +345,8 @@ function openUpsertDenomination(denom) {
         initializeUpsertDenomination(currencyJSON, seriesJSON, denom);
     });
     $("div.modal-form-placeholder").show();
+
+    resetExpiration();
 }
 
 
@@ -355,6 +359,8 @@ function openUpsertVariant(banknoteId, banknoteDenomination, variantId) {
     });
 
     $("div.modal-form-placeholder").show();
+
+    resetExpiration();
 }
 
 

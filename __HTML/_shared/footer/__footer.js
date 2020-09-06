@@ -1,6 +1,12 @@
 "use strict"
 
 $(".main-footer").ready(function() {
+    resetExpiration();
+});
+
+let footerTimer;
+
+function resetExpiration() {
     let user = getCookie("banknotes.ODB.username");
     if (user !== undefined && user !== "") {
         $(".session-info").show();
@@ -17,13 +23,15 @@ $(".main-footer").ready(function() {
                 const INTERVAL = 5; // in seconds
                 if (result.expiration) {
                     let expSec = result.expiration / 1000;
-                    let unit = (expSec > 60) ? " minutes" : " minute";
-                    $("#expiration").text(Math.ceil(expSec / 60) + unit);
+                    $("#expiration").text(Math.ceil(expSec / 60) + " minutes");
                     $("#last-connection").text(getCookie("banknotes.ODB.lastConnection"));
-                    let timer = setInterval(() => {
+                    clearInterval(footerTimer);
+                    footerTimer = setInterval(() => {
                         expSec -= INTERVAL;
-                        if (expSec > 0) {
-                            $("#expiration").text(Math.ceil(expSec / 60) + unit);
+                        if (expSec > 120) {
+                            $("#expiration").text(Math.ceil(expSec / 60) + " minutes");
+                        } else if (expSec > 0) {
+                            $("#expiration").text(Math.ceil(expSec) + " seconds");
                         } else {
                             clearInterval(timer);
                             _footer_logout();
@@ -38,7 +46,8 @@ $(".main-footer").ready(function() {
             }
         });
     }
-});
+}
+
 
 function _footer_logout() {
     alert("For security reasons, your session has expired.\nPlease log in again");

@@ -219,6 +219,7 @@ function selectView(optionElem) {
             break;
     }
 
+    resetExpiration();
 }
 
 
