@@ -1,7 +1,7 @@
 @import './_shared/index',
 './_shared/common';
 //
-$font-size-title: 2em;
+$font-size-title: 1.8em;
 //
 $font-input: Arial;
 $font-size-input: 1.1em;
@@ -88,11 +88,11 @@ $font-size-input: 1.1em;
 
 .user-input-section {
     margin: auto;
-    padding: 2em 0;
+    padding: 1em 0;
     background-color: rgb(90, 180, 180);
     & h2,
     h4 {
-        margin-top: 0;
+        margin: 0 1.5em 1.5em 1.5em;
         text-align: center;
     }
     & h2 {
@@ -232,6 +232,11 @@ $font-size-input: 1.1em;
 
 @media screen and (max-width: $WIDTH_BIG_PHONE) {
     @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+    #intro-section {
+        & h4:last-of-type {
+            display: none;
+        }
+    }
     .user-input-section>form {
         & img.info {
             display: inline-block

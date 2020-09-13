@@ -12,7 +12,7 @@ body {
 }
 
 #intro-section h1 {
-  font-size: 2em;
+  font-size: 1.8em;
 }
 
 #intro-section h4 {
@@ -107,13 +107,13 @@ body {
 
 .user-input-section {
   margin: auto;
-  padding: 2em 0;
+  padding: 1em 0;
   background-color: #5ab4b4;
 }
 
 .user-input-section h2,
 .user-input-section h4 {
-  margin-top: 0;
+  margin: 0 1.5em 1.5em 1.5em;
   text-align: center;
 }
 
@@ -259,7 +259,7 @@ body {
 
 @media screen and (max-width: 1000px) {
   #intro-section h1 {
-    font-size: 1.8em;
+    font-size: 1.62em;
   }
   #intro-section h4 {
     font-size: 0.81em;
@@ -306,7 +306,7 @@ body {
 
 @media screen and (max-width: 800px) {
   #intro-section h1 {
-    font-size: 1.7em;
+    font-size: 1.53em;
   }
   #intro-section h4 {
     font-size: 0.765em;
@@ -369,7 +369,7 @@ body {
 
 @media screen and (max-width: 600px) {
   #intro-section h1 {
-    font-size: 1.5em;
+    font-size: 1.35em;
   }
   #intro-section h4 {
     font-size: 0.675em;
@@ -419,7 +419,7 @@ body {
 
 @media screen and (max-width: 400px) {
   #intro-section h1 {
-    font-size: 1.4em;
+    font-size: 1.26em;
   }
   #intro-section h4 {
     font-size: 0.63em;
@@ -461,6 +461,9 @@ body {
   }
   .user-input-section > form[name=login-form] > div {
     width: 11.2em;
+  }
+  #intro-section h4:last-of-type {
+    display: none;
   }
   .user-input-section > form img.info {
     display: inline-block;
