@@ -13,4 +13,7 @@ body {
 main {
     padding: 2em;
     color: black;
+    &>div {
+        margin-bottom: 3em;
+    }
 }

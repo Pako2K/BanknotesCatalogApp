@@ -28,7 +28,7 @@ function resetExpiration() {
                     clearInterval(footerTimer);
                     footerTimer = setInterval(() => {
                         expSec -= INTERVAL;
-                        if (expSec > 120) {
+                        if (expSec > 60) {
                             $("#expiration").text(Math.ceil(expSec / 60) + " minutes");
                         } else if (expSec > 0) {
                             $("#expiration").text(Math.ceil(expSec) + " seconds");

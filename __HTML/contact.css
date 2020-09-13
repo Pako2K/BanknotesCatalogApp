@@ -19,4 +19,8 @@ main {
   padding: 2em;
   color: black;
 }
+
+main > div {
+  margin-bottom: 3em;
+}
 /*# sourceMappingURL=contact.css.map */

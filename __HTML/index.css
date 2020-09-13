@@ -15,6 +15,19 @@ body {
   font-size: 2em;
 }
 
+#intro-section h4 {
+  font-size: 0.9em;
+}
+
+.user-input-section h2 {
+  font-size: 1.1em;
+}
+
+.user-input-section h4 {
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
 .user-input-section form > div {
   width: 18em;
 }
@@ -55,6 +68,12 @@ body {
 }
 
 #intro-section {
+  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
+  background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
+  padding: 1em;
+}
+
+#intro-section > div {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -65,25 +84,46 @@ body {
       -ms-flex-align: center;
           align-items: center;
   text-align: center;
-  background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#a0dcdc));
-  background: linear-gradient(0deg, #e1f0f0, #a0dcdc);
   height: auto;
 }
 
-#intro-section h1 {
+#intro-section > div h1 {
   font-family: "Source Sans Pro", "sans-serif";
   font-weight: bold;
   color: #215a64;
   text-shadow: 2px 3px 4px #787878;
-  padding: 1em 3em;
+  padding: 0em 3em;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+}
+
+#intro-section > div h3,
+#intro-section > div h4 {
+  margin: 0 1em;
+  font-family: "Source Sans Pro", "sans-serif";
+  color: #21323c;
+  text-shadow: 2px 3px 4px #787878;
 }
 
 .user-input-section {
   margin: auto;
   padding: 2em 0;
   background-color: #5ab4b4;
+}
+
+.user-input-section h2,
+.user-input-section h4 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.user-input-section h2 {
+  margin-bottom: 0.5em;
+  color: white;
+}
+
+.user-input-section h4 {
+  color: whitesmoke;
 }
 
 .user-input-section > form {
@@ -221,6 +261,16 @@ body {
   #intro-section h1 {
     font-size: 1.8em;
   }
+  #intro-section h4 {
+    font-size: 0.81em;
+  }
+  .user-input-section h2 {
+    font-size: 0.99em;
+  }
+  .user-input-section h4 {
+    font-weight: normal;
+    font-size: 0.81em;
+  }
   .user-input-section form > div {
     width: 16.2em;
   }
@@ -257,6 +307,16 @@ body {
 @media screen and (max-width: 800px) {
   #intro-section h1 {
     font-size: 1.7em;
+  }
+  #intro-section h4 {
+    font-size: 0.765em;
+  }
+  .user-input-section h2 {
+    font-size: 0.935em;
+  }
+  .user-input-section h4 {
+    font-weight: normal;
+    font-size: 0.765em;
   }
   .user-input-section form > div {
     width: 15.3em;
@@ -302,9 +362,6 @@ body {
     padding: 0;
     margin-top: 0;
   }
-  #intro-section img:last-child {
-    display: none;
-  }
   .user-input-section > form img.input-img {
     margin-top: 0.3em;
   }
@@ -313,6 +370,16 @@ body {
 @media screen and (max-width: 600px) {
   #intro-section h1 {
     font-size: 1.5em;
+  }
+  #intro-section h4 {
+    font-size: 0.675em;
+  }
+  .user-input-section h2 {
+    font-size: 0.825em;
+  }
+  .user-input-section h4 {
+    font-weight: normal;
+    font-size: 0.675em;
   }
   .user-input-section form > div {
     width: 13.5em;
@@ -345,10 +412,7 @@ body {
   .user-input-section > form[name=login-form] > div {
     width: 12em;
   }
-  #intro-section h1 {
-    margin: 1em 0;
-  }
-  #intro-section img:first-child {
+  #intro-section img {
     display: none;
   }
 }
@@ -356,6 +420,16 @@ body {
 @media screen and (max-width: 400px) {
   #intro-section h1 {
     font-size: 1.4em;
+  }
+  #intro-section h4 {
+    font-size: 0.63em;
+  }
+  .user-input-section h2 {
+    font-size: 0.77em;
+  }
+  .user-input-section h4 {
+    font-weight: normal;
+    font-size: 0.63em;
   }
   .user-input-section form > div {
     width: 12.6em;

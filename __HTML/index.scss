@@ -11,8 +11,18 @@ $font-size-input: 1.1em;
         & h1 {
             font-size: $font-size-title * $scale-factor;
         }
+        & h4 {
+            font-size: 0.9em * $scale-factor;
+        }
     }
     .user-input-section {
+        & h2 {
+            font-size: 1.1em * $scale-factor;
+        }
+        & h4 {
+            font-weight: normal;
+            font-size: 0.9em * $scale-factor;
+        }
         & form {
             &>div {
                 width: 18em * $scale-factor;
@@ -50,19 +60,29 @@ $font-size-input: 1.1em;
 
 @include media-screen-block();
 #intro-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
-    height: auto;
-    & h1 {
-        font-family: $FONT_HEADER;
-        font-weight: bold;
-        color: rgb(33, 90, 100);
-        text-shadow: 2px 3px 4px rgb(120, 120, 120);
-        padding: 1em 3em;
-        transition: 0.4s;
+    padding: 1em;
+    &>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: auto;
+        & h1 {
+            font-family: $FONT_HEADER;
+            font-weight: bold;
+            color: rgb(33, 90, 100);
+            text-shadow: 2px 3px 4px rgb(120, 120, 120);
+            padding: 0em 3em;
+            transition: 0.4s;
+        }
+        & h3,
+        h4 {
+            margin: 0 1em;
+            font-family: $FONT_HEADER;
+            color: rgb(33, 50, 60);
+            text-shadow: 2px 3px 4px rgb(120, 120, 120);
+        }
     }
 }
 
@@ -70,6 +90,18 @@ $font-size-input: 1.1em;
     margin: auto;
     padding: 2em 0;
     background-color: rgb(90, 180, 180);
+    & h2,
+    h4 {
+        margin-top: 0;
+        text-align: center;
+    }
+    & h2 {
+        margin-bottom: 0.5em;
+        color: white;
+    }
+    & h4 {
+        color: whitesmoke;
+    }
     &>form {
         display: flex;
         flex-direction: column;
@@ -181,9 +213,6 @@ $font-size-input: 1.1em;
             padding: 0;
             margin-top: 0;
         }
-        & img:last-child {
-            display: none;
-        }
     }
     .user-input-section>form {
         & img.input-img {
@@ -195,10 +224,7 @@ $font-size-input: 1.1em;
 @media screen and (max-width: $HEIGHT_BIG_PHONE) {
     @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
     #intro-section {
-        & h1 {
-            margin: 1em 0;
-        }
-        & img:first-child {
+        & img {
             display: none;
         }
     }
