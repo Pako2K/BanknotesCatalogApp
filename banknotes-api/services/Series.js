@@ -63,9 +63,9 @@ function currencySeriesPUT(request, response) {
 
     let series = request.body;
 
-    const sqlInsert = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_iss_id, ser_law_date, ser_description)
-	                    VALUES ($1, $2, $3, $4, $5, $6, $7)`;
-    catalogueDB.execSQLUpsert(sqlInsert, [currencyId, series.name, series.start, series.end, series.issuerId, series.lawDate, series.description], (err, result) => {
+    const sqlInsert = `INSERT INTO ser_series(ser_cur_id, ser_name, ser_start, ser_end, ser_is_overstamped, ser_iss_id, ser_law_date, ser_description)
+	                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
+    catalogueDB.execSQLUpsert(sqlInsert, [currencyId, series.name, series.start, series.end, series.isOverstamped ? 1 : 0, series.issuerId, series.lawDate, series.description], (err, result) => {
         if (err) {
             if (err.code === "23505")
                 new Exception(400, "SER-03", "Series already exists in this currency").send(response);
@@ -117,21 +117,40 @@ function seriesPUT(request, response) {
 
     let series = request.body;
 
-    const sqlUpdate = ` UPDATE ser_series 
-                        SET ser_name=$2, ser_start=$3, ser_end=$4, ser_iss_id=$5, ser_law_date=$6, ser_description=$7
-	                    WHERE ser_id = $1`;
-    catalogueDB.execSQLUpsert(sqlUpdate, [seriesId, series.name, series.start, series.end, series.issuerId, series.lawDate, series.description], (err, result) => {
+    // For overstamped series check that the series is still empty
+    const sqlSelect = `SELECT SER.* FROM ser_series SER
+                       INNER JOIN ban_banknote BAN ON SER.ser_id = BAN.ban_ser_id
+                       WHERE SER.ser_id = $1`;
+    catalogueDB.execSQL(sqlSelect, [seriesId], (err, rows) => {
         if (err) {
-            if (err.code === "23503")
-                new Exception(404, "SER-03", "Series not found for the given id: " + seriesId).send(response);
-            else
-                new Exception(500, err.code, err.message).send(response);
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+        // If the query contains any records the flag isOverstamped cannot be changed
+        if (rows.length && (series.isOverstamped ? 1 : 0) != rows[0].ser_is_overstamped) {
+            new Exception(400, "SER-03", "Series already contains denominations").send(response);
             return;
         }
 
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.write("{}");
-        response.send();
+        const sqlUpdate = ` UPDATE ser_series 
+        SET ser_name=$2, ser_start=$3, ser_end=$4, ser_is_overstamped=$5, ser_iss_id=$6, ser_law_date=$7, ser_description=$8
+        WHERE ser_id = $1`;
+        catalogueDB.execSQLUpsert(sqlUpdate, [seriesId, series.name, series.start, series.end, series.isOverstamped ? 1 : 0, series.issuerId, series.lawDate, series.description], (err, result) => {
+            if (err) {
+                if (err.code === "23505")
+                    new Exception(400, "SER-03", "Series already exists in this currency").send(response);
+                else if (err.code === "23503")
+                    new Exception(404, "SER-03", "Series not found for the given id: " + seriesId).send(response);
+                else
+                    new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write("{}");
+            response.send();
+        });
+
     });
 }
 
@@ -182,7 +201,7 @@ function seriesByIdGET(request, response) {
         return;
     }
 
-    let sql = ` SELECT SER.ser_id AS "id", SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end", SER.ser_iss_id AS "issuerId", 
+    let sql = ` SELECT SER.ser_id AS "id", SER.ser_name AS "name", SER.ser_start AS "start", SER.ser_end AS "end", SER.ser_is_overstamped AS "isOverstamped", SER.ser_iss_id AS "issuerId", 
                         ISS.iss_name AS "issuerName", SER.ser_law_date AS "lawDate", SER.ser_description AS "description"
                 FROM ser_series SER
                 LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id

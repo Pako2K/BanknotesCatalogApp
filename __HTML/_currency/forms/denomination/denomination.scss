@@ -21,6 +21,9 @@
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                &>div:first-of-type {
+                    margin-right: 1em;
+                }
             }
             &.fields-group {
                 &>p {

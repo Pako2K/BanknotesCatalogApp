@@ -361,7 +361,7 @@ paths:
       tags: 
       - Variants
       summary: Add new varaint of a denomination.
-      description: Inserts a new variant for the given denomination. If a variant with the same catalogId already exists an error will be returned. <b>Only Admin users can invoke this operation.</b>
+      description: Inserts a new variant for the given denomination. If a variant with the same catalogueId already exists an error will be returned (400). If the variant is an overstamped one, then the catalogueId and the territory id must be provided. If the reference to the overstamped variant is not found an error will be returned (404). <b>Only Admin users can invoke this operation.</b>
       operationId: denominationVariantPUT
       parameters:
       - $ref: '#/components/parameters/denominationId'
@@ -424,7 +424,7 @@ paths:
       tags: 
       - Variants
       summary: Updates a variant of a banknote.
-      description: Updates the features of an existing variant. <b>Only Admin users can invoke this operation.</b>
+      description: Updates the features of an existing variant. If a variant with the same catalogueId already exists an error will be returned (400). If the variant is an overstamped one, then the catalogueId and the territory id must be provided. If the reference to the overstamped variant is not found an error will be returned (404). <b>Only Admin users can invoke this operation.</b>
       operationId: variantPUT
       parameters:
       - $ref: '#/components/parameters/variantId'
@@ -893,7 +893,7 @@ paths:
       tags: 
       - Series
       summary: Updates a series.
-      description: Updates the features of an existing series. <b>Only Admin users can invoke this operation.</b>
+      description: Updates the features of an existing series. The name cannot be chnaged to an existing series name. The flag "isOverstamped" annot be changed if the series already contains any denomination. <b>Only Admin users can invoke this operation.</b>
       operationId: seriesPUT
       parameters:
       - $ref: '#/components/parameters/seriesId'
@@ -2239,6 +2239,8 @@ components:
       - $ref: '#/components/schemas/seriesSummary'
       - type: object
         properties:
+          isOverstamped:
+            type: boolean
           issuerId:
             type: integer
           lawDate:
@@ -2341,7 +2343,6 @@ components:
       required:
       - faceValue
       - unitId
-      - materialId
       properties:
         faceValue:
           type: number
@@ -2427,7 +2428,9 @@ components:
               type: string
             reverseColor:
               type: string
-            overstampedVariantId:
+            overstampedTerritoryId:
+              type: integer
+            overstampedCatalogueId:
               type: string
             printerId:
               type: integer
@@ -2468,7 +2471,11 @@ components:
               type: string
             reverseColor:
               type: string
-            overstampedVariantId:
+            overstampedTerritoryId:
+              type: integer
+            overstampedTerritoryName:
+              type: string
+            overstampedCatalogueId:
               type: string
             printerId:
               type: integer

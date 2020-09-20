@@ -13,15 +13,23 @@
                 <p class="required-input">Issue year</p>
                 <input name="variant-issue-year" type="number" style="width: 6em" required/>
             </div>
-        </div>
-        <div class="inline-fields">
             <div>
                 <p class="required-input">Catalogue Id</p>
-                <input value="P-" name="variant-catalogue-id" type="text" size="12" maxlength="12" autocomplete="off" required/>
+                <input value="P-" name="variant-catalogue-id" type="text" size="10" maxlength="12" autocomplete="off" required/>
             </div>
-            <div>
-                <p>Overstamped note Id</p>
-                <input name="variant-overstamped-id" type="text" size="12" maxlength="12" autocomplete="off"></select>
+        </div>
+
+        <div class="fields-group only-overstamped">
+            <p class="required-input">Overstamped Banknote</p>
+            <div class="inline-fields">
+                <div>
+                    <p class="required-input">Territory</p>
+                    <select name="overstamped-territory" style="width: 14em" required/>
+                </div>
+                <div>
+                    <p class="required-input">Catalogue Id</p>
+                    <input value="" name="overstamped-cat-id" type="text" size="10" maxlength="12" autocomplete="off" required/>
+                </div>
             </div>
         </div>
         <div class="flag-fields">
@@ -34,7 +42,7 @@
             <p>Printer</p>
             <select name="variant-printer" style="width: 25em" />
         </div>
-        <div class="inline-fields">
+        <div class="inline-fields non-overstamped">
             <div>
                 <p>Obverse Color</p>
                 <input name="variant-obverse-color" type="text" size="16" maxlength="25" autocomplete="off" />
@@ -44,7 +52,7 @@
                 <input name="variant-reverse-color" type="text" size="16" maxlength="25" autocomplete="off" />
             </div>
         </div>
-        <div>
+        <div class="non-overstamped">
             <p>Signature</p>
             <input name="variant-signature" type="text" size="36" maxlength="35" autocomplete="off" />
         </div>
@@ -52,19 +60,19 @@
             <p>Signature details</p>
             <input name="variant-signature-ext" type="text" size="36" maxlength="35" autocomplete="off" />
         </div> -->
-        <div>
+        <div class="non-overstamped">
             <p>Watermark</p>
             <input name="variant-watermark" type="text" size="36" maxlength="35" autocomplete="off" />
         </div>
-        <div>
+        <div class="non-overstamped">
             <p>Security thread</p>
             <input name="variant-security-thread" type="text" size="36" maxlength="35" autocomplete="off"></input>
         </div>
-        <div>
+        <div class="non-overstamped">
             <p>Other Security features</p>
             <textarea name="variant-security" rows="1" cols="36"></textarea>
         </div>
-        <div class="flag-fields">
+        <div class="flag-fields non-overstamped">
             <div>
                 <input type="checkbox" name="is-specimen" value="1">
                 <span>Specimen</span>
@@ -86,7 +94,7 @@
                 <span>Numismatic Product</span>
             </div>
         </div>
-        <div>
+        <div class="non-overstamped">
             <p>Mintage</p>
             <input name="variant-mintage" type="number" style="width: 8em" />
         </div>

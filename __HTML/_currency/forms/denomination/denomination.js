@@ -6,30 +6,38 @@ function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
 
     $("#upsert-note-dialog input[name='note-face-value']").focus();
 
-    // Fill-in the materials
-    $.ajax({
-        type: "GET",
-        url: `/material`,
-        contentType: "application/json",
-        async: true,
-        cache: false,
-        timeout: 5000,
-        dataType: 'json',
+    // If the series contains overstamped notes, then only the face value and the units are needed
+    if (seriesJSON.isOverstamped) {
+        $(".non-overstamped").hide();
+        $("select[name='note-material']").removeAttr("required");
+    } else {
+        $("select[name='note-material']").attr("required", "");
+        $(".non-overstamped").show();
+        // Fill-in the materials
+        $.ajax({
+            type: "GET",
+            url: `/material`,
+            contentType: "application/json",
+            async: true,
+            cache: false,
+            timeout: 5000,
+            dataType: 'json',
 
-        success: function(result, status) {
-            for (let material of result)
-                $("#upsert-note-dialog select[name='note-material']").append(`<option value='${material.id}'>${material.name}</option>`);
+            success: function(result, status) {
+                for (let material of result)
+                    $("#upsert-note-dialog select[name='note-material']").append(`<option value='${material.id}'>${material.name}</option>`);
 
-            if (noteJSON)
-                $("#upsert-note-dialog select[name='note-material']").val(noteJSON.materialId)
-            else
-                $("#upsert-note-dialog select[name='note-material']").val(0)
-        },
+                if (noteJSON)
+                    $("#upsert-note-dialog select[name='note-material']").val(noteJSON.materialId)
+                else
+                    $("#upsert-note-dialog select[name='note-material']").val(0)
+            },
 
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-        }
-    });
+            error: function(xhr, status, error) {
+                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        });
+    }
 
     if (noteJSON) {
         $("#upsert-note-dialog>h3").text('Update Denomination');
@@ -75,7 +83,8 @@ function upsertNote() {
     let banknoteId = $("#upsert-note-dialog").data("banknote-id");
     banknote.faceValue = parseFloat($("input[name='note-face-value']").val());
     banknote.unitId = parseInt($("#note-units-select").val());
-    banknote.materialId = parseInt($("select[name='note-material']").val());
+    if ($("select[name='note-material']").val())
+        banknote.materialId = parseInt($("select[name='note-material']").val());
     if ($("input[name='note-width']").val() !== "")
         banknote.width = parseInt($("input[name='note-width']").val());
     if ($("input[name='note-height']").val() !== "")

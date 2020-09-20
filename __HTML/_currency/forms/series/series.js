@@ -39,6 +39,7 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
         $("#upsert-series-dialog input[name='series-name']").val(seriesJSON.name);
         $("#upsert-series-dialog input[name='series-start']").val(seriesJSON.start);
         $("#upsert-series-dialog input[name='series-end']").val(seriesJSON.end);
+        $("#upsert-series-dialog input[name='is-overstamped']").prop("checked", seriesJSON.isOverstamped);
         $("#upsert-series-dialog input[name='series-law-date']").val(seriesJSON.lawDate);
         $("#upsert-series-dialog textarea[name='series-description']").val(seriesJSON.description);
     } else {
@@ -64,6 +65,7 @@ function upsertSeries() {
         series.end = parseInt($("input[name='series-end']").val());
     if ($("select[name='series-issuer']").val())
         series.issuerId = parseInt($("select[name='series-issuer']").val());
+    series.isOverstamped = $("input[name='is-overstamped']").prop("checked");
     if ($("input[name='series-law-date']").val() !== "")
         series.lawDate = $("input[name='series-law-date']").val();
     if ($("textarea[name='series-description']").val() !== "")

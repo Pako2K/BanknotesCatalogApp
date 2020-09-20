@@ -127,19 +127,6 @@
   outline: none;
 }
 
-#upsert-variant-dialog > form > div.inline-fields {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
 #upsert-variant-dialog > form > div.flag-fields {
   margin-top: 1em;
   display: -webkit-box;
@@ -182,6 +169,33 @@
 #upsert-variant-dialog > form > div.flag-fields > div input:checked ~ span {
   color: #0000ac;
   text-shadow: #999999 1px 1px 2px;
+}
+
+#upsert-variant-dialog > form div.inline-fields {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+#upsert-variant-dialog > form div.fields-group > p {
+  margin-bottom: 0.5em;
+}
+
+#upsert-variant-dialog > form div.fields-group > div {
+  margin-left: 0.5em;
+  padding-left: 1em;
+  border-left: solid 0.5px gray;
+}
+
+#upsert-variant-dialog > form div.fields-group > div p {
+  margin-top: 0em;
 }
 
 #upsert-variant-dialog > form > div:last-of-type {

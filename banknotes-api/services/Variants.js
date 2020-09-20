@@ -110,39 +110,95 @@ function denominationVariantPUT(request, response) {
 
     let variant = request.body;
 
-    const sqlInsert = `INSERT INTO bva_variant(bva_ban_id, bva_issue_year, bva_printed_date, bva_cat_id, bva_obverse_color, bva_reverse_color, bva_overstamped_id,
-                                            bva_pri_id, bva_signature, bva_signature_ext, bva_watermark, bva_security_thread, bva_added_security, 
-                                            bva_mintage, bva_not_issued, bva_is_specimen, bva_is_commemorative, bva_is_numis_product, bva_is_replacement, bva_is_error, bva_description)
-                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`;
-    catalogueDB.execSQLUpsert(sqlInsert, [denominationId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.obverseColor, variant.reverseColor,
-        variant.overstampedVariantId, variant.printerId, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread,
-        variant.securityExt, variant.mintage, variant.notIssued ? 1 : 0, variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
-        variant.isError ? 1 : 0, variant.description
-    ], (err, result) => {
-        if (err) {
-            new Exception(500, err.code, err.message).send(response);
-            return;
-        }
+    // Validate that the catalogueId is unique or "NA"
+    if (variant.catalogueId !== 'NA') {
+        const sqlSelectCatId = `SELECT BVA.* FROM bva_variant BVA
+                                INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                INNER JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id
+                                INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id IN (
+                                    SELECT ISS.iss_ter_id FROM iss_issuer ISS
+                                    INNER JOIN ser_series SER ON SER.ser_iss_id = ISS.iss_id
+									INNER JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id AND BAN.ban_id = $1
+                                )
+                                WHERE BVA.bva_cat_id = $2`;
 
-        // Get the new variant id
-        let sql = ` SELECT bva_id AS id
-                    FROM bva_variant
-                    WHERE bva_ban_id = $1 
-                    AND bva_cat_id = $2`;
-        catalogueDB.execSQL(sql, [denominationId, variant.catalogueId], (err, rows) => {
+        catalogueDB.execSQL(sqlSelectCatId, [denominationId, variant.catalogueId], (err, rows) => {
             if (err) {
                 new Exception(500, err.code, err.message).send(response);
                 return;
             }
 
-            let replyJSON = { id: rows[0].id };
+            if (rows.length) {
+                new Exception(400, "VAR-03", "Catalogue Id already used, " + variant.catalogueId).send(response);
+                return;
+            }
 
-            response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.write(JSON.stringify(replyJSON));
-            response.send();
+            insertVariant(denominationId, variant, response, false);
+
         });
-    });
+    } else
+        insertVariant(denominationId, variant, response, false);
 }
+
+function insertVariant(denominationId, variant, response, validated) {
+    // Validate that the overstamped catalogueId exists and is unique
+    if (!validated && variant.overstampedTerritoryId && variant.overstampedCatalogueId) {
+        const sqlSelectOverstamped = `  SELECT BVA.* FROM bva_variant BVA
+                                        INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                        INNER JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id
+                                        INNER JOIN cur_currency CUR ON CUR.cur_id = SER.ser_cur_id
+                                        INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type = 'OWNED' AND TEC.tec_ter_id = $1
+                                        WHERE  BVA.bva_cat_id = $2`
+
+        catalogueDB.execSQL(sqlSelectOverstamped, [variant.overstampedTerritoryId, variant.overstampedCatalogueId], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            if (rows.length !== 1) {
+                new Exception(400, "VAR-04", "Overstamped Catalogue Id not found or not unique, " + variant.overstampedCatalogueId).send(response);
+                return;
+            }
+            variant.overstampedVariantId = rows[0].bva_id;
+            insertVariant(denominationId, variant, response, true);
+        });
+    } else {
+        const sqlInsert = ` INSERT INTO bva_variant(bva_ban_id, bva_issue_year, bva_printed_date, bva_cat_id, bva_obverse_color, bva_reverse_color, bva_overstamped_id,
+                                bva_pri_id, bva_signature, bva_signature_ext, bva_watermark, bva_security_thread, bva_added_security, 
+                                bva_mintage, bva_not_issued, bva_is_specimen, bva_is_commemorative, bva_is_numis_product, bva_is_replacement, bva_is_error, bva_description)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`;
+        catalogueDB.execSQLUpsert(sqlInsert, [denominationId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.obverseColor, variant.reverseColor,
+            variant.overstampedVariantId, variant.printerId, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread,
+            variant.securityExt, variant.mintage, variant.notIssued ? 1 : 0, variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
+            variant.isError ? 1 : 0, variant.description
+        ], (err, result) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Get the new variant id
+            let sql = ` SELECT bva_id AS id
+                        FROM bva_variant
+                        WHERE bva_ban_id = $1 
+                        AND bva_cat_id = $2`;
+            catalogueDB.execSQL(sql, [denominationId, variant.catalogueId], (err, rows) => {
+                if (err) {
+                    new Exception(500, err.code, err.message).send(response);
+                    return;
+                }
+
+                let replyJSON = { id: rows[0].id };
+
+                response.writeHead(200, { 'Content-Type': 'application/json' });
+                response.write(JSON.stringify(replyJSON));
+                response.send();
+            });
+        });
+    }
+}
+
 
 
 
@@ -156,16 +212,22 @@ function variantGET(request, response) {
         return;
     }
 
-    const sql = `SELECT BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
-                        BVA.bva_obverse_color as "obverseColor", BVA.bva_reverse_color as "reverseColor", BVA.bva_overstamped_id AS "overstampedVariantId", 
+    const sql = `   SELECT BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
+                        BVA2.bva_cat_id AS "overstampedCatalogueId", ISS.iss_ter_id AS "overstampedTerritoryId", TER.ter_name AS "overstampedTerritoryName",
+                        BVA.bva_obverse_color as "obverseColor", BVA.bva_reverse_color as "reverseColor",                         
                         BVA.bva_pri_id AS "printerId", PRI.pri_name AS "printerName", BVA.bva_signature AS "signature", BVA.bva_signature_ext AS "signatureExt", 
                         BVA.bva_watermark AS "watermark", BVA.bva_security_thread AS "securityThread", BVA.bva_added_security AS "securityExt", 
                         BVA.bva_mintage as "mintage", BVA.bva_not_issued AS "notIssued", BVA.bva_is_specimen AS "isSpecimen",
                         BVA.bva_is_replacement AS "isReplacement", BVA.bva_is_error AS "isError", BVA.bva_is_commemorative AS "isCommemorative",
                         BVA.bva_is_numis_product AS "isNumismaticProduct", BVA.bva_description AS "description"
-                FROM bva_variant BVA
-                LEFT JOIN pri_printer PRI ON BVA.bva_pri_id = PRI.pri_id
-                WHERE BVA.bva_id = $1`;
+                    FROM bva_variant BVA
+                    LEFT JOIN pri_printer PRI ON BVA.bva_pri_id = PRI.pri_id
+                    LEFT JOIN bva_variant BVA2 ON BVA2.bva_id = BVA.bva_overstamped_id
+                    LEFT JOIN ban_banknote BAN ON BAN.ban_id = BVA2.bva_ban_id
+                    LEFT JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id
+                    LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
+                    LEFT JOIN ter_territory TER ON TER.ter_id = ISS.iss_ter_id
+                    WHERE BVA.bva_id = $1`;
 
     catalogueDB.execSQL(sql, [variantId], (err, rows) => {
         if (err) {
@@ -181,13 +243,15 @@ function variantGET(request, response) {
     });
 }
 
+
+
 // ==> /variant/:variantId PUT
 function variantPUT(request, response) {
     let variantId = parseInt(request.params.variantId);
 
     // Check that the Id is an integer
     if (Number.isNaN(variantId) || variantId.toString() !== request.params.variantId) {
-        new Exception(400, "VAR-01", "Invalid denomination id, " + request.params.variantId).send(response);
+        new Exception(400, "VAR-01", "Invalid variant id, " + request.params.variantId).send(response);
         return;
     }
 
@@ -200,31 +264,88 @@ function variantPUT(request, response) {
 
     let variant = request.body;
 
-    const sqlUpdate = ` UPDATE bva_variant 
-                        SET bva_issue_year = $2, bva_printed_date = $3, bva_cat_id = $4, bva_overstamped_id = $5, bva_pri_id = $6,
-                            bva_signature = $7, bva_signature_ext = $8, bva_watermark = $9, bva_security_thread = $10, bva_added_security = $11, 
-                            bva_is_specimen = $12, bva_is_commemorative = $13, bva_is_numis_product = $14, bva_is_replacement = $15, bva_is_error = $16,
-                            bva_description = $17, bva_obverse_color = $18, bva_reverse_color = $19, bva_mintage = $20, bva_not_issued = $21
-                        WHERE bva_id = $1`;
-    catalogueDB.execSQLUpsert(sqlUpdate, [variantId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.overstampedVariantId,
-        variant.printerId, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread, variant.securityExt,
-        variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
-        variant.isError ? 1 : 0, variant.description, variant.obverseColor, variant.reverseColor, variant.mintage, variant.notIssued ? 1 : 0
-    ], (err, result) => {
-        if (err) {
-            if (err.code === "23503")
-                new Exception(404, "VAR-04", "Variant not found for the given id: " + variantId).send(response);
-            else
-                new Exception(500, err.code, err.message).send(response);
-            return;
-        }
 
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.write("{}");
-        response.send();
-    });
+    // Validate that the catalogueId is unique or "NA"
+    if (variant.catalogueId !== 'NA') {
+        const sqlSelectCatId = `SELECT BVA.* FROM bva_variant BVA
+                                INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                INNER JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id
+                                INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id IN (
+                                    SELECT ISS.iss_ter_id FROM iss_issuer ISS
+                                    INNER JOIN ser_series SER ON SER.ser_iss_id = ISS.iss_id
+                                    INNER JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id 
+                                    INNER JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id AND BVA.bva_id = $1
+                                )
+                                WHERE BVA.bva_cat_id = $2 AND BVA.bva_id != $1`;
+
+        catalogueDB.execSQL(sqlSelectCatId, [variantId, variant.catalogueId], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            if (rows.length) {
+                new Exception(400, "VAR-03", "Catalogue Id already used, " + variant.catalogueId).send(response);
+                return;
+            }
+
+            updateVariant(variantId, variant, response, false);
+
+        });
+    } else
+        updateVariant(variantId, variant, response, false);
 }
 
+function updateVariant(variantId, variant, response, validated) {
+    // Validate that the overstamped catalogueId exists and is unique
+    if (!validated && variant.overstampedTerritoryId && variant.overstampedCatalogueId) {
+        const sqlSelectOverstamped = `  SELECT BVA.* FROM bva_variant BVA
+                                        INNER JOIN ban_banknote BAN ON BAN.ban_id = BVA.bva_ban_id
+                                        INNER JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id
+                                        INNER JOIN cur_currency CUR ON CUR.cur_id = SER.ser_cur_id
+                                        INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type = 'OWNED' AND TEC.tec_ter_id = $1
+                                        WHERE  BVA.bva_cat_id = $2`
+
+        catalogueDB.execSQL(sqlSelectOverstamped, [variant.overstampedTerritoryId, variant.overstampedCatalogueId], (err, rows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            if (rows.length !== 1) {
+                new Exception(400, "VAR-04", "Overstamped Catalogue Id not found or not unique, " + variant.overstampedCatalogueId).send(response);
+                return;
+            }
+            variant.overstampedVariantId = rows[0].bva_id;
+            updateVariant(variantId, variant, response, true);
+        });
+    } else {
+
+        const sqlUpdate = ` UPDATE bva_variant 
+                            SET bva_issue_year = $2, bva_printed_date = $3, bva_cat_id = $4, bva_overstamped_id = $5, bva_pri_id = $6,
+                                bva_signature = $7, bva_signature_ext = $8, bva_watermark = $9, bva_security_thread = $10, bva_added_security = $11, 
+                                bva_is_specimen = $12, bva_is_commemorative = $13, bva_is_numis_product = $14, bva_is_replacement = $15, bva_is_error = $16,
+                                bva_description = $17, bva_obverse_color = $18, bva_reverse_color = $19, bva_mintage = $20, bva_not_issued = $21
+                            WHERE bva_id = $1`;
+        catalogueDB.execSQLUpsert(sqlUpdate, [variantId, variant.issueYear, variant.printedDate, variant.catalogueId, variant.overstampedVariantId,
+            variant.printerId, variant.signature, variant.signatureExt, variant.watermark, variant.securityThread, variant.securityExt,
+            variant.isSpecimen ? 1 : 0, variant.isCommemorative ? 1 : 0, variant.isNumismaticProduct ? 1 : 0, variant.isReplacement ? 1 : 0,
+            variant.isError ? 1 : 0, variant.description, variant.obverseColor, variant.reverseColor, variant.mintage, variant.notIssued ? 1 : 0
+        ], (err, result) => {
+            if (err) {
+                if (err.code === "23503")
+                    new Exception(404, "VAR-04", "Variant not found for the given id: " + variantId).send(response);
+                else
+                    new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write("{}");
+            response.send();
+        });
+    }
+}
 
 
 
@@ -327,10 +448,14 @@ function itemsGET(request, response) {
                             CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                             SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
                             CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName",
-                            BAN.ban_size_width AS "width", BAN.ban_size_height AS "height", PRI.pri_name AS "printer", ISS.iss_name AS "issuer"
+                            CASE WHEN BVA.bva_overstamped_id IS NULL THEN BAN.ban_size_width ELSE BAN2.ban_size_width END AS "width",
+	 						CASE WHEN BVA.bva_overstamped_id IS NULL THEN BAN.ban_size_height ELSE BAN2.ban_size_height END AS "height",
+                            PRI.pri_name AS "printer", ISS.iss_name AS "issuer"
                     FROM bva_variant BVA
                     ${commonJoinsSQL}
                     LEFT JOIN pri_printer PRI ON PRI.pri_id = BVA.bva_pri_id
+                    LEFT JOIN bva_variant BVA2 ON BVA.bva_overstamped_id = BVA2.bva_id
+	 				LEFT JOIN ban_banknote BAN2 ON BVA2.bva_ban_id = BAN2.ban_id
                 )
                 SELECT * FROM resultset
                 ${sqlBanknote}
@@ -417,7 +542,8 @@ function seriesByIdItemsGET(request, response) {
                         BAN.ban_obverse_desc AS "obverseDescription", BAN.ban_reverse_desc AS "reverseDescription", 
                         BAN.ban_obverse_tags AS "obverseTags", BAN.ban_reverse_tags AS "reverseTags", BAN.ban_description AS "description",
                         BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
-                        BVA.bva_obverse_color as "obverseColor", BVA.bva_reverse_color as "reverseColor", BVA.bva_overstamped_id AS "overstampedVariantId",
+                        BVA.bva_obverse_color as "obverseColor", BVA.bva_reverse_color as "reverseColor",
+                        BVA2.bva_cat_id AS "overstampedCatalogueId", ISS.iss_ter_id AS "overstampedTerritoryId", TER.ter_name AS "overstampedTerritoryName",
                         BVA.bva_pri_id AS "printerId", PRI.pri_name AS "printerName", BVA.bva_signature AS "signature", BVA.bva_signature_ext AS "signatureExt", 
                         BVA.bva_watermark AS "watermark", BVA.bva_security_thread AS "securityThread", BVA.bva_added_security AS "securityExt", 
                         BVA.bva_mintage as "mintage", BVA.bva_not_issued AS "notIssued", BVA.bva_is_specimen AS "isSpecimen",
@@ -428,6 +554,13 @@ function seriesByIdItemsGET(request, response) {
                 LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
                 LEFT JOIN mat_material MAT ON BAN.ban_mat_id = MAT.mat_id
                 LEFT JOIN pri_printer PRI ON BVA.bva_pri_id = PRI.pri_id
+
+                LEFT JOIN bva_variant BVA2 ON BVA2.bva_id = BVA.bva_overstamped_id
+                LEFT JOIN ban_banknote BAN2 ON BAN2.ban_id = BVA2.bva_ban_id
+                LEFT JOIN ser_series SER ON SER.ser_id = BAN2.ban_ser_id
+                LEFT JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
+                LEFT JOIN ter_territory TER ON TER.ter_id = ISS.iss_ter_id
+
                 WHERE BAN.ban_ser_id =  $1
                 ORDER BY "denomination", "variantId"`;
 
@@ -473,7 +606,9 @@ function seriesByIdItemsGET(request, response) {
                 variant.catalogueId = row.catalogueId;
                 if (row.obverseColor) variant.obverseColor = row.obverseColor;
                 if (row.reverseColor) variant.reverseColor = row.reverseColor;
-                if (row.overstampedVariantId) variant.overstampedVariantId = row.overstampedVariantId;
+                if (row.overstampedCatalogueId) variant.overstampedCatalogueId = row.overstampedCatalogueId;
+                if (row.overstampedTerritoryId) variant.overstampedTerritoryId = row.overstampedTerritoryId;
+                if (row.overstampedTerritoryName) variant.overstampedTerritoryName = row.overstampedTerritoryName;
                 if (row.printerId) variant.printerId = row.printerId;
                 if (row.printerName) variant.printerName = row.printerName;
                 if (row.signature) variant.signature = row.signature;

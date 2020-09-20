@@ -1,4 +1,4 @@
-function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantId) {
+function initializeUpsertVariant(territory, seriesId, isOverstamped, banknoteId, denominationStr, variantId) {
     $("#upsert-variant-dialog").data("series-id", seriesId);
     $("#upsert-variant-dialog").data("banknote-id", banknoteId);
     $("#upsert-variant-dialog").data("variant-id", variantId);
@@ -6,6 +6,24 @@ function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantI
     $("#upsert-variant-dialog>h4").text(`${denominationStr}`);
 
     $("#upsert-variant-dialog input[name='variant-printed-date']").focus();
+
+    // If the series contains overstamped notes, then hide the "inherited" features
+    if (isOverstamped) {
+        // Fill-in the Countries
+        $("#upsert-variant-dialog select[name='overstamped-territory']").append(`<option value='${territory.id}'>${territory.name}</option>`);
+        $("#upsert-variant-dialog input[name='overstamped-cat-id']").val("P-");
+
+        $(".non-overstamped").hide();
+        $("select[name='overstamped-territory']").attr("required", "");
+        $("input[name='overstamped-cat-id']").attr("required", "");
+        $(".only-overstamped").show();
+    } else {
+        $(".non-overstamped").show();
+        $("select[name='overstamped-territory']").removeAttr("required");
+        $("input[name='overstamped-cat-id']").removeAttr("required");
+        $(".only-overstamped").hide();
+    }
+
 
     // Fill-in the printers
     $.ajax({
@@ -37,8 +55,9 @@ function initializeUpsertVariant(seriesId, banknoteId, denominationStr, variantI
                         $("#upsert-variant-dialog input[name='variant-printed-date']").val(variant.printedDate);
                         $("#upsert-variant-dialog input[name='variant-issue-year']").val(variant.issueYear);
                         $("#upsert-variant-dialog input[name='variant-catalogue-id']").val(variant.catalogueId);
-                        $("#upsert-variant-dialog select[name='variant-printer']").val(variant.printerId)
-                        $("#upsert-variant-dialog input[name='variant-overstamped-id']").val(variant.overstampedVariantId);
+                        $("#upsert-variant-dialog select[name='variant-printer']").val(variant.printerId);
+                        $("#upsert-variant-dialog select[name='overstamped-territory']").val(variant.overstampedTerritoryId);
+                        $("#upsert-variant-dialog input[name='overstamped-cat-id']").val(variant.overstampedCatalogueId);
                         $("#upsert-variant-dialog input[name='not-issued']").prop("checked", parseInt(variant.notIssued));
                         $("#upsert-variant-dialog input[name='variant-obverse-color']").val(variant.obverseColor);
                         $("#upsert-variant-dialog input[name='variant-reverse-color']").val(variant.reverseColor);
@@ -94,8 +113,10 @@ function upsertVariant() {
         variant.printedDate = $("input[name='variant-printed-date']").val();
     if ($("input[name='variant-catalogue-id']").val() !== "")
         variant.catalogueId = $("input[name='variant-catalogue-id']").val();
-    if ($("input[name='variant-overstamped-id']").val() !== "")
-        variant.overstampedVariantId = $("input[name='variant-overstamped-id']").val();
+    if ($("select[name='overstamped-territory']").val())
+        variant.overstampedTerritoryId = parseInt($("select[name='overstamped-territory']").val());
+    if ($("input[name='overstamped-cat-id']").val() !== "")
+        variant.overstampedCatalogueId = $("input[name='overstamped-cat-id']").val();
     variant.notIssued = $("input[name='not-issued']").prop("checked");
     if ($("select[name='variant-printer']").val())
         variant.printerId = parseInt($("select[name='variant-printer']").val());

@@ -20,11 +20,6 @@
             & textarea {
                 @include textarea-field;
             }
-            &.inline-fields {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-            }
             &.flag-fields {
                 margin-top: 1em;
                 display: flex;
@@ -46,6 +41,24 @@
                         color: rgb(0, 0, 172);
                         text-shadow: rgb(153, 153, 153) 1px 1px 2px;
                     }
+                }
+            }
+        }
+        & div.inline-fields {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        & div.fields-group {
+            &>p {
+                margin-bottom: 0.5em;
+            }
+            &>div {
+                margin-left: 0.5em;
+                padding-left: 1em;
+                border-left: solid 0.5px gray;
+                & p {
+                    margin-top: 0em;
                 }
             }
         }

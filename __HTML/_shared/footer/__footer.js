@@ -33,7 +33,7 @@ function resetExpiration() {
                         } else if (expSec > 0) {
                             $("#expiration").text(Math.ceil(expSec) + " seconds");
                         } else {
-                            clearInterval(timer);
+                            clearInterval(footerTimer);
                             _footer_logout();
                         }
                     }, INTERVAL * 1000);
