@@ -175,9 +175,9 @@ function territoriesItemsStatsGET(request, response) {
                     LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
                     GROUP BY TER.ter_id
                 )
-                SELECT "id", "iso3","name", "continentId", "territoryTypeId", "start", "end", sum("numCurrencies") AS "numCurrencies",
-                        sum("numSeries") AS "numSeries", sum("numDenominations") AS "numDenominations", 
-                        sum("numNotes") AS "numNotes", sum("numVariants") AS "numVariants"
+                SELECT "id", "iso3","name", "continentId", "territoryTypeId", "start", "end", CAST(sum("numCurrencies") AS INTEGER) AS "numCurrencies",
+                        CAST(sum("numSeries") AS INTEGER) AS "numSeries", CAST(sum("numDenominations") AS INTEGER) AS "numDenominations", 
+                        CAST(sum("numNotes") AS INTEGER) AS "numNotes", CAST(sum("numVariants") AS INTEGER) AS "numVariants"
                 FROM resultset
                 GROUP BY "id", "iso3","name", "continentId", "territoryTypeId", "start", "end"
                 ORDER BY "name"`;
