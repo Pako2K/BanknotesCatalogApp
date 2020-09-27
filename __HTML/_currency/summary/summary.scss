@@ -2,6 +2,11 @@
 #summary-main-div {
     max-width: 100%;
     overflow-x: auto;
+    &>p {
+        text-align: center;
+        font-size: 0.9em;
+        font-style: italic;
+    }
 }
 
 .summary-table {

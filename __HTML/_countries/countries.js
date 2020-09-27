@@ -266,8 +266,8 @@ function loadCountriesTable() {
 
     // Hide collection columns if no user is logged 
     if (!getCookie("banknotes.ODB.username")) {
-        $(".only-logged-in").hide();
-        $('#countries-table>thead>tr>th[colspan="2"]').attr("colspan", 1);
-        $('#countries-filters table>thead>tr>th[colspan="3"]').attr("colspan", 2);
+        $(".only-logged-in").css('opacity', '0.25');
+        // Show warning
+        $("p.not-logged-in").show();
     }
 }

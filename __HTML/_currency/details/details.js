@@ -195,8 +195,8 @@ function loadSeriesDetails(seriesId) {
                                             <img src="./details/edit.png" onclick='openUpsertCollectionFromDetails(this, "${denomStr}")' alt="Edit Items"/>
                                         </div>`;
                                 } else {
-                                    if (itemsUri)
-                                        itemsBoxHTML = `<div class="item-add-box not-logged-in" data-variant='${variantStr}'>
+
+                                    itemsBoxHTML = `<div class="item-add-box" data-variant='${variantStr}'>
                                                 <div class="clickable-button" onclick='openUpsertCollectionFromDetails(this, "${denomStr}")'>
                                                     <div>
                                                         <img src="./details/add-black.png" alt="Add new item"/>
@@ -310,16 +310,20 @@ function loadSeriesDetails(seriesId) {
 
 
 function openUpsertCollectionFromDetails(imgElem, denomStr) {
-    let variantJSON = $(imgElem).parent().data("variant");
-    variantJSON.denominationStr = denomStr;
+    if (getCookie("banknotes.ODB.username")){
+        let variantJSON = $(imgElem).parent().data("variant");
+        variantJSON.denominationStr = denomStr;
 
-    let gradesJSON = $("#grades-div").data("grades");
-    let seriesId = $("div.series-info").data("series-id");
+        let gradesJSON = $("#grades-div").data("grades");
+        let seriesId = $("div.series-info").data("series-id");
 
-    $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
-    $("div.modal-form-placeholder").show();
+        $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
+        $("div.modal-form-placeholder").show();
 
-    resetExpiration();
+        resetExpiration();
+    }
+    else
+        alert("Please log in to add this note to your collection.");
 }
 
 

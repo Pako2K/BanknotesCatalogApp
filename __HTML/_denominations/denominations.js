@@ -188,9 +188,9 @@ function loadDenominationsTable() {
         $("#denominations-table>tbody").append(record);
     }
 
-    // Hide collection columns if no user is logged 
     if (!getCookie("banknotes.ODB.username")) {
-        $(".only-logged-in").hide();
-        $('#denominations-table>thead>tr>th[colspan="2"]').attr("colspan", 1);
+        $(".only-logged-in").css('opacity', '0.25');
+        // Show warning
+        $("p.not-logged-in").show();
     }
 }

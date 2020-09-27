@@ -50,3 +50,13 @@ $WIDTH_FACTOR_BIG_PHONE: 0.7;
         color: $color;
     }
 }
+
+p.not-logged-in {
+    display: none;
+    color: rgb(10, 50, 10);
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 2px rgb(220, 250, 220);
+    margin-top: 0.4em;
+}

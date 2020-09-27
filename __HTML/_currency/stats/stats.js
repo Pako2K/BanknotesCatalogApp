@@ -150,6 +150,12 @@ function initializeStats() {
             }
         }
     });
+
+    if (getCookie("banknotes.ODB.username") === undefined) {
+        $(".only-logged-in").css('opacity', '0.25');
+        // Show warning
+        $("p.not-logged-in").show();
+    }
 }
 
 
@@ -174,11 +180,6 @@ function loadSeriesTable(currencyId, seriesJSON) {
                     </tr>`;
         $("#series-stats>tbody").prepend(record);
     }
-
-    if (getCookie("banknotes.ODB.username") === undefined) {
-        $(".only-logged-in").hide();
-        $('#series-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
-    }
 }
 
 
@@ -198,11 +199,6 @@ function loadDenominationsTable(denomJSON) {
                         <td class="only-logged-in">${denomJSON[i].collectionStats.price || 0} €</td>
                     </tr>`;
         $("#denominations-stats>tbody").prepend(record);
-    }
-
-    if (getCookie("banknotes.ODB.username") === undefined) {
-        $(".only-logged-in").hide();
-        $('#denominations-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
     }
 }
 
@@ -224,11 +220,6 @@ function loadYearsTable(yearsJSON) {
                     </tr>`;
         $("#years-stats>tbody").prepend(record);
     }
-
-    if (getCookie("banknotes.ODB.username") === undefined) {
-        $(".only-logged-in").hide();
-        $('#years-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
-    }
 }
 
 
@@ -248,10 +239,5 @@ function loadPrintedTable(yearsJSON) {
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.price || 0} €</td>
                     </tr>`;
         $("#dated-stats>tbody").prepend(record);
-    }
-
-    if (getCookie("banknotes.ODB.username") === undefined) {
-        $(".only-logged-in").hide();
-        $('#dated-stats>thead>tr>th[colspan="2"]').attr("colspan", 1);
     }
 }

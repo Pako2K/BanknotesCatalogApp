@@ -11,6 +11,16 @@ body {
   background: black;
 }
 
+p.not-logged-in {
+  display: none;
+  color: #0a320a;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px 2px #dcfadc;
+  margin-top: 0.4em;
+}
+
 body {
   background-color: whitesmoke;
 }

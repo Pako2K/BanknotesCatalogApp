@@ -251,15 +251,15 @@ function drawTables(notesArray) {
 
 
     // Add hover events and click events
-    if (getCookie("banknotes.ODB.username")) {
-        for (let i = 1; i <= 3; i++) {
-            $(".subcol-" + i).mouseenter(highlightRow);
-            $(".subcol-" + i).mouseleave(highlightRowOff);
-            $(".subcol-" + i).click(openUpsertCollection);
-        }
-    } else {
-        $("table.summary-table td").css("cursor", "auto");
+    //if (getCookie("banknotes.ODB.username")) {
+    for (let i = 1; i <= 3; i++) {
+        $(".subcol-" + i).mouseenter(highlightRow);
+        $(".subcol-" + i).mouseleave(highlightRowOff);
+        $(".subcol-" + i).click(openUpsertCollection);
     }
+    // } else {
+    //     $("table.summary-table td").css("cursor", "auto");
+    // }
 }
 
 function highlightRow() {
@@ -290,21 +290,24 @@ function highlightRowOff() {
 
 
 function openUpsertCollection() {
-    let variantJSON;
+    if (getCookie("banknotes.ODB.username")) {
+        let variantJSON;
 
-    // "this" identifies the sub-column!
-    if ($(this).hasClass("subcol-1")) {
-        variantJSON = $(this).next().data("variant");
-    } else if ($(this).hasClass("subcol-2")) {
-        variantJSON = $(this).data("variant");
-    } else if ($(this).hasClass("subcol-3")) {
-        variantJSON = $(this).prev().data("variant");
-    }
-    variantJSON.denominationStr = $(this).parent().data("denom") + " " + $("#currency-name").text();
+        // "this" identifies the sub-column!
+        if ($(this).hasClass("subcol-1")) {
+            variantJSON = $(this).next().data("variant");
+        } else if ($(this).hasClass("subcol-2")) {
+            variantJSON = $(this).data("variant");
+        } else if ($(this).hasClass("subcol-3")) {
+            variantJSON = $(this).prev().data("variant");
+        }
+        variantJSON.denominationStr = $(this).parent().data("denom") + " " + $("#currency-name").text();
 
-    let gradesJSON = $("#grades-div").data("grades");
-    let seriesId = $(this).parents("section.series-detail-section").data("series-id");
+        let gradesJSON = $("#grades-div").data("grades");
+        let seriesId = $(this).parents("section.series-detail-section").data("series-id");
 
-    $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
-    $("div.modal-form-placeholder").show();
+        $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
+        $("div.modal-form-placeholder").show();
+    } else
+        alert("Please log in to add this note to your collection.");
 }

@@ -62,7 +62,8 @@ function fillSeriesTable(resultJSON) {
         $("#series-table>tbody").append(record);
     }
     if (!getCookie("banknotes.ODB.username")) {
-        $(".only-logged-in").hide();
-        $('#series-table>thead>tr>th[colspan="2"]').attr("colspan", 1);
+        $(".only-logged-in").css('opacity', '0.25');
+        // Show warning
+        $("p.not-logged-in").show();
     }
 }

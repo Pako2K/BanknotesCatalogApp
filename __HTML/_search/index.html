@@ -112,6 +112,7 @@
         <p>No banknotes found with this search criteria.</p>
         <p>Found <span></span> banknotes. Refine your search.</p>
         <div>
+            <p class="not-logged-in">Log in to see your collection stats!</p>
             <table id="results-table" class="list-table">
                 <thead>
                     <tr>
@@ -187,11 +188,11 @@
                                 <div class="sort-desc"></div>
                             </div>
                         </th>
-                        <th colspan="2" class="th-stats only-logged-in">Collection</th>
+                        <th colspan="2" class="th-stats"><span class="only-logged-in">Collection</span></th>
                     </tr>
                     <tr>
-                        <td class="only-logged-in">Grade</td>
-                        <td class="only-logged-in"><span class="is-sortable" onclick="sortClick(this)">Price</span>
+                        <td><span class="only-logged-in">Grade</span></td>
+                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this)">Price</span>
                             <div class="sort-div" onclick="sortClick(this)">
                                 <div class="sort-asc"></div>
                                 <div class="sort-desc"></div>
