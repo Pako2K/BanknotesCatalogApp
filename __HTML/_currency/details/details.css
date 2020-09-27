@@ -521,6 +521,10 @@
   text-align: center;
 }
 
+.only-admin {
+  opacity: 0.75;
+}
+
 .UNC-grade {
   background-color: green;
   color: whitesmoke;

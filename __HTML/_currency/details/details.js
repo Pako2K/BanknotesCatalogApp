@@ -10,9 +10,11 @@ function calcFontSize() {
 function initializeDetails() {
     $("#details-main-div>div:not(:first-of-type)").hide();
 
+    // Hide the New Series button
     let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
-        $(".only-admin").hide();
+        //$(".only-admin").hide();
+        $(".only-admin").css("opacity", 0.3);
     }
 
     // Load the series list
@@ -42,9 +44,9 @@ function seriesOptionClicked(elem) {
     } else {
         $("div.series-list>div.selected").removeClass("selected");
         $(elem).addClass("selected");
-        if (getCookie("banknotes.ODB.isAdmin") === "1") {
-            $("#details-main-div>div>img").show();
-        }
+        // if (getCookie("banknotes.ODB.isAdmin") === "1") {
+        $("#details-main-div>div>img").show();
+        // }
 
         loadSeriesDetails($(elem).data("id"));
 
@@ -275,7 +277,8 @@ function loadSeriesDetails(seriesId) {
 
             let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
             if (!flagIsAdminStr || flagIsAdminStr === "0") {
-                $(".only-admin").hide();
+                //$(".only-admin").hide();
+                $(".only-admin").css("opacity", 0.3);
             }
 
             // In case the user selected a specific banknote the option in the navigation will contain a "denomination"
@@ -328,6 +331,12 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
 
 
 function openUpsertSeries(isNewSeries) {
+    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    if (!flagIsAdminStr || flagIsAdminStr === "0") {
+        alert("Only Collaborators can edit the catalogue.\nContact banknotes-catalogue@gmx.net to request a Collaborator account.");
+        return;
+    }
+
     let currencyIdParam = window.location.search.split("?")[1].split("&")[0];
     if (currencyIdParam.split("=")[0] !== "currencyId")
         return;
@@ -350,6 +359,11 @@ function openUpsertSeries(isNewSeries) {
 
 
 function openUpsertDenomination(denom) {
+    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    if (!flagIsAdminStr || flagIsAdminStr === "0") {
+        alert("Only Collaborators can edit the catalogue.\nContact banknotes-catalogue@gmx.net to request a Collaborator account.");
+        return;
+    }
     let seriesJSON = { id: $("div.series-info").data("series-id"), name: $("div.series-info").data("series-name"), isOverstamped: $("div.series-info #series-is-overstamped").length };
     let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text(), units: $("#currency-subunit").data("units") };
 
@@ -364,6 +378,11 @@ function openUpsertDenomination(denom) {
 
 
 function openUpsertVariant(banknoteId, banknoteDenomination, variantId) {
+    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    if (!flagIsAdminStr || flagIsAdminStr === "0") {
+        alert("Only Collaborators can edit the catalogue.\nContact banknotes-catalogue@gmx.net to request a Collaborator account.");
+        return;
+    }
     let seriesId = $("div.series-info").data("series-id");
     let isOverstamped = $("div.series-info #series-is-overstamped").length;
     let territory = {id: $("#country-data").data("territory-id"), name:$("#country-data #name").text()};
