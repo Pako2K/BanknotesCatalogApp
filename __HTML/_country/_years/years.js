@@ -46,7 +46,7 @@ function loadYearsTable(countryId) {
 
 function fillYearsTable(resultJSON) {
     for (let year of resultJSON) {
-        let priceStr = (year.collectionStats.price === 0) ? '-' : year.collectionStats.price.toFixed(2) + ' €';
+        let priceStr = (year.collectionStats.price === 0) ? '-' : year.collectionStats.price + ' €';
         let record = `  <tr>
                             <th>${year.issueYear}</a></th>
                             <td>${year.numDenominations}</td>

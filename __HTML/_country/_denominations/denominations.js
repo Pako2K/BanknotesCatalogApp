@@ -47,7 +47,7 @@ function loadDenominationsTable(countryId) {
 
 function fillDenominationsTable(resultJSON) {
     for (let denomination of resultJSON) {
-        let priceStr = (denomination.collectionStats.price === 0) ? '-' : denomination.collectionStats.price.toFixed(2) + ' €';
+        let priceStr = (denomination.collectionStats.price === 0) ? '-' : denomination.collectionStats.price + ' €';
         let record = `  <tr>
                             <th>${denomination.denomination}</a></th>
                             <td>${denomination.numCurrencies}</td>
