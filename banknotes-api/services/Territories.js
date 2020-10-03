@@ -229,7 +229,7 @@ function territoriesItemsStatsGET(request, response) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numNotes = colRows[collecIndex].numNotes;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price;
+                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
                     collecIndex++;
                 } else {
                     row.collectionStats.numCurrencies = 0;

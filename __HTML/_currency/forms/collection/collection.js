@@ -180,11 +180,19 @@ function submitItems() {
     });
 
     let seriesId = $("#upsert-collection-dialog").data("series-id");
-    if ($("#currency-nav>p.selected-view").text() === "Summary")
-        initializeSummary();
-    else
-        loadSeriesDetails(seriesId);
-
+    let menuOpt = $("#currency-nav>p.selected-view").text();
+    switch (menuOpt) {
+        case "Timeline":
+            initializeTimeline();
+            break;
+        case "List":
+            initializeList();
+            break;
+        case "Details":
+            loadSeriesDetails(seriesId);
+            break;
+        default:
+    }
     // Close the window
     closeUpsertCollection();
 }

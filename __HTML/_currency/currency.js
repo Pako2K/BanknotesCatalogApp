@@ -208,11 +208,14 @@ function selectView(optionElem) {
     $(".selected-view").removeClass('selected-view');
     $(optionElem).addClass('selected-view');
     switch (option) {
-        case "summary":
-            $("#view-section").load(`./${option}/__${option}.html`, initializeSummary);
-            break;
         case "details":
             $("#view-section").load(`./${option}/__${option}.html`, initializeDetails);
+            break;
+        case "timeline":
+            $("#view-section").load(`./${option}/__${option}.html`, initializeTimeline);
+            break;
+        case "list":
+            $("#view-section").load(`./${option}/__${option}.html`, initializeList);
             break;
         case "stats":
             $("#view-section").load(`./${option}/__${option}.html`, initializeStats);

@@ -279,7 +279,7 @@ function currenciesItemsStatsGET(request, response) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numNotes = colRows[collecIndex].numNotes;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price;
+                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
                     collecIndex++;
                 } else {
                     row.collectionStats.numSeries = 0;
@@ -364,7 +364,7 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
                     row.collectionStats.numDenominations = colRows[found].numDenominations;
                     row.collectionStats.numNotes = colRows[found].numNotes;
                     row.collectionStats.numVariants = colRows[found].numVariants;
-                    row.collectionStats.price = colRows[found].price;
+                    row.collectionStats.price = colRows[found].price.toFixed(2);
                 } else {
                     row.collectionStats.numSeries = 0;
                     row.collectionStats.numDenominations = 0;

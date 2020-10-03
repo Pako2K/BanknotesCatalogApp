@@ -1,4 +1,4 @@
-function initializeSummary() {
+function initializeTimeline() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
     if (getCookie("banknotes.ODB.username"))
@@ -8,7 +8,7 @@ function initializeSummary() {
 
     if (seriesJSON.length === 0) {
         $("#grades-div").hide();
-        $("#summary-main-div").append('<p>There is no data for this currency</p>');
+        $("#timeline-main-div").append('<p>There is no data for this currency</p>');
         return;
     }
 
@@ -37,8 +37,9 @@ function initializeSummary() {
                 notesArray[idx] = notesJSON;
                 notesArray[idx].seriesId = seriesJSON[idx].id
                 notesArray[idx].seriesName = seriesJSON[idx].name
-                if (numReplies === seriesJSON.length)
+                if (numReplies === seriesJSON.length) {
                     drawTables(notesArray);
+                }
             },
 
             error: function(xhr, status, error) {
@@ -62,6 +63,8 @@ function drawTables(notesArray) {
     let searchStrArr = window.location.search.substr(1).split("&");
     let searchParam = searchStrArr[0].split("=");
     let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
+
+    $("#timeline-table-div").empty();
 
     let denominations = []; // "Rows": 1 row for each denomination
     let issueYears = []; // Array of arrays: 1 column for each issue year of each series
@@ -224,8 +227,8 @@ function drawTables(notesArray) {
             localSeriesIndex++;
         }
 
-        $("#summary-main-div").append(
-            `<table class="summary-table">
+        $("#timeline-table-div").append(
+            `<table class="timeline-table">
             <thead>
                 <tr>
                     <td></td>
@@ -236,7 +239,7 @@ function drawTables(notesArray) {
                     ${secondHeaderHTML}
                 </tr>
                 <tr>
-                    <td></td>
+                    <td>Denom.</td>
                     ${thirdHeaderHTML}
                 </tr>
             </thead>
@@ -251,16 +254,13 @@ function drawTables(notesArray) {
 
 
     // Add hover events and click events
-    //if (getCookie("banknotes.ODB.username")) {
     for (let i = 1; i <= 3; i++) {
         $(".subcol-" + i).mouseenter(highlightRow);
         $(".subcol-" + i).mouseleave(highlightRowOff);
         $(".subcol-" + i).click(openUpsertCollection);
     }
-    // } else {
-    //     $("table.summary-table td").css("cursor", "auto");
-    // }
 }
+
 
 function highlightRow() {
     $(this).addClass("highlight");
@@ -308,6 +308,8 @@ function openUpsertCollection() {
 
         $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
         $("div.modal-form-placeholder").show();
+
+        resetExpiration();
     } else
         alert("Please log in to add this note to your collection.");
 }

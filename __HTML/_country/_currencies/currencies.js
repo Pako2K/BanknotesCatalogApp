@@ -58,7 +58,7 @@ function fillTable(currenciesJSON, territoryId) {
             queryParams += `&territoryId=${territoryId}`;
         }
 
-        let priceStr = (currency.collectionStats.price === 0) ? '-' : currency.collectionStats.price.toFixed(2) + ' €';
+        let priceStr = (currency.collectionStats.price === 0) ? '-' : currency.collectionStats.price + ' €';
         let record = `  <tr>
                             <th>` + iso3 + `</th>
                             <th class="name"><a href="/_currency/index.html?${queryParams}">${currency.name}</a></th>

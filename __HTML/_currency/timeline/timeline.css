@@ -9,101 +9,111 @@ p.not-logged-in {
   margin-top: 0.4em;
 }
 
-#summary-main-div {
+#timeline-main-div {
   max-width: 100%;
   overflow-x: auto;
 }
 
-#summary-main-div > p {
+#timeline-main-div > p {
   text-align: center;
   font-size: 0.9em;
   font-style: italic;
 }
 
-.summary-table {
+#timeline-main-div > div:first-of-type {
+  margin-bottom: 3em;
+}
+
+.timeline-table {
   margin: 0.7em;
   border-right: solid 1px darkgrey;
   border-bottom: solid 1px darkgrey;
   border-collapse: collapse;
 }
 
-.summary-table > thead > tr:nth-child(1) > th {
+.timeline-table > thead > tr:nth-child(1) > th {
   width: 12em;
   font-family: Lucida sans, sans-serif;
   font-size: 0.75em;
-  border-top: none;
+  border-top: solid 1px darkgrey;
   border-left: solid 1px darkgrey;
-  color: #323232;
   text-align: center;
   padding: 0.4em 0.4em;
   overflow: hidden;
   cursor: pointer;
 }
 
-.summary-table > thead > tr:nth-child(1) > th:nth-of-type(odd) {
+.timeline-table > thead > tr:nth-child(1) > th:nth-of-type(odd) {
+  color: #3c3c3c;
   background-color: #eae8e8;
 }
 
-.summary-table > thead > tr:nth-child(1) > th:nth-of-type(even) {
+.timeline-table > thead > tr:nth-child(1) > th:nth-of-type(even) {
+  color: black;
   background-color: #dadade;
 }
 
-.summary-table > thead > tr:nth-child(1) > th > a:link {
+.timeline-table > thead > tr:nth-child(1) > th > a:link {
   color: black;
   text-decoration: none;
 }
 
-.summary-table > thead > tr:nth-child(1) > th > a:visited {
+.timeline-table > thead > tr:nth-child(1) > th > a:visited {
   color: black;
   text-decoration: none;
 }
 
-.summary-table > thead > tr:nth-child(1) > th > a:hover {
+.timeline-table > thead > tr:nth-child(1) > th > a:hover {
   color: #853333;
   -webkit-text-decoration: underline dotted;
           text-decoration: underline dotted;
   text-underline-position: under;
 }
 
-.summary-table > thead > tr:nth-child(1) > th > a:active {
+.timeline-table > thead > tr:nth-child(1) > th > a:active {
   color: #853333;
   text-decoration: none;
 }
 
-.summary-table > thead > tr:nth-child(2) > th {
+.timeline-table > thead > tr:nth-child(2) > th {
   font-family: Lucida sans, sans-serif;
   font-size: 0.8em;
   border-top: solid 0.5px darkgrey;
   border-left: solid 1px darkgrey;
   border-right: solid 1px darkgrey;
-  color: #326432;
   text-align: center;
-  background-color: white;
+  background-color: #dae6de;
+  color: #323232;
 }
 
-.summary-table > thead > tr:nth-child(3) {
+.timeline-table > thead > tr:nth-child(3) {
   white-space: nowrap;
 }
 
-.summary-table > thead > tr:nth-child(3) > td:first-of-type {
-  border-bottom: solid 1px darkgrey;
+.timeline-table > thead > tr:nth-child(3) > td {
+  background-color: #dae6de;
+  color: #323232;
+  font-family: Lucida sans, sans-serif;
+  padding: 0.3em 1em;
 }
 
-.summary-table > thead > tr:nth-child(3) > td:not(:first-of-type) {
-  font-family: Lucida sans, sans-serif;
+.timeline-table > thead > tr:nth-child(3) > td:first-of-type {
+  border: solid 1px darkgrey;
+  font-size: 0.7em;
+  font-weight: bold;
+}
+
+.timeline-table > thead > tr:nth-child(3) > td:not(:first-of-type) {
   font-size: 0.6em;
-  padding: 0.3em 1em;
-  color: #326432;
   border-bottom: solid 1px darkgrey;
   text-align: center;
-  background-color: white;
 }
 
-.summary-table > thead > tr:nth-child(3) > td:last-of-type {
+.timeline-table > thead > tr:nth-child(3) > td:last-of-type {
   border-right: solid 1px darkgrey;
 }
 
-.summary-table > tbody th {
+.timeline-table > tbody th {
   font-family: Lucida sans, sans-serif;
   font-size: 0.8em;
   color: #326432;
@@ -114,7 +124,7 @@ p.not-logged-in {
   background-color: white;
 }
 
-.summary-table > tbody > tr > td {
+.timeline-table > tbody > tr > td {
   font-family: Lucida sans, sans-serif;
   font-size: 0.6em;
   text-align: center;
@@ -123,24 +133,24 @@ p.not-logged-in {
   cursor: pointer;
 }
 
-.summary-table > tbody > tr > td:last-of-type {
+.timeline-table > tbody > tr > td:last-of-type {
   border-right: solid 1px darkgray;
 }
 
-.summary-table > tbody > tr > td.highlight {
+.timeline-table > tbody > tr > td.highlight {
   text-decoration: underline;
   text-shadow: 1px 1px 1px grey;
 }
 
-.summary-table > tbody .last-subrow {
+.timeline-table > tbody .last-subrow {
   border-bottom: dotted 1px grey;
 }
 
-.summary-table > tbody *.no-grade {
+.timeline-table > tbody *.no-grade {
   background-color: #fcfcf8;
 }
 
-.summary-table .subcol-1 {
+.timeline-table .subcol-1 {
   border-left: solid 1px darkgray;
 }
-/*# sourceMappingURL=summary.css.map */
+/*# sourceMappingURL=timeline.css.map */

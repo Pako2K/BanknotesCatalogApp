@@ -505,7 +505,7 @@ function itemsGET(request, response) {
                         item.id = colRows[collecIndex].id;
                         item.gradeValue = colRows[collecIndex].gradeValue;
                         item.grade = colRows[collecIndex].grade;
-                        item.price = colRows[collecIndex].price;
+                        item.price = colRows[collecIndex].price.toFixed(2);
                     }
                     collecIndex++;
                 }
@@ -672,7 +672,7 @@ function seriesByIdItemsGET(request, response) {
                         let item = {};
                         item.id = colRows[foundIndex].id;
                         item.grade = colRows[foundIndex].grade;
-                        item.price = colRows[foundIndex].price;
+                        item.price = colRows[foundIndex].price.toFixed(2);
                         item.quantity = colRows[foundIndex].quantity;
                         item.seller = colRows[foundIndex].seller;
                         item.purchaseDate = colRows[foundIndex].purchaseDate;
@@ -840,7 +840,7 @@ function yearsItemsStatsGET(request, response) {
                 ${yearStats_commonFROM}
                 LEFT JOIN ter_territory TER ON TER.ter_id = TEC.tec_ter_id ${continentFilter}
                 INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
-                GROUP BY ${dateTypeObj.groupBy}`;
+                GROUP BY "${dateTypeObj.groupBy}"`;
 
 
     // Retrieve the catalogue statistics
@@ -866,7 +866,7 @@ function yearsItemsStatsGET(request, response) {
                     INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id AND CON.con_order IS NOT NULL
                     INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                     INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $1
-                    GROUP BY ${dateTypeObj.groupBy}`;
+                    GROUP BY "${dateTypeObj.groupBy}"`;
         catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
             if (err) {
                 new Exception(500, err.code, err.message).send(response);
@@ -884,7 +884,7 @@ function yearsItemsStatsGET(request, response) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numNotes = colRows[collecIndex].numNotes;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price;
+                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
                     collecIndex++;
                 } else {
                     row.collectionStats.numTerritories = 0;
@@ -940,7 +940,7 @@ function territoryByIdyearsItemsStatsGET(request, response) {
 
     let sql = ` SELECT  ${dateTypeObj.selectCol}, ${yearsStats_commonSELECT}
                 ${territoryYearsStats_commonFROM}
-                GROUP BY ${dateTypeObj.groupBy}`;
+                GROUP BY "${dateTypeObj.groupBy}"`;
 
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [territoryId], (err, catRows) => {
@@ -963,7 +963,7 @@ function territoryByIdyearsItemsStatsGET(request, response) {
                 ${territoryYearsStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
-                GROUP BY ${dateTypeObj.groupBy}`;
+                GROUP BY "${dateTypeObj.groupBy}"`;
 
         catalogueDB.execSQL(sql, [territoryId, request.session.user], (err, colRows) => {
             if (err) {
@@ -978,7 +978,7 @@ function territoryByIdyearsItemsStatsGET(request, response) {
                 if (collecIndex < colRows.length && row[dateTypeObj.groupBy] === colRows[collecIndex][dateTypeObj.groupBy]) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price;
+                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
                     collecIndex++;
                 } else {
                     row.collectionStats.numDenominations = 0;
@@ -1028,7 +1028,7 @@ function currencyByIdyearsItemsStatsGET(request, response) {
 
     let sql = ` SELECT  ${dateTypeObj.selectCol}, ${yearsStats_commonSELECT}
                 ${currencyYearsStats_commonFROM}
-                GROUP BY ${dateTypeObj.groupBy}`;
+                GROUP BY "${dateTypeObj.groupBy}"`;
 
     // Retrieve the catalogue statistics
     catalogueDB.execSQL(sql, [currencyId], (err, catRows) => {
@@ -1050,7 +1050,7 @@ function currencyByIdyearsItemsStatsGET(request, response) {
                 ${currencyYearsStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
-                GROUP BY ${dateTypeObj.groupBy}`;
+                GROUP BY "${dateTypeObj.groupBy}"`;
 
         catalogueDB.execSQL(sql, [currencyId, request.session.user], (err, colRows) => {
             if (err) {
@@ -1065,7 +1065,7 @@ function currencyByIdyearsItemsStatsGET(request, response) {
                 if (collecIndex < colRows.length && row[dateTypeObj.groupBy] === colRows[collecIndex][dateTypeObj.groupBy]) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price;
+                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
                     collecIndex++;
                 } else {
                     row.collectionStats.numDenominations = 0;
@@ -1095,10 +1095,10 @@ function validateAndMapDateType(reqURL) {
     let groupBy;
     if (val === "issue") {
         selectCol = 'BVA.bva_issue_year AS "issueYear"';
-        groupBy = '"issueYear"';
+        groupBy = 'issueYear';
     } else {
         selectCol = `CASE WHEN BVA.bva_printed_date IS NULL THEN concat('ND;', BVA.bva_issue_year) ELSE BVA.bva_printed_date END AS "printedDate"`;
-        groupBy = '"printedDate"';
+        groupBy = 'printedDate';
     }
     let map = { val: val, selectCol: selectCol, groupBy: groupBy };
     return map;
@@ -1108,19 +1108,30 @@ function validateAndMapDateType(reqURL) {
 function sortByPrintedDate(datesArray) {
     datesArray.sort((a, b) => {
         let a_val = a.printedDate;
-        if (a_val.startsWith("ND")) {
+        if (a_val.startsWith("ND;")) {
             a_val = parseInt(a_val.split(";")[1]);
+            a.printedDate = "ND (" + a_val + ")";
+            a_val *= 10000;
+        } else if (a_val.startsWith("ND (")) {
+            a_val = parseInt(a_val.split("(")[1]) * 10000;
         } else {
             let elem = a_val.split(".");
-            a_val = parseInt(elem[0]) * 10000 + parseInt(elem[1]) * 100 + parseInt(elem[2])
+            a_val = parseInt(elem[0]) * 10000;
+            if (elem.length === 2) a_val += parseInt(elem[1]) * 100;
+            if (elem.length === 3) a_val += parseInt(elem[2]);
         }
         let b_val = b.printedDate;
-        if (b_val.startsWith("ND")) {
+        if (b_val.startsWith("ND;")) {
             b_val = parseInt(b_val.split(";")[1]);
             b.printedDate = "ND (" + b_val + ")";
+            b_val *= 10000;
+        } else if (b_val.startsWith("ND (")) {
+            b_val = parseInt(b_val.split("(")[1]) * 10000;
         } else {
             let elem = b_val.split(".");
-            b_val = parseInt(elem[0]) * 10000 + parseInt(elem[1]) * 100 + parseInt(elem[2])
+            b_val = parseInt(elem[0]) * 10000;
+            if (elem.length === 2) b_val += parseInt(elem[1]) * 100;
+            if (elem.length === 3) b_val += parseInt(elem[2]);
         }
 
         return a_val - b_val;

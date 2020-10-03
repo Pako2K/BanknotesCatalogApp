@@ -185,7 +185,7 @@ function loadCountriesTable() {
                 flagFileName = country.name.replace(/,|\s/g, "");
             }
 
-            let priceStr = (country.collectionStats.price === 0) ? '-' : country.collectionStats.price.toFixed(2) + ' €';
+            let priceStr = (country.collectionStats.price === 0) ? '-' : country.collectionStats.price + ' €';
             record = `<tr>
                                 <th><img src="/data/_flags_/` + flagFileName.toLowerCase() + `.png"></th>
                                 <th>${country.iso3}</th>
@@ -217,7 +217,7 @@ function loadCountriesTable() {
             totals.notes.col += country.collectionStats.numNotes;
             totals.variants.cat += parseInt(country.numVariants);
             totals.variants.col += country.collectionStats.numVariants;
-            totals.price += country.collectionStats.price;
+            totals.price += parseFloat(country.collectionStats.price);
 
             // Statistics:
             if (existing && country.end === "") {
@@ -249,7 +249,7 @@ function loadCountriesTable() {
                         <td class="only-logged-in">${totals.notes.col}</td>
                         <td>${totals.variants.cat}</td>
                         <td class="only-logged-in">${totals.variants.col}</td>
-                        <td class="only-logged-in">${totals.price.toFixed(2)} €</td>`;
+                        <td class="only-logged-in">${totals.price} €</td>`;
     $("#countries-table>tfoot>tr").append(totalsHTML);
 
     // Add statisctics to stats table
