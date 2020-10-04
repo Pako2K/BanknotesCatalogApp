@@ -91,14 +91,10 @@
 }
 
 #details-main-div div.series-list > div {
-  width: 22em;
+  width: 24em;
   font-family: Lucida sans, sans-serif;
   font-size: 0.75em;
   background-color: white;
-  border-bottom: 0.5px solid black;
-  border-top: 0.5px solid black;
-  border-left: 0.5px solid lightgray;
-  border-right: 0.5px solid lightgray;
   padding: 0.5em 0.5em;
   margin-right: 0.3em;
   margin-bottom: 0.3em;
@@ -111,14 +107,14 @@
 #details-main-div div.series-list > div.selected {
   font-weight: bold;
   background-color: #a4f8a4;
-  -webkit-box-shadow: 0px 0px 3px 2px #bce9bc;
-          box-shadow: 0px 0px 3px 2px #bce9bc;
-  border: 0.5px solid #afafaf;
+  -webkit-box-shadow: 0px 0px 3px 1px #bce9bc;
+          box-shadow: 0px 0px 3px 1px #bce9bc;
 }
 
 #details-main-div div.series-list > div:hover {
   font-weight: bold;
-  border: 0.5px solid #4b4b4b;
+  -webkit-box-shadow: 2px 2px 3px #bcbcbc;
+          box-shadow: 2px 2px 3px #bcbcbc;
 }
 
 .series-info {

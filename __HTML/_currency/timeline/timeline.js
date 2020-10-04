@@ -181,7 +181,7 @@ function drawTables(notesArray) {
             // Next subrows
             for (let subrow = 1; subrow < maxSubrows; subrow++) {
                 if (subrow === maxSubrows - 1)
-                    rowsHTML += ` <tr  class="last-subrow" data-denom="${denominations[rowIdx]}">`;
+                    rowsHTML += ` <tr class="last-subrow" data-denom="${denominations[rowIdx]}">`;
                 else
                     rowsHTML += ` <tr data-denom="${denominations[rowIdx]}">`;
 

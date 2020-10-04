@@ -34,7 +34,50 @@ function initializeList() {
                 notesArray[idx].seriesId = seriesJSON[idx].id
                 notesArray[idx].seriesName = seriesJSON[idx].name
                 if (numReplies === seriesJSON.length) {
-                    drawList(notesArray);
+                    // Create a flat JSON array 
+                    let notesList = [];
+                    for (let series of notesArray) {
+                        for (let denomination of series) {
+                            for (let variant of denomination.variants) {
+                                let record = {};
+                                record.id = variant.id;
+                                record.catalogueId = variant.catalogueId;
+                                record.denomination = denomination.denomination;
+                                record.printedDate = variant.printedDate;
+                                record.issueYear = variant.issueYear;
+                                record.seriesName = series.seriesName;
+                                record.width = denomination.width;
+                                record.height = denomination.height;
+                                record.printer = variant.printerName;
+                                record.description = variant.variantDescription;
+                                record.items = variant.items || [];
+                                record.sortingPrice = record.items[0] ? parseFloat(record.items[0].price) : -1;
+                                record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
+
+                                // Parse the catalogue id in order to be able to sort
+                                record.catalogueIdPreffix = "";
+                                record.catalogueIdInt = 0;
+                                record.catalogueIdSuffix = "";
+                                for (let i = 0; i < record.catalogueId.length; i++) {
+                                    let char = record.catalogueId[i];
+                                    let integer = parseInt(char);
+                                    if (isNaN(integer))
+                                        record.catalogueIdPreffix += char;
+                                    else {
+                                        record.catalogueIdInt = parseInt(record.catalogueId.slice(i));
+                                        record.catalogueIdSuffix = record.catalogueId.slice(i + record.catalogueIdInt.toString().length)
+                                        break;
+                                    }
+                                }
+
+                                notesList.push(record);
+                            }
+                        }
+                    }
+                    // Store list:
+                    $("#list-table-div").data("notes-list", JSON.stringify(notesList));
+                    // And draw it
+                    $("span.is-sortable.default-sort").click();
                 }
             },
 
@@ -55,32 +98,10 @@ function initializeList() {
 };
 
 
-function drawList(notesArray) {
-    $("#list-table-div").empty();
+function drawList(notesList, sortKey, sortAsc) {
+    $("#list-table-div>table>tbody").empty();
 
-    // Create a flat JSON array and sort by CatalogueId, Issue Date, Printed Date
-    let notesList = [];
-    for (let series of notesArray) {
-        for (let denomination of series) {
-            for (let variant of denomination.variants) {
-                let record = {};
-                record.id = variant.id;
-                record.catalogueId = variant.catalogueId;
-                record.denomination = denomination.denomination;
-                record.printedDate = variant.printedDate;
-                record.issueYear = variant.issueYear;
-                record.seriesName = series.seriesName;
-                record.width = denomination.width;
-                record.height = denomination.height;
-                record.printer = variant.printerName;
-                record.description = variant.variantDescription;
-                record.items = variant.items;
-                notesList.push(record);
-            }
-        }
-    }
-
-    notesList.sort((a, b) => { return a.issueYear - b.issueYear });
+    sortJSON(notesList, sortKey, sortAsc);
 
     let rowsHTML = "";
     for (let record of notesList) {
@@ -136,40 +157,65 @@ function drawList(notesArray) {
         }
     }
 
-    $("#list-table-div").append(
-        `<table class="notes-list-table">
-        <thead>
-            <tr>
-                <th rowspan=2>Cat. Id</th>
-                <th rowspan=2>Denom.</th>
-                <th rowspan=2>Issue Year</th>
-                <th rowspan=2>Printed Date</th>
-                <th rowspan=2>Series</th>
-                <th rowspan=2>Width</th>
-                <th rowspan=2>Height</th>
-                <th rowspan=2>Printer</th>
-                <th rowspan=2>Description</th>
-                <th colspan=6 class="collection-field">Collection</th>
-            </tr>
-            <tr>
-                <th class="collection-field">Qty.</th>
-                <th class="collection-field">Grade</th>
-                <th class="collection-field">Price</th>
-                <th class="collection-field">Seller</th>
-                <th class="collection-field">Purchased</th>
-                <th class="collection-field">Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${rowsHTML}
-        <tbody>
-    </table>`);
+    $("#list-table-div>table>tbody").append(rowsHTML);
 
     if (getCookie("banknotes.ODB.username") === undefined) {
         $(".collection-field").css('opacity', '0.25');
     }
 }
 
+
+function sortClick(htmlElem) {
+    let sortObj = listTableSetSortingColumn(htmlElem);
+
+    // Load table body
+    // Mapping column name - field name
+    let mapFieldName = {
+        "Cat. Id": ["catalogueIdPreffix", "catalogueIdInt", "catalogueIdSuffix"],
+        "Denom.": ["denomination", "issueYear", "catalogueIdInt"],
+        "Issue Year": ["issueYear", "catalogueIdInt"],
+        "Printed Date": ["printedDate", "issueYear", "catalogueIdInt"],
+        "Width": ["width", "issueYear"],
+        "Height": ["height", "issueYear"],
+        "Printer": ["printer", "issueYear"],
+        "Price": ["sortingPrice", "issueYear"],
+        "Purchased": ["sortingPurchaseDate", "issueYear"]
+    };
+
+    drawList(JSON.parse($("#list-table-div").data("notes-list")), mapFieldName[sortObj.mapKey], sortObj.sortAsc);
+}
+
+
+function listTableSetSortingColumn(sortingElem) {
+    let ascDiv = $(sortingElem).parent().children("div").children(".sort-asc");
+    let descDiv = $(sortingElem).parent().children("div").children(".sort-desc");
+    let titleElem = $(sortingElem).parent().children("span");
+
+    // Select column if it was not selected
+    let table = $(titleElem).parents("table"); // This is needed just in case there are more tables in the same page!
+    if (!$(titleElem).hasClass("sorting-column")) {
+        $(table).find(".sorting-column").removeClass("sorting-column");
+        $(titleElem).addClass("sorting-column");
+    }
+
+    // Determine ASC or DESC sorting
+    let sortAsc = true;
+    if ($(ascDiv).hasClass("sort-selection")) {
+        $(ascDiv).removeClass("sort-selection");
+        $(descDiv).addClass("sort-selection");
+        sortAsc = false;
+    } else if ($(descDiv).hasClass("sort-selection")) {
+        $(descDiv).removeClass("sort-selection");
+        $(ascDiv).addClass("sort-selection");
+    } else {
+        $(table).find(".sort-selection").removeClass("sort-selection");
+        $(ascDiv).addClass("sort-selection");
+    }
+
+    let result = { mapKey: $(titleElem).text(), sortAsc: sortAsc };
+    // Return the text of the sorting column
+    return result;
+}
 
 
 function openUpsertCollectionFromList(rowElem) {

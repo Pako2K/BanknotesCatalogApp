@@ -52,14 +52,10 @@
         flex-direction: row;
         flex-wrap: wrap;
         &>div {
-            width: 22em;
+            width: 24em;
             font-family: Lucida sans, sans-serif;
             font-size: 0.75em;
             background-color: white;
-            border-bottom: 0.5px solid black;
-            border-top: 0.5px solid black;
-            border-left: 0.5px solid lightgray;
-            border-right: 0.5px solid lightgray;
             padding: 0.5em 0.5em;
             margin-right: 0.3em;
             margin-bottom: 0.3em;
@@ -70,12 +66,11 @@
             &.selected {
                 font-weight: bold;
                 background-color: rgb(164, 248, 164);
-                box-shadow: 0px 0px 3px 2px rgb(188, 233, 188);
-                border: 0.5px solid rgb(175, 175, 175);
+                box-shadow: 0px 0px 3px 1px rgb(188, 233, 188);
             }
             &:hover {
                 font-weight: bold;
-                border: 0.5px solid rgb(75, 75, 75);
+                box-shadow: 2px 2px 3px rgb(188, 188, 188);
             }
         }
     }
