@@ -51,6 +51,7 @@ function initializeList() {
                                 record.printer = variant.printerName;
                                 record.description = variant.variantDescription;
                                 record.items = variant.items || [];
+                                record.sortingQuantity = record.items[0] ? parseFloat(record.items[0].quantity) : -1;
                                 record.sortingPrice = record.items[0] ? parseFloat(record.items[0].price) : -1;
                                 record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
 
@@ -180,6 +181,7 @@ function sortClick(htmlElem) {
         "Width": ["width", "issueYear"],
         "Height": ["height", "issueYear"],
         "Printer": ["printer", "issueYear"],
+        "Qty.": ["sortingQuantity", "issueYear"],
         "Price": ["sortingPrice", "issueYear"],
         "Purchased": ["sortingPurchaseDate", "issueYear"]
     };
