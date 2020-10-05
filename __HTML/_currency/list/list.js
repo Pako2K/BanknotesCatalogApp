@@ -77,7 +77,9 @@ function initializeList() {
                     // Store list:
                     $("#list-table-div").data("notes-list", JSON.stringify(notesList));
                     // And draw it
-                    $("span.is-sortable.default-sort").click();
+                    $("#list-table-div>table").find(".sort-selection").removeClass("sort-selection");
+                    $("#list-table-div>table").find(".sorting-column").removeClass("sorting-column");
+                    $("span.default-sort").click();
                 }
             },
 

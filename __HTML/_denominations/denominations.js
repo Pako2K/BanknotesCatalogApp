@@ -165,14 +165,14 @@ function loadDenominationsTable() {
             aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
             aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
             aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
-            aggDenominations[j].collectionStats.price += denominationsJSON[i].collectionStats.price;
+            aggDenominations[j].collectionStats.price = parseFloat(aggDenominations[j].collectionStats.price) + parseFloat(denominationsJSON[i].collectionStats.price);
         } else {
             aggDenominations.push(denominationsJSON[i]);
         }
     }
 
     for (let denom of aggDenominations) {
-        let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price.toFixed(2) + ' €';
+        let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price + ' €';
         record = `  <tr>
                         <th>${denom.denomination.toLocaleString("de-DE")}</th>
                         <td>${denom.numTerritories}</td>

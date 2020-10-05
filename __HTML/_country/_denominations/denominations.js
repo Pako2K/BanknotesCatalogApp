@@ -46,10 +46,29 @@ function loadDenominationsTable(countryId) {
 
 
 function fillDenominationsTable(resultJSON) {
-    for (let denomination of resultJSON) {
+    // Aggregate with the denominations if the value is the same (This can happend when the units are different)
+    let aggDenominations = [];
+    aggDenominations.push(resultJSON[0]);
+    for (let i = 1; i < resultJSON.length; i++) {
+        let j = aggDenominations.length - 1;
+        if (resultJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
+            aggDenominations[j].numCurrencies += resultJSON[i].numCurrencies;
+            aggDenominations[j].collectionStats.numCurrencies += resultJSON[i].collectionStats.numCurrencies;
+            aggDenominations[j].numSeries += resultJSON[i].numSeries;
+            aggDenominations[j].collectionStats.numSeries += resultJSON[i].collectionStats.numSeries;
+            aggDenominations[j].numVariants += resultJSON[i].numVariants;
+            aggDenominations[j].collectionStats.numVariants += resultJSON[i].collectionStats.numVariants;
+            aggDenominations[j].collectionStats.price = parseFloat(aggDenominations[j].collectionStats.price) + parseFloat(resultJSON[i].collectionStats.price);
+        } else {
+            aggDenominations.push(resultJSON[i]);
+        }
+    }
+
+
+    for (let denomination of aggDenominations) {
         let priceStr = (denomination.collectionStats.price === 0) ? '-' : denomination.collectionStats.price + ' €';
         let record = `  <tr>
-                            <th>${denomination.denomination}</a></th>
+                            <th>${denomination.denomination.toLocaleString("de-DE")}</a></th>
                             <td>${denomination.numCurrencies}</td>
                             <td class="only-logged-in">${denomination.collectionStats.numCurrencies || "-"}</td>
                             <td>${denomination.numSeries}</td>
