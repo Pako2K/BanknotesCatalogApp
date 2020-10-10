@@ -813,7 +813,7 @@ function itemDELETE(request, response) {
 
 const yearStats_commonSELECT = `count (DISTINCT TER.ter_id) AS "numTerritories", 
                                     count (DISTINCT CUR.cur_id) AS "numCurrencies", count (DISTINCT SER.ser_id) AS "numSeries", 
-                                    count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                                    count(DISTINCT(BAN.ban_face_value * 10000 + BAN.ban_cus_id)) AS "numDenominations", 
                                     count(DISTINCT BAN.ban_id) AS "numNotes", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
 const yearStats_commonFROM = ` FROM bva_variant BVA
@@ -912,7 +912,7 @@ function yearsItemsStatsGET(request, response) {
 
 
 const yearsStats_commonSELECT =
-    `count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+    `count(DISTINCT(BAN.ban_face_value * 10000 + BAN.ban_cus_id)) AS "numDenominations", 
     count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
 const territoryYearsStats_commonFROM =

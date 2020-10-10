@@ -170,7 +170,7 @@ function currencyByIdGET(request, response) {
 
 
 const currenciesStats_commonSELECT = ` count (DISTINCT SER.ser_id) AS "numSeries", 
-                                        count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+                                        count(DISTINCT(BAN.ban_face_value * 10000 + BAN.ban_cus_id)) AS "numDenominations", 
                                         count(DISTINCT BAN.ban_id) AS "numNotes", count(DISTINCT BVA.bva_id) AS "numVariants"`;
 const currenciesStats_commonFROM = `FROM cur_currency CUR
                                     LEFT JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_cur_type='OWNED')

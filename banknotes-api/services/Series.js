@@ -214,7 +214,7 @@ function seriesByIdGET(request, response) {
 
 
 const seriesStats_commonSELECT =
-    `SER.ser_id AS "id", count(DISTINCT(BAN.ban_face_value + BAN.ban_cus_id)) AS "numDenominations", 
+    `SER.ser_id AS "id", count(DISTINCT(BAN.ban_face_value * 10000 + BAN.ban_cus_id)) AS "numDenominations", 
     count(DISTINCT BVA.bva_id) AS "numVariants"`;
 
 const territorySerieStats_commonFROM =

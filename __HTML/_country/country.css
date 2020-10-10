@@ -320,11 +320,14 @@ hr {
     padding: 0.28em 0.84em;
   }
   #results-table {
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-            flex-direction: row;
-    justify-items: flex-start;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start;
+  }
+  #results-table > p {
+    font-size: 0.8em;
+    margin-left: 1em;
+    margin-bottom: 0.5em;
   }
 }
 /*# sourceMappingURL=country.css.map */

@@ -293,7 +293,11 @@ hr {
         }
     }
     #results-table {
-        flex-direction: row;
-        justify-items: flex-start;
+        align-items: flex-start;
+        &>p {
+            font-size: 0.8em;
+            margin-left: 1em;
+            margin-bottom: 0.5em;
+        }
     }
 }
