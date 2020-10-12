@@ -48,7 +48,8 @@ function loadDenominationsTable(countryId) {
 function fillDenominationsTable(resultJSON) {
     // Aggregate with the denominations if the value is the same (This can happend when the units are different)
     let aggDenominations = [];
-    aggDenominations.push(resultJSON[0]);
+    if (resultJSON.length)
+        aggDenominations.push(resultJSON[0]);
     for (let i = 1; i < resultJSON.length; i++) {
         let j = aggDenominations.length - 1;
         if (resultJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
