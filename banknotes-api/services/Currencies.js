@@ -91,6 +91,22 @@ function currencyByIdGET(request, response) {
                     replyJSON.territory.name = row.ter_name;
                     replyJSON.start = row.tec_start || row.cur_start;
                     replyJSON.end = row.tec_end || row.cur_end;
+                    if (row.tec_cur_type === "OWNED") {
+                        if (row.pred_cur_id) {
+                            replyJSON.predecessor = {};
+                            replyJSON.predecessor.id = row.pred_cur_id;
+                            replyJSON.predecessor.name = row.pred_cur_name;
+                            replyJSON.predecessor.iso3 = row.pred_tec_iso3;
+                            replyJSON.predecessor.rate = row.pred_cur_replacement_rate;
+                        }
+                        if (row.cur_successor) {
+                            replyJSON.successor = {};
+                            replyJSON.successor.id = row.cur_successor;
+                            replyJSON.successor.name = row.succ_cur_name;
+                            replyJSON.successor.iso3 = row.succ_tec_iso3;
+                            replyJSON.successor.rate = row.cur_replacement_rate;
+                        }
+                    }
                 } else {
                     if (row.tec_cur_type === "OWNED") {
                         replyJSON.ownedBy = {};
