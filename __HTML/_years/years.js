@@ -152,7 +152,7 @@ function loadYearsTable() {
     for (let year of yearsJSON) {
         // Apply filters
         if ((!yearFrom || year.issueYear >= yearFrom) && (!yearTo || year.issueYear <= yearTo)) {
-            let priceStr = (year.collectionStats.price === 0) ? "-" : year.collectionStats.price.toFixed(2) + ' €';
+            let priceStr = (year.collectionStats.price === 0) ? "-" : year.collectionStats.price + ' €';
             record = `  <tr>
                             <th>${year.issueYear}</th>
                             <td>${year.numTerritories}</td>

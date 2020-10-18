@@ -55,3 +55,26 @@ function compareValues(v1, v2) {
     else
         return v1 - v2;
 }
+
+
+
+function parseCatalogueId(catalogueId) {
+    let record = {};
+    record.catalogueIdPreffix = "";
+    record.catalogueIdInt = 0;
+    record.catalogueIdSuffix = "";
+
+    for (let i = 0; i < catalogueId.length; i++) {
+        let char = catalogueId[i];
+        let integer = parseInt(char);
+        if (isNaN(integer))
+            record.catalogueIdPreffix += char;
+        else {
+            record.catalogueIdInt = parseInt(catalogueId.slice(i));
+            record.catalogueIdSuffix = catalogueId.slice(i + record.catalogueIdInt.toString().length)
+            break;
+        }
+    }
+
+    return record;
+}

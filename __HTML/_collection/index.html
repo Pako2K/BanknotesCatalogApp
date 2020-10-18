@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Banknotes Database: More</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/_shared/index.css">
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+    <link rel="stylesheet" href="collection.css">
+    <link rel="stylesheet" href="/_shared/slide-button/slide-button.css">
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <script src="/_shared/cookies.js"></script>
+    <script src="collection.js"></script>
+    <script src="/_shared/slide-button/slide-button.js"></script>
+    <script src="/_shared/utils.js"></script>
+</head>
+
+<body>
+    <header>
+        <script>
+            $("body>header").load("/_shared/header/__header.html");
+        </script>
+    </header>
+
+    <section id="collection-filters">
+        <div>
+            <div class="filter">
+                <div id="only-duplicates-filter" class="check-button"></div>
+                <p>Show only duplicates</p>
+            </div>
+            <div class="filter">
+                <div id="exclude-duplicates-filter" class="check-button"></div>
+                <p>Do not show duplicates</p>
+            </div>
+        </div>
+    </section>
+
+    <hr/>
+
+    <section>
+        <div id="list-main-div">
+            <p class="not-logged-in">Log in to see your collection!</p>
+            <div id="list-table-div">
+                <table id="items-table" class="notes-list-table">
+                    <thead>
+                        <tr>
+                            <th><span class="is-sortable default-sort" onclick="sortClick(this)">Territory</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th><span class="is-sortable" onclick="sortClick(this)">Denom.</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th><span class="is-sortable" onclick="sortClick(this)">Currency</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th><span class="is-sortable" onclick="sortClick(this)">Cat. Id</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th class="collection-field">Grade</th>
+                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Price</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Qty.</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Seller</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Purchased</span>
+                                <div class="sort-div" onclick="sortClick(this)">
+                                    <div class="sort-asc"></div>
+                                    <div class="sort-desc"></div>
+                                </div>
+                            </th>
+                            <th class="collection-field">Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+
+    <footer>
+        <script>
+            $("body>footer").load("/_shared/footer/__footer.html");
+        </script>
+    </footer>
+</body>

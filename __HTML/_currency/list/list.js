@@ -56,20 +56,10 @@ function initializeList() {
                                 record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
 
                                 // Parse the catalogue id in order to be able to sort
-                                record.catalogueIdPreffix = "";
-                                record.catalogueIdInt = 0;
-                                record.catalogueIdSuffix = "";
-                                for (let i = 0; i < record.catalogueId.length; i++) {
-                                    let char = record.catalogueId[i];
-                                    let integer = parseInt(char);
-                                    if (isNaN(integer))
-                                        record.catalogueIdPreffix += char;
-                                    else {
-                                        record.catalogueIdInt = parseInt(record.catalogueId.slice(i));
-                                        record.catalogueIdSuffix = record.catalogueId.slice(i + record.catalogueIdInt.toString().length)
-                                        break;
-                                    }
-                                }
+                                let parseCatId = parseCatalogueId(record.catalogueId);
+                                record.catalogueIdPreffix = parseCatId.catalogueIdPreffix;
+                                record.catalogueIdInt = parseCatId.catalogueIdInt;
+                                record.catalogueIdSuffix = parseCatId.catalogueIdSuffix;
 
                                 notesList.push(record);
                             }

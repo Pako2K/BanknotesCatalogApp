@@ -61,6 +61,7 @@ $header-color: whitesmoke;
             border: solid 1px $header-bg-color;
             border-radius: 0.5em;
             cursor: pointer;
+            white-space: nowrap;
             transition: 0.3s;
         }
         & p.selected-option {

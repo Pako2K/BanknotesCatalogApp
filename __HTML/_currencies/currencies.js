@@ -179,7 +179,7 @@ function loadCurrenciesTable() {
             if (!currency.iso3)
                 currency.iso3 = "-";
 
-            let priceStr = (currency.collectionStats.price === 0) ? "-" : currency.collectionStats.price.toFixed(2) + ' €';
+            let priceStr = (currency.collectionStats.price === 0) ? "-" : currency.collectionStats.price + ' €';
             record = `<tr>
                                 <th>${currency.symbol}</th>
                                 <th>${currency.iso3}</th>
@@ -208,7 +208,7 @@ function loadCurrenciesTable() {
             totals.notes.col += currency.collectionStats.numNotes;
             totals.variants.cat += currency.numVariants;
             totals.variants.col += currency.collectionStats.numVariants;
-            totals.price += currency.collectionStats.price;
+            totals.price += parseFloat(currency.collectionStats.price);
 
             // Statistics:
             if (existing && (!currency.end || currency.end === "")) {
@@ -232,7 +232,7 @@ function loadCurrenciesTable() {
                         <td class="only-logged-in">${totals.notes.col}</td>
                         <td>${totals.variants.cat}</td>
                         <td class="only-logged-in">${totals.variants.col}</td>
-                        <td class="only-logged-in">${totals.price.toFixed(2)} €</td>`;
+                        <td class="only-logged-in">${totals.price} €</td>`;
     $("#currencies-table>tfoot>tr").append(totalsHTML);
 
     // Add statisctics to stats table

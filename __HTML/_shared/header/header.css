@@ -115,6 +115,7 @@ p.not-logged-in {
   border: solid 1px #0c0c0c;
   border-radius: 0.5em;
   cursor: pointer;
+  white-space: nowrap;
   -webkit-transition: 0.3s;
   transition: 0.3s;
 }

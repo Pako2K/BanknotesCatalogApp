@@ -14,17 +14,12 @@ p.not-logged-in {
 }
 
 #cont-img {
-  border-radius: 10px;
   padding: 14px 14px 10px 14px;
 }
 
 #cont-img > img {
   width: 80px;
   height: 80px;
-}
-
-#year-filter {
-  border-radius: 10px;
 }
 
 #year-filter > div {
@@ -85,15 +80,11 @@ p.not-logged-in {
     padding: 0.9em 0;
   }
   #cont-img {
-    border-radius: 9px;
     padding: 12.6px 12.6px 9px 12.6px;
   }
   #cont-img > img {
     width: 64.8px;
     height: 64.8px;
-  }
-  #year-filter {
-    border-radius: 9px;
   }
   #year-filter > div {
     margin-bottom: 0.27em;
@@ -108,15 +99,11 @@ p.not-logged-in {
     padding: 0.85em 0;
   }
   #cont-img {
-    border-radius: 8.5px;
     padding: 11.9px 11.9px 8.5px 11.9px;
   }
   #cont-img > img {
     width: 57.8px;
     height: 57.8px;
-  }
-  #year-filter {
-    border-radius: 8.5px;
   }
   #year-filter > div {
     margin-bottom: 0.255em;
@@ -136,15 +123,11 @@ p.not-logged-in {
     padding: 0.75em 0;
   }
   #cont-img {
-    border-radius: 7.5px;
     padding: 10.5px 10.5px 7.5px 10.5px;
   }
   #cont-img > img {
     width: 45px;
     height: 45px;
-  }
-  #year-filter {
-    border-radius: 7.5px;
   }
   #year-filter > div {
     margin-bottom: 0.225em;
@@ -162,15 +145,11 @@ p.not-logged-in {
     padding: 0.7em 0;
   }
   #cont-img {
-    border-radius: 7px;
     padding: 9.8px 9.8px 7px 9.8px;
   }
   #cont-img > img {
     width: 39.2px;
     height: 39.2px;
-  }
-  #year-filter {
-    border-radius: 7px;
   }
   #year-filter > div {
     margin-bottom: 0.21em;

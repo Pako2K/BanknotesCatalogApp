@@ -1,4 +1,5 @@
 @import '../_shared/common';
+@import '../_shared/grades';
 #country-header {
     font-family: Lucida sans, sans-serif;
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
@@ -227,49 +228,6 @@ hr {
     flex-wrap: nowrap;
     align-items: center;
     background-color: whitesmoke;
-}
-
-.UNC-grade {
-    background-color: green;
-    color: whitesmoke;
-}
-
-.XF-grade {
-    background-color: greenyellow;
-    color: rgb(70, 70, 70);
-}
-
-.VF-grade {
-    background-color: yellow;
-    color: rgb(70, 70, 70);
-}
-
-.F-grade {
-    background-color: orange;
-    color: rgb(70, 70, 70);
-}
-
-.VG-grade {
-    background-color: rgb(120, 80, 0);
-    ;
-    color: lightgrey;
-}
-
-.G-grade {
-    background-color: rgb(90, 80, 0);
-    ;
-    color: lightgrey;
-}
-
-.P-grade {
-    background-color: rgb(60, 50, 0);
-    ;
-    color: lightgrey;
-}
-
-.REP-grade {
-    background-color: lightgray;
-    color: rgb(70, 70, 70);
 }
 
 .none-grade {

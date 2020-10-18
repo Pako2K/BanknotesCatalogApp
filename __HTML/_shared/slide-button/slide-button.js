@@ -32,3 +32,9 @@ function addSlideButton(id, isOn, aCallback) {
         aCallback(id, elem.hasClass("__slide-button-on__"));
     });
 }
+
+
+function isSlideButtonSelected(id) {
+    let elem = $("#" + id);
+    return elem.hasClass("__slide-button-on__");
+}

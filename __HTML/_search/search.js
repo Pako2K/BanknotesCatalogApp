@@ -161,10 +161,17 @@ function callVariantsAPI(filters) {
 
             for (let row of variantsJSON) {
                 // Parse the catalogue id in order to be able to sort
-                row.catalogueIdInt = parseInt(row.catalogueId.slice(2));
-                row.catalogueIdSuffix = row.catalogueId.slice(2 + row.catalogueIdInt.toString().length);
-                row.grade = row.grade || "-";
-                row.price = row.price || 0;
+                let parsedCatId = parseCatalogueId(row.catalogueId);
+                row.catalogueIdPreffix = parsedCatId.catalogueIdPreffix;
+                row.catalogueIdInt = parsedCatId.catalogueIdInt;
+                row.catalogueIdSuffix = parsedCatId.catalogueIdSuffix;
+                if (row.item) {
+                    row.grade = row.item.grade;
+                    row.price = parseFloat(row.item.price);
+                } else {
+                    row.grade = "-";
+                    row.price = 0;
+                }
             }
 
             $("#results-table").data("value", JSON.stringify(variantsJSON));
@@ -218,7 +225,7 @@ function loadResultsTable() {
                         <th>${variant.height || "-"}</th>
                         <th>${variant.mintage || "-"}</th>
                         <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
-                        <td class="only-logged-in">${(variant.item) ? variant.item.price.toFixed(2) + ' €' : "-"}</td>
+                        <td class="only-logged-in">${(variant.item) ? variant.item.price + ' €' : "-"}</td>
                     </tr>`;
         $("#results-table>tbody").append(record);
     }
@@ -242,7 +249,7 @@ function sortClick(htmlElem, titleStr) {
     // Load table body
     // Mapping column name - field name
     let mapFieldName = {
-        "Catalogue Id": "catalogueIdInt",
+        "Catalogue Id": "catalogueId",
         "Territory": "territoryName",
         "Currency": "currencyName",
         "Series": "seriesName",
@@ -265,9 +272,17 @@ function sortClick(htmlElem, titleStr) {
     let sortingAsc = $(".sort-selection").hasClass("sort-asc");
 
     // Sort
-    let sortingFields = [sortingField];
-    if (sortingField !== "catalogueIdInt")
+    let sortingFields = [];
+    if (sortingField !== "catalogueId") {
+        sortingFields.push(sortingField);
+        sortingFields.push("catalogueIdPreffix");
         sortingFields.push("catalogueIdInt");
+        sortingFields.push("catalogueIdSuffix");
+    } else {
+        sortingFields.push("catalogueIdPreffix");
+        sortingFields.push("catalogueIdInt");
+        sortingFields.push("catalogueIdSuffix");
+    }
 
     let variantsJSON = sortJSON(JSON.parse($("#results-table").data("value")), sortingFields, sortingAsc);
 

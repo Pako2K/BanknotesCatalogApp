@@ -626,7 +626,36 @@ paths:
                 $ref: '#/components/schemas/exception'
         "500":
           $ref: '#/components/responses/500'
-                
+  
+  
+  /items/all:
+    get:
+      tags: 
+      - Items
+      summary: Get list of items in the collection.
+      description: Returns a list of items in the user's collection.
+      operationId: itemsAllGET
+      parameters:
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: List of items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemsList'
+        "400":
+          description: Invalid request. Cookie paramter is mandatory. 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+
 
   /variant/{variantId}/item:
     post:
@@ -2585,6 +2614,37 @@ components:
             description:
               type: string
           
+
+    itemsList:
+      type: array
+      items:
+        allOf:
+          - type: object
+            required:
+            - catalogueId
+            - territoryId
+            - territoryName
+            - currencyId
+            - currencyName
+            - denomination
+            - isDuplicated
+            properties:
+              territoryId:
+                type: integer
+              territoryName:
+                type: string
+              currencyId:
+                type: integer
+              currencyName:
+                type: string
+              catalogueId:
+                type: string
+              denomination:
+                type: number
+              isDuplicated:
+                type: boolean
+          - $ref: '#/components/schemas/item'
+
 
     grade:
       type: object

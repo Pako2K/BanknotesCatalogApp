@@ -4,7 +4,6 @@
         padding: 1em*$scale-factor 0;
     }
     #cont-img {
-        border-radius: 10px*$scale-factor;
         padding: 14px*$scale-factor 14px*$scale-factor 10px*$scale-factor 14px*$scale-factor;
         &>img {
             width: 80px*$scale-factor*$scale-factor;
@@ -12,7 +11,6 @@
         }
     }
     #year-filter {
-        border-radius: 10px*$scale-factor;
         &>div {
             margin-bottom: 0.3em * $scale-factor;
         }
