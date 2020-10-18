@@ -287,17 +287,21 @@ function currenciesItemsStatsGET(request, response) {
             }
 
             // Join the collection results into the catalogue statistics
-            let collecIndex = 0;
             for (let row of resultJSON) {
                 row.collectionStats = {};
-                if (collecIndex < colRows.length && row.id === colRows[collecIndex].id) {
-                    row.collectionStats.numSeries = colRows[collecIndex].numSeries;
-                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
-                    row.collectionStats.numNotes = colRows[collecIndex].numNotes;
-                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
-                    collecIndex++;
-                } else {
+                let found = false;
+                for (let colRow of colRows) {
+                    if (row.id === colRow.id) {
+                        row.collectionStats.numSeries = colRow.numSeries;
+                        row.collectionStats.numDenominations = colRow.numDenominations;
+                        row.collectionStats.numNotes = colRow.numNotes;
+                        row.collectionStats.numVariants = colRow.numVariants;
+                        row.collectionStats.price = colRow.price.toFixed(2);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     row.collectionStats.numSeries = 0;
                     row.collectionStats.numDenominations = 0;
                     row.collectionStats.numNotes = 0;

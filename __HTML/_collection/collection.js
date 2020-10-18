@@ -68,7 +68,7 @@ function loadItemsTable(sortKey, sortAsc) {
     $("#items-table>tbody").empty();
 
     let itemsJSON = JSON.parse($("#items-table").data("value"));
-    if (sortKey && sortAsc) {
+    if (sortKey) {
         sortJSON(itemsJSON, sortKey, sortAsc);
         $("#items-table").data("value", JSON.stringify(itemsJSON));
     }
