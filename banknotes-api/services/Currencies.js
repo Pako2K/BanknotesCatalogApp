@@ -70,7 +70,6 @@ function currencyByIdGET(request, response) {
         var replyJSON = {};
         if (rows.length > 0) {
             replyJSON.id = rows[0].cur_id;
-            replyJSON.iso3 = rows[0].tec_iso3;
             replyJSON.name = rows[0].cur_name;
             replyJSON.symbol = rows[0].cur_symbol;
             replyJSON.namePlural = rows[0].cur_name_plural;
@@ -89,6 +88,7 @@ function currencyByIdGET(request, response) {
                     replyJSON.territory.id = row.ter_id;
                     replyJSON.territory.iso3 = row.ter_iso3;
                     replyJSON.territory.name = row.ter_name;
+                    replyJSON.iso3 = row.tec_iso3;
                     replyJSON.start = row.tec_start || row.cur_start;
                     replyJSON.end = row.tec_end || row.cur_end;
                     if (row.tec_cur_type === "OWNED") {
@@ -133,6 +133,7 @@ function currencyByIdGET(request, response) {
                     replyJSON.territory.id = row.ter_id;
                     replyJSON.territory.iso3 = row.ter_iso3;
                     replyJSON.territory.name = row.ter_name;
+                    replyJSON.iso3 = row.tec_iso3;
                     replyJSON.start = row.tec_start || row.cur_start;
                     replyJSON.end = row.tec_end || row.cur_end;
                     if (row.pred_cur_id) {

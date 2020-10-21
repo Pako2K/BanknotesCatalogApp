@@ -119,6 +119,9 @@ function setHeaders(currencyJSON) {
     else
         $("#currency-name").next().hide();
 
+    if (currencyJSON.fullName)
+        $("#currency-full-name").text(currencyJSON.fullName);
+
     let period = "From " + currencyJSON.start.replace("-", ".").replace("-", ".");
     if (currencyJSON.end)
         period += " to " + currencyJSON.end.replace("-", ".").replace("-", ".");
@@ -168,7 +171,8 @@ function setHeaders(currencyJSON) {
         if (currencyJSON.predecessor.iso3)
             name += " (" + currencyJSON.predecessor.iso3 + ")";
         $("#currency-predecessor").text(name)
-        $("#predecessorRate").text("1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
+        if (currencyJSON.predecessor.rate)
+            $("#predecessorRate").text("1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + currencyJSON.predecessor.rate.toLocaleString("de-DE") + " " + (currencyJSON.predecessor.iso3 || currencyJSON.predecessor.name));
     } else {
         $("#currency-predecessor").parent().hide();
     }
@@ -179,7 +183,8 @@ function setHeaders(currencyJSON) {
         if (currencyJSON.successor.iso3)
             name += " (" + currencyJSON.successor.iso3 + ")";
         $("#currency-successor").text(name);
-        $("#successorRate").text("1 " + (currencyJSON.successor.iso3 || name) + " = " + currencyJSON.successor.rate.toLocaleString("de-DE") + " " + (currencyJSON.iso3 || currencyJSON.name));
+        if (currencyJSON.successor.rate)
+            $("#successorRate").text("1 " + (currencyJSON.successor.iso3 || name) + " = " + currencyJSON.successor.rate.toLocaleString("de-DE") + " " + (currencyJSON.iso3 || currencyJSON.name));
     } else {
         $("#currency-successor").parent().hide();
     }
