@@ -9,6 +9,25 @@ p.not-logged-in {
   margin-top: 0.4em;
 }
 
+p.not-logged-in > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.not-logged-in > a:visited {
+  color: #0a320a;
+}
+
+p.not-logged-in > a:hover {
+  color: black;
+}
+
+p.not-logged-in > a:active {
+  color: black;
+}
+
 #countries-filters {
   padding: 1em 0;
 }

@@ -50,12 +50,32 @@ function readDenominations() {
                 }
             }
 
+            // Aggregate with the denominations if the value is the same (This can happend when the units are different)
+            let aggDenominations = [];
+            if (denominationsJSON.length)
+                aggDenominations.push(denominationsJSON[0]);
+            for (let i = 1; i < denominationsJSON.length; i++) {
+                let j = aggDenominations.length - 1;
+                if (denominationsJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
+                    aggDenominations[j].numTerritories += denominationsJSON[i].numTerritories;
+                    aggDenominations[j].collectionStats.numTerritories += denominationsJSON[i].collectionStats.numTerritories;
+                    aggDenominations[j].numCurrencies += denominationsJSON[i].numCurrencies;
+                    aggDenominations[j].collectionStats.numCurrencies += denominationsJSON[i].collectionStats.numCurrencies;
+                    aggDenominations[j].numSeries += denominationsJSON[i].numSeries;
+                    aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
+                    aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
+                    aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
+                    aggDenominations[j].collectionStats.price = parseFloat(aggDenominations[j].collectionStats.price) + parseFloat(denominationsJSON[i].collectionStats.price);
+                } else {
+                    aggDenominations.push(denominationsJSON[i]);
+                }
+            }
             let sortingField = "denomination";
             let storedSortingField = $("#denominations-table").data("sorting-field");
             if (storedSortingField) {
                 sortingField = storedSortingField;
             }
-            storeDenominationsTable(denominationsJSON, sortingField, $("#denominations-table .sorting-column").text() === "Collect.");
+            storeDenominationsTable(aggDenominations, sortingField, $("#denominations-table .sorting-column").text() === "Collect.");
         },
         error: function(xhr, status, error) {
             switch (xhr.status) {
@@ -151,28 +171,7 @@ function loadDenominationsTable() {
 
     let record = "";
 
-    // Aggregate with the denominations if the value is the same (This can happend when the units are different)
-    let aggDenominations = [];
-    if (denominationsJSON.length)
-        aggDenominations.push(denominationsJSON[0]);
-    for (let i = 1; i < denominationsJSON.length; i++) {
-        let j = aggDenominations.length - 1;
-        if (denominationsJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
-            aggDenominations[j].numTerritories += denominationsJSON[i].numTerritories;
-            aggDenominations[j].collectionStats.numTerritories += denominationsJSON[i].collectionStats.numTerritories;
-            aggDenominations[j].numCurrencies += denominationsJSON[i].numCurrencies;
-            aggDenominations[j].collectionStats.numCurrencies += denominationsJSON[i].collectionStats.numCurrencies;
-            aggDenominations[j].numSeries += denominationsJSON[i].numSeries;
-            aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
-            aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
-            aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
-            aggDenominations[j].collectionStats.price = parseFloat(aggDenominations[j].collectionStats.price) + parseFloat(denominationsJSON[i].collectionStats.price);
-        } else {
-            aggDenominations.push(denominationsJSON[i]);
-        }
-    }
-
-    for (let denom of aggDenominations) {
+    for (let denom of denominationsJSON) {
         let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price + ' €';
         record = `  <tr>
                         <th>${denom.denomination.toLocaleString("de-DE")}</th>

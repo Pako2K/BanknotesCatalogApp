@@ -30,7 +30,7 @@ $("#countries-table").ready(() => {
                     row.collectionStats.price = 0;
                 }
             }
-            storeCountriesTable(countriesJSON);
+            storeCountriesTable(countriesJSON, "name", false);
         },
         error: function(xhr, status, error) {
             switch (xhr.status) {
