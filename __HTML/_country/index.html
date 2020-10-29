@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="/_shared/footer/footer.css">
     <link rel="stylesheet" href="./country.css">
     <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+    <link rel="stylesheet" href="./_list/list.css">
+    <link rel="stylesheet" href="/_shared/modal-form.css">
+    <link rel="stylesheet" href="/_currency/forms/collection/collection.css">
 
     <script src="/_shared/jquery-3.4.1.min.js"></script>
     <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
@@ -19,6 +22,10 @@
     <script src="./_series/series.js"></script>
     <script src="./_denominations/denominations.js"></script>
     <script src="./_years/years.js"></script>
+    <script src="./_list/list.js"></script>
+    <script src="/_shared/utils.js"></script>
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_currency/forms/collection/collection.js"></script>
 
 </head>
 
@@ -82,15 +89,25 @@
         <p onclick="selectView(this)">Series</p>
         <p onclick="selectView(this)">Denominations</p>
         <p onclick="selectView(this)">Years</p>
+        <p onclick="selectView(this)">List</p>
     </div>
 
     <hr/>
 
     <section id="results-table">
-
     </section>
 
-    <!--<section id="currency-section"></section> -->
+    <div id="grades-div">
+        <div>
+            <h3>Grades Color Coding</h3>
+            <!--
+            <p class="UNC-grade">Uncirculated</p>
+            <p class="XF-grade">Extremely Fine</p>-->
+        </div>
+    </div>
+
+    <div class="modal-form-placeholder">
+    </div>
 
     <footer>
         <script>

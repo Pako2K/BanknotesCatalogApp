@@ -455,7 +455,7 @@ paths:
       tags:
       - Variants
       summary: Get all variants for a given series
-      description: Returns a summary of the different variants belonging to the giving series.
+      description: Returns a summary of the different variants belonging to the given series.
       operationId: seriesByIdVariantsGET
       parameters:
       - $ref: '#/components/parameters/seriesId'
@@ -528,7 +528,89 @@ paths:
         "500":
           $ref: '#/components/responses/500'
                 
-                                 
+
+
+  /currency/{currencyId}/variants:
+    get:
+      tags:
+      - Variants
+      summary: Get all variants for a given currency
+      description: Returns a summary of the different variants belonging to the given currency. If the currency is shared, the country id can be specified via a query string parameter
+      operationId: currencyByIdVariantsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
+      responses:
+        "200":
+          description: List of variants for the given currency ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:    
+                  - $ref: '#/components/schemas/denomination'
+                  - type: object
+                    required:
+                    - variants
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/variantExt'
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
+                
+
+  /currency/{currencyId}/items:
+    get:
+      tags: 
+      - Variants
+      summary: Get Collection items for a specific currency
+      description: Retrieves the catalogue variants and collection items for the active sesion's user and the provided currency. If the currency is shared, the country id can be specified via a query string parameter
+      operationId: currencyByIdItemsGET
+      parameters:
+      - $ref: '#/components/parameters/currencyId'
+      - $ref: '#/components/parameters/searchTerritoryId'
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      responses:
+        "200":
+          description: Success. List of Items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:    
+                  - $ref: '#/components/schemas/denomination'
+                  - type: object
+                    required:
+                    - variants
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          allOf:
+                          - $ref: '#/components/schemas/variantExt'
+                          - type: object
+                            required:
+                            - items
+                            properties:
+                              items:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/item'
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'
+                
+                
   /variants:
     get:
       tags: 

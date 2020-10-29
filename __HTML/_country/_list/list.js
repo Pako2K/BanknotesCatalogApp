@@ -1,26 +1,25 @@
-function initializeList() {
-    let seriesJSON = JSON.parse($(document).data("series-summary"));
+function loadListTable(countryId) {
+    let currenciesJSON = JSON.parse($(document).data("currencies-summary"));
+
+    if (currenciesJSON.length === 0) {
+        return;
+    }
 
     if (getCookie("banknotes.ODB.username"))
         $("#grades-div").show();
     else
         $("#grades-div").hide();
 
-    if (seriesJSON.length === 0) {
-        $("#timeline-main-div").append('<p>There is no data for this currency</p>');
-        return;
-    }
-
-    // Get banknotes info for all the series
+    // Get banknotes info for all the currencies
     let notesArray = [];
     let numReplies = 0;
-    for (let idx in seriesJSON) {
+    for (let idx in currenciesJSON) {
         let variantsUri;
         let itemsUri;
         if (getCookie("banknotes.ODB.username"))
-            itemsUri = `/series/${seriesJSON[idx].id}/items`;
+            itemsUri = `/currency/${currenciesJSON[idx].id}/items?territoryId=${countryId}`;
         else
-            variantsUri = `/series/${seriesJSON[idx].id}/variants`;
+            variantsUri = `/currency/${currenciesJSON[idx].id}/variants?territoryId=${countryId}`;
 
         notesArray.push({});
         $.ajax({
@@ -34,13 +33,13 @@ function initializeList() {
             success: function(notesJSON, status) {
                 numReplies++;
                 notesArray[idx] = notesJSON;
-                notesArray[idx].seriesId = seriesJSON[idx].id
-                notesArray[idx].seriesName = seriesJSON[idx].name
-                if (numReplies === seriesJSON.length) {
+                notesArray[idx].currencyId = currenciesJSON[idx].id;
+                notesArray[idx].currencyName = currenciesJSON[idx].name + (currenciesJSON[idx].iso3 ? ` (${currenciesJSON[idx].iso3})` : "");
+                if (numReplies === currenciesJSON.length) {
                     // Create a flat JSON array 
                     let notesList = [];
-                    for (let series of notesArray) {
-                        for (let denomination of series) {
+                    for (let currency of notesArray) {
+                        for (let denomination of currency) {
                             for (let variant of denomination.variants) {
                                 let record = {};
                                 record.id = variant.id;
@@ -48,10 +47,9 @@ function initializeList() {
                                 record.denomination = denomination.denomination;
                                 record.printedDate = variant.printedDate;
                                 record.issueYear = variant.issueYear;
-                                record.seriesName = series.seriesName;
+                                record.currencyName = currency.currencyName;
                                 record.width = denomination.width;
                                 record.height = denomination.height;
-                                record.printer = variant.printerName;
                                 record.description = variant.variantDescription;
                                 record.items = variant.items || [];
                                 record.sortingQuantity = record.items[0] ? parseFloat(record.items[0].quantity) : -1;
@@ -91,7 +89,8 @@ function initializeList() {
             }
         });
     }
-};
+}
+
 
 
 function drawList(notesList, sortKey, sortAsc) {
@@ -115,12 +114,11 @@ function drawList(notesList, sortKey, sortAsc) {
         rowsHTML += `<tr class="first-subrow" data-variant='${variantStr}' onclick="openUpsertCollectionFromList(this)">
                         <th class="${thGradeClass}" rowspan=${rowspan}>${record.catalogueId}</th>
                         <th class="${thGradeClass}" rowspan=${rowspan}>${record.denomination.toLocaleString("de-DE")}</th>
+                        <td rowspan=${rowspan} class="${gradeClass} text">${record.currencyName}</td>
                         <td class="${gradeClass}" rowspan=${rowspan}>${record.issueYear}</td>
                         <td class="${gradeClass}" rowspan=${rowspan}>${record.printedDate || "ND"}</td>
-                        <td rowspan=${rowspan} class="${gradeClass} text">${record.seriesName}</td>
                         <td class="${gradeClass}" rowspan=${rowspan}>${record.width || "-"}</td>
                         <td class="${gradeClass}" rowspan=${rowspan}>${record.height || "-"}</td>
-                        <td rowspan=${rowspan} class="${gradeClass} text">${record.printer || "-"}</td>
                         <td rowspan=${rowspan} class="${gradeClass} text">${record.description || ""}</td>`;
         if (record.items && record.items.length) {
             rowsHTML += `<td class="collection-field first ${gradeClass}">${record.items[0].quantity}</td>
@@ -168,6 +166,7 @@ function sortClick(htmlElem) {
     // Mapping column name - field name
     let mapFieldName = {
         "Cat. Id": ["catalogueIdPreffix", "catalogueIdInt", "catalogueIdSuffix"],
+        "Currency": ["currencyName", "catalogueIdPreffix", "catalogueIdInt", "catalogueIdSuffix"],
         "Denom.": ["denomination", "issueYear", "catalogueIdInt"],
         "Issue Year": ["issueYear", "catalogueIdInt"],
         "Printed Date": ["printedDate", "issueYear", "catalogueIdInt"],
@@ -228,12 +227,12 @@ function openUpsertCollectionFromList(rowElem) {
             variantJSON = $(prevRow).data("variant");
         }
 
-        variantJSON.denominationStr = variantJSON.denomination + " " + $("#currency-name").text();
+        variantJSON.denominationStr = variantJSON.denomination + " " + variantJSON.currencyName;
 
         let gradesJSON = $("#grades-div").data("grades");
         let seriesId = $("section.series-detail-section").data("series-id");
 
-        $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
+        $("div.modal-form-placeholder").load("/_currency/forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
         $("div.modal-form-placeholder").show();
 
         resetExpiration();

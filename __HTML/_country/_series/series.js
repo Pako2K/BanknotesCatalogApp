@@ -6,6 +6,8 @@ function loadSeriesTable(countryId) {
     else
         variantsUri = `/territory/${countryId}/series/variants/stats`;
 
+    $("#grades-div").hide();
+
     // Clean table body
     $("#series-table>tbody").empty();
 
@@ -47,9 +49,13 @@ function loadSeriesTable(countryId) {
 function fillSeriesTable(resultJSON) {
     for (let series of resultJSON) {
         let priceStr = (series.collectionStats.price === 0) ? '-' : series.collectionStats.price + ' €';
+        let name = "";
+        if (series.currency.iso3)
+            name = `(${series.currency.iso3}) `;
+        name += series.currency.name;
         let record = `  <tr>
                             <th class="name"><a href="/_currency/index.html?currencyId=${series.currency.id}&seriesId=${series.id}">${ series.name}</a></th>
-                            <th>${series.currency.name}</th>
+                            <th>${name}</th>
                             <th>${series.start}</th>
                             <th>${series.end || ""}</th>
                             <td>${series.numDenominations}</td>

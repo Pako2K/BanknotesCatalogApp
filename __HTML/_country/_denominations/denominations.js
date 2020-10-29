@@ -6,6 +6,8 @@ function loadDenominationsTable(countryId) {
     else
         variantsUri = `/territory/${countryId}/denominations/variants/stats`;
 
+    $("#grades-div").hide();
+
     // Clean table body
     $("#denominations-table>tbody").empty();
 

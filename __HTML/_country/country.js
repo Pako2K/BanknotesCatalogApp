@@ -20,6 +20,37 @@ $(document).ready(function() {
             alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
         }
     });
+
+
+
+    if (getCookie("banknotes.ODB.username")) {
+        // Load grades from DB
+        $.ajax({
+            type: "GET",
+            url: `/grades`,
+            async: true,
+            cache: true,
+            timeout: 5000,
+            dataType: 'json',
+
+            success: function(grades, status) {
+                // store info so it can be reused in the upsert-collection form
+                $("#grades-div").data("grades", grades);
+
+                let gradesHTML = "";
+                for (let grade of grades) {
+                    gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
+                }
+                $("#grades-div>div").append(gradesHTML);
+                $("#grades-div").hide();
+            },
+
+            error: function(xhr, status, error) {
+                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        });
+    }
+
 });
 
 
@@ -124,6 +155,12 @@ function loadTable(option) {
             $("#results-table").load("./_years/table.html", (responseTxt, statusTxt, xhr) => {
                 if (statusTxt == "success")
                     loadYearsTable(countryId);
+            });
+            break;
+        case "List":
+            $("#results-table").load("./_list/table.html", (responseTxt, statusTxt, xhr) => {
+                if (statusTxt == "success")
+                    loadListTable(countryId);
             });
             break;
     }

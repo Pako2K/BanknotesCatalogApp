@@ -292,7 +292,7 @@ function currenciesItemsStatsGET(request, response) {
                 row.collectionStats = {};
                 let found = false;
                 for (let colRow of colRows) {
-                    if (row.id === colRow.id) {
+                    if (row.id === colRow.id && row.territoryId === colRow.territoryId) {
                         row.collectionStats.numSeries = colRow.numSeries;
                         row.collectionStats.numDenominations = colRow.numDenominations;
                         row.collectionStats.numNotes = colRow.numNotes;

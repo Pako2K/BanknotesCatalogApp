@@ -6,6 +6,8 @@ function loadYearsTable(countryId) {
     else
         variantsUri = `/territory/${countryId}/years/variants/stats?dateType=issue`;
 
+    $("#grades-div").hide();
+
     // Clean table body
     $("#years-table>tbody").empty();
 

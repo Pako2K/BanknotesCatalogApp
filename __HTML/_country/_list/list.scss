@@ -1,0 +1,164 @@
+@import '../../_shared/common';
+@import '../../_shared/grades';
+#list-main-div {
+    max-width: 100%;
+    overflow-x: auto;
+    &>p {
+        text-align: center;
+        font-size: 0.9em;
+        font-style: italic;
+    }
+    &>div:first-of-type {
+        margin-bottom: 3em;
+    }
+}
+
+.notes-list-table {
+    margin: 0.7em;
+    border-right: solid 1px darkgrey;
+    border-bottom: solid 1px darkgrey;
+    border-collapse: collapse;
+    &>thead>tr>th {
+        min-width: 5em;
+        font-family: Lucida sans, sans-serif;
+        font-size: 0.75em;
+        border-top: solid 1px darkgrey;
+        border-left: solid 1px darkgrey;
+        border-bottom: solid 1px darkgrey;
+        background-color: rgb(218, 230, 222);
+        color: rgb(50, 50, 50);
+        text-align: center;
+        vertical-align: bottom;
+        padding: 0.4em 0.4em;
+        white-space: nowrap;
+    }
+    &>thead>tr:nth-of-type(2) {
+        font-size: 0.7em;
+        min-width: 3em;
+    }
+    &>tbody {
+        &>tr>th {
+            font-family: Lucida sans, sans-serif;
+            font-weight: normal;
+            font-size: 0.75em;
+            border-left: solid 1px darkgray;
+            border-right: dotted 1px grey;
+            padding: 0.2em 0;
+            border-bottom: dotted 1px grey;
+        }
+        &>tr>td {
+            max-width: 40em;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-family: Lucida sans, sans-serif;
+            font-size: 0.6em;
+            border-bottom: dotted 1px grey;
+            padding: 0.3em 0.8em;
+            white-space: nowrap;
+            cursor: pointer;
+            &:last-of-type {
+                border-right: solid 1px darkgray;
+            }
+            &:not(.text) {
+                text-align: center;
+            }
+            &.collection-field {
+                &.first {
+                    border-left: solid 1px darkgray;
+                }
+            }
+        }
+        &>tr:hover {
+            color: rgb(92, 7, 7);
+            text-shadow: 1px 1px 1px darkgrey;
+        }
+    }
+}
+
+.th-NO-GRADE {
+    color: rgb(26, 75, 26);
+    background-color: white;
+}
+
+.td-col-NO-GRADE {
+    background-color: white;
+    color: black;
+}
+
+.is-sortable {
+    margin-right: 0.3em;
+    border-bottom: 1px dotted transparent;
+}
+
+.is-sortable:hover {
+    cursor: pointer;
+    border-bottom-color: black;
+}
+
+.is-sortable.sorting-column {
+    border-bottom-color: black;
+}
+
+.sort-div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sort-desc,
+.sort-asc {
+    border: 0.5em solid rgba(0, 0, 0, 0.15);
+    border-left: 0.4em solid transparent;
+    border-right: 0.4em solid transparent;
+    cursor: pointer;
+}
+
+.sort-desc {
+    border-bottom: 0em solid transparent;
+}
+
+.sort-asc {
+    margin-top: -0.3em;
+    margin-bottom: 0.2em;
+    border-top: 0px solid transparent;
+}
+
+.sort-asc.sort-selection {
+    border-bottom-color: black;
+}
+
+.sort-desc.sort-selection {
+    border-top-color: black;
+}
+
+#grades-div {
+    margin-top: 0em;
+    padding: 1.2em 0em;
+    display: flex;
+    font-family: Times New Roman, serif;
+    flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
+}
+
+#grades-div div {
+    border: solid 1px lightgray;
+    padding: 1em;
+    background-color: ghostwhite;
+}
+
+#grades-div h3 {
+    margin: 0;
+    margin-bottom: 1em;
+    font-size: 1em;
+    text-align: center;
+}
+
+#grades-div p {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0.4em;
+    min-width: 10em;
+    text-align: center;
+    cursor: help;
+}

@@ -6,6 +6,8 @@ function loadCurrenciesTable(territoryId) {
     else
         variantsUri = `/territory/${territoryId}/currencies/variants/stats`;
 
+    $("#grades-div").hide();
+
     // Clean table body
     $("#currencies-table>tbody").empty();
 
@@ -17,6 +19,9 @@ function loadCurrenciesTable(territoryId) {
         timeout: 5000,
         dataType: 'json',
         success: function(currenciesJSON, status) {
+            // Store Currencies info (needed in the List option)
+            $(document).data("currencies-summary", JSON.stringify(currenciesJSON));
+
             if (variantsUri) {
                 // Add null collectionStats
                 for (let row of currenciesJSON) {

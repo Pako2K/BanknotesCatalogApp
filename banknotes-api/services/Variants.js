@@ -29,6 +29,9 @@ module.exports.initialize = function(app, banknotesOAS, validator) {
     app.get('/series/:seriesId/variants', addOnlyVariants, seriesByIdItemsGET);
     app.get('/series/:seriesId/items', users.validateSessionUser, seriesByIdItemsGET);
 
+    app.get('/currency/:currencyId/variants', addOnlyVariants, currencyByIdItemsGET);
+    app.get('/currency/:currencyId/items', users.validateSessionUser, currencyByIdItemsGET);
+
     app.post('/variant/:variantId/item', users.validateSessionUser, jsonParser, variantItemPOST);
     schemas.variantItemPOST = getReqJSONSchema(banknotesOAS, "/variant/{variantId}/item", "post");
     app.put('/item', users.validateSessionUser, jsonParser, itemPUT);
@@ -693,6 +696,198 @@ function seriesByIdItemsGET(request, response) {
         });
     });
 }
+
+
+
+
+// ==> /currency/:currencyId/items
+function currencyByIdItemsGET(request, response) {
+    let currencyId = parseInt(request.params.currencyId);
+    let queryStrJSON = url.parse(request.url, true).query;
+
+    // Check that the Id is an integer
+    if (Number.isNaN(currencyId) || currencyId.toString() !== request.params.currencyId) {
+        new Exception(400, "VAR-1", "Invalid Series Id, " + request.params.currencyId).send(response);
+        return;
+    }
+
+    // Filter for territory
+    let territoryId = queryStrJSON.territoryId || "";
+    // Check that the Id is an integer
+    if (Number.isNaN(territoryId) || territoryId.toString() !== territoryId) {
+        new Exception(400, "VAR-1", "Invalid Territory Id, " + territoryId).send(response);
+        return;
+    }
+
+    let sqlJoin = "";
+    if (territoryId !== "")
+        sqlJoin = "INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id = $2";
+
+
+    let sql = ` SELECT  BAN.ban_id AS "id", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE BAN.ban_face_value END AS "faceValue", 
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_id END AS "unitId",
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_value END AS "unitValue",
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_name END AS "unitName",
+                        CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_abbreviation END AS "unitSymbol",
+                        BAN.ban_mat_id AS "materialId", MAT.mat_name AS "materialName", BAN.ban_size_width AS "width", BAN.ban_size_height AS "height", 
+                        BAN.ban_obverse_desc AS "obverseDescription", BAN.ban_reverse_desc AS "reverseDescription", 
+                        BAN.ban_obverse_tags AS "obverseTags", BAN.ban_reverse_tags AS "reverseTags", BAN.ban_description AS "description",
+                        BVA.bva_id AS "variantId", BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_cat_id AS "catalogueId",
+                        BVA.bva_obverse_color as "obverseColor", BVA.bva_reverse_color as "reverseColor",
+                        BVA2.bva_cat_id AS "overstampedCatalogueId", ISS.iss_ter_id AS "overstampedTerritoryId", TER.ter_name AS "overstampedTerritoryName",
+                        BVA.bva_pri_id AS "printerId", PRI.pri_name AS "printerName", BVA.bva_signature AS "signature", BVA.bva_signature_ext AS "signatureExt", 
+                        BVA.bva_watermark AS "watermark", BVA.bva_security_thread AS "securityThread", BVA.bva_added_security AS "securityExt", 
+                        BVA.bva_mintage as "mintage", BVA.bva_not_issued AS "notIssued", BVA.bva_is_specimen AS "isSpecimen",
+                        BVA.bva_is_replacement AS "isReplacement", BVA.bva_is_error AS "isError", BVA.bva_is_commemorative AS "isCommemorative",
+                        BVA.bva_is_numis_product AS "isNumismaticProduct", BVA.bva_description AS "variantDescription"
+                FROM ban_banknote BAN
+                INNER JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id AND SER.ser_cur_id = $1
+                ${sqlJoin}
+                LEFT JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
+                LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
+                LEFT JOIN mat_material MAT ON BAN.ban_mat_id = MAT.mat_id
+                LEFT JOIN pri_printer PRI ON BVA.bva_pri_id = PRI.pri_id
+
+                LEFT JOIN bva_variant BVA2 ON BVA2.bva_id = BVA.bva_overstamped_id
+                LEFT JOIN ban_banknote BAN2 ON BAN2.ban_id = BVA2.bva_ban_id
+                LEFT JOIN ser_series SER2 ON SER2.ser_id = BAN2.ban_ser_id
+                LEFT JOIN iss_issuer ISS2 ON ISS2.iss_id = SER2.ser_iss_id
+                LEFT JOIN ter_territory TER ON TER.ter_id = ISS2.iss_ter_id
+                
+                ORDER BY "denomination", "variantId"`;
+
+    catalogueDB.execSQL(sql, [currencyId, territoryId], (err, catRows) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        let replyJSON = [];
+        let denominationJSON = {};
+        // Create reply JSON object
+        for (let row of catRows) {
+            if (row.denomination !== denominationJSON.denomination) {
+                // Add denomination record
+                if (denominationJSON.denomination) replyJSON.push(denominationJSON);
+                // Store new denomination
+                denominationJSON = {};
+                denominationJSON.id = row.id;
+                denominationJSON.denomination = row.denomination;
+                if (row.faceValue) denominationJSON.faceValue = row.faceValue;
+                if (row.unitId) denominationJSON.unitId = row.unitId;
+                if (row.unitValue) denominationJSON.unitValue = row.unitValue;
+                if (row.unitName) denominationJSON.unitName = row.unitName;
+                if (row.unitSymbol) denominationJSON.unitSymbol = row.unitSymbol;
+                if (row.materialId) denominationJSON.materialId = row.materialId;
+                if (row.materialName) denominationJSON.materialName = row.materialName;
+                if (row.width) denominationJSON.width = row.width;
+                if (row.height) denominationJSON.height = row.height;
+                if (row.obverseDescription) denominationJSON.obverseDescription = row.obverseDescription;
+                if (row.reverseDescription) denominationJSON.reverseDescription = row.reverseDescription;
+                if (row.obverseTags) denominationJSON.obverseTags = row.obverseTags;
+                if (row.reverseTags) denominationJSON.reverseTags = row.reverseTags;
+                if (row.description) denominationJSON.description = row.description;
+                denominationJSON.variants = [];
+            }
+            // Add variant
+            if (row.variantId && row.variantId != null) {
+                let variant = {};
+                variant.id = row.variantId;
+                variant.issueYear = row.issueYear;
+                if (row.printedDate) variant.printedDate = row.printedDate;
+                variant.catalogueId = row.catalogueId;
+                if (row.obverseColor) variant.obverseColor = row.obverseColor;
+                if (row.reverseColor) variant.reverseColor = row.reverseColor;
+                if (row.overstampedCatalogueId) variant.overstampedCatalogueId = row.overstampedCatalogueId;
+                if (row.overstampedTerritoryId) variant.overstampedTerritoryId = row.overstampedTerritoryId;
+                if (row.overstampedTerritoryName) variant.overstampedTerritoryName = row.overstampedTerritoryName;
+                if (row.printerId) variant.printerId = row.printerId;
+                if (row.printerName) variant.printerName = row.printerName;
+                if (row.signature) variant.signature = row.signature;
+                if (row.signatureExt) variant.signatureExt = row.signatureExt;
+                if (row.watermark) variant.watermark = row.watermark;
+                if (row.securityThread) variant.securityThread = row.securityThread;
+                if (row.securityExt) variant.securityExt = row.securityExt;
+                if (row.mintage) variant.mintage = row.mintage;
+                if (row.notIssued) variant.notIssued = parseInt(row.notIssued);
+                if (row.isSpecimen) variant.isSpecimen = row.isSpecimen;
+                if (row.isReplacement) variant.isReplacement = row.isReplacement;
+                if (row.isError) variant.isError = row.isError;
+                if (row.isCommemorative) variant.isCommemorative = row.isCommemorative;
+                if (row.isNumismaticProduct) variant.isNumismaticProduct = row.isNumismaticProduct;
+                if (row.variantDescription) variant.variantDescription = row.variantDescription;
+
+                denominationJSON.variants.push(variant);
+            }
+        }
+        // Add denomination record
+        if (denominationJSON.denomination) replyJSON.push(denominationJSON);
+
+        if (request.onlyVariants) {
+            replyJSON = sortVariants(replyJSON);
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+            return;
+        }
+
+
+        // Retrieve the collection data
+        sql = ` SELECT BIT.bit_id AS "id", GRA.gra_value AS "gradeValue", GRA.gra_grade AS "grade", BIT.bit_price AS "price", 
+                        BIT.bit_quantity AS "quantity", BIT.bit_seller AS "seller", BIT.bit_purchase_date AS "purchaseDate",
+                        BIT.bit_description AS "description",	BVA.bva_id AS "variantId"
+                FROM ban_banknote BAN
+                INNER JOIN ser_series SER ON SER.ser_id = BAN.ban_ser_id AND SER.ser_cur_id = $1
+                ${sqlJoin}
+                LEFT JOIN bva_variant BVA ON BAN.ban_id = BVA.bva_ban_id
+                LEFT JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
+                INNER JOIN gra_grade GRA ON GRA.gra_grade = BIT.bit_gra_grade           
+                INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $3
+                ORDER BY "variantId", "gradeValue", "price" DESC`;
+
+        catalogueDB.execSQL(sql, [currencyId, territoryId, request.session.user], (err, colRows) => {
+            if (err) {
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Join the collection results into the catalogue data
+            for (let denom of replyJSON) {
+                for (let variant of denom.variants) {
+                    variant.items = [];
+                    // Check if the variant is in the collection
+                    let foundIndex = colRows.findIndex((element) => {
+                        return element.variantId === variant.id;
+                    });
+                    while (foundIndex !== -1 && foundIndex < colRows.length && colRows[foundIndex].variantId === variant.id) {
+                        // Add item
+                        let item = {};
+                        item.id = colRows[foundIndex].id;
+                        item.grade = colRows[foundIndex].grade;
+                        item.price = colRows[foundIndex].price.toFixed(2);
+                        item.quantity = colRows[foundIndex].quantity;
+                        item.seller = colRows[foundIndex].seller;
+                        item.purchaseDate = colRows[foundIndex].purchaseDate;
+                        item.description = colRows[foundIndex].description;
+
+                        variant.items.push(item);
+
+                        foundIndex++;
+                    }
+                }
+            }
+
+            replyJSON = sortVariants(replyJSON);
+
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(replyJSON));
+            response.send();
+        });
+    });
+}
+
 
 
 
