@@ -157,7 +157,12 @@
                         <th colspan="2" class="th-stats">Denom.</th>
                         <th colspan="2" class="th-stats">Notes</th>
                         <th colspan="2" class="th-stats">Variants</th>
-                        <th rowspan="2" class="th-stats"><span class="only-logged-in">Price</span></th>
+                        <th rowspan="2"><span class="is-sortable only-logged-in" onclick="sortClick(this)">Price</span>
+                            <div class="sort-div" onclick="sortClick(this)">
+                                <div class="sort-asc"></div>
+                                <div class="sort-desc"></div>
+                            </div>
+                        </th>
                     </tr>
                     <tr>
                         <td><span class="is-sortable" onclick="sortClick(this, 'Currencies')">Catalog</span>

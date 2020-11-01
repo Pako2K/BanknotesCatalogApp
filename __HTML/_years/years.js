@@ -90,7 +90,8 @@ function sortClick(htmlElem, titleStr) {
         "Series": "numSeries",
         "Denominations": "numDenominations",
         "Notes": "numNotes",
-        "Variants": "numVariants"
+        "Variants": "numVariants",
+        "Price": "collectionStats.price"
     };
     let flag = $(htmlElem).text() === "Collect.";
     let sortingField = mapFieldName[mapKey];
@@ -152,7 +153,7 @@ function loadYearsTable() {
     for (let year of yearsJSON) {
         // Apply filters
         if ((!yearFrom || year.issueYear >= yearFrom) && (!yearTo || year.issueYear <= yearTo)) {
-            let priceStr = (year.collectionStats.price === 0) ? "-" : year.collectionStats.price + ' €';
+            let priceStr = (year.collectionStats.price === 0) ? "-" : year.collectionStats.price.toFixed(2) + ' €';
             record = `  <tr>
                             <th>${year.issueYear}</th>
                             <td>${year.numTerritories}</td>

@@ -508,7 +508,7 @@ function itemsGET(request, response) {
                         item.id = colRows[collecIndex].id;
                         item.gradeValue = colRows[collecIndex].gradeValue;
                         item.grade = colRows[collecIndex].grade;
-                        item.price = colRows[collecIndex].price.toFixed(2);
+                        item.price = colRows[collecIndex].price;
                     }
                     collecIndex++;
                 }
@@ -675,7 +675,7 @@ function seriesByIdItemsGET(request, response) {
                         let item = {};
                         item.id = colRows[foundIndex].id;
                         item.grade = colRows[foundIndex].grade;
-                        item.price = colRows[foundIndex].price.toFixed(2);
+                        item.price = colRows[foundIndex].price;
                         item.quantity = colRows[foundIndex].quantity;
                         item.seller = colRows[foundIndex].seller;
                         item.purchaseDate = colRows[foundIndex].purchaseDate;
@@ -866,7 +866,7 @@ function currencyByIdItemsGET(request, response) {
                         let item = {};
                         item.id = colRows[foundIndex].id;
                         item.grade = colRows[foundIndex].grade;
-                        item.price = colRows[foundIndex].price.toFixed(2);
+                        item.price = colRows[foundIndex].price;
                         item.quantity = colRows[foundIndex].quantity;
                         item.seller = colRows[foundIndex].seller;
                         item.purchaseDate = colRows[foundIndex].purchaseDate;
@@ -1079,7 +1079,7 @@ function yearsItemsStatsGET(request, response) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numNotes = colRows[collecIndex].numNotes;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
+                    row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
                     row.collectionStats.numTerritories = 0;
@@ -1173,7 +1173,7 @@ function territoryByIdyearsItemsStatsGET(request, response) {
                 if (collecIndex < colRows.length && row[dateTypeObj.groupBy] === colRows[collecIndex][dateTypeObj.groupBy]) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
+                    row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
                     row.collectionStats.numDenominations = 0;
@@ -1260,7 +1260,7 @@ function currencyByIdyearsItemsStatsGET(request, response) {
                 if (collecIndex < colRows.length && row[dateTypeObj.groupBy] === colRows[collecIndex][dateTypeObj.groupBy]) {
                     row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
+                    row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
                     row.collectionStats.numDenominations = 0;

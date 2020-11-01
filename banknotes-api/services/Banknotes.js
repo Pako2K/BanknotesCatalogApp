@@ -211,7 +211,7 @@ function denominationsItemsStatsGET(request, response) {
                     row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
                     row.collectionStats.numSeries = colRows[collecIndex].numSeries;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
+                    row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
                     row.collectionStats.numTerritories = 0;
@@ -294,7 +294,7 @@ function territoryByIdDenominationsItemsStatsGET(request, response) {
                     row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
                     row.collectionStats.numSeries = colRows[collecIndex].numSeries;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
+                    row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
                     row.collectionStats.numCurrencies = 0;
@@ -381,7 +381,7 @@ function currencyByIdDenominationsItemsStatsGET(request, response) {
                 if (collecIndex < colRows.length && row.denomination === colRows[collecIndex].denomination) {
                     row.collectionStats.numSeries = colRows[collecIndex].numSeries;
                     row.collectionStats.numVariants = colRows[collecIndex].numVariants;
-                    row.collectionStats.price = colRows[collecIndex].price.toFixed(2);
+                    row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
                     row.collectionStats.numSeries = 0;

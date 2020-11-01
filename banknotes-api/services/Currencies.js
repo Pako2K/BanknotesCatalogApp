@@ -297,7 +297,7 @@ function currenciesItemsStatsGET(request, response) {
                         row.collectionStats.numDenominations = colRow.numDenominations;
                         row.collectionStats.numNotes = colRow.numNotes;
                         row.collectionStats.numVariants = colRow.numVariants;
-                        row.collectionStats.price = colRow.price.toFixed(2);
+                        row.collectionStats.price = colRow.price;
                         found = true;
                         break;
                     }
@@ -385,7 +385,7 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
                     row.collectionStats.numDenominations = colRows[found].numDenominations;
                     row.collectionStats.numNotes = colRows[found].numNotes;
                     row.collectionStats.numVariants = colRows[found].numVariants;
-                    row.collectionStats.price = colRows[found].price.toFixed(2);
+                    row.collectionStats.price = colRows[found].price;
                 } else {
                     row.collectionStats.numSeries = 0;
                     row.collectionStats.numDenominations = 0;

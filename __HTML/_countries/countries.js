@@ -73,7 +73,8 @@ function sortClick(htmlElem, titleStr) {
         "Series": "numSeries",
         "Denom.": "numDenominations",
         "Notes": "numNotes",
-        "Variants": "numVariants"
+        "Variants": "numVariants",
+        "Price": "collectionStats.price"
     };
     let flag = $(htmlElem).text() === "Collect.";
     storeCountriesTable(JSON.parse($("#countries-table").data("value")), mapFieldName[mapKey], flag);
@@ -185,7 +186,7 @@ function loadCountriesTable() {
                 flagFileName = country.name.replace(/,|\s/g, "");
             }
 
-            let priceStr = (country.collectionStats.price === 0) ? '-' : country.collectionStats.price + ' €';
+            let priceStr = (country.collectionStats.price === 0) ? '-' : country.collectionStats.price.toFixed(2) + ' €';
             record = `<tr>
                                 <th><img src="/data/_flags_/` + flagFileName.toLowerCase() + `.png"></th>
                                 <th>${country.iso3}</th>
@@ -217,7 +218,7 @@ function loadCountriesTable() {
             totals.notes.col += country.collectionStats.numNotes;
             totals.variants.cat += parseInt(country.numVariants);
             totals.variants.col += country.collectionStats.numVariants;
-            totals.price += parseFloat(country.collectionStats.price);
+            totals.price += country.collectionStats.price;
 
             // Statistics:
             if (existing && country.end === "") {
@@ -249,7 +250,7 @@ function loadCountriesTable() {
                         <td class="only-logged-in">${totals.notes.col}</td>
                         <td>${totals.variants.cat}</td>
                         <td class="only-logged-in">${totals.variants.col}</td>
-                        <td class="only-logged-in">${totals.price} €</td>`;
+                        <td class="only-logged-in">${totals.price.toFixed(2)} €</td>`;
     $("#countries-table>tfoot>tr").append(totalsHTML);
 
     // Add statisctics to stats table

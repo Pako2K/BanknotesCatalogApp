@@ -65,7 +65,7 @@ function readDenominations() {
                     aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
                     aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
                     aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
-                    aggDenominations[j].collectionStats.price = parseFloat(aggDenominations[j].collectionStats.price) + parseFloat(denominationsJSON[i].collectionStats.price);
+                    aggDenominations[j].collectionStats.price = aggDenominations[j].collectionStats.price + denominationsJSON[i].collectionStats.price;
                 } else {
                     aggDenominations.push(denominationsJSON[i]);
                 }
@@ -118,7 +118,8 @@ function sortClick(htmlElem, titleStr) {
         "Territories": "numTerritories",
         "Currencies": "numCurrencies",
         "Series": "numSeries",
-        "Variants": "numVariants"
+        "Variants": "numVariants",
+        "Price": "collectionStats.price"
     };
     let flag = $(htmlElem).text() === "Collect.";
     let sortingField = mapFieldName[mapKey];
@@ -172,7 +173,7 @@ function loadDenominationsTable() {
     let record = "";
 
     for (let denom of denominationsJSON) {
-        let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price + ' €';
+        let priceStr = (denom.collectionStats.price === 0) ? "-" : denom.collectionStats.price.toFixed(2) + ' €';
         record = `  <tr>
                         <th>${denom.denomination.toLocaleString("de-DE")}</th>
                         <td>${denom.numTerritories}</td>

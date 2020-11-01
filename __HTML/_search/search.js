@@ -223,7 +223,6 @@ function loadResultsTable() {
                         <th>${variant.printer || "-"}</th>
                         <th>${variant.width || "-"}</th>
                         <th>${variant.height || "-"}</th>
-                        <th>${variant.mintage || "-"}</th>
                         <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
                         <td class="only-logged-in">${(variant.item) ? variant.item.price + ' €' : "-"}</td>
                     </tr>`;
@@ -260,8 +259,7 @@ function sortClick(htmlElem, titleStr) {
         "Printer": "printer",
         "Price": "price",
         "Width (mm)": "width",
-        "Height (mm)": "height",
-        "Mintage": "mintage"
+        "Height (mm)": "height"
     };
     let isCollecBasedSorting = $(htmlElem).text() === "Collect.";
     let sortingField = mapFieldName[mapKey];

@@ -284,7 +284,7 @@ function territoryByIdSeriesItemsStatsGET(request, response) {
                 if (found !== -1) {
                     row.collectionStats.numDenominations = colRows[found].numDenominations;
                     row.collectionStats.numVariants = colRows[found].numVariants;
-                    row.collectionStats.price = colRows[found].price.toFixed(2);
+                    row.collectionStats.price = colRows[found].price;
                 } else {
                     row.collectionStats.numDenominations = 0;
                     row.collectionStats.numVariants = 0;
@@ -368,7 +368,7 @@ function currencyByIdSeriesItemsStatsGET(request, response) {
                 if (found !== -1) {
                     row.collectionStats.numDenominations = colRows[found].numDenominations;
                     row.collectionStats.numVariants = colRows[found].numVariants;
-                    row.collectionStats.price = colRows[found].price.toFixed(2);
+                    row.collectionStats.price = colRows[found].price;
                 } else {
                     row.collectionStats.numDenominations = 0;
                     row.collectionStats.numVariants = 0;
