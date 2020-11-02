@@ -12,6 +12,25 @@ function initializeUpsertVariant(territory, seriesId, isOverstamped, banknoteId,
         // Fill-in the Countries
         $("#upsert-variant-dialog select[name='overstamped-territory']").append(`<option value='${territory.id}'>${territory.name}</option>`);
         $("#upsert-variant-dialog input[name='overstamped-cat-id']").val("P-");
+        $.ajax({
+            type: "GET",
+            url: `/territory/${territory.id}`,
+            async: true,
+            cache: true,
+            timeout: 5000,
+            dataType: 'json',
+
+            success: function(result, status) {
+                if (result.parent)
+                    $("#upsert-variant-dialog select[name='overstamped-territory']").append(`<option value='${result.parent.id}'>${result.parent.name}</option>`);
+                for (let ter of result.predecessors)
+                    $("#upsert-variant-dialog select[name='overstamped-territory']").append(`<option value='${ter.id}'>${ter.name}</option>`);
+            },
+
+            error: function(xhr, status, error) {
+                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+            }
+        });
 
         $(".non-overstamped").hide();
         $("select[name='overstamped-territory']").attr("required", "");

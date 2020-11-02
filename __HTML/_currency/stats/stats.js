@@ -176,7 +176,7 @@ function loadSeriesTable(currencyId, seriesJSON) {
                         <td class="only-logged-in">${seriesJSON[i].collectionStats.numDenominations || 0}</td>
                         <td>${seriesJSON[i].numVariants}</td>
                         <td class="only-logged-in">${seriesJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${seriesJSON[i].collectionStats.price || 0} €</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
                     </tr>`;
         $("#series-stats>tbody").prepend(record);
     }
@@ -196,7 +196,7 @@ function loadDenominationsTable(denomJSON) {
                         <td class="only-logged-in">${denomJSON[i].collectionStats.numSeries || 0}</td>
                         <td>${denomJSON[i].numVariants}</td>
                         <td class="only-logged-in">${denomJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${denomJSON[i].collectionStats.price || 0} €</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
                     </tr>`;
         $("#denominations-stats>tbody").prepend(record);
     }
@@ -216,7 +216,7 @@ function loadYearsTable(yearsJSON) {
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || 0}</td>
                         <td>${yearsJSON[i].numVariants}</td>
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price || 0} €</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
                     </tr>`;
         $("#years-stats>tbody").prepend(record);
     }
@@ -236,7 +236,7 @@ function loadPrintedTable(yearsJSON) {
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || 0}</td>
                         <td>${yearsJSON[i].numVariants}</td>
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price || 0} €</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
                     </tr>`;
         $("#dated-stats>tbody").prepend(record);
     }
