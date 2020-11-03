@@ -92,7 +92,7 @@ function loadItemsTable(sortKey, sortAsc) {
         if (aggregateFlag && record[sortKey[0]] !== sortingKeyValue) {
             rowsHTML += `<tr>
                             <th colspan="9" class="aggregated">Subtotal:</th>
-                            <td class="aggregated">${aggregatedPrice + " €"}</td>
+                            <td class="aggregated">${aggregatedPrice.toFixed(2) + " €"}</td>
                         </tr>`;
             aggregatedPrice = 0;
         }
