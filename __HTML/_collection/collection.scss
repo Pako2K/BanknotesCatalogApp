@@ -70,8 +70,6 @@ hr {
 
 .notes-list-table {
     margin: 0.7em;
-    border-left: solid 1px darkgrey;
-    border-right: solid 1px darkgrey;
     border-bottom: solid 1px darkgrey;
     border-collapse: collapse;
     &>thead>tr>th {
@@ -125,19 +123,16 @@ hr {
                 text-align: center;
             }
         }
-        & th.aggregated {
-            background-color: rgb(35, 23, 56);
-            color: rgb(213, 225, 242);
+        & .aggregated {
+            background-color: whitesmoke;
+            color: gray;
+            font-weight: bold;
+            font-size: 0.6em;
+            padding: 0.4em 0;
             text-align: right;
-            font-weight: normal;
-            font-size: 0.5em;
-            padding: 0.4em 0;
-        }
-        & td.aggregated {
-            background-color: rgb(35, 23, 56);
-            color: rgb(213, 225, 242);
-            text-align: center;
-            padding: 0.4em 0;
+            border-bottom: solid 1px black;
+            border-top: solid 2px black;
+            border-left: none;
         }
     }
 }

@@ -91,7 +91,7 @@ function loadItemsTable(sortKey, sortAsc) {
 
         if (aggregateFlag && record[sortKey[0]] !== sortingKeyValue) {
             rowsHTML += `<tr>
-                            <th colspan="9" class="aggregated">Subtotal:</th>
+                            <th colspan="9" class="aggregated">Total [${sortingKeyValue || "NA"}]:</th>
                             <td class="aggregated">${aggregatedPrice.toFixed(2) + " €"}</td>
                         </tr>`;
             aggregatedPrice = 0;
@@ -118,7 +118,7 @@ function loadItemsTable(sortKey, sortAsc) {
     }
     if (aggregateFlag) {
         rowsHTML += `<tr>
-                        <th colspan="9" class="aggregated">Subtotal:</th>
+                        <th colspan="9" class="aggregated">Total [${sortingKeyValue || "NA"}]:</th>
                         <td class="aggregated">${aggregatedPrice.toFixed(2) + " €"}</td>
                     </tr>`;
     }
