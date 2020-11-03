@@ -116,6 +116,12 @@ function loadItemsTable(sortKey, sortAsc) {
             aggregatedPrice += record.quantity * record.price;
         }
     }
+    if (aggregateFlag) {
+        rowsHTML += `<tr>
+                        <th colspan="9" class="aggregated">Subtotal:</th>
+                        <td class="aggregated">${aggregatedPrice.toFixed(2) + " €"}</td>
+                    </tr>`;
+    }
 
     $("#items-table>tbody").append(rowsHTML);
 }
