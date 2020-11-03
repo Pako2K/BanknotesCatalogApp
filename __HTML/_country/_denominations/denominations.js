@@ -69,7 +69,7 @@ function fillDenominationsTable(resultJSON) {
 
 
     for (let denomination of aggDenominations) {
-        let priceStr = (denomination.collectionStats.price === 0) ? '-' : denomination.collectionStats.price + ' €';
+        let priceStr = (denomination.collectionStats.price === 0) ? '-' : denomination.collectionStats.price.toFixed(2) + ' €';
         let record = `  <tr>
                             <th>${denomination.denomination.toLocaleString("de-DE")}</a></th>
                             <td>${denomination.numCurrencies}</td>

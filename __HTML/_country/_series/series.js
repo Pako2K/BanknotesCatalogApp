@@ -48,7 +48,7 @@ function loadSeriesTable(countryId) {
 
 function fillSeriesTable(resultJSON) {
     for (let series of resultJSON) {
-        let priceStr = (series.collectionStats.price === 0) ? '-' : series.collectionStats.price + ' €';
+        let priceStr = (series.collectionStats.price === 0) ? '-' : series.collectionStats.price.toFixed(2) + ' €';
         let name = "";
         if (series.currency.iso3)
             name = `(${series.currency.iso3}) `;

@@ -54,7 +54,7 @@ function addCollectionRow() {
                         </td>
                         <td><input type="number" id="price" name="price" value="0" min="0" step=0.01 required></td>
                         <td><input type="date" id="date" name="date"></td>
-                        <td><input type="text" id="seller" name="seller" placeholder="Seller" size=8 maxlength="20" autocomplete="on"}"></td>
+                        <td><input type="text" id="seller" name="seller" placeholder="Seller" size=8 maxlength="25" autocomplete="on"}"></td>
                         <td rowspan="2"><img src="/_currency/forms/collection/delete.png" alt="delete item" onclick="deleteCollectionRow(this)"></td>
                     </tr>
                     <tr>
