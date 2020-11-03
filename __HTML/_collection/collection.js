@@ -74,6 +74,9 @@ function loadItemsTable(sortKey, sortAsc) {
     }
 
     let rowsHTML = "";
+    let sortingKeyValue = itemsJSON[0][sortKey[0]];
+    let aggregatedPrice = 0;
+    let aggregateFlag = sortKey[0] !== "quantity" && sortKey[0] !== "price";
     for (let record of itemsJSON) {
         // Apply filters
         if (isSlideButtonSelected("only-duplicates-filter")) {
@@ -86,6 +89,14 @@ function loadItemsTable(sortKey, sortAsc) {
             }
         }
 
+        if (aggregateFlag && record[sortKey[0]] !== sortingKeyValue) {
+            rowsHTML += `<tr>
+                            <th colspan="9" class="aggregated">Subtotal:</th>
+                            <td class="aggregated">${aggregatedPrice + " €"}</td>
+                        </tr>`;
+            aggregatedPrice = 0;
+        }
+
         let gradeClass = `${record.grade}-grade`;
         rowsHTML += `<tr>
                         <th class="text ${gradeClass}"><a href="/_country/index.html?countryId=${record.territoryId}">${record.territoryName}</a></th>
@@ -93,12 +104,17 @@ function loadItemsTable(sortKey, sortAsc) {
                         <th class="${gradeClass}"><a href="/_currency/index.html?currencyId=${record.currencyId}">${record.currencyName}</a></th>
                         <td class="${gradeClass}">${record.catalogueId}</th>
                         <td class="${gradeClass}">${record.grade}</td>
-                        <td class="${gradeClass}">${record.price + " €"}</td>
                         <td class="${gradeClass}">${record.quantity}</td>
                         <td class="text ${gradeClass}">${record.seller || ""}</td>
                         <td class="${gradeClass}">${record.purchaseDate || ""}</td>
                         <td class="text ${gradeClass}">${record.description || ""}</td>
+                        <td class="${gradeClass}">${record.price + " €"}</td>
                     </tr>`;
+
+        if (aggregateFlag) {
+            sortingKeyValue = record[sortKey[0]];
+            aggregatedPrice += record.quantity * record.price;
+        }
     }
 
     $("#items-table>tbody").append(rowsHTML);

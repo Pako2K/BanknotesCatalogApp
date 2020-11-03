@@ -193,7 +193,7 @@ hr {
   font-family: Lucida sans, sans-serif;
   font-size: 0.6em;
   border-bottom: dotted 1px grey;
-  padding: 0.3em 0.8em;
+  padding: 0.6em 0.8em;
   white-space: nowrap;
   text-align: left;
 }
@@ -225,12 +225,28 @@ hr {
   font-family: Lucida sans, sans-serif;
   font-size: 0.6em;
   border-bottom: dotted 1px grey;
-  padding: 0.3em 0.8em;
+  padding: 0.6em 0.8em;
   white-space: nowrap;
 }
 
 .notes-list-table > tbody > tr > td:not(.text) {
   text-align: center;
+}
+
+.notes-list-table > tbody th.aggregated {
+  background-color: #231738;
+  color: #d5e1f2;
+  text-align: right;
+  font-weight: normal;
+  font-size: 0.5em;
+  padding: 0.4em 0;
+}
+
+.notes-list-table > tbody td.aggregated {
+  background-color: #231738;
+  color: #d5e1f2;
+  text-align: center;
+  padding: 0.4em 0;
 }
 
 .is-sortable {

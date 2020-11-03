@@ -181,6 +181,8 @@ function submitItems() {
 
     let seriesId = $("#upsert-collection-dialog").data("series-id");
     let menuOpt = $("#currency-nav>p.selected-view").text();
+    if (menuOpt === "")
+        menuOpt = "Country." + $("#country-nav>p.selected-view").text();
     switch (menuOpt) {
         case "Timeline":
             initializeTimeline();
@@ -190,6 +192,9 @@ function submitItems() {
             break;
         case "Details":
             loadSeriesDetails(seriesId);
+            break;
+        case "Country.List":
+            loadTable("List");
             break;
         default:
             location.reload();
