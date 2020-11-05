@@ -70,7 +70,7 @@ function sortClick(htmlElem, titleStr) {
         "Founded": "start",
         "Finished": "end",
         "Currencies": "numCurrencies",
-        "Series": "numSeries",
+        "Issues": "numSeries",
         "Denom.": "numDenominations",
         "Notes": "numNotes",
         "Variants": "numVariants",

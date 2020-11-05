@@ -71,7 +71,7 @@ function sortClick(htmlElem, titleStr) {
         "Territory": "territory.name",
         "Created": "start",
         "Replaced": "end",
-        "Series": "numSeries",
+        "Issues": "numSeries",
         "Denom.": "numDenominations",
         "Notes": "numNotes",
         "Variants": "numVariants",

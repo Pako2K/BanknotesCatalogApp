@@ -117,7 +117,7 @@ function sortClick(htmlElem, titleStr) {
         "Denomination": "denomination",
         "Territories": "numTerritories",
         "Currencies": "numCurrencies",
-        "Series": "numSeries",
+        "Issues": "numSeries",
         "Variants": "numVariants",
         "Price": "collectionStats.price"
     };

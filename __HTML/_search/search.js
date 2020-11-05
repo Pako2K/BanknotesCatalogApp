@@ -251,7 +251,7 @@ function sortClick(htmlElem, titleStr) {
         "Catalogue Id": "catalogueId",
         "Territory": "territoryName",
         "Currency": "currencyName",
-        "Series": "seriesName",
+        "Issue": "seriesName",
         "Denomination": "denomination",
         "Issue Date": "issueYear",
         "Printed Date": "printedDate",

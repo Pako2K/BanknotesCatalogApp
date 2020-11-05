@@ -33,7 +33,7 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
         $("#upsert-series-dialog").data("series-id", seriesJSON.id);
 
         $("#upsert-series-dialog>h3").text('Update Series');
-        $("#upsert-series-dialog>h4").text(`${currencyJSON.name} - ${seriesJSON.name || "New Series"}`);
+        $("#upsert-series-dialog>h4").text(`${currencyJSON.name} - ${seriesJSON.name || "New Issue"}`);
 
         // Show values in the form
         $("#upsert-series-dialog input[name='series-name']").val(seriesJSON.name);
@@ -43,7 +43,7 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
         $("#upsert-series-dialog input[name='series-law-date']").val(seriesJSON.lawDate);
         $("#upsert-series-dialog textarea[name='series-description']").val(seriesJSON.description);
     } else {
-        $("#upsert-series-dialog>h3").text(`Add New Series`);
+        $("#upsert-series-dialog>h3").text(`Add New Issue`);
         $("#upsert-series-dialog>h4").text("");
     }
 }

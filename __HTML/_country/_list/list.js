@@ -47,6 +47,7 @@ function loadListTable(countryId) {
                                 record.denomination = denomination.denomination;
                                 record.printedDate = variant.printedDate;
                                 record.issueYear = variant.issueYear;
+                                record.notIssued = variant.notIssued;
                                 record.currencyName = currency.currencyName;
                                 record.width = denomination.width;
                                 record.height = denomination.height;
@@ -99,6 +100,7 @@ function drawList(notesList, sortKey, sortAsc) {
     sortJSON(notesList, sortKey, sortAsc);
 
     let rowsHTML = "";
+    let existsNotIssued = false;
     for (let record of notesList) {
         let variantStr = JSON.stringify(record);
         variantStr = variantStr.replace(/'/g, "&#39");
@@ -111,8 +113,11 @@ function drawList(notesList, sortKey, sortAsc) {
             thGradeClass = gradeClass;
         }
 
+        if (record.notIssued)
+            existsNotIssued = true;
+
         rowsHTML += `<tr class="first-subrow" data-variant='${variantStr}' onclick="openUpsertCollectionFromList(this)">
-                        <th class="${thGradeClass}" rowspan=${rowspan}>${record.catalogueId}</th>
+                        <th class="${thGradeClass} ${record.notIssued?'not-issued':''}" rowspan=${rowspan}>${record.catalogueId}${record.notIssued?"(*)":""}</th>
                         <th class="${thGradeClass}" rowspan=${rowspan}>${record.denomination.toLocaleString("de-DE")}</th>
                         <td rowspan=${rowspan} class="${gradeClass} text">${record.currencyName}</td>
                         <td class="${gradeClass}" rowspan=${rowspan}>${record.issueYear}</td>
@@ -152,6 +157,10 @@ function drawList(notesList, sortKey, sortAsc) {
     }
 
     $("#list-table-div>table>tbody").append(rowsHTML);
+
+    if (existsNotIssued)
+        $("#list-table-div").append("<p class='not-issued'>(*) NOT ISSUED</p>");
+
 
     if (getCookie("banknotes.ODB.username") === undefined) {
         $(".collection-field").css('opacity', '0.25');

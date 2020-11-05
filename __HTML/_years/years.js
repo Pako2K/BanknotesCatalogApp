@@ -87,7 +87,7 @@ function sortClick(htmlElem, titleStr) {
         "Issue Year": "issueYear",
         "Territories": "numTerritories",
         "Currencies": "numCurrencies",
-        "Series": "numSeries",
+        "Issues": "numSeries",
         "Denominations": "numDenominations",
         "Notes": "numNotes",
         "Variants": "numVariants",

@@ -139,7 +139,7 @@ function loadTable(option) {
                     loadCurrenciesTable(countryId);
             });
             break;
-        case "Series":
+        case "Issues":
             $("#results-table").load("./_series/table.html", (responseTxt, statusTxt, xhr) => {
                 if (statusTxt == "success")
                     loadSeriesTable(countryId);

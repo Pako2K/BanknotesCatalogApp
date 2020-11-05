@@ -45,6 +45,10 @@
             padding: 0.2em 0;
             border-bottom: dotted 1px grey;
         }
+        & .not-issued {
+            color: brown;
+            font-size: 0.7em;
+        }
         &>tr>td {
             max-width: 40em;
             overflow: hidden;
@@ -73,6 +77,12 @@
             text-shadow: 1px 1px 1px darkgrey;
         }
     }
+}
+
+p.not-issued {
+    margin: 0.7em;
+    color: brown;
+    font-size: 0.8em;
 }
 
 .th-NO-GRADE {

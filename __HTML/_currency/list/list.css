@@ -80,6 +80,11 @@ p.not-logged-in > a:active {
   border-bottom: dotted 1px grey;
 }
 
+.notes-list-table > tbody .not-issued {
+  color: brown;
+  font-size: 0.7em;
+}
+
 .notes-list-table > tbody > tr > td {
   max-width: 40em;
   overflow: hidden;
@@ -108,6 +113,12 @@ p.not-logged-in > a:active {
 .notes-list-table > tbody > tr:hover {
   color: #5c0707;
   text-shadow: 1px 1px 1px darkgrey;
+}
+
+p.not-issued {
+  margin: 0.7em;
+  color: brown;
+  font-size: 0.8em;
 }
 
 .th-NO-GRADE {

@@ -74,7 +74,7 @@ function loadItemsTable(sortKey, sortAsc) {
     }
 
     let rowsHTML = "";
-    let sortingKeyValue = itemsJSON[0][sortKey[0]];
+    let sortingKeyValue = itemsJSON.length ? itemsJSON[0][sortKey[0]] : null;
     let aggregatedPrice = 0;
     let aggregateFlag = sortKey[0] !== "quantity" && sortKey[0] !== "price";
     for (let record of itemsJSON) {
