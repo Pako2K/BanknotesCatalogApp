@@ -14,7 +14,7 @@ $("#countries-table").ready(() => {
         url: variantsUri || itemsUri,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(countriesJSON, status) {

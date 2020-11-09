@@ -149,6 +149,67 @@ p.not-logged-in > a:active {
   border-color: grey;
 }
 
+#bookmarks {
+  background-color: #0c0c0c;
+  border-top: 1px solid whitesmoke;
+  border-bottom: 1px solid whitesmoke;
+  color: #e9e7e6;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+  padding: 0.6em 1.5em;
+  font-size: 0.7em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#bookmarks > p {
+  font-style: italic;
+  margin: 0em 0;
+  cursor: default;
+}
+
+#bookmarks > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+#bookmarks > div > a {
+  margin-left: 2.5em;
+}
+
+#bookmarks > div > a:link {
+  color: inherit;
+  text-decoration: none;
+}
+
+#bookmarks > div > a:visited {
+  color: inherit;
+}
+
+#bookmarks > div > a:hover {
+  color: white;
+  text-shadow: 0px 0px 1px white, 2px 2px 2px gray;
+  cursor: pointer;
+  position: relative;
+  left: -1px;
+  top: -1px;
+}
+
+#bookmarks > div > a:active {
+  color: white;
+}
+
 @media (hover: hover) and (pointer: fine) {
   nav > p:not(.selected-option):hover {
     border-color: grey;

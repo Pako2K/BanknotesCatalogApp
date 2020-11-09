@@ -16,7 +16,7 @@ function resetExpiration() {
             url: `/user/session`,
             async: true,
             cache: false,
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: "json",
 
             success: function(result, status) {

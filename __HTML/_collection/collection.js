@@ -30,7 +30,7 @@ $(document).ready(() => {
         url: "/items/all",
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(itemsJSON, status) {

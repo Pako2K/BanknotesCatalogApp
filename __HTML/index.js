@@ -118,7 +118,7 @@ function register() {
         async: false,
         cache: false,
         data: JSON.stringify({ "username": usr, "password": btoa(pwd), "email": email }),
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'text',
 
         success: function(result, status) {
@@ -154,7 +154,7 @@ function login() {
         headers: {
             "authorization": "Basic " + btoa(usr + ":" + pwd)
         },
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {
@@ -202,7 +202,7 @@ function confirm() {
         async: false,
         cache: false,
         data: JSON.stringify({ "username": usr, "validationCode": code }),
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {
@@ -278,7 +278,7 @@ function resetPwd() {
         async: false,
         cache: false,
         data: JSON.stringify({ "username": usr, "authentication": authentication, "newPassword": btoa(newPwd) }),
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'text',
 
         success: function(result, status) {

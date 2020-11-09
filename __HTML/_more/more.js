@@ -8,7 +8,7 @@ $("body").ready(() => {
         url: "/issuer",
         async: true,
         cache: true,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(issuersJSON, status) {
@@ -23,7 +23,7 @@ $("body").ready(() => {
         url: "/printer",
         async: true,
         cache: true,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(printersJSON, status) {

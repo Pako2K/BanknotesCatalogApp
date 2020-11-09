@@ -7,7 +7,7 @@ function loadContinents(filterObj) {
         url: `/continents`,
         async: true,
         cache: true,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {
@@ -30,7 +30,7 @@ function loadTerritoryTypes(filterObj) {
         url: `/territory-types`,
         async: true,
         cache: true,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
         success: function(result, status) {
             for (let type of result) {
@@ -149,7 +149,7 @@ function callVariantsAPI(filters) {
         url: urlStr,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(variantsJSON, status) {

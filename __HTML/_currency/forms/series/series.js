@@ -10,7 +10,7 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
         contentType: "application/json",
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {
@@ -82,7 +82,7 @@ function upsertSeries() {
             async: false,
             cache: false,
             data: JSON.stringify(series),
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {
@@ -114,7 +114,7 @@ function upsertSeries() {
             async: false,
             cache: false,
             data: JSON.stringify(series),
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {

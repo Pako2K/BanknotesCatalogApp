@@ -20,7 +20,7 @@ function initializeUpsertDenomination(currencyJSON, seriesJSON, noteJSON) {
             contentType: "application/json",
             async: true,
             cache: false,
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {
@@ -110,7 +110,7 @@ function upsertNote() {
             async: false,
             cache: false,
             data: JSON.stringify(banknote),
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {
@@ -145,7 +145,7 @@ function upsertNote() {
             async: false,
             cache: false,
             data: JSON.stringify(banknote),
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {

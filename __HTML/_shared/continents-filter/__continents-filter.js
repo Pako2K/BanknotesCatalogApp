@@ -6,7 +6,7 @@ $.ajax({
     url: `/continents`,
     async: false,
     cache: true,
-    timeout: 5000,
+    timeout: TIMEOUT,
     dataType: 'json',
 
     success: function(result, status) {

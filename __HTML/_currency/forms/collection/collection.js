@@ -106,7 +106,7 @@ function submitItems() {
                 async: false,
                 cache: false,
                 data: JSON.stringify(itemJSON),
-                timeout: 5000,
+                timeout: TIMEOUT,
                 dataType: 'json',
 
                 success: function(result, status) {},
@@ -131,7 +131,7 @@ function submitItems() {
                     url: `/item/${itemId}`,
                     async: false,
                     cache: false,
-                    timeout: 5000,
+                    timeout: TIMEOUT,
                     dataType: 'json',
 
                     success: function(result, status) {},
@@ -158,7 +158,7 @@ function submitItems() {
                     async: false,
                     cache: false,
                     data: JSON.stringify(itemJSON),
-                    timeout: 5000,
+                    timeout: TIMEOUT,
                     dataType: 'json',
 
                     success: function(result, status) {},

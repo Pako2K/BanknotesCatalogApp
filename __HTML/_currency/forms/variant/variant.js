@@ -17,7 +17,7 @@ function initializeUpsertVariant(territory, seriesId, isOverstamped, banknoteId,
             url: `/territory/${territory.id}`,
             async: true,
             cache: true,
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {
@@ -51,7 +51,7 @@ function initializeUpsertVariant(territory, seriesId, isOverstamped, banknoteId,
         contentType: "application/json",
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {
@@ -67,7 +67,7 @@ function initializeUpsertVariant(territory, seriesId, isOverstamped, banknoteId,
                     url: `/variant/${variantId}`,
                     async: true,
                     cache: false,
-                    timeout: 5000,
+                    timeout: TIMEOUT,
                     dataType: 'json',
 
                     success: function(variant, status) {
@@ -172,7 +172,7 @@ function upsertVariant() {
             async: false,
             cache: false,
             data: JSON.stringify(variant),
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {
@@ -207,7 +207,7 @@ function upsertVariant() {
             async: false,
             cache: false,
             data: JSON.stringify(variant),
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {

@@ -19,7 +19,7 @@ function initializeStats() {
         url: `/currency/${currencyId}/series/${uriToken}/stats?territoryId=${territoryId}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
         success: function(seriesJSON, status) {
             if (uriToken === "variants") {
@@ -53,7 +53,7 @@ function initializeStats() {
         url: `/currency/${currencyId}/denominations/${uriToken}/stats?territoryId=${territoryId}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(denomJSON, status) {
@@ -88,7 +88,7 @@ function initializeStats() {
         url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=issue&territoryId=${territoryId}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(yearsJSON, status) {
@@ -122,7 +122,7 @@ function initializeStats() {
         url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=printed&territoryId=${territoryId}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(yearsJSON, status) {

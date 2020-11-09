@@ -7,10 +7,13 @@ $(document).ready(function() {
         url: `/territory/${countryId}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
         success: function(result, status) {
             setCountryHeader(result);
+
+            // Add country to bookmarks
+            updateBookmarks(window.location.pathname + window.location.search, result.name);
 
             // Load results table for the selected navigation option
             let option = $(".selected-view").text();
@@ -30,7 +33,7 @@ $(document).ready(function() {
             url: `/grades`,
             async: true,
             cache: true,
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(grades, status) {

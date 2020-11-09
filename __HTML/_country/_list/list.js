@@ -27,7 +27,7 @@ function loadListTable(countryId) {
             url: variantsUri || itemsUri,
             async: true,
             cache: false,
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(notesJSON, status) {
@@ -96,6 +96,7 @@ function loadListTable(countryId) {
 
 function drawList(notesList, sortKey, sortAsc) {
     $("#list-table-div>table>tbody").empty();
+    $("#list-table-div>p").remove();
 
     sortJSON(notesList, sortKey, sortAsc);
 

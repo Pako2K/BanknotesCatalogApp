@@ -27,6 +27,65 @@ $("nav").ready(() => {
 });
 
 
+$("#bookmarks").ready(() => {
+    let bookmarks = getCookie("banknotes.ODB.bookmarks");
+
+    // Parse bookmark links (separated by '#')
+    if (bookmarks) {
+        let bookmarkArray = bookmarks.split("#");
+
+        bookmarkArray.forEach(element => {
+            // Add in reverse order
+            $("#bookmarks>div").prepend(element);
+        });
+    }
+});
+
+
+function updateBookmarks(url, country, currency) {
+    let bookmarks = getCookie("banknotes.ODB.bookmarks");
+
+    // Parse bookmark links (separated by '#')
+    let bookmarkArray = [];
+    if (bookmarks)
+        bookmarkArray = bookmarks.split("#");
+
+    // Check if the new url is already in the array
+    let title;
+    if (currency)
+        title = currency + ` [${country}]`;
+    else
+        title = country;
+
+    let newBookmark = `<a href="${url}">${title}</a>`;
+    let pos = bookmarkArray.indexOf(newBookmark);
+    if (pos !== -1)
+        bookmarkArray.splice(pos, 1);
+
+    // Check if the new link contains a country and there are links to that country, remove the country bookmark
+    if (currency) {
+        let pos = -1;
+        bookmarkArray.some((value, index, array) => {
+            if (value.indexOf(`>${country}</a>`) !== -1) {
+                pos = index;
+                return true;
+            }
+            return false;
+        });
+
+        if (pos !== -1)
+            bookmarkArray.splice(pos, 1);
+    }
+
+    bookmarkArray.push(newBookmark);
+
+    if (bookmarkArray.length > 6)
+        bookmarkArray.shift();
+
+    bookmarks = bookmarkArray.join("#");
+    setCookie("banknotes.ODB.bookmarks", bookmarks);
+}
+
 
 function _logout() {
 
@@ -35,7 +94,7 @@ function _logout() {
         url: `/user/session`,
         async: false,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {

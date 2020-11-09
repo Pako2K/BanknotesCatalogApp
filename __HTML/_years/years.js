@@ -22,7 +22,7 @@ function readIssueYears() {
         url: (variantsUri || itemsUri) + queryStr,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(yearsJSON, status) {

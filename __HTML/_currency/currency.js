@@ -24,10 +24,13 @@ $(document).ready(function() {
         url: `/currency/${currencyId}${territoryIdQueryParam}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
         success: function(result, status) {
             setHeaders(result);
+
+            // Add currency to bookmarks
+            updateBookmarks(window.location.pathname + window.location.search, result.territory.name, result.name + `${result.iso3?' - ' + result.iso3:""}`);
         },
         error: function(xhr, status, error) {
             alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
@@ -40,7 +43,7 @@ $(document).ready(function() {
         url: `/currency/${currencyId}/series${territoryIdQueryParam}`,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
 
         success: function(result, status) {
@@ -65,7 +68,7 @@ $(document).ready(function() {
             url: `/grades`,
             async: true,
             cache: true,
-            timeout: 5000,
+            timeout: TIMEOUT,
             dataType: 'json',
 
             success: function(grades, status) {

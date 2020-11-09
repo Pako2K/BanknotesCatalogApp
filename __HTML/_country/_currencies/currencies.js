@@ -16,7 +16,7 @@ function loadCurrenciesTable(territoryId) {
         url: variantsUri || itemsUri,
         async: true,
         cache: false,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
         success: function(currenciesJSON, status) {
             // Store Currencies info (needed in the List option)
