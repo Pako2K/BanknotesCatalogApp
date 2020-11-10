@@ -135,9 +135,9 @@ function setHeaders(currencyJSON) {
         let subunits = "";
         for (let unit of currencyJSON.units) {
             if (unit.value > 1)
-                subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value + " " + unit.namePlural || unit.name;
+                subunits += "1 " + (currencyJSON.iso3 || currencyJSON.name) + " = " + unit.value.toLocaleString("de-DE") + " " + unit.namePlural || unit.name;
             else
-                subunits += 1 / unit.value + " " + (currencyJSON.iso3 || currencyJSON.namePlural || currencyJSON.name) + " = 1 " + unit.name;
+                subunits += (1 / unit.value).toLocaleString("de-DE") + " " + (currencyJSON.iso3 || currencyJSON.namePlural || currencyJSON.name) + " = 1 " + unit.name;
             if (unit.abbreviation)
                 subunits += " (" + unit.abbreviation + ")";
             subunits += "<br>";

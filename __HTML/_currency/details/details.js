@@ -21,7 +21,9 @@ function initializeDetails() {
     let series = JSON.parse($(document).data("series-summary"));
     for (let elem of series) {
         let endDate = "";
-        if (elem.end != null && elem.end != "" && elem.end !== elem.start)
+        if (elem.end == null || elem.end == "")
+            endDate = " - present";
+        else if (elem.end !== elem.start)
             endDate = " - " + elem.end;
 
         $("div.series-list").append(`<div data-id='${elem.id}' onclick='seriesOptionClicked(this)'>${elem.name + " [" + elem.start + endDate + "]"}</div>`);
@@ -75,7 +77,7 @@ function loadSeriesDetails(seriesId) {
         url: `/series/${seriesId}`,
         async: true,
         cache: true,
-        timeout: 5000,
+        timeout: TIMEOUT,
         dataType: 'json',
         success: function(result, status) {
             // Store series id and name
@@ -87,7 +89,9 @@ function loadSeriesDetails(seriesId) {
             // Set series Info
             if (result[0].name) {
                 let endDate = "";
-                if (result[0].end != null && result[0].end != "" && result[0].end !== result[0].start)
+                if (result[0].end == null || result[0].end == "")
+                    endDate = " - present";
+                else if (result[0].end !== result[0].start)
                     endDate = " - " + result[0].end;
                 $("div.series-info").append(`<h5 name="h5name" id="series-name">${result[0].name} [${result[0].start}${endDate}]</h5>`);
             }
@@ -123,7 +127,7 @@ function loadSeriesDetails(seriesId) {
                 url: variantsUri || itemsUri,
                 async: true,
                 cache: false,
-                timeout: 5000,
+                timeout: TIMEOUT,
                 dataType: 'json',
 
                 success: function(notesJSON, status) {
@@ -137,7 +141,7 @@ function loadSeriesDetails(seriesId) {
                                 denomStr += $("#currency-name").text();
                             let faceValueStr;
                             if (denom.faceValue) {
-                                faceValueStr = denom.faceValue + ' ';
+                                faceValueStr = denom.faceValue.toLocaleString("de-DE") + ' ';
                                 if (denom.faceValue != 1) {
                                     let unit = $("#currency-subunit").data("units").find((unit) => { return unit.id === denom.unitId });
                                     faceValueStr += unit.namePlural;
