@@ -101,7 +101,7 @@ function drawTables(notesArray) {
         denominations.sort((a, b) => { return a.d - b.d });
 
     denominations.forEach((elem, idx) => {
-        denominations[idx] = elem.d.toLocaleString("de-DE") + ((elem.f && elem.f !== elem.d) ? " [" + elem.ftoLocaleString("de-DE") + "]" : "");
+        denominations[idx] = elem.d.toLocaleString("de-DE") + ((elem.f && elem.f !== elem.d) ? " [" + elem.f.toLocaleString("de-DE") + "]" : "");
     });
 
     // Create the matrix with all the variants
