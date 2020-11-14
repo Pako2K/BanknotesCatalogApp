@@ -101,7 +101,7 @@ function drawTables(notesArray) {
         denominations.sort((a, b) => { return a.d - b.d });
 
     denominations.forEach((elem, idx) => {
-        denominations[idx] = elem.d.toLocaleString("de-DE") + ((elem.f && elem.f !== elem.d) ? " [" + elem.f.toLocaleString("de-DE") + "]" : "");
+        denominations[idx] = denomToStr(elem.d, elem.f);
     });
 
     // Create the matrix with all the variants
@@ -122,7 +122,7 @@ function drawTables(notesArray) {
     const NO_GRADE = "no-grade";
     for (let seriesIdx in notesArray) {
         for (let denom of notesArray[seriesIdx]) {
-            let rowIdx = denominations.indexOf(denom.denomination.toLocaleString("de-DE") + (denom.faceValue ? " [" + denom.faceValue + "]" : ""));
+            let rowIdx = denominations.indexOf(denomToStr(denom.denomination, denom.faceValue));
 
             for (let variant of denom.variants) {
                 let gradeClass = NO_GRADE;
@@ -261,6 +261,11 @@ function drawTables(notesArray) {
         $(".subcol-" + i).mouseleave(highlightRowOff);
         $(".subcol-" + i).click(openUpsertCollection);
     }
+}
+
+
+function denomToStr(denom, facevalue) {
+    return denom.toLocaleString("de-DE") + ((facevalue && facevalue !== denom) ? " [" + facevalue.toLocaleString("de-DE") + "]" : "");
 }
 
 
