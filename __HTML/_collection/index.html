@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/_shared/index.css">
     <link rel="stylesheet" href="/_shared/header/header.css">
     <link rel="stylesheet" href="/_shared/footer/footer.css">
+    <link rel="stylesheet" href="/_shared/continents-filter/continents-filter.css">
     <link rel="stylesheet" href="collection.css">
     <link rel="stylesheet" href="/_shared/slide-button/slide-button.css">
 
@@ -27,7 +28,19 @@
         </script>
     </header>
 
+    <div>
+        <script>
+            // Load the Continents filter (synchornous) and after that show/load the country filters section (it needs to know 
+            //      the name of the selected continent)
+            $("div:first-of-type").load("/_shared/continents-filter/__continents-filter.html", setContinentImg);
+        </script>
+    </div>
+
     <section id="collection-filters">
+        <div id="cont-img">
+            <!--Source file depends on the continents filter selection. See setContinentImg -->
+            <img src="" alt="continent" />
+        </div>
         <div>
             <div class="filter">
                 <div id="only-duplicates-filter" class="check-button"></div>

@@ -102,6 +102,16 @@ p.not-logged-in > a:active {
           box-shadow: 1px 1px 3px 0px gray inset;
 }
 
+#cont-img {
+  margin-right: 2em;
+  padding: 14px 14px 10px 14px;
+}
+
+#cont-img > img {
+  width: 80px;
+  height: 80px;
+}
+
 section {
   background: white;
   display: -webkit-box;

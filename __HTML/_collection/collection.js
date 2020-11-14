@@ -62,7 +62,17 @@ $(document).ready(() => {
     });
 });
 
+function setContinentImg() {
+    $("#cont-img>img").attr("src", getSelectedImg());
+}
 
+
+function continentFilterUpdated(contId) {
+    setContinentImg();
+
+    // Update page
+    loadItemsTable();
+}
 
 function loadItemsTable(sortKey, sortAsc) {
     $("#items-table>tbody").empty();
@@ -71,14 +81,23 @@ function loadItemsTable(sortKey, sortAsc) {
     if (sortKey) {
         sortJSON(itemsJSON, sortKey, sortAsc);
         $("#items-table").data("value", JSON.stringify(itemsJSON));
+    } else {
+        sortKey = JSON.parse($("#items-table").data("sortKeys"));
+        sortAsc = $("#items-table").data("sortAsc");
     }
 
     let rowsHTML = "";
     let sortingKeyValue = itemsJSON.length ? itemsJSON[0][sortKey[0]] : null;
     let aggregatedPrice = 0;
     let aggregateFlag = sortKey[0] !== "quantity" && sortKey[0] !== "price";
+
+    let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
+
     for (let record of itemsJSON) {
+
         // Apply filters
+        if (filterContId != 0 && record.continentId != filterContId) continue
+
         if (isSlideButtonSelected("only-duplicates-filter")) {
             if (!record.isDuplicated && record.quantity === 1) continue;
             if (record.quantity > 1) record.quantity--;
@@ -142,6 +161,9 @@ function sortClick(htmlElem) {
         "Seller": ["seller", "purchaseDate", "territoryName", "catalogueIdPreffix", "catalogueIdInt", "catalogueIdSuffix"],
         "Purchased": ["purchaseDate", "seller", "territoryName", "catalogueIdPreffix", "catalogueIdInt", "catalogueIdSuffix"]
     };
+
+    $("#items-table").data("sortKeys", JSON.stringify(mapFieldName[sortObj.mapKey]));
+    $("#items-table").data("sortAsc", sortObj.sortAsc);
 
     loadItemsTable(mapFieldName[sortObj.mapKey], sortObj.sortAsc);
 }

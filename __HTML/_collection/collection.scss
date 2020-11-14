@@ -18,6 +18,15 @@
     }
 }
 
+#cont-img {
+    margin-right: 2em;
+    padding: 14px 14px 10px 14px;
+    &>img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
 section {
     background: white;
     display: flex;

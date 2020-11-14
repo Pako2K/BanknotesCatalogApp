@@ -2704,6 +2704,7 @@ components:
           - type: object
             required:
             - catalogueId
+            - continentId
             - territoryId
             - territoryName
             - currencyId
@@ -2711,6 +2712,8 @@ components:
             - denomination
             - isDuplicated
             properties:
+              continentId:
+                type: integer
               territoryId:
                 type: integer
               territoryName:

@@ -173,10 +173,10 @@ function loadSeriesTable(currencyId, seriesJSON) {
                         <th>` + seriesJSON[i].start + `</th>
                         <th>` + endDate + `</th>
                         <td>${seriesJSON[i].numDenominations}</td>
-                        <td class="only-logged-in">${seriesJSON[i].collectionStats.numDenominations || 0}</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.numDenominations || "-"}</td>
                         <td>${seriesJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${seriesJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${seriesJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.numVariants || "-"}</td>
+                        <td class="only-logged-in">${seriesJSON[i].collectionStats.price.toFixed(2) + " €" || "-"}</td>
                     </tr>`;
         $("#series-stats>tbody").prepend(record);
     }
@@ -193,10 +193,10 @@ function loadDenominationsTable(denomJSON) {
         record = `  <tr>
                         <th>${denomJSON[i].denomination.toLocaleString("de-DE")}</th>
                         <td>${denomJSON[i].numSeries}</td>
-                        <td class="only-logged-in">${denomJSON[i].collectionStats.numSeries || 0}</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.numSeries || "-"}</td>
                         <td>${denomJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${denomJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${denomJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.numVariants || "-"}</td>
+                        <td class="only-logged-in">${denomJSON[i].collectionStats.price.toFixed(2) + " €" || "-"}</td>
                     </tr>`;
         $("#denominations-stats>tbody").prepend(record);
     }
@@ -213,10 +213,10 @@ function loadYearsTable(yearsJSON) {
         record = `  <tr>
                         <th>` + yearsJSON[i].issueYear + `</th>
                         <td>${yearsJSON[i].numDenominations}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || 0}</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || "-"}</td>
                         <td>${yearsJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || "-"}</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price.toFixed(2) + " €" || "-"}</td>
                     </tr>`;
         $("#years-stats>tbody").prepend(record);
     }
@@ -233,10 +233,10 @@ function loadPrintedTable(yearsJSON) {
         record = `  <tr>
                         <th>` + yearsJSON[i].printedDate + `</th>
                         <td>${yearsJSON[i].numDenominations}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || 0}</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || "-"}</td>
                         <td>${yearsJSON[i].numVariants}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || 0}</td>
-                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price.toFixed(2) || 0} €</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || "-"}</td>
+                        <td class="only-logged-in">${yearsJSON[i].collectionStats.price.toFixed(2) + " €" || "-"}</td>
                     </tr>`;
         $("#dated-stats>tbody").prepend(record);
     }

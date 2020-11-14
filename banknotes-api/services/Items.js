@@ -20,7 +20,7 @@ module.exports.initialize = function(app) {
 
 // ===> /items/all
 function itemsAllGET(request, response) {
-    let sql = ` SELECT  TER.ter_id AS "territoryId", TER.ter_name AS "territoryName", CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", 
+    let sql = ` SELECT  CON.con_id AS "continentId", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName", CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", 
                         BVA.bva_cat_id AS "catalogueId", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                         BVA.bva_id AS "variantId", BIT.bit_id AS "id", BIT.bit_gra_grade AS "grade", BIT.bit_price AS "price", 
                         BIT.bit_quantity AS "quantity", BIT.bit_seller AS "seller", BIT.bit_purchase_date AS "purchaseDate",
@@ -35,6 +35,7 @@ function itemsAllGET(request, response) {
                 INNER JOIN cur_currency CUR ON CUR.cur_id = SER.ser_cur_id
                 LEFT JOIN cus_currency_unit CUS ON BAN.ban_cus_id = CUS.cus_id
                 INNER JOIN ter_territory TER ON TER.ter_id = ISS.iss_ter_id
+                INNER JOIN con_continent CON ON CON.con_id = TER.ter_con_id
                 ORDER BY "variantId" ASC, GRA.gra_value ASC, "price" DESC`;
 
     catalogueDB.execSQL(sql, [request.session.user], (err, itemsJSON) => {
