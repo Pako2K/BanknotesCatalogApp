@@ -176,7 +176,7 @@ function loadSeriesTable(currencyId, seriesJSON) {
                         <td class="only-logged-in">${seriesJSON[i].collectionStats.numDenominations || "-"}</td>
                         <td>${seriesJSON[i].numVariants}</td>
                         <td class="only-logged-in">${seriesJSON[i].collectionStats.numVariants || "-"}</td>
-                        <td class="only-logged-in">${priceToStr(denomJSON[i].collectionStats.price)}</td>
+                        <td class="only-logged-in">${priceToStr(seriesJSON[i].collectionStats.price)}</td>
                     </tr>`;
         $("#series-stats>tbody").prepend(record);
     }
@@ -216,7 +216,7 @@ function loadYearsTable(yearsJSON) {
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || "-"}</td>
                         <td>${yearsJSON[i].numVariants}</td>
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || "-"}</td>
-                        <td class="only-logged-in">${priceToStr(denomJSON[i].collectionStats.price)}</td>
+                        <td class="only-logged-in">${priceToStr(yearsJSON[i].collectionStats.price)}</td>
                     </tr>`;
         $("#years-stats>tbody").prepend(record);
     }
@@ -236,7 +236,7 @@ function loadPrintedTable(yearsJSON) {
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numDenominations || "-"}</td>
                         <td>${yearsJSON[i].numVariants}</td>
                         <td class="only-logged-in">${yearsJSON[i].collectionStats.numVariants || "-"}</td>
-                        <td class="only-logged-in">${priceToStr(denomJSON[i].collectionStats.price)}</td>
+                        <td class="only-logged-in">${priceToStr(yearsJSON[i].collectionStats.price)}</td>
                     </tr>`;
         $("#dated-stats>tbody").prepend(record);
     }
