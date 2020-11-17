@@ -1438,6 +1438,40 @@ paths:
         "500":
           $ref: '#/components/responses/500'
                 
+    put:
+      tags: 
+      - Miscellanea
+      summary: Insert issuing entity
+      description: Creates a new the banknotes issuing entity
+      operationId: issuerPUT
+      parameters:
+      - $ref: '#/components/parameters/cookieUsername'
+      - $ref: '#/components/parameters/cookieSessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/issuerKey'
+      responses:
+        "200":
+          description: Operation executed successfully
+          content:
+            application/json:
+               schema:
+                type: object
+                required:
+                - id
+                properties:
+                  id:
+                    type: integer
+        "400":
+          $ref: '#/components/responses/400'
+        "403":
+          $ref: '#/components/responses/403'
+        "500":
+          $ref: '#/components/responses/500'  
+  
   
   /printer:
     get:
@@ -2748,6 +2782,18 @@ components:
         description:
           type: string
           
+
+    issuerKey:
+      type: object
+      required:
+      - name
+      - territoryId
+      properties:
+        name:
+          type: string
+        territoryId:
+          type: integer
+
 
     issuer:
       type: object

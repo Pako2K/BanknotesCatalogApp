@@ -252,7 +252,7 @@ function loadSeriesDetails(seriesId) {
                             banknotesSection.append(
                                     `<div class="banknote-section" id="banknote-id-${denom.denomination}">
                         <div class="banknote-title section-title">
-                            <p>${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}</p>
+                            <p>${faceValueStr ? faceValueStr + " [ " + denomStr + " ]": denomStr}</p>
                             <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertDenomination($(this).parent().parent().data('denomination'))" alt="Edit Denomination"/>
                         </div>
                         <div class="banknote-info">

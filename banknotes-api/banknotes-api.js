@@ -39,7 +39,7 @@ module.exports.initialize = function(app, usersOAS, banknotesOAS) {
     banknotes.initialize(app, banknotesOAS, banknotesValidator);
     variants.initialize(app, banknotesOAS, banknotesValidator);
     items.initialize(app);
-    misc.initialize(app);
+    misc.initialize(app, banknotesOAS, banknotesValidator);
 
     log.debug(`API Services initialized`);
 }

@@ -14,13 +14,15 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
         dataType: 'json',
 
         success: function(result, status) {
-            for (let issuer of result)
-                $("#upsert-series-dialog select[name='series-issuer']").append(`<option value='${issuer.id}'>${issuer.name}</option>`);
+
+            for (let issuer of result) {
+                $("#issuers").append(`<option value='${issuer.name}' data-id='${issuer.id}'>`);
+                if (seriesJSON && !seriesJSON.issuerName && seriesJSON.issuerId === issuer.id)
+                    seriesJSON.issuerName = issuer.name;
+            }
 
             if (seriesJSON)
-                $("#upsert-series-dialog select[name='series-issuer']").val(seriesJSON.issuerId)
-            else
-                $("#upsert-series-dialog select[name='series-issuer']").val(0)
+                $("#upsert-series-dialog input[name='series-issuer']").val(seriesJSON.issuerName);
         },
 
         error: function(xhr, status, error) {
@@ -29,6 +31,7 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
     });
 
 
+    $("#upsert-series-dialog").data("territory-id", currencyJSON.territoryId);
     if (seriesJSON) {
         $("#upsert-series-dialog").data("series-id", seriesJSON.id);
 
@@ -63,8 +66,56 @@ function upsertSeries() {
     series.start = parseInt($("input[name='series-start']").val());
     if ($("input[name='series-end']").val() !== "")
         series.end = parseInt($("input[name='series-end']").val());
-    if ($("select[name='series-issuer']").val())
-        series.issuerId = parseInt($("select[name='series-issuer']").val());
+
+    let issuerName = $("input[name='series-issuer']").val();
+    if (issuerName) {
+        // Get list of options
+        let datalistId = $("input[name='series-issuer']").attr("list");
+        let options = $(`#${datalistId} option`);
+        for (let option of options) {
+            if ($(option).attr("value") === issuerName) {
+                series.issuerId = parseInt($(option).data("id"));
+                break;
+            }
+        }
+    }
+
+    // New issuer!
+    if (!series.issuerId) {
+        if (!confirm("A new issuer will be created!")) return;
+
+        $.ajax({
+            type: "PUT",
+            url: `/issuer`,
+            contentType: "application/json",
+            async: false,
+            cache: false,
+            data: JSON.stringify({ name: issuerName, territoryId: $("#upsert-series-dialog").data("territory-id") }),
+            timeout: TIMEOUT,
+            dataType: 'json',
+
+            success: function(result, status) {
+                series.issuerId = result.id;
+            },
+
+            error: function(xhr, status, error) {
+                switch (xhr.status) {
+                    case 400:
+                        alert("Data is not correct.\n" + xhr.responseJSON.code + ": " + xhr.responseJSON.description);
+                        break;
+                    case 403:
+                        alert("Your session is not a valid Admin session or has expired.");
+                        _clearSessionCookies();
+                        location.reload();
+                        break;
+                    default:
+                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                }
+            }
+        });
+    }
+
+
     series.isOverstamped = $("input[name='is-overstamped']").prop("checked");
     if ($("input[name='series-law-date']").val() !== "")
         series.lawDate = $("input[name='series-law-date']").val();

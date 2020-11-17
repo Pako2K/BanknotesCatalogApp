@@ -79,7 +79,9 @@ function updateBookmarks(url, country, currency) {
 
     bookmarkArray.push(newBookmark);
 
-    if (bookmarkArray.length > 6)
+    const MAX_BOOKMARKS = 4;
+
+    if (bookmarkArray.length > MAX_BOOKMARKS)
         bookmarkArray.shift();
 
     bookmarks = bookmarkArray.join("#");

@@ -3,15 +3,28 @@
 const log = require("../../utils/logger").logger;
 const Exception = require('../../utils/Exception').Exception;
 const dbs = require('../../db-connections');
+const jsonParser = require('body-parser').json();
+const users = require('./Users');
 
 let catalogueDB;
+let serviceValidator;
+let schemas = {};
 
-module.exports.initialize = function(app) {
+function getReqJSONSchema(swaggerObj, path, operation) {
+    return swaggerObj["paths"][path][operation]["requestBody"]["content"]["application/json"]["schema"];
+}
+
+
+module.exports.initialize = function(app, banknotesOAS, validator) {
     catalogueDB = dbs.getDBConnection('catalogueDB');
+    serviceValidator = validator;
 
     app.get('/grades', gradesGET);
     app.get('/territory/:territoryId/issuer', territoryIssuerGET);
     app.get('/issuer', issuerGET);
+    app.put('/issuer', users.validateSessionUser, users.validateAdminUser, jsonParser, issuerPUT);
+    schemas.issuerPUT = getReqJSONSchema(banknotesOAS, "/issuer", "put");
+
     app.get('/printer', printerGET);
     app.get('/material', materialGET);
 
@@ -61,6 +74,36 @@ function issuerGET(request, response) {
     catalogueDB.getAndReply(response, sql);
 }
 
+// ===> /issuer (PUT)
+function issuerPUT(request, response) {
+    let issuer = request.body;
+
+    const sqlInsert = `INSERT INTO iss_issuer (iss_name, iss_ter_id)
+                       VALUES( $1, $2)`;
+    catalogueDB.execSQLUpsert(sqlInsert, [issuer.name, issuer.territoryId], (err, result) => {
+        if (err) {
+            new Exception(500, err.code, err.message).send(response);
+            return;
+        }
+
+        const sql = `SELECT iss_id AS "id"
+                     FROM iss_issuer
+                    WHERE iss_name = $1 AND iss_ter_id = $2`;
+
+        catalogueDB.execSQL(sql, [issuer.name, issuer.territoryId], (err, result) => {
+            if (err) {
+                err.message += `\nSQL Query: ${sqlStr}`;
+                new Exception(500, err.code, err.message).send(response);
+                return;
+            }
+
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(result[0]));
+            response.send();
+        });
+    });
+}
 
 
 // ===> /material
