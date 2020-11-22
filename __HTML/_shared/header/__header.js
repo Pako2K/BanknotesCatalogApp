@@ -8,6 +8,7 @@ $("#username").ready(() => {
         $('div.user-info>a>img[alt="logout"]').show();
     } else {
         $("#username").text("");
+        $("#username").hide();
         if (window.location.pathname !== '/index.html' && window.location.pathname !== '/')
             $('div.user-info>a>img[alt="home"]').show();
     }
@@ -109,7 +110,7 @@ function _logout() {
                 case 403:
                     break;
                 default:
-                    alert(`Logout failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
+                    console.log(`Logout failed. \n${xhr.status} - ${error}\nContact the web site administrator.`);
             }
         }
     });

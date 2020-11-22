@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<urlset xmlns="http://www.google.com/schemas/sitemap/0.84" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+		<url>
+			<loc>http://www.banknotes-catalogue.com/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_countries/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_currencies/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_denominations/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_years/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_collection/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_search/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/_more/</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/contact.html</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/sources.html</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+		<url>
+			<loc>https://banknotes-catalogue.herokuapp.com/glossary.html</loc>
+			<changefreq>daily</changefreq>
+			<priority>1</priority>
+		</url>
+
+	</urlset>
+

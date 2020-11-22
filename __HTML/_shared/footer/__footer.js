@@ -42,7 +42,7 @@ function resetExpiration() {
 
             error: function(xhr, status, error) {
                 let exception;
-                alert(`Ping failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
+                console.log(`Ping failed. \n${xhr.status} - ${error}\nPlease contact the web site administrator.`);
             }
         });
     }

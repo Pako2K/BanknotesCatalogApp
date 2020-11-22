@@ -8,6 +8,9 @@ $font-size-input: 1.1em;
 //
 @mixin media-screen-block($scale-factor: 1) {
     #intro-section {
+        & img {
+            width: 200px * $scale-factor * $scale-factor;
+        }
         & h1 {
             font-size: $font-size-title * $scale-factor;
         }
@@ -63,22 +66,23 @@ $font-size-input: 1.1em;
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(160, 220, 220));
     padding: 1em;
     &>div {
+        margin: auto;
+        max-width: 1200px;
         display: flex;
-        justify-content: center;
+        justify-content: space-around;
         align-items: center;
         text-align: center;
         height: auto;
         & h1 {
-            font-family: $FONT_HEADER;
+            font-family: $FONT_TITLE;
             font-weight: bold;
+            white-space: nowrap;
             color: rgb(33, 90, 100);
             text-shadow: 2px 3px 4px rgb(120, 120, 120);
-            padding: 0em 3em;
             transition: 0.4s;
         }
-        & h3,
-        h4 {
-            margin: 0 1em;
+        & h4 {
+            margin: 1em 1em;
             font-family: $FONT_HEADER;
             color: rgb(33, 50, 60);
             text-shadow: 2px 3px 4px rgb(120, 120, 120);
@@ -210,7 +214,6 @@ $font-size-input: 1.1em;
         flex-direction: column;
         justify-content: flex-start;
         & h1 {
-            padding: 0;
             margin-top: 0;
         }
     }
@@ -223,27 +226,33 @@ $font-size-input: 1.1em;
 
 @media screen and (max-width: $HEIGHT_BIG_PHONE) {
     @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
-    #intro-section {
-        & img {
-            display: none;
-        }
-    }
 }
 
 @media screen and (max-width: $WIDTH_BIG_PHONE) {
     @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
     #intro-section {
-        & h4:last-of-type {
+        position: relative;
+        &>div>img:first-of-type {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            width: 90%;
+            filter: blur(4px) opacity(0.8);
+            -webkit-filter: blur(4px) opacity(0.8);
+        }
+        &>div>img:not(:first-of-type) {
             display: none;
+        }
+        & h1,
+        h4 {
+            z-index: 3;
         }
     }
     .user-input-section>form {
         & img.info {
             display: inline-block
-        }
-        ;
-        & p.input-info {
-            display: none;
         }
         &>div {
             width: 22em * $WIDTH_FACTOR_BIG_PHONE;

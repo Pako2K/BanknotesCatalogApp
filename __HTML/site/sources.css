@@ -40,17 +40,68 @@ p.not-logged-in > a:active {
   color: black;
 }
 
+main {
+  font-size: 0.9em;
+  padding-left: 1.8em;
+  padding-right: 1.8em;
+  padding-bottom: 0.9em;
+}
+
+html {
+  background-color: black;
+}
+
 body {
   background-color: whitesmoke;
 }
 
-main {
-  padding: 2em;
+main > h3 {
+  margin: 0.5em 0;
+}
+
+main > p {
+  margin: 0.8em;
   color: black;
 }
 
+@media screen and (max-width: 1000px) {
+  main {
+    font-size: 0.9em;
+    padding-left: 1.8em;
+    padding-right: 1.8em;
+    padding-bottom: 0.9em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  main {
+    font-size: 0.85em;
+    padding-left: 1.7em;
+    padding-right: 1.7em;
+    padding-bottom: 0.85em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  main {
+    font-size: 0.75em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    padding-bottom: 0.75em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  main {
+    font-size: 0.7em;
+    padding-left: 1.4em;
+    padding-right: 1.4em;
+    padding-bottom: 0.7em;
+  }
+}
+
 li {
-  margin: 0.5em 0;
+  margin: 0 2em 0.5em 0;
 }
 
 a:link {
@@ -71,4 +122,4 @@ a:hover {
 a:active {
   color: #853333;
 }
-/*# sourceMappingURL=glossary.css.map */
+/*# sourceMappingURL=sources.css.map */

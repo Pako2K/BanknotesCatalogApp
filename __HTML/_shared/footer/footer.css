@@ -74,7 +74,6 @@ p.not-logged-in > a:active {
   font-size: 0.8em;
   color: whitesmoke;
   margin: 0.4em 0;
-  border-bottom: dotted 0.5px whitesmoke;
   text-decoration: none;
 }
 
@@ -96,6 +95,14 @@ p.not-logged-in > a:active {
 
 .main-footer p {
   font-size: 0.7em;
+}
+
+p.copyright {
+  margin: 0;
+  padding: 0.7em 2em;
+  background-color: black;
+  color: whitesmoke;
+  font-size: 0.5em;
 }
 
 @media screen and (max-width: 800px) {

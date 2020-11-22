@@ -14,7 +14,6 @@ function initializeUpsertSeries(currencyJSON, seriesJSON) {
         dataType: 'json',
 
         success: function(result, status) {
-
             for (let issuer of result) {
                 $("#issuers").append(`<option value='${issuer.name}' data-id='${issuer.id}'>`);
                 if (seriesJSON && !seriesJSON.issuerName && seriesJSON.issuerId === issuer.id)

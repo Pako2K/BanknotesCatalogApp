@@ -1,0 +1,45 @@
+@import '../_shared/index',
+'../_shared/common';
+@mixin media-screen-block($scale-factor: 1) {
+    main {
+        font-size: 1em * $scale-factor;
+        padding-left: 2em * $scale-factor;
+        padding-right: 2em * $scale-factor;
+        padding-bottom: 1em * $scale-factor;
+    }
+}
+
+@include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+html {
+    background-color: black;
+}
+
+body {
+    background-color: whitesmoke;
+}
+
+main {
+    &>h3 {
+        margin: 0.5em 0;
+    }
+    &>p {
+        margin: 0.8em;
+        color: black;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+}
