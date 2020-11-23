@@ -216,27 +216,19 @@ function loadSeriesDetails(seriesId) {
                                 if (variant.overstampedCatalogueId)
                                     overstampedNote = `${variant.overstampedCatalogueId} (${variant.overstampedTerritoryName})`;
 
-                                let picturesPath = "/data/_pictures_/" + $("#country-data #name").text().replace(/,|\s/g, "").toLowerCase() + "/" + $("#currency-name").text().toLowerCase();
+
 
                                 variantsHTML +=
                                     `<div class="variant-box section-title">
                                         <p>${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
                                         <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}', ${variant.id})" alt="Edit Variant"/>
-                                        <!--
-                                        <div class="drop-area" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
-                                            <input type="file" name="upload-file" id="file-upload-input" style="display: none;" />
-                                            <p><span onclick="$('#file-upload-input').click()">Upload a picture</span> or drop it here...</p>
-                                        </div>
-                                        -->
+                                        
+                                                                              
                                         <div class="variant-pictures">
                                             <img src="" alt="obverse" onerror="this.style.display='none'"/>
                                             <img src="" alt="reverse" onerror="this.style.display='none'"/>
                                             <img src="" alt="variant feature" onerror="this.style.display='none'"/>
-                                            <!--
-                                            <img src="${picturesPath}/${variant.catalogueId.toLowerCase()}-front.jpg" alt="obverse" onerror="this.src='/data/_pictures_/question-mark-icon.png'; $(this).addClass('not-found')"/>
-                                            <img src="${picturesPath}/${variant.catalogueId.toLowerCase()}-back.jpg" alt="reverse" onerror="this.style.display='none'"/>
-                                            <img src="${picturesPath}/${variant.catalogueId.toLowerCase()}-feature.jpg" alt="variant feature" onerror="this.style.display='none'"/>
-                                            -->
+                                            
                                         </div> 
                                         <div class="variant-info">
                                             ${addInfo("Obverse Color", variant.obverseColor)}
