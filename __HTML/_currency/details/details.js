@@ -11,7 +11,7 @@ function initializeDetails() {
     $("#details-main-div>div:not(:first-of-type)").hide();
 
     // Hide the New Series button
-    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    let flagIsAdminStr = getCookie(_COOKIE_IS_ADMIN);
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
         //$(".only-admin").hide();
         $(".only-admin").css("opacity", 0.3);
@@ -46,9 +46,7 @@ function seriesOptionClicked(elem) {
     } else {
         $("div.series-list>div.selected").removeClass("selected");
         $(elem).addClass("selected");
-        // if (getCookie("banknotes.ODB.isAdmin") === "1") {
         $("#details-main-div>div>img").show();
-        // }
 
         loadSeriesDetails($(elem).data("id"));
 
@@ -116,7 +114,7 @@ function loadSeriesDetails(seriesId) {
     // Retrieve and load banknotes and variants info
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         itemsUri = `/series/${seriesId}/items`;
     else
         variantsUri = `/series/${seriesId}/variants`;
@@ -323,7 +321,7 @@ function loadSeriesDetails(seriesId) {
 
 
 function openUpsertCollectionFromDetails(imgElem, denomStr) {
-    if (getCookie("banknotes.ODB.username")){
+    if (getCookie("BOC.user.name")){
         let variantJSON = $(imgElem).parent().data("variant");
         variantJSON.denominationStr = denomStr;
 
@@ -341,7 +339,7 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
 
 
 function openUpsertSeries(isNewSeries) {
-    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    let flagIsAdminStr = getCookie(_COOKIE_IS_ADMIN);
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
         alert("Only Collaborators can edit the catalogue.\nContact banknotes-catalogue@gmx.net to request a Collaborator account.");
         return;
@@ -369,7 +367,7 @@ function openUpsertSeries(isNewSeries) {
 
 
 function openUpsertDenomination(denom) {
-    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    let flagIsAdminStr = getCookie(_COOKIE_IS_ADMIN);
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
         alert("Only Collaborators can edit the catalogue.\nContact banknotes-catalogue@gmx.net to request a Collaborator account.");
         return;
@@ -388,7 +386,7 @@ function openUpsertDenomination(denom) {
 
 
 function openUpsertVariant(banknoteId, banknoteDenomination, variantId) {
-    let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+    let flagIsAdminStr = getCookie(_COOKIE_IS_ADMIN);
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
         alert("Only Collaborators can edit the catalogue.\nContact banknotes-catalogue@gmx.net to request a Collaborator account.");
         return;
