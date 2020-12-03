@@ -142,6 +142,19 @@ div.block-title p.show-hide > span {
   margin: 0 0.5em;
 }
 
+div.block-description {
+  margin-top: 0.6em;
+}
+
+div.block-description > p {
+  font-size: 0.65em;
+  margin: 0 1em;
+}
+
+div.block-description > p:not(:first-of-type) {
+  padding-left: 2em;
+}
+
 section {
   font-family: sans-serif;
   margin: 0;
@@ -189,6 +202,10 @@ div.block-title p:first-of-type {
 div.block-title p:last-of-type > span {
   font-style: italic;
   display: inline-block;
+}
+
+div.block-description > p {
+  font-style: oblique;
 }
 
 #filters-and-stats {
@@ -428,6 +445,16 @@ div.block-title p:last-of-type > span {
     font-size: 0.9em;
     margin: 0 0.5em;
   }
+  div.block-description {
+    margin-top: 0.54em;
+  }
+  div.block-description > p {
+    font-size: 0.585em;
+    margin: 0 1em;
+  }
+  div.block-description > p:not(:first-of-type) {
+    padding-left: 2em;
+  }
   #filters-and-stats {
     display: block;
   }
@@ -516,6 +543,16 @@ div.block-title p:last-of-type > span {
     font-size: 0.9em;
     margin: 0 0.5em;
   }
+  div.block-description {
+    margin-top: 0.51em;
+  }
+  div.block-description > p {
+    font-size: 0.5525em;
+    margin: 0 1em;
+  }
+  div.block-description > p:not(:first-of-type) {
+    padding-left: 2em;
+  }
 }
 
 @media screen and (max-width: 600px) {
@@ -601,6 +638,16 @@ div.block-title p:last-of-type > span {
     font-size: 0.9em;
     margin: 0 0.5em;
   }
+  div.block-description {
+    margin-top: 0.45em;
+  }
+  div.block-description > p {
+    font-size: 0.4875em;
+    margin: 0 1em;
+  }
+  div.block-description > p:not(:first-of-type) {
+    padding-left: 2em;
+  }
 }
 
 @media screen and (max-width: 400px) {
@@ -685,6 +732,16 @@ div.block-title p:last-of-type > span {
   div.block-title p.show-hide > span {
     font-size: 0.9em;
     margin: 0 0.5em;
+  }
+  div.block-description {
+    margin-top: 0.45em;
+  }
+  div.block-description > p {
+    font-size: 0.4875em;
+    margin: 0 1em;
+  }
+  div.block-description > p:not(:first-of-type) {
+    padding-left: 2em;
   }
 }
 /*# sourceMappingURL=countries.css.map */

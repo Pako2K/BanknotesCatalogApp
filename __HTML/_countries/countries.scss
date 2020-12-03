@@ -86,6 +86,16 @@
             margin: 0 0.5em;
         }
     }
+    div.block-description {
+        margin-top: 0.6em*$scale-factor;
+        &>p {
+            font-size: 0.65em*$scale-factor;
+            margin: 0 1em;
+            &:not(:first-of-type) {
+                padding-left: 2em;
+            }
+        }
+    }
 }
 
 @include media-screen-block();
@@ -124,6 +134,12 @@ div.block-title {
             font-style: italic;
             display: inline-block;
         }
+    }
+}
+
+div.block-description {
+    &>p {
+        font-style: oblique;
     }
 }
 

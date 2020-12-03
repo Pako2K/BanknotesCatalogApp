@@ -283,7 +283,7 @@ function loadSeriesDetails(seriesId) {
                 banknotesSection.children().last().data("denomination", denom);
             }
 
-            let flagIsAdminStr = getCookie("banknotes.ODB.isAdmin");
+            let flagIsAdminStr = getCookie(_COOKIE_IS_ADMIN);
             if (!flagIsAdminStr || flagIsAdminStr === "0") {
                 //$(".only-admin").hide();
                 $(".only-admin").css("opacity", 0.3);
