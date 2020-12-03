@@ -5,7 +5,7 @@ function loadListTable(countryId) {
         return;
     }
 
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         $("#grades-div").show();
     else
         $("#grades-div").hide();
@@ -16,7 +16,7 @@ function loadListTable(countryId) {
     for (let idx in currenciesJSON) {
         let variantsUri;
         let itemsUri;
-        if (getCookie("banknotes.ODB.username"))
+        if (getCookie("BOC.user.name"))
             itemsUri = `/currency/${currenciesJSON[idx].id}/items?territoryId=${countryId}`;
         else
             variantsUri = `/currency/${currenciesJSON[idx].id}/variants?territoryId=${countryId}`;
@@ -163,7 +163,7 @@ function drawList(notesList, sortKey, sortAsc) {
         $("#list-table-div").append("<p class='not-issued'>(*) NOT ISSUED</p>");
 
 
-    if (getCookie("banknotes.ODB.username") === undefined) {
+    if (getCookie("BOC.user.name") === undefined) {
         $(".collection-field").css('opacity', '0.25');
     }
 }
@@ -225,7 +225,7 @@ function listTableSetSortingColumn(sortingElem) {
 
 
 function openUpsertCollectionFromList(rowElem) {
-    if (getCookie("banknotes.ODB.username")) {
+    if (getCookie("BOC.user.name")) {
         let variantJSON;
 
         if ($(rowElem).hasClass("first-subrow"))

@@ -618,7 +618,7 @@ function setUserSession(request, username) {
 
 module.exports.validateSessionUser = function(request, response, next) {
     // Extract username from the cookie:
-    let username = getHeaderCookie(request.headers.cookie, "banknotes.ODB.username");
+    let username = getHeaderCookie(request.headers.cookie, "BOC.user.name");
     if (!username || username === "") {
         // Invalid parameter
         new Exception(400, "SES-01", "User name in cookie is missing").send(response);
@@ -638,7 +638,7 @@ module.exports.validateAdminUser = function(request, response, next) {
     // Validate that the user has admin rights
 
     // Extract username from the cookie and check tha it is the same as the current session user:
-    let username = getHeaderCookie(request.headers.cookie, "banknotes.ODB.username");
+    let username = getHeaderCookie(request.headers.cookie, "BOC.user.name");
 
     let sqlUser = `SELECT cre_username FROM cre_credentials WHERE cre_username = $1 AND cre_is_admin = 1`;
 

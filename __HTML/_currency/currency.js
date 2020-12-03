@@ -61,7 +61,7 @@ $(document).ready(function() {
         }
     });
 
-    if (getCookie("banknotes.ODB.username")) {
+    if (getCookie("BOC.user.name")) {
         // Load grades from DB
         $.ajax({
             type: "GET",

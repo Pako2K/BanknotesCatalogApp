@@ -1,0 +1,92 @@
+.from-to-filter {
+    &>p {
+        font-family: Times New Roman, serif;
+        margin: 0.4em 0em;
+        color: black;
+        filter: opacity(75%);
+        &>span {
+            padding: 0 0.2em;
+        }
+    }
+    &.input-focus>p {
+        filter: opacity(100%);
+        &>span {
+            border-bottom: 0.5px dotted gray;
+        }
+    }
+    &.filled-ok>p {
+        filter: opacity(100%);
+        font-weight: bold;
+    }
+    &.filled-ok .input-field>div {
+        background-color: white;
+    }
+    &.filled-ok .input-field input {
+        background-color: white;
+        font-weight: bold;
+        color: black;
+    }
+    &.not-valid>p {
+        filter: opacity(75%);
+        font-weight: bold;
+    }
+    &.not-valid .input-field>p {
+        color: red;
+    }
+    &.not-valid .input-field>div {
+        background-color: white;
+    }
+    &.not-valid .input-field input {
+        background-color: white;
+        font-weight: bold;
+        color: red;
+    }
+}
+
+.input-field {
+    display: inline-block;
+    white-space: nowrap;
+    background-color: black;
+    margin-right: 0.3em;
+    margin-bottom: 0.2em;
+    &>p {
+        font-size: 0.6em;
+        display: inline-block;
+        font-family: Verdana, sans-serif;
+        vertical-align: top;
+        color: white;
+        text-align: right;
+        margin-top: 0.4em;
+        margin-right: 0.1em;
+        margin-left: 0.3em;
+        min-width: 3.9em
+    }
+    &>div {
+        display: inline-block;
+        background-color: whitesmoke;
+        border: 0.5px solid black;
+        padding: 1px 0;
+    }
+    & input {
+        font-size: 1em;
+        border: none;
+        margin: 0 0.3em;
+        width: 3.8em;
+        height: 1.6em;
+        background-color: whitesmoke;
+        &:focus {
+            outline: none;
+        }
+    }
+    &.input-focus {
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+        &>div {
+            background-color: white;
+        }
+        & input {
+            background-color: white;
+            font-weight: normal;
+            color: black;
+        }
+    }
+}

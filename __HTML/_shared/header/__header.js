@@ -1,7 +1,7 @@
 "use strict"
 
 $("#username").ready(() => {
-    let user = getCookie("banknotes.ODB.username");
+    let user = getCookie(_COOKIE_USERNAME);
     if (user !== undefined && user !== "") {
         $("#username").text(user);
         $("#username").show();
@@ -29,7 +29,7 @@ $("nav").ready(() => {
 
 
 $("#bookmarks").ready(() => {
-    let bookmarks = getCookie("banknotes.ODB.bookmarks");
+    let bookmarks = getCookie(_COOKIE_BOOKMARKS);
 
     // Parse bookmark links (separated by '#')
     if (bookmarks) {
@@ -44,7 +44,7 @@ $("#bookmarks").ready(() => {
 
 
 function updateBookmarks(url, country, currency) {
-    let bookmarks = getCookie("banknotes.ODB.bookmarks");
+    let bookmarks = getCookie(_COOKIE_BOOKMARKS);
 
     // Parse bookmark links (separated by '#')
     let bookmarkArray = [];
@@ -86,7 +86,7 @@ function updateBookmarks(url, country, currency) {
         bookmarkArray.shift();
 
     bookmarks = bookmarkArray.join("#");
-    setCookie("banknotes.ODB.bookmarks", bookmarks);
+    setCookie(_COOKIE_BOOKMARKS, bookmarks);
 }
 
 
@@ -117,8 +117,7 @@ function _logout() {
 }
 
 function _clearSessionCookies() {
-    deleteCookie("banknotes.ODB.username");
-    deleteCookie("banknotes.ODB.isAdmin");
-    deleteCookie("banknotes.ODB.lastConnection");
-
+    deleteCookie(_COOKIE_USERNAME);
+    deleteCookie(_COOKIE_IS_ADMIN);
+    deleteCookie(_COOKIE_LAST_CONNECTION);
 }

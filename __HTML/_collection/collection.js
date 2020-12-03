@@ -17,7 +17,7 @@ $(document).ready(() => {
             loadItemsTable();
     });
 
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         // Show warning
         $("p.not-logged-in").show();
 

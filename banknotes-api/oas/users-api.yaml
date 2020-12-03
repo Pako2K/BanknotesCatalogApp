@@ -197,7 +197,7 @@ paths:
       description: For the active session it resets the expiration time and returns its value. If the session does not exists or is expired, it does nothing
       operationId: userSessionPOST
       parameters:
-      - name: banknotes.ODB.username
+      - name: BOC.user.name
         in: cookie
         required: true
         description: logged in user name
@@ -236,7 +236,7 @@ paths:
       description: The provided session is destroyed, and the user logged out.
       operationId: userSessionDELETE
       parameters:
-      - name: banknotes.ODB.username
+      - name: BOC.user.name
         in: cookie
         required: true
         description: logged in user name

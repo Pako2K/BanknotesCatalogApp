@@ -1,0 +1,401 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+p.not-logged-in {
+  display: none;
+  color: #0a320a;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px 2px #dcfadc;
+  margin-top: 0.4em;
+}
+
+p.not-logged-in > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.not-logged-in > a:visited {
+  color: #0a320a;
+}
+
+p.not-logged-in > a:hover {
+  color: black;
+}
+
+p.not-logged-in > a:active {
+  color: black;
+}
+
+p.login-warning {
+  font-size: 0.9em;
+  margin-bottom: 0.4em;
+}
+
+table.stats-list-table > thead th {
+  font-size: 0.8em;
+  padding: 0.8em 0.5em;
+}
+
+table.stats-list-table > thead td {
+  font-size: 0.7em;
+  padding: 0.6em 0.4em;
+}
+
+table.stats-list-table > tbody th > img {
+  height: 1.2em;
+}
+
+table.stats-list-table > tbody th,
+table.stats-list-table td {
+  font-size: 0.8em;
+  padding: 0.5em 0.5em;
+}
+
+table.stats-list-table > tfoot > tr > th {
+  font-size: 0.8em;
+  padding: 0.5em 0.5em;
+}
+
+table.stats-list-table > tfoot > tr > td {
+  font-size: 0.8em;
+  padding: 0.5em 0.5em;
+}
+
+p.login-warning {
+  margin-top: 0;
+  color: #0a1e0a;
+  text-align: center;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-weight: bold;
+}
+
+p.login-warning > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.login-warning > a:visited {
+  color: #0a1e0a;
+}
+
+p.login-warning > a:hover {
+  color: black;
+}
+
+p.login-warning > a:active {
+  color: black;
+}
+
+table.stats-list-table {
+  border-collapse: collapse;
+  margin: auto;
+  -webkit-box-shadow: 1px 1px 4px 2px grey;
+          box-shadow: 1px 1px 4px 2px grey;
+}
+
+table.stats-list-table > thead {
+  font-family: "Source Sans Pro", "sans-serif";
+  text-align: center;
+  color: whitesmoke;
+}
+
+table.stats-list-table > thead th {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  background: -webkit-gradient(linear, left bottom, left top, from(#964141), to(#6e3737));
+  background: linear-gradient(0deg, #964141, #6e3737);
+  border-bottom: solid 1px black;
+  white-space: nowrap;
+}
+
+table.stats-list-table > thead td {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  background: #964141;
+  border-bottom: solid 1px black;
+  white-space: nowrap;
+}
+
+table.stats-list-table > thead th.th-stats {
+  border-left: solid 1px #e6e6e6;
+}
+
+table.stats-list-table > thead td:nth-of-type(odd) {
+  border-left: solid 1px #e6e6e6;
+}
+
+table.stats-list-table > tbody th {
+  font-family: "Source Sans Pro", "sans-serif";
+}
+
+table.stats-list-table > tbody th > a:link {
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+table.stats-list-table > tbody th > a:visited {
+  color: black;
+}
+
+table.stats-list-table > tbody th > a:hover {
+  color: black;
+  text-decoration: none;
+  border-bottom: dotted 0.75px black;
+}
+
+table.stats-list-table > tbody th > a:active {
+  color: brown;
+}
+
+table.stats-list-table > tbody td {
+  font-family: "sans-serif";
+}
+
+table.stats-list-table > tbody th,
+table.stats-list-table > tbody td {
+  white-space: nowrap;
+  font-weight: normal;
+  text-align: center;
+}
+
+table.stats-list-table > tbody .align-left {
+  text-align: left;
+}
+
+table.stats-list-table > tbody > tr:nth-child(even) {
+  background-color: #f2f3f3;
+}
+
+table.stats-list-table > tbody > tr:nth-child(odd) {
+  background-color: #eae9e9;
+}
+
+table.stats-list-table > tbody > tr > td:nth-of-type(odd) {
+  border-left: solid 1px lightgrey;
+}
+
+table.stats-list-table > tbody > tr > td:nth-of-type(even),
+table.stats-list-table > tbody > tr > td:last-child {
+  color: darkred;
+}
+
+table.stats-list-table > tfoot {
+  background-color: #6e3737;
+  color: whitesmoke;
+}
+
+table.stats-list-table > tfoot > tr > th {
+  font-family: "Source Sans Pro", "sans-serif";
+  text-align: right;
+}
+
+table.stats-list-table > tfoot > tr > td {
+  font-family: "sans-serif";
+  text-align: center;
+  font-weight: bold;
+}
+
+table.stats-list-table > tfoot > tr > td:first-of-type {
+  border-left: solid 1px lightgrey;
+}
+
+table.stats-list-table .not-logged-in {
+  opacity: 0.4;
+}
+
+.is-sortable {
+  margin-right: 0.3em;
+  border-bottom: 1px dotted transparent;
+}
+
+.is-sortable:hover {
+  cursor: pointer;
+  border-bottom-color: whitesmoke;
+}
+
+.is-sortable.sorting-column {
+  border-bottom-color: whitesmoke;
+}
+
+.sort-div {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.sort-desc,
+.sort-asc {
+  border: 0.5em solid rgba(230, 220, 220, 0.25);
+  border-left: 0.4em solid transparent;
+  border-right: 0.4em solid transparent;
+  cursor: pointer;
+}
+
+.sort-desc {
+  border-bottom: 0em solid transparent;
+}
+
+.sort-asc {
+  margin-top: -0.3em;
+  margin-bottom: 0.2em;
+  border-top: 0px solid transparent;
+}
+
+.sort-asc.sort-selection {
+  border-bottom-color: whitesmoke;
+}
+
+.sort-desc.sort-selection {
+  border-top-color: whitesmoke;
+}
+
+@media screen and (max-width: 1000px) {
+  p.login-warning {
+    font-size: 0.81em;
+    margin-bottom: 0.4em;
+  }
+  table.stats-list-table > thead th {
+    font-size: 0.72em;
+    padding: 0.72em 0.45em;
+  }
+  table.stats-list-table > thead td {
+    font-size: 0.63em;
+    padding: 0.54em 0.36em;
+  }
+  table.stats-list-table > tbody th > img {
+    height: 1.08em;
+  }
+  table.stats-list-table > tbody th,
+  table.stats-list-table td {
+    font-size: 0.72em;
+    padding: 0.45em 0.45em;
+  }
+  table.stats-list-table > tfoot > tr > th {
+    font-size: 0.72em;
+    padding: 0.45em 0.45em;
+  }
+  table.stats-list-table > tfoot > tr > td {
+    font-size: 0.72em;
+    padding: 0.45em 0.45em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  p.login-warning {
+    font-size: 0.765em;
+    margin-bottom: 0.4em;
+  }
+  table.stats-list-table > thead th {
+    font-size: 0.68em;
+    padding: 0.68em 0.425em;
+  }
+  table.stats-list-table > thead td {
+    font-size: 0.595em;
+    padding: 0.51em 0.34em;
+  }
+  table.stats-list-table > tbody th > img {
+    height: 1.02em;
+  }
+  table.stats-list-table > tbody th,
+  table.stats-list-table td {
+    font-size: 0.68em;
+    padding: 0.425em 0.425em;
+  }
+  table.stats-list-table > tfoot > tr > th {
+    font-size: 0.68em;
+    padding: 0.425em 0.425em;
+  }
+  table.stats-list-table > tfoot > tr > td {
+    font-size: 0.68em;
+    padding: 0.425em 0.425em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  p.login-warning {
+    font-size: 0.675em;
+    margin-bottom: 0.4em;
+  }
+  table.stats-list-table > thead th {
+    font-size: 0.6em;
+    padding: 0.6em 0.375em;
+  }
+  table.stats-list-table > thead td {
+    font-size: 0.525em;
+    padding: 0.45em 0.3em;
+  }
+  table.stats-list-table > tbody th > img {
+    height: 0.9em;
+  }
+  table.stats-list-table > tbody th,
+  table.stats-list-table td {
+    font-size: 0.6em;
+    padding: 0.375em 0.375em;
+  }
+  table.stats-list-table > tfoot > tr > th {
+    font-size: 0.6em;
+    padding: 0.375em 0.375em;
+  }
+  table.stats-list-table > tfoot > tr > td {
+    font-size: 0.6em;
+    padding: 0.375em 0.375em;
+  }
+  .optional-show {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  p.login-warning {
+    font-size: 0.63em;
+    margin-bottom: 0.4em;
+  }
+  table.stats-list-table > thead th {
+    font-size: 0.56em;
+    padding: 0.56em 0.35em;
+  }
+  table.stats-list-table > thead td {
+    font-size: 0.49em;
+    padding: 0.42em 0.28em;
+  }
+  table.stats-list-table > tbody th > img {
+    height: 0.84em;
+  }
+  table.stats-list-table > tbody th,
+  table.stats-list-table td {
+    font-size: 0.56em;
+    padding: 0.35em 0.35em;
+  }
+  table.stats-list-table > tfoot > tr > th {
+    font-size: 0.56em;
+    padding: 0.35em 0.35em;
+  }
+  table.stats-list-table > tfoot > tr > td {
+    font-size: 0.56em;
+    padding: 0.35em 0.35em;
+  }
+}
+/*# sourceMappingURL=stats-list-table.css.map */

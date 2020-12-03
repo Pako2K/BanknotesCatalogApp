@@ -7,7 +7,7 @@ $(".main-footer").ready(function() {
 let footerTimer;
 
 function resetExpiration() {
-    let user = getCookie("banknotes.ODB.username");
+    let user = getCookie(_COOKIE_USERNAME);
     if (user !== undefined && user !== "") {
         $(".session-info").show();
 
@@ -24,7 +24,7 @@ function resetExpiration() {
                 if (result.expiration) {
                     let expSec = result.expiration / 1000;
                     $("#expiration").text(Math.ceil(expSec / 60) + " minutes");
-                    $("#last-connection").text(getCookie("banknotes.ODB.lastConnection"));
+                    $("#last-connection").text(getCookie(_COOKIE_LAST_CONNECTION));
                     clearInterval(footerTimer);
                     footerTimer = setInterval(() => {
                         expSec -= INTERVAL;

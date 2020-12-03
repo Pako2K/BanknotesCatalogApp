@@ -5,7 +5,7 @@ $("#denominations-table").ready(readDenominations);
 function readDenominations() {
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         itemsUri = "/denominations/items/stats";
     else
         variantsUri = "/denominations/variants/stats";
@@ -189,7 +189,7 @@ function loadDenominationsTable() {
         $("#denominations-table>tbody").append(record);
     }
 
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

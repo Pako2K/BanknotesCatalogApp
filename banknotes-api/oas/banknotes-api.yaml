@@ -1559,7 +1559,7 @@ components:
         type: integer
     cookieUsername:
       in: cookie
-      name: banknotes.ODB.username
+      name: BOC.user.name
       required: true
       description: logged in user name
       schema:

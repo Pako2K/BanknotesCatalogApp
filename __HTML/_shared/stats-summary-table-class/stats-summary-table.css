@@ -1,0 +1,315 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+p.not-logged-in {
+  display: none;
+  color: #0a320a;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px 2px #dcfadc;
+  margin-top: 0.4em;
+}
+
+p.not-logged-in > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.not-logged-in > a:visited {
+  color: #0a320a;
+}
+
+p.not-logged-in > a:hover {
+  color: black;
+}
+
+p.not-logged-in > a:active {
+  color: black;
+}
+
+table.stats-summary-table > thead th[colspan] {
+  font-size: 0.75em;
+  padding: 0.5em;
+}
+
+table.stats-summary-table > thead td {
+  font-size: 0.65em;
+  padding: 0.6em 0.5em;
+}
+
+table.stats-summary-table tbody th {
+  font-size: 0.75em;
+  padding: 0.5em;
+}
+
+table.stats-summary-table tbody td {
+  font-size: 0.8em;
+}
+
+table.stats-summary-table tfoot th {
+  font-size: 0.8em;
+  padding: 0.5em 1em;
+}
+
+table.stats-summary-table tfoot td {
+  font-size: 0.9em;
+  padding: 0.5em;
+}
+
+p.login-warning {
+  margin-top: 0;
+  color: #0a1e0a;
+  text-align: center;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-weight: bold;
+}
+
+p.login-warning > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.login-warning > a:visited {
+  color: #0a1e0a;
+}
+
+p.login-warning > a:hover {
+  color: black;
+}
+
+p.login-warning > a:active {
+  color: black;
+}
+
+table.stats-summary-table {
+  border-collapse: collapse;
+  -webkit-box-shadow: 1px 1px 3px 2px grey;
+          box-shadow: 1px 1px 3px 2px grey;
+  margin: 2px 4px;
+}
+
+table.stats-summary-table > thead {
+  font-family: "Source Sans Pro", "sans-serif";
+  text-align: center;
+  background-color: #2c5f5f;
+  color: white;
+}
+
+table.stats-summary-table > thead th:not(:first-child) {
+  border-left: solid 1px lightgrey;
+}
+
+table.stats-summary-table > thead th[colspan] {
+  border-bottom: solid 1px black;
+}
+
+table.stats-summary-table > thead th > div {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0.1em;
+}
+
+table.stats-summary-table > thead td {
+  border-bottom: solid 1px black;
+}
+
+table.stats-summary-table tbody th {
+  font-family: "Source Sans Pro", "sans-serif";
+  text-align: left;
+  color: black;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+table.stats-summary-table tbody th > div {
+  vertical-align: middle;
+  margin: 0 0.25em;
+}
+
+table.stats-summary-table tbody td {
+  font-family: "sans-serif";
+  text-align: center;
+}
+
+table.stats-summary-table td.sub-column-1:not(:first-child) {
+  border-left: solid 1px lightgrey;
+}
+
+table.stats-summary-table tbody tr:nth-child(odd) {
+  background-color: white;
+}
+
+table.stats-summary-table tfoot {
+  color: white;
+  background-color: #2c5f5f;
+}
+
+table.stats-summary-table tbody tr:nth-child(even) {
+  background-color: #eeeeee;
+}
+
+table.stats-summary-table tbody td.not-logged-in,
+table.stats-summary-table tfoot td.not-logged-in {
+  font-weight: bold;
+  color: darkgreen;
+}
+
+table.stats-summary-table tbody td:not(.sub-column-1):not(.not-logged-in) {
+  color: darkred;
+}
+
+table.stats-summary-table tbody td.sub-column-1 {
+  color: black;
+}
+
+table.stats-summary-table tbody td.not-logged-in {
+  font-weight: bold;
+  color: darkgreen;
+}
+
+table.stats-summary-table tfoot td:not(.sub-column-1):not(.not-logged-in) {
+  color: whitesmoke;
+}
+
+table.stats-summary-table tfoot td.sub-column-1 {
+  color: whitesmoke;
+}
+
+table.stats-summary-table tfoot td.not-logged-in {
+  color: white;
+}
+
+table.stats-summary-table tfoot th {
+  font-family: "Source Sans Pro", "sans-serif";
+  text-align: right;
+}
+
+table.stats-summary-table tfoot td {
+  font-family: "sans-serif";
+  text-align: center;
+}
+
+table.stats-summary-table .disabled-stats-cell {
+  -webkit-filter: blur(1px) opacity(40%);
+          filter: blur(1px) opacity(40%);
+}
+
+table.stats-summary-table .not-logged-in {
+  opacity: 0.4;
+}
+
+@media screen and (max-width: 1000px) {
+  table.stats-summary-table > thead th[colspan] {
+    font-size: 0.675em;
+    padding: 0.45em;
+  }
+  table.stats-summary-table > thead td {
+    font-size: 0.585em;
+    padding: 0.54em 0.45em;
+  }
+  table.stats-summary-table tbody th {
+    font-size: 0.675em;
+    padding: 0.45em;
+  }
+  table.stats-summary-table tbody td {
+    font-size: 0.72em;
+  }
+  table.stats-summary-table tfoot th {
+    font-size: 0.72em;
+    padding: 0.45em 0.9em;
+  }
+  table.stats-summary-table tfoot td {
+    font-size: 0.81em;
+    padding: 0.45em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  table.stats-summary-table > thead th[colspan] {
+    font-size: 0.6375em;
+    padding: 0.425em;
+  }
+  table.stats-summary-table > thead td {
+    font-size: 0.5525em;
+    padding: 0.51em 0.425em;
+  }
+  table.stats-summary-table tbody th {
+    font-size: 0.6375em;
+    padding: 0.425em;
+  }
+  table.stats-summary-table tbody td {
+    font-size: 0.68em;
+  }
+  table.stats-summary-table tfoot th {
+    font-size: 0.68em;
+    padding: 0.425em 0.85em;
+  }
+  table.stats-summary-table tfoot td {
+    font-size: 0.765em;
+    padding: 0.425em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  table.stats-summary-table > thead th[colspan] {
+    font-size: 0.5625em;
+    padding: 0.375em;
+  }
+  table.stats-summary-table > thead td {
+    font-size: 0.4875em;
+    padding: 0.45em 0.375em;
+  }
+  table.stats-summary-table tbody th {
+    font-size: 0.5625em;
+    padding: 0.375em;
+  }
+  table.stats-summary-table tbody td {
+    font-size: 0.6em;
+  }
+  table.stats-summary-table tfoot th {
+    font-size: 0.6em;
+    padding: 0.375em 0.75em;
+  }
+  table.stats-summary-table tfoot td {
+    font-size: 0.675em;
+    padding: 0.375em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  table.stats-summary-table > thead th[colspan] {
+    font-size: 0.525em;
+    padding: 0.35em;
+  }
+  table.stats-summary-table > thead td {
+    font-size: 0.455em;
+    padding: 0.42em 0.35em;
+  }
+  table.stats-summary-table tbody th {
+    font-size: 0.525em;
+    padding: 0.35em;
+  }
+  table.stats-summary-table tbody td {
+    font-size: 0.56em;
+  }
+  table.stats-summary-table tfoot th {
+    font-size: 0.56em;
+    padding: 0.35em 0.7em;
+  }
+  table.stats-summary-table tfoot td {
+    font-size: 0.63em;
+    padding: 0.35em;
+  }
+}
+/*# sourceMappingURL=stats-summary-table.css.map */

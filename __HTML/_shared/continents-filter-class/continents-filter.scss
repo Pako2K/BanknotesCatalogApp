@@ -1,0 +1,58 @@
+@import '../common';
+$size: 1.1em;
+#continents-filter-html-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    & p {
+        @include no-user-select;
+        @include tap-nohighlight;
+        font: normal $size FONT_HEADER;
+        color: black;
+        background: white;
+        width: 16.67%;
+        text-align: center;
+        margin: auto;
+        padding: 0.5em 0;
+        border-bottom: solid 1px darkgrey;
+        cursor: pointer;
+        &.selectedContinent {
+            color: white;
+            text-shadow: 2px 2px 2px black;
+            background: linear-gradient(45deg, rgb(81, 180, 180), rgb(51, 118, 118));
+        }
+        &.deselectedContinent {
+            color: rgb(182, 182, 182);
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    #continents-filter-html-container {
+        flex-wrap: wrap;
+        & p {
+            width: 33.33%;
+            font-size: $size * $WIDTH_FACTOR_SMALL_TABLET;
+            padding: 0.5em * $WIDTH_FACTOR_SMALL_TABLET 0;
+        }
+    }
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    #continents-filter-html-container>p {
+        font-size: $size * $HEIGHT_FACTOR_BIG_PHONE;
+        padding: 0.5em * $HEIGHT_FACTOR_BIG_PHONE 0;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    #continents-filter-html-container>p {
+        font-size: $size * $WIDTH_FACTOR_BIG_PHONE;
+        padding: 0.5em * $WIDTH_FACTOR_BIG_PHONE 0;
+    }
+    .selectedContinent {
+        text-shadow: 1px 1px 2px black
+    }
+}

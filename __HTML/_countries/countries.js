@@ -1,9 +1,91 @@
-"use strict"
+let countriesTable;
+let statsSummaryTable;
+let foundedFilter;
+let extinctFilter;
+let existingButton;
+let extinctButton;
+let terTypeButtons = [];
 
-$("#countries-table").ready(() => {
+let territoryTypesJSON;
+let territoryTypesMap;
+
+// Statistics
+let statsTerType = [];
+
+$(document).ready(() => {
+    $("body>header").load("/_shared/header/__header.html");
+
+    new ContinentsFilter($("#continents-filter"), changedContinent);
+
+    $("body>footer").load("/_shared/footer/__footer.html");
+
+    if (getCookie(_COOKIE_COUNTRY_FILTERS_HIDE) === "")
+        hideBlock("#territory-filters span:last-of-type", "filters");
+    if (getCookie(_COOKIE_COUNTRY_STATS_HIDE) === "")
+        hideBlock("#territory-stats span:last-of-type", "stats");
+
+
+    foundedFilter = new FromToFilter($("#years-filter>div:first-of-type"), "Founded", yearFilterChanged);
+    extinctFilter = new FromToFilter($("#years-filter>div:last-of-type"), "Extinct", yearFilterChanged);
+
+    foundedFilter.initFrom(getCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_FROM));
+    foundedFilter.initTo(getCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_TO));
+    extinctFilter.initFrom(getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_FROM));
+    extinctFilter.initTo(getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_TO));
+
+    // Load Country types synchronously, before anything else
+    $.ajax({
+        type: "GET",
+        url: `/territory-types`,
+        async: false,
+        cache: true,
+        timeout: TIMEOUT,
+        dataType: 'json',
+        success: function(result, status) {
+            let disabledTerTypes = [];
+            let cookie = getCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED);
+            if (cookie)
+                disabledTerTypes = cookie.split("#");
+
+            territoryTypesJSON = result;
+            territoryTypesMap = [];
+            let rows = [];
+            territoryTypesJSON.forEach(element => {
+                territoryTypesMap[element.id] = element.abbrevation;
+                statsTerType[element.id] = { existing: { total: 0, issuing: 0, col: 0 }, extinct: { total: 0, issuing: 0, col: 0 } };
+
+                rows.push({ id: element.id, name: element.name });
+
+                $("#types-filter>ul").append(`<li><div id="ter-type-${element.id}"></div>${element.name}</li>`);
+                terTypeButtons[element.id] = new SlideButton($(`#ter-type-${element.id}`), 24, 13, true, terTypeFilterChanged);
+            });
+
+            statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Issuer", "Collect."], rows);
+            disabledTerTypes.forEach((val, idx) => {
+                terTypeButtons[parseInt(val)].click();
+            });
+
+        },
+        error: function(xhr, status, error) {
+            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+        }
+    });
+
+    // Add slide buttons
+    existingButton = new SlideButton($("#existing-slide-button"), 30, 16, true, stateFilterChanged);
+    extinctButton = new SlideButton($("#extinct-slide-button"), 30, 16, true, stateFilterChanged);
+
+    if (getCookie(_COOKIE_COUNTRY_FILTER_EXISTING) == "false") existingButton.click();
+    if (getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT) == "false") extinctButton.click();
+
+
+    let existingInYear = getCookie(_COOKIE_COUNTRY_FILTER_EXISTING_IN_YEAR);
+    if (existingInYear)
+        $("#existing-year-filter>input").val(existingInYear).blur();
+
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie(_COOKIE_USERNAME))
         itemsUri = "/territories/items/stats";
     else
         variantsUri = "/territories/variants/stats";
@@ -30,7 +112,16 @@ $("#countries-table").ready(() => {
                     row.collectionStats.price = 0;
                 }
             }
-            storeCountriesTable(countriesJSON, "name", false);
+            // Store and load data
+            countriesTable = new StatsListTable($("#territories-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
+                { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
+                { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
+                { name: "Founded", align: "center", isSortable: 1, optionalShow: 1 },
+                { name: "Finished", align: "center", isSortable: 1, optionalShow: 1 },
+                { name: "Type", align: "center", isSortable: 0, optionalShow: 0 }
+            ], ["Currencies", "Issues", "Denoms.", "Note Types", "Variants"], loadTables);
+
+            countriesTable.loadData(countriesJSON, "Name");
         },
         error: function(xhr, status, error) {
             switch (xhr.status) {
@@ -44,231 +135,209 @@ $("#countries-table").ready(() => {
             }
         }
     });
-});
+})
 
-
-function continentFilterUpdated(contId) {
-    setContinentImg();
-
-    // Update page
-    loadCountriesTable();
-}
-
-
-function sortClick(htmlElem, titleStr) {
-    let mapKey = listTableSetSortingColumn(htmlElem);
-
-    // Determine the field name (it might no be the title of the column)
-    if (titleStr)
-        mapKey = titleStr;
-
-    // Load table body
-    // Mapping column name - field name
-    let mapFieldName = {
-        "ISO": "iso3",
-        "Name": "name",
-        "Founded": "start",
-        "Finished": "end",
-        "Currencies": "numCurrencies",
-        "Issues": "numSeries",
-        "Denom.": "numDenominations",
-        "Notes": "numNotes",
-        "Variants": "numVariants",
-        "Price": "collectionStats.price"
-    };
-    let flag = $(htmlElem).text() === "Collect.";
-    storeCountriesTable(JSON.parse($("#countries-table").data("value")), mapFieldName[mapKey], flag);
-}
-
-
-function storeCountriesTable(countriesJSON, sortingField, isCollecBasedSorting) {
-    // Retrieve sorting 
-    let sortingAsc = $(".sort-selection").hasClass("sort-asc");
-
-    if (sortingField) {
-        // Reverse sorting for statistic fields
-        let statsFieldNames = [
-            "numCurrencies",
-            "numSeries",
-            "numDenominations",
-            "numNotes",
-            "numVariants"
-        ];
-        if (statsFieldNames.indexOf(sortingField) !== -1)
-            sortingAsc = !sortingAsc;
-
-        if (isCollecBasedSorting)
-            sortingField = "collectionStats." + sortingField;
-
-        let sortingFields = [sortingField];
-        if (sortingField !== "name")
-            sortingFields.push("name");
-
-        countriesJSON = sortJSON(countriesJSON, sortingFields, sortingAsc);
+function showBlock(elem, blockName) {
+    if (!$(elem).hasClass("disabled")) {
+        $(elem).parent().parent().siblings().show();
+        $(elem).siblings(".disabled").removeClass("disabled");
+        $(elem).addClass("disabled");
     }
 
-    $("#countries-table").data("value", JSON.stringify(countriesJSON));
+    if (blockName === 'filters')
+        deleteCookie(_COOKIE_COUNTRY_FILTERS_HIDE);
+    else
+        deleteCookie(_COOKIE_COUNTRY_STATS_HIDE);
+}
 
-    // Load countries table body
-    loadCountriesTable();
+function hideBlock(elem, blockName) {
+    if (!$(elem).hasClass("disabled")) {
+        $(elem).parent().parent().siblings().hide();
+        $(elem).siblings(".disabled").removeClass("disabled");
+        $(elem).addClass("disabled");
+    }
+    if (blockName === 'filters')
+        setCookie(_COOKIE_COUNTRY_FILTERS_HIDE, "");
+    else
+        setCookie(_COOKIE_COUNTRY_STATS_HIDE, "");
 }
 
 
-function loadCountriesTable() {
-    // Retrieve filters from the Cookies
-    let filterContId = Number(getCookie("banknotes.ODB.selectedContinent") || 0);
+function changedContinent(contId, contName) {
 
-    let foundedFrom = Number(getCookie("banknotes.ODB.filter.foundedFrom") || -10000);
-    let foundedTo = Number(getCookie("banknotes.ODB.filter.foundedTo") || new Date().getFullYear());
-    let yearFromStr = getCookie("banknotes.ODB.filter.disappearedFrom");
-    let yearToStr = getCookie("banknotes.ODB.filter.disappearedTo");
-    let disappearedFrom;
-    if (yearFromStr !== "") disappearedFrom = Number(yearFromStr);
-    let disappearedTo;
-    if (yearToStr !== "") disappearedTo = Number(yearToStr);
-    let existing = Number(getCookie("banknotes.ODB.filter.existing") || 1);
-    let extinct = Number(getCookie("banknotes.ODB.filter.extinct") || 1);
+    $("#applied-filters>span.cont-name").text(contName);
 
-    let terTypesJSON = JSON.parse($("#countries-filters").data("territory-types"));
-    let countryTypesArray = [];
-    for (let type of terTypesJSON) {
-        let countryTypeStr = getCookie(`banknotes.ODB.filter.countryTypeId-${type.id}`);
-        if (countryTypeStr === undefined || countryTypeStr === "1") {
-            countryTypesArray.push(type.id);
+    // Get data and reload the tables
+    if (countriesTable)
+        loadTables(countriesTable.getData());
+}
+
+function yearFilterChanged(filterName, from, to) {
+    // Store value in the cookie
+    if (filterName === "Founded") {
+        setCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_FROM, from);
+        setCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_TO, to);
+    } else {
+        setCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_FROM, from);
+        setCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_TO, to);
+    }
+
+    // Get data and reload the tables
+    if (countriesTable)
+        loadTables(countriesTable.getData());
+}
+
+function stateFilterChanged(id, state) {
+    let type = id.split('-')[0];
+
+    if (type === "existing") {
+        setCookie(_COOKIE_COUNTRY_FILTER_EXISTING, state);
+    } else {
+        setCookie(_COOKIE_COUNTRY_FILTER_EXTINCT, state);
+    }
+
+    if (!state) {
+        statsSummaryTable.disableColumns((type === "existing") ? 0 : 1);
+        $(`#applied-filters>span.${type}`).text("Not " + type);
+        $(`#applied-filters>span.${type}`).show();
+    } else {
+        statsSummaryTable.enableColumns((type === "existing") ? 0 : 1);
+        $(`#applied-filters>span.${type}`).hide();
+    }
+
+    // Get data and reload the tables
+    if (countriesTable)
+        loadTables(countriesTable.getData());
+}
+
+function terTypeFilterChanged(id, state) {
+    let terTypeId = id.split("-")[2];
+    let disabledTerTypes = [];
+    let cookie = getCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED);
+    if (cookie)
+        disabledTerTypes = cookie.split("#");
+
+    if (!state) {
+        statsSummaryTable.disableRow(terTypeId);
+        // Add to Cookie
+        if (disabledTerTypes.indexOf(terTypeId) === -1)
+            disabledTerTypes.push(terTypeId);
+    } else {
+        statsSummaryTable.enableRow(terTypeId);
+        // Update Cookie
+        let pos = disabledTerTypes.indexOf(terTypeId);
+        if (pos !== -1)
+            disabledTerTypes.splice(pos, 1);
+    }
+    setCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED, disabledTerTypes.join("#"));
+
+    // Get data and reload the tables
+    if (countriesTable)
+        loadTables(countriesTable.getData());
+}
+
+function existingYearFilterChanged(elem) {
+    if ($(elem).data("init-value") !== $(elem).val()) {
+        setCookie(_COOKIE_COUNTRY_FILTER_EXISTING_IN_YEAR, $(elem).val());
+
+        if ($(elem).val() && $(elem).val() != "") {
+            $(`#applied-filters>span.existing-in`).text("Existing in " + $(elem).val());
+            $(`#applied-filters>span.existing-in`).show();
+        } else {
+            $(`#applied-filters>span.existing-in`).hide();
         }
+        $(elem).data("init-value", $(elem).val());
+        if (countriesTable)
+            loadTables(countriesTable.getData());
     }
+}
 
-    // Clean table body and foot
-    $("#countries-table>tbody").empty();
-    $("#countries-table>tfoot>tr").empty();
-
-    // Retrieve countries info in JSON object
-    let countriesJSON = JSON.parse($("#countries-table").data("value"));
-
-    let record = "";
-
+function loadTables(countriesJSON) {
     let totals = {
-        currencies: { cat: 0, col: 0 },
-        series: { cat: 0, col: 0 },
-        denom: { cat: 0, col: 0 },
-        notes: { cat: 0, col: 0 },
         variants: { cat: 0, col: 0 },
         price: 0
     };
 
-    // Statistics
-    let statsTerType = [];
-    let territoryTypes = JSON.parse($("#countries-filters").data("territory-types"));
-    // Territory type id's 
-    const TER_TYPES = [];
-    territoryTypes.forEach(element => {
-        TER_TYPES[element.id] = element.abbrevation;
-        statsTerType[element.id] = { existing: { total: 0, issuing: 0, col: 0 }, extinct: { total: 0, issuing: 0, col: 0 } };
-    });
+    // Clean-up table
+    countriesTable.clean();
+
+    // Reset stats
+    statsTerType.forEach((elem, idx) => {
+        statsTerType[idx] = { existing: { total: 0, issuing: 0, col: 0 }, extinct: { total: 0, issuing: 0, col: 0 } };
+    })
 
     for (let country of countriesJSON) {
+
         // Apply filters
-        if (country.start <= foundedTo && country.start >= foundedFrom && (filterContId === 0 || country.continentId === filterContId)) {
-            if (disappearedFrom && (country.end === null || country.end < disappearedFrom)) continue;
-            if (disappearedTo && (country.end === null || country.end > disappearedTo)) continue;
-            if ((!extinct && (country.end !== null && country.end < foundedTo)) ||
-                (!existing && (country.end === null || country.end >= foundedTo)) ||
-                (countryTypesArray.indexOf(country.territoryTypeId) === -1))
-                continue;
+        let filterContId = ContinentsFilter.getSelectedId();
+        if (filterContId && filterContId !== country.continentId) continue;
 
-            if (!country.end)
-                country.end = "";
+        let foundedFrom = foundedFilter.getFrom();
+        let foundedTo = foundedFilter.getTo();
+        if ((foundedFrom && country.start < foundedFrom) || (foundedTo && country.start > foundedTo)) continue;
 
-            let flagFileName = country.iso3;
-            if (!country.iso3) {
-                country.iso3 = "-";
-                // Remove spaces and commas
-                flagFileName = country.name.replace(/,|\s/g, "");
+        let extinctFrom = extinctFilter.getFrom();
+        let extinctTo = extinctFilter.getTo();
+        if ((extinctFrom && country.end < extinctFrom) || (extinctTo && country.end > extinctTo)) continue;
+
+        let existingInYear = $("#existing-year-filter input").val();
+        if (existingInYear && !(country.start < existingInYear && (!country.end || country.end > existingInYear))) continue;
+
+        if (!terTypeButtons[country.territoryTypeId].isActive()) continue;
+
+        let showExisting = existingButton.isActive();
+        let showExtinct = extinctButton.isActive();
+        if ((!showExtinct && (country.end !== null)) ||
+            (!showExisting && (country.end === null))
+        ) continue;
+
+        let flagFileName = country.iso3;
+        if (!country.iso3) {
+            country.iso3 = "-";
+            // Remove spaces and commas
+            flagFileName = country.name.replace(/,|\s/g, "");
+        }
+
+        let descFields = [];
+        descFields.push(`<img src="/data/_flags_/${flagFileName.toLowerCase()}.png">`);
+        descFields.push(country.iso3);
+        descFields.push(`<a href="/_country/index.html?countryId=${country.id}">${country.name}</a>`);
+        descFields.push(country.start);
+        descFields.push(country.end ? country.end : "");
+        descFields.push(territoryTypesMap[country.territoryTypeId]);
+        countriesTable.addRecord(descFields, [country.numCurrencies, country.numSeries, country.numDenominations, country.numNotes, country.numVariants], [country.collectionStats.numCurrencies, country.collectionStats.numSeries, country.collectionStats.numDenominations, country.collectionStats.numNotes, country.collectionStats.numVariants],
+            country.collectionStats.price);
+
+        // Totals:
+        totals.variants.cat += parseInt(country.numVariants);
+        totals.variants.col += country.collectionStats.numVariants;
+        totals.price += country.collectionStats.price;
+
+        // Statistics:
+        if ( /*existing &&*/ !country.end || country.end === "") {
+            statsTerType[country.territoryTypeId].existing.total++;
+            if (country.numCurrencies) {
+                statsTerType[country.territoryTypeId].existing.issuing++;
+                if (country.collectionStats.numCurrencies)
+                    statsTerType[country.territoryTypeId].existing.col++;
             }
-
-            let priceStr = (country.collectionStats.price === 0) ? '-' : country.collectionStats.price.toFixed(2) + ' €';
-            record = `<tr>
-                                <th><img src="/data/_flags_/` + flagFileName.toLowerCase() + `.png"></th>
-                                <th>${country.iso3}</th>
-                                <th class="name"><a href="/_country/index.html?countryId=` + country.id + `">` + country.name + `</a></th>
-                                <th>` + country.start + `</th>
-                                <th>` + country.end + `</th>
-                                <th>` + TER_TYPES[country.territoryTypeId] + `</th>
-                                <td>${country.numCurrencies}</td>
-                                <td class="only-logged-in">${country.collectionStats.numCurrencies || '-'}</td>
-                                <td>${country.numSeries}</td>
-                                <td class="only-logged-in">${country.collectionStats.numSeries || '-'}</td>
-                                <td>${country.numDenominations}</td>
-                                <td class="only-logged-in">${country.collectionStats.numDenominations || '-'}</td>
-                                <td>${country.numNotes}</td>
-                                <td class="only-logged-in">${country.collectionStats.numNotes || '-'}</td>
-                                <td>${country.numVariants}</td>
-                                <td class="only-logged-in">${country.collectionStats.numVariants || '-'}</td>
-                                <td class="only-logged-in">${priceStr}</td>
-                            </tr>`;
-            $("#countries-table>tbody").append(record);
-
-            totals.currencies.cat += parseInt(country.numCurrencies);
-            totals.currencies.col += country.collectionStats.numCurrencies;
-            totals.series.cat += parseInt(country.numSeries);
-            totals.series.col += country.collectionStats.numSeries;
-            totals.denom.cat += parseInt(country.numDenominations);
-            totals.denom.col += country.collectionStats.numDenominations;
-            totals.notes.cat += parseInt(country.numNotes);
-            totals.notes.col += country.collectionStats.numNotes;
-            totals.variants.cat += parseInt(country.numVariants);
-            totals.variants.col += country.collectionStats.numVariants;
-            totals.price += country.collectionStats.price;
-
-            // Statistics:
-            if (existing && country.end === "") {
-                statsTerType[country.territoryTypeId].existing.total++;
-                if (country.numCurrencies) {
-                    statsTerType[country.territoryTypeId].existing.issuing++;
-                    if (country.collectionStats.numCurrencies)
-                        statsTerType[country.territoryTypeId].existing.col++;
-                }
-            } else {
-                statsTerType[country.territoryTypeId].extinct.total++;
-                if (country.numCurrencies) {
-                    statsTerType[country.territoryTypeId].extinct.issuing++;
-                    if (country.collectionStats.numCurrencies)
-                        statsTerType[country.territoryTypeId].extinct.col++;
-                }
+        } else {
+            statsTerType[country.territoryTypeId].extinct.total++;
+            if (country.numCurrencies) {
+                statsTerType[country.territoryTypeId].extinct.issuing++;
+                if (country.collectionStats.numCurrencies)
+                    statsTerType[country.territoryTypeId].extinct.col++;
             }
         }
     }
 
-    let totalsHTML = `<th colspan="6">TOTAL</th>
-                        <td>${totals.currencies.cat}</td>
-                        <td class="only-logged-in">${totals.currencies.col}</td>
-                        <td>${totals.series.cat}</td>
-                        <td class="only-logged-in">${totals.series.col}</td>
-                        <td>${totals.denom.cat}</td>
-                        <td class="only-logged-in">${totals.denom.col}</td>
-                        <td>${totals.notes.cat}</td>
-                        <td class="only-logged-in">${totals.notes.col}</td>
-                        <td>${totals.variants.cat}</td>
-                        <td class="only-logged-in">${totals.variants.col}</td>
-                        <td class="only-logged-in">${totals.price.toFixed(2)} €</td>`;
-    $("#countries-table>tfoot>tr").append(totalsHTML);
+    countriesTable.setFooter(totals.variants.cat, totals.variants.col, totals.price);
 
-    // Add statisctics to stats table
+
+    // Add statistics to stats summary table
     let statsValuesJSON = [];
     statsTerType.forEach((elem, key) => {
-        statsValuesJSON.push({
-            rowId: `filter-row-${key}`,
-            values: [elem.existing.total, elem.existing.issuing, elem.existing.col,
-                elem.extinct.total, elem.extinct.issuing, elem.extinct.col
-            ]
-        });
+        statsValuesJSON[key] = [elem.existing.total, elem.existing.issuing, elem.existing.col, elem.extinct.total, elem.extinct.issuing, elem.extinct.col];
     });
-    statsFilterTableSetData($("table.stats-filter-table"), statsValuesJSON);
-
-    // Hide collection columns if no user is logged 
-    if (!getCookie("banknotes.ODB.username")) {
-        $(".only-logged-in").css('opacity', '0.25');
-        // Show warning
-        $("p.not-logged-in").show();
-    }
+    statsSummaryTable.setData(statsValuesJSON);
 }

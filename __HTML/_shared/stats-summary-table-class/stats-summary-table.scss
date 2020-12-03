@@ -1,0 +1,173 @@
+@import '../common';
+@mixin media-screen-block($scale-factor: 1) {
+    table.stats-summary-table {
+        &>thead {
+            & th[colspan] {
+                font-size: 0.75em * $scale-factor;
+                padding: 0.5em * $scale-factor;
+            }
+            & td {
+                font-size: 0.65em * $scale-factor;
+                padding: 0.6em * $scale-factor 0.5em * $scale-factor;
+            }
+        }
+        & tbody {
+            & th {
+                font-size: 0.75em * $scale-factor;
+                padding: 0.5em * $scale-factor;
+            }
+            & td {
+                font-size: 0.8em * $scale-factor;
+            }
+        }
+        & tfoot {
+            & th {
+                font-size: 0.8em * $scale-factor;
+                padding: 0.5em * $scale-factor 1em * $scale-factor;
+            }
+            & td {
+                font-size: 0.9em * $scale-factor;
+                padding: 0.5em * $scale-factor;
+            }
+        }
+    }
+}
+
+@include media-screen-block();
+p.login-warning {
+    margin-top: 0;
+    color: rgb(10, 30, 10);
+    text-align: center;
+    font-family: $FONT_HEADER;
+    font-weight: bold;
+    &>a {
+        &:link {
+            text-shadow: 2px 2px 2px rgb(220, 250, 220);
+            text-decoration: underline dotted;
+            text-underline-position: under;
+        }
+        &:visited {
+            color: rgb(10, 30, 10);
+        }
+        &:hover {
+            color: black;
+        }
+        &:active {
+            color: black;
+        }
+    }
+}
+
+table.stats-summary-table {
+    border-collapse: collapse;
+    box-shadow: 1px 1px 3px 2px grey;
+    margin: 2px 4px;
+    &>thead {
+        font-family: $FONT_HEADER;
+        text-align: center;
+        background-color: rgb(44, 95, 95);
+        color: white;
+        & th:not(:first-child) {
+            border-left: solid 1px lightgrey;
+        }
+        & th[colspan] {
+            border-bottom: solid 1px black;
+        }
+        & th>div {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 0.1em;
+        }
+        & td {
+            border-bottom: solid 1px black;
+        }
+    }
+    & tbody {
+        & th {
+            font-family: $FONT_HEADER;
+            text-align: left;
+            color: black;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            &>div {
+                vertical-align: middle;
+                margin: 0 0.25em;
+            }
+        }
+        & td {
+            font-family: $FONT_DATA;
+            text-align: center;
+        }
+    }
+    & td.sub-column-1:not(:first-child) {
+        border-left: solid 1px lightgrey;
+    }
+    & tbody tr:nth-child(odd) {
+        background-color: white;
+    }
+    & tfoot {
+        color: white;
+        background-color: rgb(44, 95, 95);
+    }
+    & tbody tr:nth-child(even) {
+        background-color: rgb(238, 238, 238);
+    }
+    & tbody td.not-logged-in,
+    & tfoot td.not-logged-in {
+        font-weight: bold;
+        color: darkgreen;
+    }
+    & tbody td:not(.sub-column-1):not(.not-logged-in) {
+        color: darkred;
+    }
+    & tbody td.sub-column-1 {
+        color: black;
+    }
+    & tbody td.not-logged-in {
+        font-weight: bold;
+        color: darkgreen;
+    }
+    & tfoot td:not(.sub-column-1):not(.not-logged-in) {
+        color: whitesmoke;
+    }
+    & tfoot td.sub-column-1 {
+        color: whitesmoke;
+    }
+    & tfoot td.not-logged-in {
+        color: white;
+    }
+    & tfoot {
+        & th {
+            font-family: $FONT_HEADER;
+            text-align: right;
+        }
+        & td {
+            font-family: $FONT_DATA;
+            text-align: center;
+        }
+    }
+    & .disabled-stats-cell {
+        filter: blur(1px) opacity(40%);
+    }
+    & .not-logged-in {
+        opacity: 0.4;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+}

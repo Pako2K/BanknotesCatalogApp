@@ -1,0 +1,222 @@
+@import '../common';
+@mixin media-screen-block($scale-factor: 1) {
+    p.login-warning {
+        font-size: 0.9em*$scale-factor;
+        margin-bottom: 0.4em;
+    }
+    table.stats-list-table {
+        &>thead {
+            & th {
+                font-size: 0.8em*$scale-factor;
+                padding: 0.8em*$scale-factor 0.5em*$scale-factor;
+            }
+            & td {
+                font-size: 0.7em*$scale-factor;
+                padding: 0.6em*$scale-factor 0.4em*$scale-factor;
+            }
+        }
+        &>tbody th>img {
+            height: 1.2em*$scale-factor;
+        }
+        &>tbody th,
+        td {
+            font-size: 0.8em*$scale-factor;
+            padding: 0.5em*$scale-factor 0.5em*$scale-factor;
+        }
+        &>tfoot {
+            &>tr>th {
+                font-size: 0.8em*$scale-factor;
+                padding: 0.5em*$scale-factor 0.5em*$scale-factor;
+            }
+            &>tr>td {
+                font-size: 0.8em*$scale-factor;
+                padding: 0.5em*$scale-factor 0.5em*$scale-factor;
+            }
+        }
+    }
+}
+
+@include media-screen-block();
+p.login-warning {
+    margin-top: 0;
+    color: rgb(10, 30, 10);
+    text-align: center;
+    font-family: $FONT_HEADER;
+    font-weight: bold;
+    &>a {
+        &:link {
+            text-shadow: 2px 2px 2px rgb(220, 250, 220);
+            text-decoration: underline dotted;
+            text-underline-position: under;
+        }
+        &:visited {
+            color: rgb(10, 30, 10);
+        }
+        &:hover {
+            color: black;
+        }
+        &:active {
+            color: black;
+        }
+    }
+}
+
+table.stats-list-table {
+    border-collapse: collapse;
+    margin: auto;
+    box-shadow: 1px 1px 4px 2px grey; // Does not work on EDGE because of border collapse!
+    &>thead {
+        font-family: $FONT_HEADER;
+        text-align: center;
+        color: whitesmoke;
+        th {
+            @include no-user-select;
+            background: linear-gradient(0deg, rgb(150, 65, 65), rgb(110, 55, 55));
+            border-bottom: solid 1px black;
+            white-space: nowrap;
+        }
+        td {
+            @include no-user-select;
+            background: rgb(150, 65, 65);
+            border-bottom: solid 1px black;
+            white-space: nowrap;
+        }
+        th.th-stats {
+            border-left: solid 1px rgb(230, 230, 230);
+        }
+        td:nth-of-type(odd) {
+            border-left: solid 1px rgb(230, 230, 230);
+        }
+    }
+    &>tbody {
+        & th {
+            font-family: $FONT_HEADER;
+            &>a:link {
+                color: black;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            &>a:visited {
+                color: black;
+            }
+            &>a:hover {
+                color: black;
+                text-decoration: none;
+                border-bottom: dotted 0.75px black;
+            }
+            &>a:active {
+                color: brown;
+            }
+        }
+        & td {
+            font-family: $FONT_DATA;
+        }
+        & th,
+        & td {
+            white-space: nowrap;
+            font-weight: normal;
+            text-align: center;
+        }
+        & .align-left {
+            text-align: left;
+        }
+        // Alternative background-color and borders ;
+        &>tr:nth-child(even) {
+            background-color: rgb(242, 243, 243);
+        }
+        &>tr:nth-child(odd) {
+            background-color: rgb(234, 233, 233);
+        }
+        &>tr>td:nth-of-type(odd) {
+            border-left: solid 1px lightgrey;
+        }
+        &>tr>td:nth-of-type(even),
+        &>tr>td:last-child {
+            color: darkred;
+        }
+    }
+    &>tfoot {
+        background-color: rgb(110, 55, 55);
+        color: whitesmoke;
+        &>tr>th {
+            font-family: $FONT_HEADER;
+            text-align: right;
+        }
+        &>tr>td {
+            font-family: $FONT_DATA;
+            text-align: center;
+            font-weight: bold;
+            &:first-of-type {
+                border-left: solid 1px lightgrey;
+            }
+        }
+    }
+    & .not-logged-in {
+        opacity: 0.4;
+    }
+}
+
+.is-sortable {
+    margin-right: 0.3em;
+    border-bottom: 1px dotted transparent;
+}
+
+.is-sortable:hover {
+    cursor: pointer;
+    border-bottom-color: whitesmoke;
+}
+
+.is-sortable.sorting-column {
+    border-bottom-color: whitesmoke;
+}
+
+.sort-div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sort-desc,
+.sort-asc {
+    border: 0.5em solid rgba(230, 220, 220, 0.25);
+    border-left: 0.4em solid transparent;
+    border-right: 0.4em solid transparent;
+    cursor: pointer;
+}
+
+.sort-desc {
+    border-bottom: 0em solid transparent;
+}
+
+.sort-asc {
+    margin-top: -0.3em;
+    margin-bottom: 0.2em;
+    border-top: 0px solid transparent;
+}
+
+.sort-asc.sort-selection {
+    border-bottom-color: whitesmoke;
+}
+
+.sort-desc.sort-selection {
+    border-top-color: whitesmoke;
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+    & .optional-show {
+        display: none;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+}

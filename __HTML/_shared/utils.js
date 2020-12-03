@@ -14,7 +14,10 @@ function sortJSON(jsonArray, sortingFields, sortingAsc) {
             let idx = 0;
             let result = 0;
             while (!result && idx < numSortFields) {
-                result = compareValues(a[sortingFields[idx]], b[sortingFields[idx]]);
+                if (idx > 0 && !sortingAsc)
+                    result = compareValues(b[sortingFields[idx]], a[sortingFields[idx]]);
+                else
+                    result = compareValues(a[sortingFields[idx]], b[sortingFields[idx]]);
                 idx++;
             }
             return result;
@@ -28,7 +31,10 @@ function sortJSON(jsonArray, sortingFields, sortingAsc) {
             let a_value = a[sortFieldTokens[0]][sortFieldTokens[1]];
             let b_value = b[sortFieldTokens[0]][sortFieldTokens[1]];
             while (!result && idx < numSortFields) {
-                result = compareValues(a_value, b_value);
+                if (idx > 0 && !sortingAsc)
+                    result = compareValues(b_value, a_value);
+                else
+                    result = compareValues(a_value, b_value);
                 idx++;
                 a_value = a[sortingFields[idx]];
                 b_value = b[sortingFields[idx]];

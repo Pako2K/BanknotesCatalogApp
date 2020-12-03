@@ -5,7 +5,7 @@ $("#years-table").ready(readIssueYears);
 function readIssueYears() {
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         itemsUri = "/years/items/stats";
     else
         variantsUri = "/years/variants/stats";
@@ -174,7 +174,7 @@ function loadYearsTable() {
         }
     }
 
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

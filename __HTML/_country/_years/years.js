@@ -1,7 +1,7 @@
 function loadYearsTable(countryId) {
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         itemsUri = `/territory/${countryId}/years/items/stats?dateType=issue`;
     else
         variantsUri = `/territory/${countryId}/years/variants/stats?dateType=issue`;
@@ -60,7 +60,7 @@ function fillYearsTable(resultJSON) {
 
         $("#years-table>tbody").append(record);
     }
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

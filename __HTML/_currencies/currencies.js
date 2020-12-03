@@ -3,7 +3,7 @@
 $("#currencies-table").ready(() => {
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         itemsUri = "/currencies/items/stats";
     else
         variantsUri = "/currencies/variants/stats";
@@ -249,7 +249,7 @@ function loadCurrenciesTable() {
     statsFilterTableSetData($("table.stats-filter-table"), statsValuesJSON);
 
     // Hide collection columns if no user is logged 
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

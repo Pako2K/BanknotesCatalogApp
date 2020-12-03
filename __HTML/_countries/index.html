@@ -2,246 +2,94 @@
 <html>
 
 <head>
-    <title>Banknotes Database: Countries</title>
+    <title>Banknotes Catalogue: Countries</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/_shared/index.css">
+    <link rel="stylesheet" href="countries.css">
     <link rel="stylesheet" href="/_shared/header/header.css">
     <link rel="stylesheet" href="/_shared/footer/footer.css">
-    <link rel="stylesheet" href="/_shared/continents-filter/continents-filter.css">
-    <link rel="stylesheet" href="countries.css">
-    <link rel="stylesheet" href="countries_filters.css">
-    <link rel="stylesheet" href="/_shared/stats-filter-table/stats-filter-table.css">
-    <link rel="stylesheet" href="/_shared/slide-button/slide-button.css">
-    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
-    <link rel="stylesheet" href="/_shared/from-to-filter/FromToFilter.css">
+
 
     <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <script src="countries.js"></script>
     <script src="/_shared/cookies.js"></script>
     <script src="/_shared/constants.js"></script>
     <script src="/_shared/utils.js"></script>
-    <script src="/_shared/slide-button/slide-button.js"></script>
-    <script src="countries.js"></script>
-    <script src="countries_filters.js"></script>
-    <script src="/_shared/stats-filter-table/__stats-filter-table.js"></script>
-    <script src="/_shared/list-table/__list-table.js"></script>
-    <script src="/_shared/from-to-filter/FromToFilter.js"></script>
-
+    <script src="/_shared/continents-filter-class/continents-filter.js"></script>
+    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+    <script src="/_shared/stats-summary-table-class/stats-summary-table.js"></script>
+    <script src="/_shared/from-to-filter-class/from-to-filter.js"></script>
+    <script src="/_shared/slide-button-class/slide-button.js"></script>
 </head>
 
 <body>
     <header>
-        <script>
-            $("body>header").load("/_shared/header/__header.html");
-        </script>
     </header>
 
-    <div>
-        <script>
-            // Load the Continents filter (synchornous) and after that show/load the country filters section (it needs to know 
-            //      the name of the selected continent)
-            $("div:first-of-type").load("/_shared/continents-filter/__continents-filter.html", setContinentImg);
-        </script>
-    </div>
+    <section id="continents-filter">
+    </section>
 
-    <!-- See on "ready" initialization. Before that the country types are synchronously loaded-->
-    <section id="countries-filters">
-        <div id="cont-img">
-            <!--Source file depends on the continents filter selection. See setContinentImg -->
-            <img src="" alt="continent" />
-        </div>
-        <div>
-            <table class="stats-filter-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th colspan="3">
-                            <div id="existing-check" class="check-button"></div>
-                            <div class="existing-check">Existing</div>
-                        </th>
-                        <th colspan="3">
-                            <div id="disappeared-check" class="check-button"></div>
-                            <div class="disappeared-check">Extinct</div>
-                        </th>
-                        <th colspan="3">TOTAL</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class="existing-check sub-column-1">Total</td>
-                        <td class="existing-check">Issuer</td>
-                        <td class="existing-check only-logged-in">Collect.</td>
-                        <td class="disappeared-check sub-column-1">Total</td>
-                        <td class="disappeared-check">Issuer</td>
-                        <td class="disappeared-check only-logged-in">Collect.</td>
-                        <td class="sub-column-1">Total</td>
-                        <td>Issuer</td>
-                        <td class="only-logged-in">Collect.</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!--To be set once the country types are loaded. See on "ready"  -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>TOTAL</th>
-                        <td class="existing-check sub-column-1"></td>
-                        <td class="existing-check"></td>
-                        <td class="existing-check only-logged-in"></td>
-                        <td class="disappeared-check sub-column-1"></td>
-                        <td class="disappeared-check"></td>
-                        <td class="disappeared-check only-logged-in"></td>
-                        <td class="sub-column-1"></td>
-                        <td></td>
-                        <td class="only-logged-in"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <div id="year-filter">
-            <div>
-                <script>
-                    let tmp = new FromToFilter($("#year-filter>div:first-of-type"), "Founded", yearFilterChanged);
-                    let fontSize = calcFontSize();
-                    tmp.setSize(fontSize);
-                    window.filters = [];
-                    filters.push(tmp);
-                </script>
+    <section id="filters-and-stats">
+        <div class="group" id="territory-filters">
+            <div class="block-title">
+                <p>Filters</p>
+                <p class="show-hide"><span class="disabled" onclick="showBlock(this,'filters')">Show</span>|<span onclick="hideBlock(this,'filters')">Hide</span></p>
             </div>
             <div>
-                <script>
-                    tmp = new FromToFilter($("#year-filter>div:last-of-type"), "Finished", yearFilterChanged);
-                    tmp.setSize(fontSize);
-                    filters.push(tmp);
-                </script>
+                <div id="years-filter">
+                    <div>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                <div id="types-filter">
+                    <p>Territory Type</p>
+                    <ul>
+                    </ul>
+                </div>
+                <div id="state-filter">
+                    <div>
+                        <div id="existing-slide-button"></div>
+                        <p>Show Currently Existing</p>
+                    </div>
+                    <div>
+                        <div id="extinct-slide-button"></div>
+                        <p>Show Already Extinct</p>
+                    </div>
+                </div>
+                <div id="existing-year-filter">
+                    <p>Existing in</p>
+                    <input type="number" onblur="existingYearFilterChanged(this)" onkeyup="if (event.which === 13) this.blur()">
+                </div>
+            </div>
+        </div>
+        <div class="group" id="territory-stats">
+            <div class="block-title">
+                <p>Stats</p>
+                <p class="show-hide"><span class="disabled" onclick="showBlock(this,'stats')">Show</span>|<span onclick="hideBlock(this,'stats')">Hide</span></p>
+            </div>
+            <div>
+                <div id="summary-table">
+                    <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <hr/>
+    <section id="territories-list">
+        <div class="group">
+            <div class="block-title">
+                <p>List of Territories</p>
+                <div id="applied-filters"><span class="cont-name"></span><span class="existing"></span><span class="extinct"></span><span class="existing-in"></span></div>
+            </div>
+            <div id="territories-list-table">
 
-    <section>
-        <div>
-            <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
-            <table id="countries-table" class="list-table">
-                <thead>
-                    <tr>
-                        <th rowspan="2" id="flag-icon"></th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">ISO</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable sorting-column" onclick="sortClick(this)">Name</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc sort-selection"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Founded</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Finished</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span>Type</span></th>
-                        <th colspan="2" class="th-stats">Currencies</th>
-                        <th colspan="2" class="th-stats">Issues</th>
-                        <th colspan="2" class="th-stats">Denom.</th>
-                        <th colspan="2" class="th-stats">Notes</th>
-                        <th colspan="2" class="th-stats">Variants</th>
-                        <th rowspan="2"><span class="is-sortable only-logged-in" onclick="sortClick(this)">Price</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td><span class="is-sortable" onclick="sortClick(this, 'Currencies')">Catalog</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this, 'Currencies')">Collect.</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable" onclick="sortClick(this, 'Issues')">Catalog</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this, 'Issues')">Collect.</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable" onclick="sortClick(this, 'Denom.')">Catalog</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this, 'Denom.')">Collect.</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable" onclick="sortClick(this, 'Notes')">Catalog</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this, 'Notes')">Collect.</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable" onclick="sortClick(this, 'Variants')">Catalog</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this, 'Variants')">Collect.</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                    <tr>
-                    </tr>
-                </tfoot>
-            </table>
+            </div>
         </div>
     </section>
 
 
     <footer>
-        <script>
-            $("body>footer").load("/_shared/footer/__footer.html");
-        </script>
     </footer>
 </body>

@@ -9,7 +9,7 @@ function initializeStats() {
     $("#grades-div").hide();
 
     let uriToken;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         uriToken = "items";
     else
         uriToken = "variants";
@@ -151,7 +151,7 @@ function initializeStats() {
         }
     });
 
-    if (getCookie("banknotes.ODB.username") === undefined) {
+    if (getCookie("BOC.user.name") === undefined) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

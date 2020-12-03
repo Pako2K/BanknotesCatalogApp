@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+p.not-logged-in {
+  display: none;
+  color: #0a320a;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px 2px #dcfadc;
+  margin-top: 0.4em;
+}
+
+p.not-logged-in > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.not-logged-in > a:visited {
+  color: #0a320a;
+}
+
+p.not-logged-in > a:hover {
+  color: black;
+}
+
+p.not-logged-in > a:active {
+  color: black;
+}
+
+#continents-filter-html-container {
+  position: relative;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+}
+
+#continents-filter-html-container p {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  -webkit-tap-highlight-color: transparent;
+  font: normal 1.1em FONT_HEADER;
+  color: black;
+  background: white;
+  width: 16.67%;
+  text-align: center;
+  margin: auto;
+  padding: 0.5em 0;
+  border-bottom: solid 1px darkgrey;
+  cursor: pointer;
+}
+
+#continents-filter-html-container p.selectedContinent {
+  color: white;
+  text-shadow: 2px 2px 2px black;
+  background: linear-gradient(45deg, #51b4b4, #337676);
+}
+
+#continents-filter-html-container p.deselectedContinent {
+  color: #b6b6b6;
+}
+
+@media screen and (max-width: 800px) {
+  #continents-filter-html-container {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+  }
+  #continents-filter-html-container p {
+    width: 33.33%;
+    font-size: 0.935em;
+    padding: 0.425em 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #continents-filter-html-container > p {
+    font-size: 0.825em;
+    padding: 0.375em 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #continents-filter-html-container > p {
+    font-size: 0.77em;
+    padding: 0.35em 0;
+  }
+  .selectedContinent {
+    text-shadow: 1px 1px 2px black;
+  }
+}
+/*# sourceMappingURL=continents-filter.css.map */

@@ -1,7 +1,7 @@
 function initializeList() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         $("#grades-div").show();
     else
         $("#grades-div").hide();
@@ -17,7 +17,7 @@ function initializeList() {
     for (let idx in seriesJSON) {
         let variantsUri;
         let itemsUri;
-        if (getCookie("banknotes.ODB.username"))
+        if (getCookie("BOC.user.name"))
             itemsUri = `/series/${seriesJSON[idx].id}/items`;
         else
             variantsUri = `/series/${seriesJSON[idx].id}/variants`;
@@ -164,7 +164,7 @@ function drawList(notesList, sortKey, sortAsc) {
     if (existsNotIssued)
         $("#list-table-div").append("<p class='not-issued'>(*) NOT ISSUED</p>");
 
-    if (getCookie("banknotes.ODB.username") === undefined) {
+    if (getCookie("BOC.user.name") === undefined) {
         $(".collection-field").css('opacity', '0.25');
     }
 }
@@ -225,7 +225,7 @@ function listTableSetSortingColumn(sortingElem) {
 
 
 function openUpsertCollectionFromList(rowElem) {
-    if (getCookie("banknotes.ODB.username")) {
+    if (getCookie("BOC.user.name")) {
         let variantJSON;
 
         if ($(rowElem).hasClass("first-subrow"))

@@ -1,7 +1,7 @@
 function initializeTimeline() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         $("#grades-div").show();
     else
         $("#grades-div").hide();
@@ -18,7 +18,7 @@ function initializeTimeline() {
     for (let idx in seriesJSON) {
         let variantsUri;
         let itemsUri;
-        if (getCookie("banknotes.ODB.username"))
+        if (getCookie("BOC.user.name"))
             itemsUri = `/series/${seriesJSON[idx].id}/items`;
         else
             variantsUri = `/series/${seriesJSON[idx].id}/variants`;
@@ -297,7 +297,7 @@ function highlightRowOff() {
 
 
 function openUpsertCollection() {
-    if (getCookie("banknotes.ODB.username")) {
+    if (getCookie("BOC.user.name")) {
         let variantJSON;
 
         // "this" identifies the sub-column!

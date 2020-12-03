@@ -1,7 +1,7 @@
 function loadSeriesTable(countryId) {
     let variantsUri;
     let itemsUri;
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         itemsUri = `/territory/${countryId}/series/items/stats`;
     else
         variantsUri = `/territory/${countryId}/series/variants/stats`;
@@ -67,7 +67,7 @@ function fillSeriesTable(resultJSON) {
 
         $("#series-table>tbody").append(record);
     }
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

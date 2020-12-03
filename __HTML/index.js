@@ -1,7 +1,7 @@
 "use strict"
 
 $(document).ready(function() {
-    let user = getCookie("banknotes.ODB.username");
+    let user = getCookie(_COOKIE_USERNAME);
     if (user !== undefined && user !== "") {
         $(".user-input-section").hide();
     }
@@ -159,9 +159,9 @@ function login() {
 
         success: function(result, status) {
             $("#username").text(usr);
-            setCookie("banknotes.ODB.username", usr, 24 * 60 * 60);
-            setCookie("banknotes.ODB.isAdmin", result.isAdmin, 24 * 60 * 60);
-            setCookie("banknotes.ODB.lastConnection", result.lastConnection || "", 24 * 60 * 60);
+            setCookie(_COOKIE_USERNAME, usr, 24 * 60 * 60);
+            setCookie(_COOKIE_IS_ADMIN, result.isAdmin, 24 * 60 * 60);
+            setCookie(_COOKIE_LAST_CONNECTION, result.lastConnection || "", 24 * 60 * 60);
             $("#_countries")[0].click();
         },
 

@@ -141,7 +141,7 @@ function callVariantsAPI(filters) {
     $("#results-section").removeClass("too-many-results");
 
     let urlStr = `/variants?${queryStr}`
-    if (getCookie("banknotes.ODB.username"))
+    if (getCookie("BOC.user.name"))
         urlStr = `/items?${queryStr}`
 
     $.ajax({
@@ -230,7 +230,7 @@ function loadResultsTable() {
     }
 
     // Hide collection columns if no user is logged 
-    if (!getCookie("banknotes.ODB.username")) {
+    if (!getCookie("BOC.user.name")) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();
