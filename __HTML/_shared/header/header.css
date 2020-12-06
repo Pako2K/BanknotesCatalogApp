@@ -1,33 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
-p.not-logged-in {
-  display: none;
-  color: #0a320a;
-  font-size: 1.2em;
-  font-weight: bold;
-  text-align: center;
-  text-shadow: 2px 2px 2px #dcfadc;
-  margin-top: 0.4em;
-}
-
-p.not-logged-in > a:link {
-  text-shadow: 2px 2px 2px #dcfadc;
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
-  text-underline-position: under;
-}
-
-p.not-logged-in > a:visited {
-  color: #0a320a;
-}
-
-p.not-logged-in > a:hover {
-  color: black;
-}
-
-p.not-logged-in > a:active {
-  color: black;
-}
-
 .main-header {
   padding: 0.8em 1.5em;
 }
@@ -55,7 +26,8 @@ p.not-logged-in > a:active {
   margin-left: 0.5em;
 }
 
-.main-header nav p {
+.main-header nav a {
+  display: block;
   font-size: 1.1em;
   margin: 0.5em 0 0 0.8em;
   padding: 0.3em 1em;
@@ -77,6 +49,8 @@ p.not-logged-in > a:active {
 }
 
 .main-header {
+  background-image: url("img/background.jpg");
+  background-size: 2000px 50px;
   -webkit-touch-callout: none;
   /* iOS Safari */
   -webkit-user-select: none;
@@ -88,7 +62,6 @@ p.not-logged-in > a:active {
   /* IE 10+ */
   user-select: none;
   /* Standard syntax */
-  background: #0c0c0c;
   color: whitesmoke;
 }
 
@@ -177,7 +150,7 @@ p.not-logged-in > a:active {
   clear: both;
 }
 
-.main-header nav p {
+.main-header nav a {
   -webkit-touch-callout: none;
   /* iOS Safari */
   -webkit-user-select: none;
@@ -201,13 +174,13 @@ p.not-logged-in > a:active {
   transition: 0.3s;
 }
 
-.main-header nav p.selected-option {
+.main-header nav a.selected-option {
   background-color: #3c4b4b;
   border-color: #3c4b4b;
   color: white;
 }
 
-.main-header nav p:not(.selected-option):active {
+.main-header nav a:not(.selected-option):active {
   border-color: grey;
 }
 
@@ -274,7 +247,7 @@ p.not-logged-in > a:active {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .main-header nav > p:not(.selected-option):hover {
+  .main-header nav > a:not(.selected-option):hover {
     border-color: grey;
   }
 }
@@ -301,7 +274,8 @@ p.not-logged-in > a:active {
     height: 1.8em;
     margin-left: 0.45em;
   }
-  .main-header nav p {
+  .main-header nav a {
+    display: block;
     font-size: 0.99em;
     margin: 0.45em 0 0 0.72em;
     padding: 0.27em 0.9em;
@@ -342,7 +316,8 @@ p.not-logged-in > a:active {
     height: 1.7em;
     margin-left: 0.425em;
   }
-  .main-header nav p {
+  .main-header nav a {
+    display: block;
     font-size: 0.935em;
     margin: 0.425em 0 0 0.68em;
     padding: 0.255em 0.85em;
@@ -390,7 +365,8 @@ p.not-logged-in > a:active {
     height: 1.5em;
     margin-left: 0.375em;
   }
-  .main-header nav p {
+  .main-header nav a {
+    display: block;
     font-size: 0.825em;
     margin: 0.375em 0 0 0.6em;
     padding: 0.225em 0.75em;
@@ -431,7 +407,8 @@ p.not-logged-in > a:active {
     height: 1.4em;
     margin-left: 0.35em;
   }
-  .main-header nav p {
+  .main-header nav a {
+    display: block;
     font-size: 0.77em;
     margin: 0.35em 0 0 0.56em;
     padding: 0.21em 0.7em;

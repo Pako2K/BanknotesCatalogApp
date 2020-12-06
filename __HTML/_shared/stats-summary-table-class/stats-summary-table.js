@@ -153,10 +153,10 @@ class StatsSummaryTable {
         let table = $(`#${this._id}`);
 
         table.find(`thead>tr:first-of-type>th:nth-of-type(${col+2})`).addClass("disabled-stats-cell");
-        for (let i = 0; i < 3; i++) {
-            table.find(`thead>tr:last-of-type>td:nth-of-type(${col*3+2+i})`).addClass("disabled-stats-cell");
-            table.find(`tbody tr>td:nth-of-type(${col*3+1+i})`).addClass("disabled-stats-cell");
-            table.find(`tfoot tr>td:nth-of-type(${col*3+1+i})`).addClass("disabled-stats-cell");
+        for (let i = 0; i < this._numCols; i++) {
+            table.find(`thead>tr:last-of-type>td:nth-of-type(${col*this._numCols+2+i})`).addClass("disabled-stats-cell");
+            table.find(`tbody tr>td:nth-of-type(${col*this._numCols+1+i})`).addClass("disabled-stats-cell");
+            table.find(`tfoot tr>td:nth-of-type(${col*this._numCols+1+i})`).addClass("disabled-stats-cell");
         }
     }
 
@@ -165,10 +165,10 @@ class StatsSummaryTable {
         let table = $(`#${this._id}`);
 
         table.find(`thead>tr:first-of-type>th:nth-of-type(${col+2})`).removeClass("disabled-stats-cell");
-        for (let i = 0; i < 3; i++) {
-            table.find(`thead>tr:last-of-type>td:nth-of-type(${col*3+2+i})`).removeClass("disabled-stats-cell");
-            table.find(`tbody tr>td:nth-of-type(${col*3+1+i})`).removeClass("disabled-stats-cell");
-            table.find(`tfoot tr>td:nth-of-type(${col*3+1+i})`).removeClass("disabled-stats-cell");
+        for (let i = 0; i < this._numCols; i++) {
+            table.find(`thead>tr:last-of-type>td:nth-of-type(${col*this._numCols+2+i})`).removeClass("disabled-stats-cell");
+            table.find(`tbody tr>td:nth-of-type(${col*this._numCols+1+i})`).removeClass("disabled-stats-cell");
+            table.find(`tfoot tr>td:nth-of-type(${col*this._numCols+1+i})`).removeClass("disabled-stats-cell");
         }
     }
 

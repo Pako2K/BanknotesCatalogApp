@@ -15,16 +15,10 @@ $("#username").ready(() => {
 });
 
 $("nav").ready(() => {
-    let elemId = window.location.pathname.split("/")[1] || "index.html";
-
-    $('#' + elemId).addClass("selected-option");
-
-    // Add the click event to the other options
-    $('nav>p:not(.selected-option)').each((index, element) => {
-        $(element).click(() => {
-            window.location.pathname = $(element).attr("id");
-        });
-    });
+    let href = window.location.pathname;
+    if (window.location.href.indexOf("?") !== -1)
+        href += '?' + window.location.href.split('?')[1];
+    $(`a[href='${href}']`).addClass("selected-option");
 });
 
 

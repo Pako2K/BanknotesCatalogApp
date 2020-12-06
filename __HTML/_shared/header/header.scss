@@ -29,7 +29,8 @@ $header-color: whitesmoke;
             }
         }
         & nav {
-            & p {
+            & a {
+                display: block;
                 font-size: 1.1em * $scale-factor;
                 margin: 0.5em * $scale-factor 0 0 0.8em * $scale-factor;
                 padding: 0.3em * $scale-factor 1em * $scale-factor;
@@ -54,8 +55,9 @@ $header-color: whitesmoke;
 
 @include media-screen-block();
 .main-header {
+    background-image: url("img/background.jpg");
+    background-size: 2000px 50px;
     @include no-user-select;
-    background: $header-bg-color;
     color: $header-color;
     &>div {
         display: flex;
@@ -102,7 +104,7 @@ $header-color: whitesmoke;
         flex-direction: row;
         justify-content: flex-end;
         clear: both;
-        & p {
+        & a {
             @include no-user-select;
             font-family: $FONT_MENU;
             color: $header-color;
@@ -114,12 +116,12 @@ $header-color: whitesmoke;
             white-space: nowrap;
             transition: 0.3s;
         }
-        & p.selected-option {
+        & a.selected-option {
             background-color: rgb(60, 75, 75);
             border-color: rgb(60, 75, 75);
             color: white;
         }
-        & p:not(.selected-option):active {
+        & a:not(.selected-option):active {
             border-color: grey;
         }
     }
@@ -170,7 +172,7 @@ $header-color: whitesmoke;
 // Include hover only for non-touch screens
 @media(hover: hover) and (pointer: fine) {
     .main-header {
-        & nav>p:not(.selected-option):hover {
+        & nav>a:not(.selected-option):hover {
             border-color: grey;
         }
     }

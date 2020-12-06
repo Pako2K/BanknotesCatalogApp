@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>The Banknotes Online Catalogue</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="catalogue.css">
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <script src="catalogue.js"></script>
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_shared/constants.js"></script>
+    <script src="/_shared/utils.js"></script>
+    <script src="/_shared/continents-filter-class/continents-filter.js"></script>
+    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+    <script src="/_shared/stats-summary-table-class/stats-summary-table.js"></script>
+    <script src="/_shared/from-to-filter-class/from-to-filter.js"></script>
+    <script src="/_shared/slide-button-class/slide-button.js"></script>
+</head>
+
+<body>
+    <header>
+    </header>
+
+    <section id="continents-filter">
+    </section>
+
+    <section id="filters-and-stats">
+        <div class="group" id="catalogue-filters">
+            <div class="block-title">
+                <p>Filters</p>
+                <p class="show-hide"><span class="disabled" onclick="showBlock(this,'filters')">Show</span>|<span onclick="hideBlock(this,'filters')">Hide</span></p>
+            </div>
+            <div>
+                <div id="years-filter">
+                    <div>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                <div id="types-filter">
+                    <p></p>
+                    <ul>
+                    </ul>
+                </div>
+                <div id="state-filter">
+                    <div>
+                        <div id="existing-slide-button"></div>
+                        <p>Currently Existing</p>
+                    </div>
+                    <div>
+                        <div id="extinct-slide-button"></div>
+                        <p>Already Extinct</p>
+                    </div>
+                </div>
+                <div id="existing-year-filter">
+                    <p>Existing in</p>
+                    <input type="number" onblur="existingYearFilterChanged(this)" onkeyup="if (event.which === 13) this.blur()">
+                </div>
+            </div>
+        </div>
+        <div class="group" id="catalogue-stats">
+            <div class="block-title">
+                <p>Stats</p>
+                <p class="show-hide"><span class="disabled" onclick="showBlock(this,'stats')">Show</span>|<span onclick="hideBlock(this,'stats')">Hide</span></p>
+            </div>
+            <div>
+                <div id="summary-table">
+                    <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
+                </div>
+            </div>
+            <div class="block-description">
+            </div>
+        </div>
+    </section>
+
+    <section id="catalogue-list">
+        <div class="group">
+            <div class="block-title">
+                <p>List of ...</p>
+                <div id="applied-filters"><span class="cont-name"></span><span class="existing"></span><span class="extinct"></span><span class="existing-in"></span></div>
+            </div>
+            <div id="catalogue-list-table">
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+    </footer>
+</body>

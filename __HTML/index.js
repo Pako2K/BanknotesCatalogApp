@@ -162,7 +162,7 @@ function login() {
             setCookie(_COOKIE_USERNAME, usr, 24 * 60 * 60);
             setCookie(_COOKIE_IS_ADMIN, result.isAdmin, 24 * 60 * 60);
             setCookie(_COOKIE_LAST_CONNECTION, result.lastConnection || "", 24 * 60 * 60);
-            $("#_countries")[0].click();
+            $("#default-nav-opt")[0].click();
         },
 
         error: function(xhr, status, error) {

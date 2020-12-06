@@ -20,10 +20,13 @@ class StatsListTable {
 
     // Dictionary column name - field name
     _mapFieldName = {
+        "Issue Year": "issueYear",
+        "Denomination": "denomination",
         "ISO": "iso3",
         "Name": "name",
         "Founded": "start",
         "Finished": "end",
+        "Territories": "numTerritories",
         "Currencies": "numCurrencies",
         "Issues": "numSeries",
         "Denom.": "numDenominations",
@@ -34,6 +37,7 @@ class StatsListTable {
 
     // Field names for statistics
     _statsFieldNames = [
+        "numTerritories",
         "numCurrencies",
         "numSeries",
         "numDenominations",
@@ -166,10 +170,13 @@ class StatsListTable {
     }
 
     loadData(recordsJSON, defaultSortCol) {
-        $(`#${this._id}`).data("raw-data", JSON.stringify(recordsJSON));
+        let table = $(`#${this._id}`);
+        table.data("raw-data", JSON.stringify(recordsJSON));
 
         // Invoke sort 
-        $(`#${this._id}>thead>tr>th span.is-sortable`).each((i, elem) => {
+        table.find(".sorting-column").removeClass("sorting-column");
+        table.find(".sort-selection").removeClass("sort-selection");
+        table.find("thead>tr>th span.is-sortable").each((i, elem) => {
             if ($(elem).text() === defaultSortCol)
                 $(elem).click();
         });

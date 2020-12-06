@@ -14,6 +14,9 @@ $HEIGHT_BIG_PHONE: 600px;
 $HEIGHT_FACTOR_BIG_PHONE: 0.75;
 $WIDTH_BIG_PHONE: 400px;
 $WIDTH_FACTOR_BIG_PHONE: 0.7;
+$BODY_BACKGROUND_COLOR:rgb(238,
+239,
+237);
 //
 @mixin no-user-select {
     -webkit-touch-callout: none;
@@ -48,31 +51,5 @@ $WIDTH_FACTOR_BIG_PHONE: 0.7;
     & ::-ms-input-placeholder {
         /* Microsoft Edge */
         color: $color;
-    }
-}
-
-p.not-logged-in {
-    display: none;
-    color: rgb(10, 50, 10);
-    font-size: 1.2em;
-    font-weight: bold;
-    text-align: center;
-    text-shadow: 2px 2px 2px rgb(220, 250, 220);
-    margin-top: 0.4em;
-    &>a {
-        &:link {
-            text-shadow: 2px 2px 2px rgb(220, 250, 220);
-            text-decoration: underline dotted;
-            text-underline-position: under;
-        }
-        &:visited {
-            color: rgb(10, 50, 10);
-        }
-        &:hover {
-            color: black;
-        }
-        &:active {
-            color: black;
-        }
     }
 }

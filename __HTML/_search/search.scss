@@ -87,6 +87,32 @@ hr {
     }
 }
 
+p.not-logged-in {
+    display: none;
+    color: rgb(10, 50, 10);
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 2px rgb(220, 250, 220);
+    margin-top: 0.4em;
+    &>a {
+        &:link {
+            text-shadow: 2px 2px 2px rgb(220, 250, 220);
+            text-decoration: underline dotted;
+            text-underline-position: under;
+        }
+        &:visited {
+            color: rgb(10, 50, 10);
+        }
+        &:hover {
+            color: black;
+        }
+        &:active {
+            color: black;
+        }
+    }
+}
+
 @media screen and (max-width: $WIDTH_BIG_TABLET) {
     .filters-section {
         padding: 1em * $WIDTH_FACTOR_BIG_TABLET 0;

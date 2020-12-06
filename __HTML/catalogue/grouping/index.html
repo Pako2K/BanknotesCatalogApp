@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>The Banknotes Online Catalogue</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="grouping.css">
+    <link rel="stylesheet" href="/_shared/header/header.css">
+    <link rel="stylesheet" href="/_shared/footer/footer.css">
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_shared/constants.js"></script>
+    <script src="/_shared/utils.js"></script>
+    <script src="grouping.js"></script>
+    <script src="/_shared/continents-filter-class/continents-filter.js"></script>
+    <script src="/_shared/from-to-filter-class/from-to-filter.js"></script>
+    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+</head>
+
+<body>
+    <header>
+    </header>
+
+    <section id="continents-filter">
+    </section>
+
+    <!-- See on "ready" initialization. Before that the country types are synchronously loaded-->
+    <section id="filters">
+        <div class="group">
+            <div class="block-title">
+                <p>Filters</p>
+                <p class="show-hide"><span class="disabled" onclick="showBlock(this)">Show</span>|<span onclick="hideBlock(this)">Hide</span></p>
+            </div>
+            <div>
+                <div id="years-filter">
+                    <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="list-section">
+        <div class="group">
+            <div class="block-title">
+                <p>List of ...</p>
+                <div id="applied-filters"><span class="cont-name"></span><span class="existing"></span><span class="extinct"></span><span class="existing-in"></span></div>
+            </div>
+            <div id="list-table">
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+    </footer>
+</body>
