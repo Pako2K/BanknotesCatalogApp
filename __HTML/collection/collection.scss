@@ -13,6 +13,7 @@
         margin-top: 1em*$scale-factor;
         &>div {
             margin-bottom: 0.5em*$scale-factor;
+            font-size: 0.9em*$scale-factor;
         }
         & p:first-of-type {
             margin: 0 3em*$scale-factor 0 0.5em*$scale-factor;

@@ -16,7 +16,7 @@ $size: 1.1em;
 
 @include media-screen-block();
 div.super-container {
-    background-image: url("background.jpg");
+    background-image: url("img/background.jpg");
     background-size: 500px 50px;
 }
 

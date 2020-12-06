@@ -59,7 +59,7 @@ $(document).ready(function() {
 
 function setCountryHeader(countryData) {
     // Load country info into page
-    $("#continent-div>img").attr("src", "/_shared/continents-filter/img/" + countryData.continent.name.replace(" ", "").toLowerCase() + ".svg");
+    $("#continent-div>img").attr("src", "/_shared/continents-filter-class/img/" + countryData.continent.name.replace(" ", "").toLowerCase() + ".svg");
     $("#continent-div>p").text(countryData.continent.name);
 
     $("#name").text(countryData.name);

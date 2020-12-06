@@ -95,7 +95,7 @@ $(document).ready(function() {
 
 function setHeaders(currencyJSON) {
     // Load country info into page
-    $("#continent-div>img").attr("src", "/_shared/continents-filter/img/" + currencyJSON.territory.continentName.replace(" ", "").toLowerCase() + ".svg");
+    $("#continent-div>img").attr("src", "/_shared/continents-filter-class/img/" + currencyJSON.territory.continentName.replace(" ", "").toLowerCase() + ".svg");
     $("#continent-div>p").text(currencyJSON.territory.continentName);
 
     $("#flag-div>a").attr("href", "/_country/index.html?countryId=" + currencyJSON.territory.id);
