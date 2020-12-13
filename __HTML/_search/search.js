@@ -2,43 +2,18 @@
 
 function loadContinents(filterObj) {
     // Load continents from db 
-    $.ajax({
-        type: "GET",
-        url: `/continents`,
-        async: true,
-        cache: true,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(result, status) {
-            for (let cont of result) {
-                filterObj.addOption(cont.id, cont.name)
-            }
-        },
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            window.location.pathname = "/";
+    asyncGET("/continents", (result, status) => {
+        for (let cont of result) {
+            filterObj.addOption(cont.id, cont.name)
         }
     });
 }
 
 function loadTerritoryTypes(filterObj) {
     // Load Country types synchronously, before anything else
-    let terTypesJSON;
-    $.ajax({
-        type: "GET",
-        url: `/territory-types`,
-        async: true,
-        cache: true,
-        timeout: TIMEOUT,
-        dataType: 'json',
-        success: function(result, status) {
-            for (let type of result) {
-                filterObj.addOption(type.id, type.name)
-            }
-        },
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET("/territory-types", (result, status) => {
+        for (let type of result) {
+            filterObj.addOption(type.id, type.name)
         }
     });
 }
@@ -194,7 +169,6 @@ function callVariantsAPI(filters) {
             } else {
                 alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
             }
-
         }
     });
 }
@@ -212,10 +186,10 @@ function loadResultsTable() {
 
     for (let variant of variantsJSON) {
         record = `  <tr>
-                        <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}&denomination=${variant.denomination}">${variant.catalogueId}</a></th>
-                        <th class="name"><a href="/_country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
-                        <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}">${variant.currencyName}</a></th>
-                        <th class="name"><a href="/_currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}">${variant.seriesName}</a></th>
+                        <th class="name"><a href="/catalogue/currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}&denomination=${variant.denomination}">${variant.catalogueId}</a></th>
+                        <th class="name"><a href="/catalogue/country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
+                        <th class="name"><a href="/catalogue/currency/index.html?currencyId=${variant.currencyId}">${variant.currencyName}</a></th>
+                        <th class="name"><a href="/catalogue/currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}">${variant.seriesName}</a></th>
                         <th>${variant.denomination.toLocaleString("de-DE")}</th>
                         <th>${variant.issueYear}</th>
                         <th>${variant.printedDate || "ND"}</th>

@@ -1,39 +1,13 @@
 "use strict"
 
-$("body").ready(() => {
-
+$(document).ready(() => {
     // Get printers and issuers
-    $.ajax({
-        type: "GET",
-        url: "/issuer",
-        async: true,
-        cache: true,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(issuersJSON, status) {
-            storeIssuersTable(issuersJSON);
-        },
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-        }
+    asyncGET("/issuer", (issuersJSON, status) => {
+        storeIssuersTable(issuersJSON);
     });
-    $.ajax({
-        type: "GET",
-        url: "/printer",
-        async: true,
-        cache: true,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(printersJSON, status) {
-            storePrintersTable(printersJSON);
-        },
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-        }
+    asyncGET("/printer", (printersJSON, status) => {
+        storePrintersTable(printersJSON);
     });
-
 });
 
 
@@ -111,7 +85,7 @@ function loadIssuersTable() {
     for (let issuer of issuersJSON) {
         record = `  <tr>
                         <th class="title">${issuer.name}</th>
-                        <th class="name"><a href="/_country/index.html?countryId=${issuer.territoryId}">${issuer.territoryName}</a></th>
+                        <th class="name"><a href="/catalogue/country/index.html?countryId=${issuer.territoryId}">${issuer.territoryName}</a></th>
                         <td class="text">${issuer.description || ""}</td>
                     </tr>`;
         $("#issuers-table>tbody").append(record);

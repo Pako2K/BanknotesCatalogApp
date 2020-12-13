@@ -73,55 +73,42 @@ function initialize() {
 
     let variantsUri;
     let itemsUri;
-    if (getCookie(_COOKIE_USERNAME))
+    if (Session.getUsername())
         itemsUri = "/currencies/items/stats";
     else
         variantsUri = "/currencies/variants/stats";
 
     // Get currencies
-    $.ajax({
-        type: "GET",
-        url: variantsUri || itemsUri,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(currenciesJSON, status) {
-            if (variantsUri) {
-                // Add null collectionStats
-                for (let row of currenciesJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numSeries = 0;
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numNotes = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
+    asyncGET(variantsUri || itemsUri, (currenciesJSON, status) => {
+        if (variantsUri) {
+            // Add null collectionStats
+            for (let row of currenciesJSON) {
+                row.start = parseInt(row.start);
+                if (row.end) row.end = parseInt(row.end);
+                row.collectionStats = {};
+                row.collectionStats.numSeries = 0;
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numNotes = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
-            // Store and load data
-            currenciesTable = new StatsListTable($("#catalogue-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
-                { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
-                { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
-                { name: "Territory", align: "left", isSortable: 1, optionalShow: 0 },
-                { name: "Created", align: "center", isSortable: 1, optionalShow: 1 },
-                { name: "Replaced", align: "center", isSortable: 1, optionalShow: 1 },
-                { name: "Type", align: "center", isSortable: 0, optionalShow: 0 }
-            ], ["Issues", "Denoms.", "Note Types", "Variants"], loadTables);
-
-            currenciesTable.loadData(currenciesJSON, "Name");
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+        } else {
+            for (let row of currenciesJSON) {
+                row.start = parseInt(row.start);
+                if (row.end) row.end = parseInt(row.end);
             }
         }
+        // Store and load data
+        currenciesTable = new StatsListTable($("#catalogue-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
+            { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
+            { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
+            { name: "Territory", align: "left", isSortable: 1, optionalShow: 0 },
+            { name: "Created", align: "center", isSortable: 1, optionalShow: 1 },
+            { name: "Replaced", align: "center", isSortable: 1, optionalShow: 1 },
+            { name: "Type", align: "center", isSortable: 0, optionalShow: 0 }
+        ], ["Issues", "Denoms.", "Note Types", "Variants"], loadTables);
+
+        currenciesTable.loadData(currenciesJSON, "Name");
     });
 }
 
@@ -170,8 +157,8 @@ function loadTables(currenciesJSON) {
         let descFields = [];
         descFields.push(currency.symbol || "");
         descFields.push(currency.iso3 || "");
-        descFields.push(`<a href="/_currency/index.html?currencyId=${currency.id}&territoryId=${currency.territory.id}">${currency.name}</a>`);
-        descFields.push(`<a href="/_country/index.html?countryId=${currency.territory.id}">${currency.territory.name}</a>`);
+        descFields.push(`<a href="/catalogue/currency/index.html?currencyId=${currency.id}&territoryId=${currency.territory.id}">${currency.name}</a>`);
+        descFields.push(`<a href="/catalogue/country/index.html?countryId=${currency.territory.id}">${currency.territory.name}</a>`);
         descFields.push(currency.start);
         descFields.push(currency.end || "");
         descFields.push(currency.currencyType);
@@ -187,11 +174,11 @@ function loadTables(currenciesJSON) {
         let curTypeIdx = currencyTypes.indexOf(currency.currencyType);
         if (!currency.end || currency.end === "") {
             statsCurType[curTypeIdx].existing.total++;
-            if (currency.collectionStats.numCurrencies)
+            if (currency.collectionStats.numVariants)
                 statsCurType[curTypeIdx].existing.col++;
         } else {
             statsCurType[curTypeIdx].extinct.total++;
-            if (currency.collectionStats.numCurrencies)
+            if (currency.collectionStats.numVariants)
                 statsCurType[curTypeIdx].extinct.col++;
         }
     }

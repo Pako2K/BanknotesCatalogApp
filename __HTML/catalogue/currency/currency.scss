@@ -1,0 +1,239 @@
+@import '../../_shared/common',
+'../../_shared/index',
+'../../_shared/grades',
+'../common/common';
+@mixin media-screen-block($scale-factor: 1) {
+    #view-section {
+        font-size: 1em;
+    }
+    #grades-coding {
+        font-size: 1em;
+    }
+}
+
+@include media-screen-block();
+section {
+    background-color: $BODY_BACKGROUND_COLOR;
+}
+
+#currency-header {
+    grid-template-columns: repeat(4, min-content) repeat(5, auto);
+    grid-template-rows: repeat(9, auto);
+}
+
+#currency-data {
+    grid-column: 1/6;
+    grid-row: 1;
+    &>div:first-of-type>div {
+        display: inline-block;
+    }
+}
+
+#currency-symbol {
+    font-size: 1.4em;
+    border: solid 0.5px black;
+    padding: 0.1em 0.5em;
+    background: rgb(99, 135, 120);
+    color: rgb(220, 230, 210);
+}
+
+#currency-name,
+#currency-iso3 {
+    color: black;
+    font-size: 1.5em;
+    text-shadow: 2px 2px 4px rgb(40, 20, 20);
+}
+
+.info-button {
+    font-size: 0.9em;
+    vertical-align: top;
+}
+
+#country-data {
+    grid-column: 6/10;
+    grid-row: 1;
+    // display: none;
+    justify-self: end;
+    &>div {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    & img {
+        height: 1.6em;
+        width: auto;
+        box-shadow: 2px 2px 2px gray;
+    }
+}
+
+#country-name>a {
+    color: black;
+    font-size: 1.1em;
+    text-shadow: 2px 2px 4px rgb(20, 20, 50);
+    text-decoration: none;
+    border-bottom: dotted transparent 0.5px;
+    &:link {
+        color: black;
+    }
+    &:visited {
+        color: black;
+    }
+    &:hover>span {
+        border-bottom: dotted grey 0.75px;
+    }
+    &:active {
+        color: grey;
+    }
+}
+
+#currency-full-name {
+    font-size: 0.8em;
+    color: black;
+    margin: 0.4em 0;
+}
+
+#currency-period {
+    grid-column: 1/10;
+    font-size: 0.8em;
+    color: black;
+    margin-bottom: 0.4em;
+    padding: 0.3em 0.1em;
+    background-color: rgba(150, 150, 150, 0.2);
+}
+
+#currency-start {
+    color: rgb(0, 58, 0);
+}
+
+#currency-end {
+    color: rgb(63, 2, 2);
+}
+
+#currency-subunit {
+    grid-column: 1/10;
+    font-size: 0.8em;
+    white-space: nowrap;
+    margin-bottom: 0.5em;
+}
+
+#currency-desc {
+    grid-column: 1/10;
+    display: none;
+    font-size: 0.75em;
+    color: rgb(104, 44, 44);
+    margin-bottom: 0.5em;
+}
+
+#related-currencies {
+    grid-column: 1/10;
+    &>table {
+        border-collapse: collapse;
+    }
+}
+
+#currency-predecessor,
+#currency-successor {
+    font-size: 0.8em;
+    &>th {
+        text-align: left;
+        font-weight: normal;
+    }
+    &>td {
+        padding: 0 0.8em;
+    }
+}
+
+.currency-link {
+    font-style: italic;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap;
+    &:link {
+        color: black;
+    }
+    &:visited {
+        color: black;
+    }
+    &:hover {
+        color: black;
+        border-bottom: dotted 0.75px black;
+    }
+    &:active {
+        color: darkgreen;
+    }
+}
+
+#owning-country,
+#sharing-country {
+    grid-column: 1/10;
+    display: none;
+    font-size: 0.8em;
+    margin-top: 0.5em;
+    &>p {
+        margin: 0.5em 0;
+        color: black;
+        display: inline-block;
+    }
+    &>div {
+        display: inline-block;
+    }
+}
+
+#view-section {
+    padding: 1em 2em;
+    margin: 0em;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    background-color: whitesmoke;
+}
+
+.none-grade {
+    background-color: whitesmoke;
+    color: black;
+}
+
+#grades-coding {
+    margin-top: 0em;
+    padding: 1.2em 0em;
+    display: flex;
+    font-family: Times New Roman, serif;
+    flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
+    &>div {
+        border: solid 1px lightgray;
+        padding: 1em;
+        background-color: ghostwhite;
+    }
+    & h3 {
+        margin: 0;
+        margin-bottom: 1em;
+        font-size: 1em;
+        text-align: center;
+    }
+    & p {
+        font-size: 0.8em;
+        margin: 0;
+        padding: 0.4em;
+        min-width: 10em;
+        text-align: center;
+        cursor: help;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+}

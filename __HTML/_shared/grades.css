@@ -1,0 +1,40 @@
+.UNC-grade {
+  background-color: green;
+  color: whitesmoke;
+}
+
+.XF-grade {
+  background-color: greenyellow;
+  color: #464646;
+}
+
+.VF-grade {
+  background-color: yellow;
+  color: #464646;
+}
+
+.F-grade {
+  background-color: orange;
+  color: #464646;
+}
+
+.VG-grade {
+  background-color: #785000;
+  color: lightgrey;
+}
+
+.G-grade {
+  background-color: #5a5000;
+  color: lightgrey;
+}
+
+.P-grade {
+  background-color: #3c3200;
+  color: lightgrey;
+}
+
+.REP-grade {
+  background-color: lightgray;
+  color: #464646;
+}
+/*# sourceMappingURL=grades.css.map */

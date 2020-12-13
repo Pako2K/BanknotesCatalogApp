@@ -11,8 +11,6 @@ class SlideButton {
         width and height to be set as pixels
      */
     constructor(parentElement, width, height, state, callback) {
-        $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/slide-button-class/slide-button.css">');
-
         this._id = parentElement.attr("id");
 
         if (!this._id || this._id === "")

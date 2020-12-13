@@ -6,6 +6,10 @@ const _COOKIE_FILTER_CONT_PATH = "BOC.filter.continent";
 const _COOKIE_USERNAME = "BOC.user.name";
 const _COOKIE_IS_ADMIN = "BOC.user.isAdmin";
 const _COOKIE_LAST_CONNECTION = "BOC.user.lastConnection";
+const _COOKIE_EXPIRATION = "BOC.session.expiration";
+const _COOKIE_EXPIRATION_TIME = "BOC.session.expirationTime";
+const _COOKIE_EXPIRATION_WARNING = "BOC.session.expirationWarning";
+
 const _COOKIE_BOOKMARKS = "BOC.bookmarks";
 
 const _COOKIE_COUNTRY_FILTERS_HIDE = "BOC.territory.filters.hide";
@@ -40,6 +44,11 @@ const _COOKIE_YEARS_FILTERS_HIDE = "BOC.years.filters.hide";
 const _COOKIE_YEARS_FILTER_ISSUED_FROM = "BOC.years.filter.issued.from";
 const _COOKIE_YEARS_FILTER_ISSUED_TO = "BOC.years.filter.issued.to";
 
-const _COOKIE_COLLECTION_FILTERS_HIDE = "BOC.years.filters.hide";
+const _COOKIE_COLLECTION_FILTERS_HIDE = "BOC.collection.filters.hide";
 const _COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES = "BOC.collection.filters.only-duplicates";
 const _COOKIE_COLLECTION_FILTER_NO_DUPLICATES = "BOC.collection.filters.no-duplicates";
+
+
+const _COOKIE_COUNTRY_STATISTICS_ISSUES_HIDE = "BOC.country.stats.issues.hide";
+const _COOKIE_COUNTRY_STATISTICS_DENOMINATIONS_HIDE = "BOC.country.stats.denoms.hide";
+const _COOKIE_COUNTRY_STATISTICS_YEARS_HIDE = "BOC.country.stats.years.hide";

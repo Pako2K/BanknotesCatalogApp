@@ -7,6 +7,7 @@
 
 */
 
+
 class ContinentsFilter {
 
     static clicked(elem, callback) {
@@ -35,7 +36,7 @@ class ContinentsFilter {
     }
 
     constructor(parentElement, onChangeCallback) {
-        $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">');
+        // $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">');
         parentElement.append('<div class="super-container"><div id="continents-filter-html-container"></div><div>');
         // Load continents from db and assign on click function, synchronously!
         $.ajax({
@@ -70,5 +71,9 @@ class ContinentsFilter {
         let contId = $(".selectedContinent").attr("id") || "-0";
 
         return parseInt(contId.split("-")[1]);
+    }
+
+    static getSelectedName() {
+        return $(".selectedContinent").text() || "";
     }
 }

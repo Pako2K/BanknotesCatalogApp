@@ -2,28 +2,46 @@
 <html>
 
 <head>
-    <title>Banknotes Database: More</title>
+    <title>The Banknotes Online Catalogue & Collection Manager</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/_shared/header/header.css">
-    <link rel="stylesheet" href="/_shared/footer/footer.css">
-    <link rel="stylesheet" href="collection.css">
+    <!-- for FF, Chrome, Opera -->
+    <link rel="icon" type="image/png" href="/img/boc-16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/img/boc-32.png" sizes="32x32">
+
+    <!-- for IE -->
+    <link rel="icon" type="image/x-icon" href="/img/boc-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/boc-32.png" />
 
     <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
     <script src="/_shared/cookies.js"></script>
     <script src="/_shared/constants.js"></script>
+    <script src="/_shared/session.js"></script>
+    <!-- <script src="/_shared/ajax-wrapper.js"></script> -->
     <script src="/_shared/utils.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="collection.css">
     <script src="collection.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/header/header.css">
+    <script src="/_shared/header/header.js" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
+    <script src="/_shared/footer/footer.js" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">
+    <link rel="stylesheet" type="text/css" href="/_shared/slide-button-class/slide-button.css">
     <script src="/_shared/continents-filter-class/continents-filter.js"></script>
     <script src="/_shared/slide-button-class/slide-button.js"></script>
 </head>
 
 <body>
-    <header>
-    </header>
-
     <section id="continents-filter">
+        <script>
+            new ContinentsFilter($("#continents-filter"), changedContinent);
+        </script>
     </section>
 
     <section id="collection-filters">
@@ -115,6 +133,4 @@
         </div>
     </section>
 
-    <footer>
-    </footer>
 </body>

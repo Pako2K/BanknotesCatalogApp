@@ -84,3 +84,23 @@ function parseCatalogueId(catalogueId) {
 
     return record;
 }
+
+
+function flagFileName(territory) {
+    let path = "/data/_flags_/";
+    if (territory.iso3)
+        return path + territory.iso3.toLowerCase() + ".png";
+    else {
+        // Remove spaces and commas
+        return path + territory.name.replace(/,|\s/g, "").toLowerCase() + ".png";
+    }
+}
+
+
+function createCountryLink(territory) {
+    let flagFile = flagFileName(territory);
+    return `<div class="country-link">
+                <img src="${flagFile}" alt="" />
+                <a href="/catalogue/country/index.html?countryId=${territory.id}" target="_self">${territory.name}</a>
+            </div>`;
+}

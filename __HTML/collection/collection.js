@@ -4,62 +4,37 @@ let onlyDuplicatesBtn;
 let noDuplicatesBtn;
 
 $(document).ready(() => {
-
-    $("body>header").load("/_shared/header/__header.html");
-    $("body>footer").load("/_shared/footer/__footer.html");
-
-    new ContinentsFilter($("#continents-filter"), changedContinent);
-
     // Add slide buttons
     onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, true, duplicatesFilterChanged);
     noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, true, duplicatesFilterChanged);
 
     if (getCookie(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) == "false") onlyDuplicatesBtn.click();
     if (getCookie(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) == "false") noDuplicatesBtn.click();
-    // loadItemsTable();
 
-    if (!getCookie(_COOKIE_USERNAME)) {
+    $("#applied-filters>span.cont-name").text(ContinentsFilter.getSelectedName());
+
+    if (!Session.getUsername()) {
         // Show warning
         $("p.not-logged-in").show();
         return;
     }
 
     // Retrieve collection data
-    $.ajax({
-        type: "GET",
-        url: "/items/all",
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(itemsJSON, status) {
-            // Parse the catalogue id in order to be able to sort
-            for (let record of itemsJSON) {
-                let parsedCatId = parseCatalogueId(record.catalogueId)
-                record.catalogueIdPreffix = parsedCatId.catalogueIdPreffix;
-                record.catalogueIdInt = parsedCatId.catalogueIdInt;
-                record.catalogueIdSuffix = parsedCatId.catalogueIdSuffix;
-            }
-
-            $("#items-table").data("value", JSON.stringify(itemsJSON));
-
-            // Load countries table body
-            $("#items-table span.default-sort").click();
-
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            }
+    asyncGET("/items/all", (itemsJSON, status) => {
+        // Parse the catalogue id in order to be able to sort
+        for (let record of itemsJSON) {
+            let parsedCatId = parseCatalogueId(record.catalogueId)
+            record.catalogueIdPreffix = parsedCatId.catalogueIdPreffix;
+            record.catalogueIdInt = parsedCatId.catalogueIdInt;
+            record.catalogueIdSuffix = parsedCatId.catalogueIdSuffix;
         }
+
+        $("#items-table").data("value", JSON.stringify(itemsJSON));
+
+        // Load countries table body
+        $("#items-table span.default-sort").click();
     });
+
 });
 
 
@@ -140,9 +115,9 @@ function loadItemsTable(sortKey, sortAsc) {
 
         let gradeClass = `${record.grade}-grade`;
         rowsHTML += `<tr>
-                        <th class="text ${gradeClass}"><a href="/_country/index.html?countryId=${record.territoryId}">${record.territoryName}</a></th>
+                        <th class="text ${gradeClass}"><a href="/catalogue/country/index.html?countryId=${record.territoryId}">${record.territoryName}</a></th>
                         <td class="${gradeClass}">${record.denomination.toLocaleString("de-DE")}</th>
-                        <th class="${gradeClass}"><a href="/_currency/index.html?currencyId=${record.currencyId}">${record.currencyName}</a></th>
+                        <th class="${gradeClass}"><a href="/catalogue/currency/index.html?currencyId=${record.currencyId}">${record.currencyName}</a></th>
                         <td class="${gradeClass}">${record.catalogueId}</th>
                         <td class="${gradeClass}">${record.grade}</td>
                         <td class="${gradeClass}">${record.quantity}</td>

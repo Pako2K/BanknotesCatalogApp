@@ -26,7 +26,7 @@ function initialize() {
 function readDenominations() {
     let variantsUri;
     let itemsUri;
-    if (getCookie(_COOKIE_USERNAME))
+    if (Session.getUsername())
         itemsUri = "/denominations/items/stats";
     else
         variantsUri = "/denominations/variants/stats";
@@ -51,61 +51,41 @@ function readDenominations() {
     }
 
     // Get denominations
-    $.ajax({
-        type: "GET",
-        url: (variantsUri || itemsUri) + queryStr,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(denominationsJSON, status) {
-            if (variantsUri) {
-                // Add null collectionStats
-                for (let row of denominationsJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numTerritories = 0;
-                    row.collectionStats.numCurrencies = 0;
-                    row.collectionStats.numSeries = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            // Aggregate with the denominations if the value is the same (This can happend when the units are different)
-            let aggDenominations = [];
-            if (denominationsJSON.length)
-                aggDenominations.push(denominationsJSON[0]);
-            for (let i = 1; i < denominationsJSON.length; i++) {
-                let j = aggDenominations.length - 1;
-                if (denominationsJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
-                    aggDenominations[j].numTerritories += denominationsJSON[i].numTerritories;
-                    aggDenominations[j].collectionStats.numTerritories += denominationsJSON[i].collectionStats.numTerritories;
-                    aggDenominations[j].numCurrencies += denominationsJSON[i].numCurrencies;
-                    aggDenominations[j].collectionStats.numCurrencies += denominationsJSON[i].collectionStats.numCurrencies;
-                    aggDenominations[j].numSeries += denominationsJSON[i].numSeries;
-                    aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
-                    aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
-                    aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
-                    aggDenominations[j].collectionStats.price = aggDenominations[j].collectionStats.price + denominationsJSON[i].collectionStats.price;
-                } else {
-                    aggDenominations.push(denominationsJSON[i]);
-                }
-            }
-
-            denominationsTable.loadData(aggDenominations, "Denomination");
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET((variantsUri || itemsUri) + queryStr, (denominationsJSON, status) => {
+        if (variantsUri) {
+            // Add null collectionStats
+            for (let row of denominationsJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numTerritories = 0;
+                row.collectionStats.numCurrencies = 0;
+                row.collectionStats.numSeries = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+
+        // Aggregate with the denominations if the value is the same (This can happend when the units are different)
+        let aggDenominations = [];
+        if (denominationsJSON.length)
+            aggDenominations.push(denominationsJSON[0]);
+        for (let i = 1; i < denominationsJSON.length; i++) {
+            let j = aggDenominations.length - 1;
+            if (denominationsJSON[i].denomination.toLocaleString("de-DE") === aggDenominations[j].denomination.toLocaleString("de-DE")) {
+                aggDenominations[j].numTerritories += denominationsJSON[i].numTerritories;
+                aggDenominations[j].collectionStats.numTerritories += denominationsJSON[i].collectionStats.numTerritories;
+                aggDenominations[j].numCurrencies += denominationsJSON[i].numCurrencies;
+                aggDenominations[j].collectionStats.numCurrencies += denominationsJSON[i].collectionStats.numCurrencies;
+                aggDenominations[j].numSeries += denominationsJSON[i].numSeries;
+                aggDenominations[j].collectionStats.numSeries += denominationsJSON[i].collectionStats.numSeries;
+                aggDenominations[j].numVariants += denominationsJSON[i].numVariants;
+                aggDenominations[j].collectionStats.numVariants += denominationsJSON[i].collectionStats.numVariants;
+                aggDenominations[j].collectionStats.price = aggDenominations[j].collectionStats.price + denominationsJSON[i].collectionStats.price;
+            } else {
+                aggDenominations.push(denominationsJSON[i]);
+            }
+        }
+
+        denominationsTable.loadData(aggDenominations, "Denomination");
     });
 }
 

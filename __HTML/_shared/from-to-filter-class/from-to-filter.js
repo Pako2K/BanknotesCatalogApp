@@ -3,8 +3,6 @@ class FromToFilter {
         if (!parentDiv || !filterName || filterName === "")
             throw "addFromToFilter: Invalid parameters";
 
-        $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/from-to-filter-class/from-to-filter.css">');
-
         this.parentDiv = parentDiv;
 
         parentDiv.addClass("from-to-filter");

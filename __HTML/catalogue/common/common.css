@@ -1,0 +1,146 @@
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+.page-header {
+  display: -ms-grid;
+  display: grid;
+  padding: 1em 2em;
+  background-image: url("img/background.jpg");
+  background-size: 500px 50px;
+  border-bottom: solid 1px black;
+  font-family: Lucida sans, sans-serif;
+  overflow: hidden;
+}
+
+.page-views {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 9;
+  grid-column: 1/10;
+  white-space: nowrap;
+  background-image: url("img/background.jpg");
+  background-size: 500px 50px;
+  border-bottom: solid 1px black;
+  padding-left: 1em;
+}
+
+.page-views > p {
+  font-family: Monotype Corsiva, Times New Roman;
+  color: black;
+  display: inline-block;
+  margin: 0.5em 0.8em;
+  padding: 0.4em 1em;
+  border-radius: 1em;
+  cursor: pointer;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.page-views > p.selected-view {
+  background: #2c5e5e;
+  color: whitesmoke;
+}
+
+.page-views > p:not(.selected-view):hover {
+  background: #90c2c2;
+}
+
+.info-button {
+  display: inline-block;
+  margin-left: 0.3em;
+  cursor: pointer;
+  font-style: normal;
+  border-radius: 1em;
+  background-color: #353535;
+  color: whitesmoke;
+  padding: 0 0.45em;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+}
+
+.info-button.button-pushed {
+  background-color: whitesmoke;
+  color: #353535;
+}
+
+.country-link {
+  font-weight: bold;
+  margin-right: 1em;
+  white-space: nowrap;
+}
+
+.country-link > img {
+  height: 1.4em;
+  width: auto;
+  margin-right: 0.1em;
+  vertical-align: bottom;
+  border-radius: 3px;
+}
+
+.country-link > a {
+  border-bottom: dotted transparent 0.75px;
+}
+
+.country-link > a:link {
+  color: black;
+  text-decoration: none;
+}
+
+.country-link > a:visited {
+  color: black;
+}
+
+.country-link > a:hover {
+  color: black;
+  border-bottom: dotted black 0.75px;
+}
+
+.country-link > a:active {
+  color: grey;
+}
+
+@media screen and (max-width: 1000px) {
+  .page-header {
+    font-size: 0.9em;
+  }
+  .page-views {
+    font-size: 0.9em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .page-header {
+    font-size: 0.85em;
+  }
+  .page-views {
+    font-size: 0.85em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .page-header {
+    font-size: 0.75em;
+  }
+  .page-views {
+    font-size: 0.75em;
+  }
+  .page-header {
+    padding: 1em 1em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .page-header {
+    font-size: 0.7em;
+  }
+  .page-views {
+    font-size: 0.7em;
+  }
+}
+/*# sourceMappingURL=common.css.map */

@@ -39,41 +39,29 @@ function initialize() {
     extinctFilter.initTo(getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_TO));
 
     // Load Country types synchronously, before anything else
-    $.ajax({
-        type: "GET",
-        url: `/territory-types`,
-        async: false,
-        cache: true,
-        timeout: TIMEOUT,
-        dataType: 'json',
-        success: function(result, status) {
-            let disabledTerTypes = [];
-            let cookie = getCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED);
-            if (cookie)
-                disabledTerTypes = cookie.split("#");
+    syncGET("/territory-types", (result, status) => {
+        let disabledTerTypes = [];
+        let cookie = getCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED);
+        if (cookie)
+            disabledTerTypes = cookie.split("#");
 
-            territoryTypesJSON = result;
-            territoryTypesMap = [];
-            let rows = [];
-            territoryTypesJSON.forEach(element => {
-                territoryTypesMap[element.id] = element.abbrevation;
-                statsTerType[element.id] = { existing: { total: 0, issuing: 0, col: 0 }, extinct: { total: 0, issuing: 0, col: 0 } };
+        territoryTypesJSON = result;
+        territoryTypesMap = [];
+        let rows = [];
+        territoryTypesJSON.forEach(element => {
+            territoryTypesMap[element.id] = element.abbrevation;
+            statsTerType[element.id] = { existing: { total: 0, issuing: 0, col: 0 }, extinct: { total: 0, issuing: 0, col: 0 } };
 
-                rows.push({ id: element.id, name: element.name });
+            rows.push({ id: element.id, name: element.name });
 
-                $("#types-filter>ul").append(`<li><div id="ter-type-${element.id}"></div>${element.name}</li>`);
-                terTypeButtons[element.id] = new SlideButton($(`#ter-type-${element.id}`), 24, 13, true, terTypeFilterChanged);
-            });
+            $("#types-filter>ul").append(`<li><div id="ter-type-${element.id}"></div>${element.name}</li>`);
+            terTypeButtons[element.id] = new SlideButton($(`#ter-type-${element.id}`), 24, 13, true, terTypeFilterChanged);
+        });
 
-            statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Issuer", "Collect."], rows);
-            disabledTerTypes.forEach((val, idx) => {
-                terTypeButtons[parseInt(val)].click();
-            });
-
-        },
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-        }
+        statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Issuer", "Collect."], rows);
+        disabledTerTypes.forEach((val, idx) => {
+            terTypeButtons[parseInt(val)].click();
+        });
     });
 
     // Add slide buttons
@@ -90,55 +78,35 @@ function initialize() {
 
     let variantsUri;
     let itemsUri;
-    if (getCookie(_COOKIE_USERNAME))
+    if (Session.getUsername())
         itemsUri = "/territories/items/stats";
     else
         variantsUri = "/territories/variants/stats";
 
     // Get territories and statistics
-    $.ajax({
-        type: "GET",
-        url: variantsUri || itemsUri,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(countriesJSON, status) {
-            if (variantsUri) {
-                // Add null collectionStats
-                for (let row of countriesJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numCurrencies = 0;
-                    row.collectionStats.numSeries = 0;
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numNotes = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-            // Store and load data
-            countriesTable = new StatsListTable($("#catalogue-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
-                { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
-                { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
-                { name: "Founded", align: "center", isSortable: 1, optionalShow: 1 },
-                { name: "Finished", align: "center", isSortable: 1, optionalShow: 1 },
-                { name: "Type", align: "center", isSortable: 0, optionalShow: 0 }
-            ], ["Currencies", "Issues", "Denoms.", "Note Types", "Variants"], loadTables);
-
-            countriesTable.loadData(countriesJSON, "Name");
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET(variantsUri || itemsUri, (countriesJSON, status) => {
+        if (variantsUri) {
+            // Add null collectionStats
+            for (let row of countriesJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numCurrencies = 0;
+                row.collectionStats.numSeries = 0;
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numNotes = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+        // Store and load data
+        countriesTable = new StatsListTable($("#catalogue-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
+            { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
+            { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
+            { name: "Founded", align: "center", isSortable: 1, optionalShow: 1 },
+            { name: "Finished", align: "center", isSortable: 1, optionalShow: 1 },
+            { name: "Type", align: "center", isSortable: 0, optionalShow: 0 }
+        ], ["Currencies", "Issues", "Denoms.", "Note Types", "Variants"], loadTables);
+
+        countriesTable.loadData(countriesJSON, "Name");
     });
 }
 
@@ -193,7 +161,7 @@ function loadTables(countriesJSON) {
         let descFields = [];
         descFields.push(`<img src="/data/_flags_/${flagFileName.toLowerCase()}.png">`);
         descFields.push(country.iso3);
-        descFields.push(`<a href="/_country/index.html?countryId=${country.id}">${country.name}</a>`);
+        descFields.push(`<a href="/catalogue/country/index.html?countryId=${country.id}">${country.name}</a>`);
         descFields.push(country.start);
         descFields.push(country.end || "");
         descFields.push(territoryTypesMap[country.territoryTypeId]);

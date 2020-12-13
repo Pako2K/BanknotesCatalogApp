@@ -26,7 +26,7 @@ function initialize() {
 function readYears() {
     let variantsUri;
     let itemsUri;
-    if (getCookie(_COOKIE_USERNAME))
+    if (Session.getUsername())
         itemsUri = "/years/items/stats";
     else
         variantsUri = "/years/variants/stats";
@@ -38,42 +38,22 @@ function readYears() {
     if (filterContId) queryStr += "&continentId=" + filterContId;
 
     // Get years
-    $.ajax({
-        type: "GET",
-        url: (variantsUri || itemsUri) + queryStr,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(yearsJSON, status) {
-            if (variantsUri) {
-                // Add null collectionStats
-                for (let row of yearsJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numTerritories = 0;
-                    row.collectionStats.numCurrencies = 0;
-                    row.collectionStats.numSeries = 0;
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numNotes = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            yearsTable.loadData(yearsJSON, "Issue Year");
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET((variantsUri || itemsUri) + queryStr, (yearsJSON, status) => {
+        if (variantsUri) {
+            // Add null collectionStats
+            for (let row of yearsJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numTerritories = 0;
+                row.collectionStats.numCurrencies = 0;
+                row.collectionStats.numSeries = 0;
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numNotes = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+
+        yearsTable.loadData(yearsJSON, "Issue Year");
     });
 }
 

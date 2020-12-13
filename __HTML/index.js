@@ -1,8 +1,8 @@
 "use strict"
 
 $(document).ready(function() {
-    let user = getCookie(_COOKIE_USERNAME);
-    if (user !== undefined && user !== "") {
+    let user = Session.getUsername();
+    if (user != null && user !== "") {
         $(".user-input-section").hide();
     }
 });
@@ -146,40 +146,9 @@ function login() {
     let usr = $("#form-usr").val();
     let pwd = $("#form-pwd").val();
 
-    $.ajax({
-        type: "GET",
-        url: "/user/session",
-        async: false,
-        cache: false,
-        headers: {
-            "authorization": "Basic " + btoa(usr + ":" + pwd)
-        },
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(result, status) {
-            $("#username").text(usr);
-            setCookie(_COOKIE_USERNAME, usr, 24 * 60 * 60);
-            setCookie(_COOKIE_IS_ADMIN, result.isAdmin, 24 * 60 * 60);
-            setCookie(_COOKIE_LAST_CONNECTION, result.lastConnection || "", 24 * 60 * 60);
-            $("#default-nav-opt")[0].click();
-        },
-
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 401:
-                    alert(`Login failed.\n${xhr.responseJSON.code}: ${xhr.responseJSON.description}`);
-                    break;
-                case 500:
-                    if (xhr.responseJSON)
-                        alert(`Login failed.\n${xhr.responseJSON.code}: ${xhr.responseJSON.description}.\nContact the web site administrator.`);
-                    else
-                        alert(`Login failed.\n${status}: ${error}.\nContact the web site administrator.`);
-                    break;
-                default:
-                    alert(`Login failed.\n${xhr.status}: ${error}\nPlease try again or contact the web site administrator.`);
-            }
-        }
+    Session.login(usr, pwd, () => {
+        $("#username").text(usr);
+        $("#default-nav-opt")[0].click();
     });
 }
 
@@ -296,10 +265,10 @@ function resetPwd() {
                 case 400:
                 case 401:
                 case 500:
-                    alert(`Registration failed. ${exception.code}: ${error}. ${exception.description}`);
+                    alert(`Change failed. ${exception.code}: ${error}. ${exception.description}`);
                     break;
                 default:
-                    alert(`Registration failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
+                    alert(`Change failed. \n${xhr.status} - ${error}\nPlease try again or contact the web site administrator.`);
             }
         }
     });

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>The Banknotes Online Catalogue & Collection Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- for FF, Chrome, Opera -->
+    <link rel="icon" type="image/png" href="/img/boc-16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/img/boc-32.png" sizes="32x32">
+
+    <!-- for IE -->
+    <link rel="icon" type="image/x-icon" href="/img/boc-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/boc-32.png" />
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_shared/constants.js"></script>
+    <script src="/_shared/utils.js"></script>
+    <script src="/_shared/session.js"></script>
+    <script src="/_shared/ajax-wrapper.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="country.css">
+    <script src="country.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/header/header.css">
+    <script src="/_shared/header/header.js" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
+    <script src="/_shared/footer/footer.js" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">
+    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+
+    <script src="./currencies.js"></script>
+    <script src="./statistics.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./_list/list.css">
+    <script src="./_list/list.js"></script>
+
+
+    <link rel="stylesheet" href="/_shared/modal-form.css">
+    <link rel="stylesheet" href="/catalogue/currency/forms/collection/collection.css">
+    <script src="/catalogue/currency/forms/collection/collection.js"></script>
+
+</head>
+
+<body>
+    <section id="country-header" class="page-header">
+        <div id="country-cont">
+            <img src="" alt="Continent icon" />
+            <p></p>
+        </div>
+        <div id="country-flag">
+            <img src="" alt="Territory flag" />
+        </div>
+        <div id="country-name">
+            <div id="short-name"><span id="iso3"> - </span></div>
+            <div id="full-name"><span>, </span>
+                <div>
+                    <span id="start-date"></span><span id="end-date"> - </span>
+                    <div class="info-button" onclick="toggleDescription(this)">i</div>
+                </div>
+            </div>
+        </div>
+        <div id="country-desc"></div>
+        <div id="country-parent">
+            <p></p>
+            <div class="country-link">
+                <img src="" alt="" />
+                <a href="" target="_self"></a>
+            </div>
+        </div>
+        <div id="country-pred">
+            <p>Preceded by: </p>
+        </div>
+        <div id="country-suc">
+            <p>Succeeded by: </p>
+        </div>
+    </section>
+    <section id="country-views" class="page-views">
+        <p onclick="selectView(this)">Currencies</p>
+        <p onclick="selectView(this)">Banknotes</p>
+        <p onclick="selectView(this)">Statistics</p>
+    </section>
+
+    <section id="results-section">
+        <div class="card">
+
+        </div>
+    </section>
+
+    <section id="grades-coding">
+        <div>
+            <h3>Grades Color Coding</h3>
+            <!--
+            <p class="XF-grade">Extremely Fine</p>-->
+        </div>
+    </section>
+
+    <div class="modal-form-placeholder">
+    </div>
+</body>
+
+</html>

@@ -1,4 +1,5 @@
-@import '../_shared/common';
+@import '../_shared/index',
+'../_shared/common';
 body {
     min-width: 360px;
 }

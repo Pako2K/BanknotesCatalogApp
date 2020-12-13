@@ -1,4 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  margin: 0px;
+  overflow: auto;
+  min-width: 300px;
+  background: black;
+}
+
 .filters-section {
   background: -webkit-gradient(linear, left bottom, left top, from(#e1f0f0), to(#3cb3b3));
   background: linear-gradient(0deg, #e1f0f0, #3cb3b3);

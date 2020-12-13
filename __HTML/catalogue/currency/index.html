@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>The Banknotes Online Catalogue & Collection Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- for FF, Chrome, Opera -->
+    <link rel="icon" type="image/png" href="/img/boc-16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/img/boc-32.png" sizes="32x32">
+
+    <!-- for IE -->
+    <link rel="icon" type="image/x-icon" href="/img/boc-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/boc-32.png" />
+
+    <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_shared/constants.js"></script>
+    <script src="/_shared/utils.js"></script>
+    <script src="/_shared/session.js"></script>
+    <script src="/_shared/ajax-wrapper.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="currency.css">
+    <script src="currency.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/header/header.css">
+    <script src="/_shared/header/header.js" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
+    <script src="/_shared/footer/footer.js" defer></script>
+
+
+    <link rel="stylesheet" href="./statistics/stats.css">
+    <link rel="stylesheet" href="./timeline/timeline.css">
+    <link rel="stylesheet" href="./list/list.css">
+    <link rel="stylesheet" href="./details/details.css">
+    <link rel="stylesheet" href="./forms/collection/collection.css">
+    <link rel="stylesheet" href="./forms/series/series.css">
+    <link rel="stylesheet" href="./forms/denomination/denomination.css">
+    <link rel="stylesheet" href="./forms/variant/variant.css">
+    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+    <link rel="stylesheet" href="/_shared/modal-form.css">
+
+
+    <script src="./timeline/timeline.js"></script>
+    <script src="./list/list.js"></script>
+    <script src="./details/details.js"></script>
+    <script src="./statistics/stats.js"></script>
+    <script src="./forms/collection/collection.js"></script>
+    <script src="./forms/variant/variant.js"></script>
+    <script src="./forms/denomination/denomination.js"></script>
+    <script src="./forms/series/series.js"></script>
+</head>
+
+<body>
+    <section id="currency-header" class="page-header">
+        <div id="currency-data">
+            <div>
+                <div id="currency-symbol">
+                </div>
+                <div id="currency-name"></div>
+                <div id="currency-iso3"> - </div>
+                <div class="info-button" onclick="toggleDescription(this)">i</div>
+            </div>
+            <div id="currency-full-name"></div>
+        </div>
+        <div id="currency-subunit"></div>
+        <div id="currency-period">
+            From <span id="currency-start"></span> to <span id="currency-end"></span>
+        </div>
+
+        <div id="country-data">
+            <div id="country-flag">
+                <a href=""><img src="" alt="Territory flag" /></a>
+            </div>
+            <div id="country-name">
+                <a href=""></a>
+            </div>
+        </div>
+        <div id="currency-desc"></div>
+        <div id="related-currencies">
+            <table>
+                <tbody>
+                    <tr id="currency-predecessor">
+                        <th>Previous:</th>
+                        <td>
+                            <a class="currency-link" href="" target="_self"></a>
+                        </td>
+                        <td id="predecessorRate"></td>
+                    </tr>
+                    <tr id="currency-successor">
+                        <th>Replaced by:</th>
+                        <td>
+                            <a class="currency-link" href="" target="_self"></a>
+                        </td>
+                        <td id="successorRate"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="owning-country">
+            <p>Owned by:</p>
+        </div>
+        <div id="sharing-country">
+            <p>Shared with:</p>
+        </div>
+    </section>
+
+    <section id="currency-views" class="page-views">
+        <p onclick="selectView(this)">Details</p>
+        <p onclick="selectView(this)">Timeline</p>
+        <p onclick="selectView(this)">List</p>
+        <p onclick="selectView(this)">Statistics</p>
+    </section>
+
+    <section id="view-section">
+    </section>
+
+    <section id="grades-coding">
+        <div>
+            <h3>Grades Color Coding</h3>
+            <!--
+            <p class="XF-grade">Extremely Fine</p>-->
+        </div>
+    </section>
+
+    <div class="modal-form-placeholder">
+    </div>
+</body>
+
+</html>

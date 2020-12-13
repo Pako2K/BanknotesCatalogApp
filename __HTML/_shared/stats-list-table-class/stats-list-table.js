@@ -17,6 +17,7 @@ class StatsListTable {
     _optionalShow = [];
     _notLoggedInClass = "";
     _loadCallback;
+    _rawDataJSON;
 
     // Dictionary column name - field name
     _mapFieldName = {
@@ -24,13 +25,17 @@ class StatsListTable {
         "Denomination": "denomination",
         "ISO": "iso3",
         "Name": "name",
+        "Territory": "territory.name",
+        "Start": "start",
         "Founded": "start",
+        "Created": "start",
         "Finished": "end",
+        "Replaced": "end",
         "Territories": "numTerritories",
         "Currencies": "numCurrencies",
         "Issues": "numSeries",
-        "Denom.": "numDenominations",
-        "Notes": "numNotes",
+        "Denoms.": "numDenominations",
+        "Note Types": "numNotes",
         "Variants": "numVariants",
         "Price": "collectionStats.price"
     };
@@ -56,9 +61,7 @@ class StatsListTable {
         this._id = "stats-list-table-" + StatsListTable._max_id;
         StatsListTable._max_id++;
 
-        $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">');
-
-        if (!getCookie(_COOKIE_USERNAME)) {
+        if (!Session.getUsername()) {
             parentElement.append('<p class="login-warning"><a href="/index.html">Log in</a> to see your collection stats!</p>');
             this._notLoggedInClass = "not-logged-in";
         }
@@ -171,7 +174,7 @@ class StatsListTable {
 
     loadData(recordsJSON, defaultSortCol) {
         let table = $(`#${this._id}`);
-        table.data("raw-data", JSON.stringify(recordsJSON));
+        this._rawDataJSON = recordsJSON;
 
         // Invoke sort 
         table.find(".sorting-column").removeClass("sorting-column");
@@ -183,7 +186,7 @@ class StatsListTable {
     }
 
     getData() {
-        return JSON.parse($(`#${this._id}`).data("raw-data"));
+        return this._rawDataJSON;
     }
 
     sort(htmlElem, titleStr) {
@@ -234,12 +237,11 @@ class StatsListTable {
             if (sortingField !== "name")
                 sortingFields.push("name");
 
-            let recordsJSON = sortJSON(JSON.parse(table.data("raw-data")), sortingFields, sortingAsc);
-            table.data("raw-data", JSON.stringify(recordsJSON));
+            this._rawDataJSON = sortJSON(this._rawDataJSON, sortingFields, sortingAsc);
 
             // Load countries table body
             table.children("tbody").empty();
-            this._loadCallback(recordsJSON);
+            this._loadCallback(this._rawDataJSON);
         }
     }
 

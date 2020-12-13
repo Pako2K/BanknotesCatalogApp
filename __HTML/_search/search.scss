@@ -1,4 +1,5 @@
-@import '../_shared/common';
+@import '../_shared/index',
+'../_shared/common';
 .filters-section {
     background: linear-gradient(0deg, rgb(225, 240, 240), rgb(60, 179, 179));
     display: flex;

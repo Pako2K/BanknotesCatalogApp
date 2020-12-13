@@ -14,29 +14,28 @@
     <link rel="icon" type="image/x-icon" href="/img/boc-32.png">
     <link rel="shortcut icon" type="image/x-icon" href="/img/boc-32.png" />
 
-
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="/_shared/header/header.css">
-    <link rel="stylesheet" href="/_shared/footer/footer.css">
-
     <script src="/_shared/jquery-3.4.1.min.js"></script>
     <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
-    <script src="/_shared/cookies.js"></script>
     <script src="/_shared/constants.js"></script>
+    <script src="/_shared/cookies.js"></script>
+    <script src="/_shared/session.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="index.css">
     <script src="index.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/header/header.css">
+    <script src="/_shared/header/header.js" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
+    <script src="/_shared/footer/footer.js" defer></script>
+
 
     <!-- Google AdSense -->
     <!-- <script data-ad-client="ca-pub-5916883259257383" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
 </head>
 
 <body>
-
-    <header>
-        <script>
-            $("body>header").load("_shared/header/__header.html");
-        </script>
-    </header>
-
     <main>
         <section id='intro-section'>
             <div>
@@ -48,7 +47,7 @@
                 <h4>Banknotes per country or currency</h4>
                 <h4>Multiple statistics and filtering options</h4>
                 <h4>Manage your personal collection</h4>
-                <h4>Search banknoes in the Catalogue</h4>
+                <h4>Search banknotes in the Catalogue</h4>
             </div>
         </section>
 
@@ -169,12 +168,6 @@
         </section>
 
     </main>
-
-    <footer>
-        <script>
-            $("body>footer").load("_shared/footer/__footer.html");
-        </script>
-    </footer>
 </body>
 
 </html>

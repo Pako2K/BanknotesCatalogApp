@@ -1,0 +1,112 @@
+@import '../../_shared/common';
+@mixin media-screen-block($scale-factor: 1) {
+    .page-header {
+        font-size: 1em*$scale-factor;
+    }
+    .page-views {
+        font-size: 1em*$scale-factor;
+    }
+}
+
+@mixin silver-background() {
+    background-image: url("img/background.jpg");
+    background-size: 500px 50px;
+    border-bottom: solid 1px black;
+}
+
+.page-header {
+    display: grid;
+    padding: 1em 2em;
+    @include silver-background();
+    font-family: Lucida sans, sans-serif;
+    overflow: hidden;
+}
+
+.page-views {
+    grid-column: 1/10;
+    white-space: nowrap;
+    @include silver-background();
+    padding-left: 1em;
+    &>p {
+        font-family: Monotype Corsiva, Times New Roman;
+        color: black;
+        display: inline-block;
+        margin: 0.5em 0.8em;
+        padding: 0.4em 1em;
+        border-radius: 1em;
+        cursor: pointer;
+        transition: 0.4s;
+        &.selected-view {
+            background: rgb(44, 94, 94);
+            color: whitesmoke;
+        }
+        &:not(.selected-view):hover {
+            background: rgb(144, 194, 194);
+        }
+    }
+}
+
+.info-button {
+    display: inline-block;
+    margin-left: 0.3em;
+    cursor: pointer;
+    font-style: normal;
+    border-radius: 1em;
+    background-color: rgb(53, 53, 53);
+    color: whitesmoke;
+    padding: 0 0.45em;
+    @include no-user-select;
+    &.button-pushed {
+        background-color: whitesmoke;
+        color: rgb(53, 53, 53);
+    }
+}
+
+.country-link {
+    font-weight: bold;
+    margin-right: 1em;
+    white-space: nowrap;
+    &>img {
+        height: 1.4em;
+        width: auto;
+        margin-right: 0.1em;
+        vertical-align: bottom;
+        border-radius: 3px;
+    }
+    &>a {
+        border-bottom: dotted transparent 0.75px;
+    }
+    &>a:link {
+        color: black;
+        text-decoration: none;
+    }
+    &>a:visited {
+        color: black;
+    }
+    &>a:hover {
+        color: black;
+        border-bottom: dotted black 0.75px;
+    }
+    &>a:active {
+        color: grey;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+    .page-header {
+        padding: 1em 1em;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
+}

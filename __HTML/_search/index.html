@@ -2,35 +2,45 @@
 <html>
 
 <head>
-    <title>Banknotes Database: Search</title>
+    <title>The Banknotes Online Catalogue & Collection Manager</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/_shared/header/header.css">
-    <link rel="stylesheet" href="/_shared/footer/footer.css">
-    <link rel="stylesheet" href="/_shared/index.css">
-    <link rel="stylesheet" href="search.css">
-    <link rel="stylesheet" href="/_shared/from-to-filter/FromToFilter.css">
-    <link rel="stylesheet" href="/_shared/select-filter/SelectFilter.css">
-    <link rel="stylesheet" href="/_shared/list-table/list-table.css">
+    <!-- for FF, Chrome, Opera -->
+    <link rel="icon" type="image/png" href="/img/boc-16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/img/boc-32.png" sizes="32x32">
+
+    <!-- for IE -->
+    <link rel="icon" type="image/x-icon" href="/img/boc-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/boc-32.png" />
 
     <script src="/_shared/jquery-3.4.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>-->
     <script src="/_shared/cookies.js"></script>
     <script src="/_shared/constants.js"></script>
+    <script src="/_shared/session.js"></script>
+    <script src="/_shared/ajax-wrapper.js"></script>
     <script src="/_shared/utils.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="search.css">
     <script src="search.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="/_shared/header/header.css">
+    <script src="/_shared/header/header.js" defer></script>
+    <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
+    <script src="/_shared/footer/footer.js" defer></script>
+
+
+    <link rel="stylesheet" type="text/css" href="/_shared/from-to-filter/FromToFilter.css">
+    <link rel="stylesheet" type="text/css" href="/_shared/select-filter/SelectFilter.css">
+    <link rel="stylesheet" type="text/css" href="/_shared/list-table/list-table.css">
     <script src="/_shared/from-to-filter/FromToFilter.js"></script>
     <script src="/_shared/select-filter/SelectFilter.js"></script>
     <script src="/_shared/list-table/__list-table.js"></script>
 </head>
 
 <body>
-    <header>
-        <script>
-            $("body>header").load("/_shared/header/__header.html");
-        </script>
-    </header>
-
     <section class="filters-section">
         <div class="filters-row">
             <div id="continent-filters" class="filter-box">
@@ -200,9 +210,4 @@
         </div>
     </section>
 
-    <footer>
-        <script>
-            $("body>footer").load("/_shared/footer/__footer.html");
-        </script>
-    </footer>
 </body>

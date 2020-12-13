@@ -7,6 +7,8 @@
 
 */
 
+// $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/stats-summary-table-class/stats-summary-table.css">');
+
 class StatsSummaryTable {
     static _max_id = 1;
 
@@ -20,7 +22,6 @@ class StatsSummaryTable {
         rows = [id, name]
     */
     constructor(parentElement, cols, rows) {
-        $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/stats-summary-table-class/stats-summary-table.css">');
 
         this._id = "stats-summary-table-" + StatsSummaryTable._max_id;
         this._numCols = cols.length;
@@ -28,7 +29,7 @@ class StatsSummaryTable {
 
         StatsSummaryTable._max_id++;
 
-        if (!getCookie(_COOKIE_USERNAME)) {
+        if (!Session.getUsername()) {
             parentElement.append('<p class="login-warning"><a href="/index.html">Log in</a> to see your collection stats!</p>');
             this._notLoggedInClass = "not-logged-in"
         }
