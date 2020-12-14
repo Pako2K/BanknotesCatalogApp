@@ -52,6 +52,10 @@ class Session {
         return sessionStorage.getItem(_COOKIE_USERNAME);
     }
 
+    static isAdmin() {
+        return sessionStorage.getItem(_COOKIE_IS_ADMIN);
+    }
+
     static getLastConnection() {
         return sessionStorage.getItem(_COOKIE_LAST_CONNECTION);
     }

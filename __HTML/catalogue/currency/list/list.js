@@ -1,7 +1,7 @@
 function initializeList() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
-    if (getCookie("BOC.user.name"))
+    if (Session.getUsername())
         $("#grades-coding").show();
     else
         $("#grades-coding").hide();
@@ -17,7 +17,7 @@ function initializeList() {
     for (let idx in seriesJSON) {
         let variantsUri;
         let itemsUri;
-        if (getCookie("BOC.user.name"))
+        if (Session.getUsername())
             itemsUri = `/series/${seriesJSON[idx].id}/items`;
         else
             variantsUri = `/series/${seriesJSON[idx].id}/variants`;
@@ -164,7 +164,7 @@ function drawList(notesList, sortKey, sortAsc) {
     if (existsNotIssued)
         $("#list-table-div").append("<p class='not-issued'>(*) NOT ISSUED</p>");
 
-    if (getCookie("BOC.user.name") === undefined) {
+    if (Session.getUsername() === undefined) {
         $(".collection-field").css('opacity', '0.25');
     }
 }
@@ -225,7 +225,7 @@ function listTableSetSortingColumn(sortingElem) {
 
 
 function openUpsertCollectionFromList(rowElem) {
-    if (getCookie("BOC.user.name")) {
+    if (Session.getUsername()) {
         let variantJSON;
 
         if ($(rowElem).hasClass("first-subrow"))

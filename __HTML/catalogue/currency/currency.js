@@ -45,8 +45,10 @@ $(document).ready(function() {
         $("#currency-start").append(currencyJSON.start.replace("-", ".").replace("-", "."));
         if (currencyJSON.end)
             $("#currency-end").append(currencyJSON.end.replace("-", ".").replace("-", "."));
-        else
+        else {
             $("#currency-end").hide();
+            $("#currency-end").prev().hide();
+        }
 
         if (currencyJSON.units.length) {
             let subunits = "";

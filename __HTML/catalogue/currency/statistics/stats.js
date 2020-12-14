@@ -9,7 +9,7 @@ function initializeStats() {
     $("#grades-coding").hide();
 
     let uriToken;
-    if (getCookie("BOC.user.name"))
+    if (Session.getUsername())
         uriToken = "items";
     else
         uriToken = "variants";
@@ -151,7 +151,7 @@ function initializeStats() {
         }
     });
 
-    if (getCookie("BOC.user.name") === undefined) {
+    if (Session.getUsername() === undefined) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

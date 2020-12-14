@@ -116,7 +116,7 @@ function callVariantsAPI(filters) {
     $("#results-section").removeClass("too-many-results");
 
     let urlStr = `/variants?${queryStr}`
-    if (getCookie("BOC.user.name"))
+    if (Session.getUsername())
         urlStr = `/items?${queryStr}`
 
     $.ajax({
@@ -204,7 +204,7 @@ function loadResultsTable() {
     }
 
     // Hide collection columns if no user is logged 
-    if (!getCookie("BOC.user.name")) {
+    if (!Session.getUsername()) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

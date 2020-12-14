@@ -1,7 +1,7 @@
 function initializeTimeline() {
     let seriesJSON = JSON.parse($(document).data("series-summary"));
 
-    if (getCookie("BOC.user.name"))
+    if (Session.getUsername())
         $("#grades-coding").show();
     else
         $("#grades-coding").hide();
@@ -18,7 +18,7 @@ function initializeTimeline() {
     for (let idx in seriesJSON) {
         let variantsUri;
         let itemsUri;
-        if (getCookie("BOC.user.name"))
+        if (Session.getUsername())
             itemsUri = `/series/${seriesJSON[idx].id}/items`;
         else
             variantsUri = `/series/${seriesJSON[idx].id}/variants`;
@@ -297,7 +297,7 @@ function highlightRowOff() {
 
 
 function openUpsertCollection() {
-    if (getCookie("BOC.user.name")) {
+    if (Session.getUsername()) {
         let variantJSON;
 
         // "this" identifies the sub-column!
