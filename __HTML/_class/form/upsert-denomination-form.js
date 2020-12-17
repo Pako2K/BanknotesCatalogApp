@@ -116,8 +116,10 @@ class UpsertDenominationForm extends ModalForm {
         } else {
             // Fill in the units
             noteUnitsSel.append(`<option value='0'>${currencyJSON.name}</option>`);
-            for (let unit of currencyJSON.units)
-                noteUnitsSel.append(`<option value='${unit.id}'>${unit.name}</option>`);
+            if (currencyJSON.units) {
+                for (let unit of currencyJSON.units)
+                    noteUnitsSel.append(`<option value='${unit.id}'>${unit.name}</option>`);
+            }
             noteUnitsSel.val("0");
         }
     }
