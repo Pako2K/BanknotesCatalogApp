@@ -37,6 +37,8 @@ class UpsertCollectionForm extends ModalForm {
         ModalForm.show();
         let form = ModalForm.getForm();
 
+        form.find("button").focus();
+
         form.data("grades-list", gradesJSON);
         form.data("variant-id", variantJSON.id);
 
@@ -81,7 +83,8 @@ class UpsertCollectionForm extends ModalForm {
 
 
     static addCollectionRow() {
-        let gradesJSON = ModalForm.getForm().data("grades-list");
+        let form = ModalForm.getForm();
+        let gradesJSON = form.data("grades-list");
 
         let itemRow = ` <tr>
                         <td><input type="number" id="quantity" name="quantity" value="1" min="1" max="100" required></td>
@@ -101,6 +104,7 @@ class UpsertCollectionForm extends ModalForm {
                         <td colspan="5"><input type="text" id="description" name="description" placeholder="Item description" autocomplete="off" maxlength="40"></td>
                     </tr>`;
         $("#collection-items-table>tbody").append(itemRow);
+        form.find("#price").focus();
     }
 
 

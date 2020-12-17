@@ -55,6 +55,8 @@ class UpsertDenominationForm extends ModalForm {
 
     static onSubmitCallback;
 
+    static cache = { unitId: null, materialId: null, width: null, height: null };
+
     constructor(currencyJSON, seriesJSON, denomJSON, onSubmitCallback) {
         let title = denomJSON ? "Update Denomination" : "Insert Denomination";
         let subtitle = `${currencyJSON.name} - ${seriesJSON.name}`;
@@ -79,16 +81,14 @@ class UpsertDenominationForm extends ModalForm {
         } else {
             // Fill-in the materials
             asyncGET("/material", (result, status) => {
-                let defaultId = 0;
                 for (let material of result) {
                     materialSel.append(`<option value='${material.id}'>${material.name}</option>`);
-                    if (material.name === "Paper") defaultId = material.id;
                 }
 
                 if (denomJSON)
                     materialSel.val(denomJSON.materialId);
                 else
-                    materialSel.val(defaultId);
+                    materialSel.val(UpsertDenominationForm.cache.materialId || 0);
             });
         }
 
@@ -120,7 +120,13 @@ class UpsertDenominationForm extends ModalForm {
                 for (let unit of currencyJSON.units)
                     noteUnitsSel.append(`<option value='${unit.id}'>${unit.name}</option>`);
             }
-            noteUnitsSel.val("0");
+            noteUnitsSel.val(UpsertDenominationForm.cache.unitId || "0");
+
+            // Fill cached values
+            if (UpsertDenominationForm.cache.width)
+                form.find("input[name='note-width']").val(UpsertDenominationForm.cache.width);
+            if (UpsertDenominationForm.cache.height)
+                form.find("input[name='note-height']").val(UpsertDenominationForm.cache.height);
         }
     }
 
@@ -134,8 +140,7 @@ class UpsertDenominationForm extends ModalForm {
         let banknoteId = form.data("banknote-id");
         banknote.faceValue = parseFloat(form.find("input[name='note-face-value']").val());
         banknote.unitId = parseInt(form.find("select[name='note-units']").val());
-        if (form.find("select[name='note-material']").val())
-            banknote.materialId = parseInt(form.find("select[name='note-material']").val());
+        banknote.materialId = parseInt(form.find("select[name='note-material']").val());
         if (form.find("input[name='note-width']").val() !== "")
             banknote.width = parseInt(form.find("input[name='note-width']").val());
         if (form.find("input[name='note-height']").val() !== "")
@@ -150,6 +155,12 @@ class UpsertDenominationForm extends ModalForm {
             banknote.reverseDescription = form.find("textarea[name='note-reverse-desc']").val();
         if (form.find("textarea[name='note-desc']").val() !== "")
             banknote.description = form.find("textarea[name='note-desc']").val();
+
+        // Update cache
+        UpsertDenominationForm.cache.unitId = banknote.unitId;
+        UpsertDenominationForm.cache.materialId = banknote.materialId;
+        UpsertDenominationForm.cache.width = banknote.width;
+        UpsertDenominationForm.cache.height = banknote.height;
 
         if (!banknoteId) {
             // Insert new denomination

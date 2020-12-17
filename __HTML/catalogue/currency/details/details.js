@@ -13,11 +13,11 @@ function initializeDetails() {
     // Hide the New Series button
     let flagIsAdminStr = Session.isAdmin();
     if (!flagIsAdminStr || flagIsAdminStr === "0") {
-        //$(".only-admin").hide();
         $(".only-admin").css("opacity", 0.3);
     }
 
     // Load the series list
+    $("div.series-list").empty();
     let series = JSON.parse($(document).data("series-summary"));
     for (let elem of series) {
         let endDate = "";
@@ -329,7 +329,23 @@ function openUpsertSeries(isNewSeries) {
         description: $("div.series-info #series-description>span").text()
     };
 
-    new UpsertIssueForm(currencyJSON, seriesJSON);
+    new UpsertIssueForm(currencyJSON, seriesJSON, (newIssue)=>{
+        let series = JSON.parse($(document).data("series-summary"));
+        if (!seriesJSON){
+            series.push(newIssue);
+            series.sort((a,b)=>{return a.start-b.start;});
+        }
+        else{
+            //Search the updated series and replace it
+            let idx = series.findIndex((val)=>{
+                return val.id === newIssue.id;
+            });
+            series.splice(idx,1,newIssue);
+        }
+        $(document).data("series-summary", JSON.stringify(series));
+        $('#currency-views>p').eq(0).data("series-id", newIssue.id);
+        initializeDetails(); 
+    });
 }
 
 

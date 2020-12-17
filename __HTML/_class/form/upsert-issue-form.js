@@ -35,7 +35,9 @@ class UpsertIssueForm extends ModalForm {
             <textarea name="series-description" rows="3" cols="36"></textarea>
         </div>`;
 
-    constructor(currencyJSON, seriesJSON) {
+    static onSubmitCallback;
+
+    constructor(currencyJSON, seriesJSON, onSubmitCallback) {
         let title = "Add new Issue";
         let subtitle = currencyJSON.name;
         if (seriesJSON) {
@@ -43,6 +45,8 @@ class UpsertIssueForm extends ModalForm {
             subtitle += ` - ${seriesJSON.name}`;
         }
         super("upsert-issue-form", title, subtitle, UpsertIssueForm.FORM_HTML, UpsertIssueForm.submit);
+
+        UpsertIssueForm.onSubmitCallback = onSubmitCallback;
 
         ModalForm.show();
         let form = ModalForm.getForm();
@@ -126,16 +130,15 @@ class UpsertIssueForm extends ModalForm {
             asyncPUT(`/currency/${currencyId}/series`, series, (result, status) => {
                 // Close the window
                 ModalForm.close();
-
-                loadSeriesDetails(result.id);
+                series.id = result.id
+                UpsertIssueForm.onSubmitCallback(series);
             });
         } else {
             // Update series
             asyncPUT(`/series/${series.id}`, series, (result, status) => {
                 // Close the window
                 ModalForm.close();
-
-                loadSeriesDetails(series.id);
+                UpsertIssueForm.onSubmitCallback(series);
             });
         }
     }

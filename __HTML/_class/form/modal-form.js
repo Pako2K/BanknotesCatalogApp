@@ -10,7 +10,7 @@ class ModalForm {
 
         ModalForm.id = id;
         $("body").append(`
-            <div class="modal-form">
+            <div class="modal-form" onkeyup="if (event.key === 'Escape') { ModalForm.close(); }">
                 <div id="${id}" class="modal-container">
                     <h3>${title}</h3>
                     <h4>${subtitle}</h4>
