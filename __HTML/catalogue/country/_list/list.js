@@ -228,10 +228,8 @@ function openUpsertCollectionFromList(rowElem) {
         variantJSON.denominationStr = variantJSON.denomination + " " + variantJSON.currencyName;
 
         let gradesJSON = $("#grades-coding").data("grades");
-        let seriesId = $("section.series-detail-section").data("series-id");
 
-        $("div.modal-form-placeholder").load("/catalogue/currency/forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
-        $("div.modal-form-placeholder").show();
+        new UpsertCollectionForm(variantJSON, gradesJSON, () => { loadTable("List") });
 
     } else
         alert("Please log in to add this note to your collection.");

@@ -311,12 +311,8 @@ function openUpsertCollection() {
         variantJSON.denominationStr = $(this).parent().data("denom") + " " + $("#currency-name").text();
 
         let gradesJSON = $("#grades-coding").data("grades");
-        let seriesId = $(this).parents("section.series-detail-section").data("series-id");
 
-        $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON) });
-        $("div.modal-form-placeholder").show();
-
-        Session.resetExpiration();
+        new UpsertCollectionForm(variantJSON, gradesJSON, () => { initializeTimeline() });
     } else
-        alert("Please log in to add this note to your collection.");
+        alert("You must log in to add this note to your collection.");
 }

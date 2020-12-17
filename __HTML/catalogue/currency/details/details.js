@@ -61,7 +61,7 @@ function seriesOptionClicked(elem) {
 };
 
 
-function loadSeriesDetails(seriesId) {
+function loadSeriesDetails(seriesId, newDenomId) {
     $("#details-main-div>div:not(:first-of-type)").show();
 
     // Clean-up series info
@@ -119,57 +119,48 @@ function loadSeriesDetails(seriesId) {
     else
         variantsUri = `/series/${seriesId}/variants`;
 
+    asyncGET(variantsUri || itemsUri, (notesJSON, status) => {
+                // For each banknote
+                for (let denom of notesJSON) {
+                    // Create section
+                    let denomStr = denom.denomination.toLocaleString("de-DE") + ' ';
+                    if (denom.denomination != 1)
+                        denomStr += $("#currency-name").data("plural");
+                    else
+                        denomStr += $("#currency-name").text();
+                    let faceValueStr;
+                    if (denom.faceValue) {
+                        faceValueStr = denom.faceValue.toLocaleString("de-DE") + ' ';
+                        if (denom.faceValue != 1) {
+                            let unit = $("#currency-subunit").data("units").find((unit) => { return unit.id === denom.unitId });
+                            faceValueStr += unit.namePlural;
+                        } else
+                            faceValueStr += denom.unitName;
+                    }
+                    let sizeElemStr = denom.width && denom.height ?
+                        `${denom.width}mm X ${denom.height}mm` : "";
 
-    $.ajax({
-                type: "GET",
-                url: variantsUri || itemsUri,
-                async: true,
-                cache: false,
-                timeout: TIMEOUT,
-                dataType: 'json',
+                    let tags = denom.obverseTags ? `[<span>${denom.obverseTags}</span>] - ` : "";
+                    let obverseElem = denom.obverseDescription ?
+                        `<p>Obverse: ${tags}<span>${denom.obverseDescription}</span></p>` : "";
+                    tags = denom.reverseTags ? `[<span>${denom.reverseTags}</span>] - ` : "";
+                    let reverseElem = denom.reverseDescription ?
+                        `<p>Reverse: ${tags}<span>${denom.reverseDescription}</span></p>` : "";
 
-                success: function(notesJSON, status) {
-                        // For each banknote
-                        for (let denom of notesJSON) {
-                            // Create section
-                            let denomStr = denom.denomination.toLocaleString("de-DE") + ' ';
-                            if (denom.denomination != 1)
-                                denomStr += $("#currency-name").data("plural");
-                            else
-                                denomStr += $("#currency-name").text();
-                            let faceValueStr;
-                            if (denom.faceValue) {
-                                faceValueStr = denom.faceValue.toLocaleString("de-DE") + ' ';
-                                if (denom.faceValue != 1) {
-                                    let unit = $("#currency-subunit").data("units").find((unit) => { return unit.id === denom.unitId });
-                                    faceValueStr += unit.namePlural;
-                                } else
-                                    faceValueStr += denom.unitName;
-                            }
-                            let sizeElemStr = denom.width && denom.height ?
-                                `${denom.width}mm X ${denom.height}mm` : "";
+                    // Create variants
+                    let variantsHTML = "";
+                    for (let variant of denom.variants) {
+                        let dateStr = variant.printedDate ? variant.printedDate : "ND";
+                        if (dateStr.indexOf(variant.issueYear) === -1)
+                            dateStr += ` (${variant.issueYear})`;
 
-                            let tags = denom.obverseTags ? `[<span>${denom.obverseTags}</span>] - ` : "";
-                            let obverseElem = denom.obverseDescription ?
-                                `<p>Obverse: ${tags}<span>${denom.obverseDescription}</span></p>` : "";
-                            tags = denom.reverseTags ? `[<span>${denom.reverseTags}</span>] - ` : "";
-                            let reverseElem = denom.reverseDescription ?
-                                `<p>Reverse: ${tags}<span>${denom.reverseDescription}</span></p>` : "";
-
-                            // Create variants
-                            let variantsHTML = "";
-                            for (let variant of denom.variants) {
-                                let dateStr = variant.printedDate ? variant.printedDate : "ND";
-                                if (dateStr.indexOf(variant.issueYear) === -1)
-                                    dateStr += ` (${variant.issueYear})`;
-
-                                let itemsBoxHTML = "";
-                                let variantStr = JSON.stringify(variant);
-                                variantStr = variantStr.replace(/'/g, "&#39");
-                                if (variant.items && variant.items.length) {
-                                    let itemRows = "";
-                                    for (let item of variant.items) {
-                                        itemRows += `<tr class="${item.grade}-grade">
+                        let itemsBoxHTML = "";
+                        let variantStr = JSON.stringify(variant);
+                        variantStr = variantStr.replace(/'/g, "&#39");
+                        if (variant.items && variant.items.length) {
+                            let itemRows = "";
+                            for (let item of variant.items) {
+                                itemRows += `<tr class="${item.grade}-grade">
                                             <td>${item.quantity}</td>
                                             <td><b>${item.grade}</b></td>
                                             <td>${item.price + " €"}</td>
@@ -177,9 +168,9 @@ function loadSeriesDetails(seriesId) {
                                             <td>${item.seller || ""}</td>
                                             <td>${item.description || ""}</td>
                                         </tr>`;
-                                    }
+                            }
 
-                                    itemsBoxHTML = `<div class="items-info" data-variant='${variantStr}'>
+                            itemsBoxHTML = `<div class="items-info" data-variant='${variantStr}'>
                                             <table>
                                                 <thead>
                                                     <tr>
@@ -198,9 +189,9 @@ function loadSeriesDetails(seriesId) {
                                             </table>
                                             <img src="./details/edit.png" onclick='openUpsertCollectionFromDetails(this, "${denomStr}")' alt="Edit Items"/>
                                         </div>`;
-                                } else {
+                        } else {
 
-                                    itemsBoxHTML = `<div class="item-add-box" data-variant='${variantStr}'>
+                            itemsBoxHTML = `<div class="item-add-box" data-variant='${variantStr}'>
                                                 <div class="clickable-button" onclick='openUpsertCollectionFromDetails(this, "${denomStr}")'>
                                                     <div>
                                                         <img src="./details/add-black.png" alt="Add new item"/>
@@ -208,16 +199,16 @@ function loadSeriesDetails(seriesId) {
                                                     </div>
                                                 </div>
                                             </div>`;
-                                }
+                        }
 
-                                let overstampedNote;
-                                if (variant.overstampedCatalogueId)
-                                    overstampedNote = `${variant.overstampedCatalogueId} (${variant.overstampedTerritoryName})`;
+                        let overstampedNote;
+                        if (variant.overstampedCatalogueId)
+                            overstampedNote = `${variant.overstampedCatalogueId} (${variant.overstampedTerritoryName})`;
 
 
 
-                                variantsHTML +=
-                                    `<div class="variant-box section-title">
+                        variantsHTML +=
+                            `<div class="variant-box section-title">
                                         <p>${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
                                         <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}', ${variant.id})" alt="Edit Variant"/>
                                         
@@ -249,11 +240,11 @@ function loadSeriesDetails(seriesId) {
                                         </div>
                                         ${itemsBoxHTML}
                                     </div>`;
-                            }
+                    }
 
-                            let banknotesSection = $("div.banknotes-section");
-                            banknotesSection.append(
-                                    `<div class="banknote-section" id="banknote-id-${denom.denomination}">
+                    let banknotesSection = $("div.banknotes-section");
+                    banknotesSection.append(
+                            `<div class="banknote-section" id="banknote-id-${denom.denomination}">
                         <div class="banknote-title section-title">
                             <p>${faceValueStr ? faceValueStr + " [ " + denomStr + " ]": denomStr}</p>
                             <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertDenomination($(this).parent().parent().data('denomination'))" alt="Edit Denomination"/>
@@ -269,7 +260,7 @@ function loadSeriesDetails(seriesId) {
                         </div>
                         <div class="variants-section">
                             ${variantsHTML}
-                            <div class="variant-add-box only-admin" >
+                            <div id="denom-id-${denom.id}" class="variant-add-box only-admin" >
                                 <div class="clickable-button" onclick="openUpsertVariant(${denom.id}, '${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}')">
                                     <div>
                                         <img src="./details/add-blue.png" alt="Add variant"/>
@@ -303,20 +294,11 @@ function loadSeriesDetails(seriesId) {
                 // Remove the denomination
                 $('#currency-views>p').eq(0).data("denomination", "");
             }
-        },
 
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-            }
-        }
-    });
+            // In case a new banknote (Denomination) was create open automatically the new variant form
+            if(newDenomId)
+                $(`#denom-id-${newDenomId} div.clickable-button`).click();
+        });
 }
 
 
@@ -328,13 +310,10 @@ function openUpsertCollectionFromDetails(imgElem, denomStr) {
         let gradesJSON = $("#grades-coding").data("grades");
         let seriesId = $("div.series-info").data("series-id");
 
-        $("div.modal-form-placeholder").load("./forms/collection/__collection.html", () => { initializeUpsertCollection(seriesId, variantJSON, gradesJSON); });
-        $("div.modal-form-placeholder").show();
-
-        Session.resetExpiration();
+        new UpsertCollectionForm(variantJSON, gradesJSON, ()=>{loadSeriesDetails(seriesId)});
     }
     else
-        alert("Please log in to add this note to your collection.");
+        alert("You must log in to add this note to your collection.");
 }
 
 
@@ -361,8 +340,7 @@ function openUpsertSeries(isNewSeries) {
         description: $("div.series-info #series-description>span").text()
     };
 
-    $("div.modal-form-placeholder").load("./forms/series/__series.html", () => { initializeUpsertSeries(currencyJSON, seriesJSON); });
-    $("div.modal-form-placeholder").show();
+    new UpsertIssueForm(currencyJSON, seriesJSON);
 }
 
 
@@ -373,14 +351,9 @@ function openUpsertDenomination(denom) {
         return;
     }
     let seriesJSON = { id: $("div.series-info").data("series-id"), name: $("div.series-info").data("series-name"), isOverstamped: $("div.series-info #series-is-overstamped").length };
-    let currencyJSON = { id: window.location.search.substr("?currencyId=".length), name: $("#currency-name").text(), units: $("#currency-subunit").data("units") };
+    let currencyJSON = { id: $("#currency-name").data("id"), name: $("#currency-name").text(), units: $("#currency-subunit").data("units") };
 
-    $("div.modal-form-placeholder").load("./forms/denomination/__denomination.html", () => {
-        initializeUpsertDenomination(currencyJSON, seriesJSON, denom);
-    });
-    $("div.modal-form-placeholder").show();
-
-    Session.resetExpiration();
+    new UpsertDenominationForm(currencyJSON, seriesJSON, denom, (newDenomId)=>{loadSeriesDetails(seriesJSON.id, newDenomId)});
 }
 
 
@@ -393,15 +366,9 @@ function openUpsertVariant(banknoteId, banknoteDenomination, variantId) {
     }
     let seriesId = $("div.series-info").data("series-id");
     let isOverstamped = $("div.series-info #series-is-overstamped").length;
-    let territory = {id: $("#country-data").data("territory-id"), name:$("#country-data #name").text()};
+    let territory = {id: $("#country-data").data("territory-id"), name:$("#country-name").text()};
 
-    $("div.modal-form-placeholder").load("./forms/variant/__variant.html", () => {
-        initializeUpsertVariant(territory, seriesId, isOverstamped, banknoteId, banknoteDenomination, variantId);
-    });
-
-    $("div.modal-form-placeholder").show();
-
-    Session.resetExpiration();
+    new UpsertVariantForm(territory, isOverstamped, banknoteId, banknoteDenomination, variantId, ()=>{loadSeriesDetails(seriesId)});
 }
 
 

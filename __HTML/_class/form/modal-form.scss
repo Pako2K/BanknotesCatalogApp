@@ -1,0 +1,263 @@
+.modal-form {
+    position: fixed;
+    z-index: 1;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow: auto;
+    &>div.modal-container {
+        margin: auto;
+        margin-top: 4em;
+        width: fit-content;
+        box-shadow: 1px 1px 4px 2px rgb(180, 180, 180);
+        padding: 1em 1.5em 2em 1.5em;
+        background-color: rgb(235, 235, 235);
+        //     box-sizing: border-box;
+        &>h3 {
+            text-align: left;
+            margin-top: 0.2em;
+            margin-bottom: 1em;
+            padding: 0.5em 1em;
+            font-size: 0.9em;
+            font-weight: normal;
+            border-radius: 0.4em;
+            background-color: rgb(63, 97, 63);
+            color: white;
+        }
+        &>h4 {
+            text-align: center;
+            color: black;
+            margin-bottom: 0.5em;
+            font-family: Lucida sans, sans-serif;
+            font-size: 1em;
+            text-shadow: gray 2px 2px 3px;
+        }
+        &>form {
+            &>div.buttons-div {
+                margin-top: 1.4em;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                & .button-style {
+                    border: none;
+                    margin-left: 0.8em;
+                    margin-right: 0.8em;
+                    box-shadow: rgb(50, 50, 50) 2px 2px 3px;
+                    cursor: pointer;
+                    height: 2.2em;
+                    width: 7em;
+                    font-size: 0.9em;
+                    &:active {
+                        box-shadow: none;
+                        position: relative;
+                        top: 2px;
+                        left: 2px;
+                    }
+                    &:focus {
+                        text-decoration: underline;
+                        text-decoration-style: dotted;
+                        outline: none;
+                    }
+                }
+                &>button {
+                    background: rgb(159, 92, 92);
+                    color: whitesmoke;
+                }
+                &>input {
+                    &:focus {
+                        outline: none;
+                    }
+                    background: rgb(146, 188, 70);
+                    color: white;
+                }
+            }
+            & .field-title {
+                font-size: 0.9em;
+                margin-bottom: 0.3em;
+                margin-left: 0.3em;
+            }
+            & .required-input {
+                font-weight: bold;
+            }
+            & .inline-fields {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                &>div:not(:last-of-type) {
+                    margin-right: 1.4em;
+                }
+            }
+            & input {
+                font-family: Lucida sans, sans-serif;
+                font-size: 0.9em;
+                padding: 0.4em 0.5em;
+                border: none;
+                border-bottom: solid 0.5px darkgray;
+                border-radius: 2px;
+                &:focus {
+                    outline: none;
+                }
+                &:required:valid {
+                    background-color: rgb(208, 247, 208);
+                    border-bottom: solid 0.5px darkgray;
+                }
+                &:invalid {
+                    background-color: rgb(253, 242, 189);
+                    border-bottom: solid 1px black;
+                }
+            }
+            & textarea {
+                font-family: Lucida sans, sans-serif;
+                font-size: 0.9em;
+                width: 100%;
+                padding: 0.4em 0.5em;
+                border: none;
+                border-bottom: solid 0.5px darkgray;
+                outline: none;
+            }
+            & select {
+                font-family: Lucida sans, sans-serif;
+                font-size: 0.9em;
+                padding: 0.4em 0.2em;
+                width: 10em;
+                border: none;
+                border-bottom: solid 0.5px darkgray;
+                outline: none;
+                &:required:valid {
+                    background-color: rgb(208, 247, 208);
+                    border-bottom: solid 0.5px darkgray;
+                }
+                &:invalid {
+                    background-color: rgb(253, 242, 189);
+                    border-bottom: solid 1px black;
+                }
+            }
+            & .fields-group {
+                &>p {
+                    margin-bottom: 0em;
+                }
+                &>div {
+                    margin-left: 0.3em;
+                    padding-left: 1em;
+                    border-left: solid 0.5px gray;
+                    &>p:first-of-type {
+                        margin-top: 0.3em;
+                    }
+                }
+            }
+            & .flag-fields {
+                margin-top: 1em;
+                display: flex;
+                max-width: 22em;
+                flex-wrap: wrap;
+                flex-direction: row;
+                justify-content: flex-start;
+                &>div {
+                    margin-right: 1.7em;
+                    margin-bottom: 0.2em;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-start;
+                    align-items: center;
+                    & span {
+                        margin-left: 0.2em;
+                    }
+                    & input:checked~span {
+                        color: rgb(0, 0, 172);
+                        text-shadow: rgb(153, 153, 153) 1px 1px 2px;
+                    }
+                }
+            }
+            & #collection-items-table {
+                border-collapse: collapse;
+                &>thead>tr>th {
+                    background-color: black;
+                    color: whitesmoke;
+                    font-size: 0.9em;
+                    font-weight: normal;
+                    padding: 0.4em 0.8em;
+                    text-align: left;
+                }
+                &>tbody {
+                    background-color: white;
+                    &>tr.delete-item * {
+                        display: none;
+                    }
+                    &>tr>td>* {
+                        padding: 0.3em 0.5em;
+                        margin: 0;
+                        border: none;
+                        height: 2em;
+                        font-size: 0.9em;
+                        font-family: Lucida sans, sans-serif;
+                        background-color: transparent;
+                        &:focus {
+                            outline: solid 1px lightgrey;
+                        }
+                        &::placeholder {
+                            /* Chrome, Firefox, Opera, Safari 10.1+ */
+                            color: rgb(200, 200, 220);
+                            font-style: italic;
+                            opacity: 1;
+                            /* Firefox */
+                        }
+                        &:-ms-input-placeholder {
+                            /* Internet Explorer 10-11 */
+                            color: rgb(200, 200, 220);
+                            font-style: italic;
+                        }
+                        &::-ms-input-placeholder {
+                            /* Microsoft Edge */
+                            color: rgb(200, 200, 220);
+                            font-style: italic;
+                        }
+                        &:invalid {
+                            outline: solid 1px red;
+                        }
+                    }
+                    &>tr>td>input[type="number"] {
+                        text-align: center;
+                        max-width: 6em;
+                    }
+                    &>tr>td>input[type="date"] {
+                        max-width: 11em;
+                    }
+                    &>tr:nth-of-type(even) {
+                        border-bottom: 1px solid black;
+                        &>td>* {
+                            width: 100%;
+                        }
+                    }
+                    &>tr:nth-of-type(odd)>td:last-of-type {
+                        border-bottom: 1px solid black;
+                        padding: 0 0.2em;
+                    }
+                    & img {
+                        width: 2.5em;
+                        &:hover {
+                            cursor: pointer;
+                            border: 0.5px solid whitesmoke;
+                            box-shadow: gray 1px 1px 2px;
+                        }
+                    }
+                }
+                &>tfoot {
+                    border-bottom: 2px solid black;
+                    background-color: white;
+                    &>tr>td>* {
+                        display: inline-block;
+                        font-size: 0.9em;
+                        font-weight: bold;
+                        color: darkslategrey;
+                        padding: 0em 0.5em;
+                        margin: 0.4em 0;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}

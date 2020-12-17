@@ -1,3 +1,5 @@
+"use strict"
+
 let countryId;
 
 $(document).ready(function() {

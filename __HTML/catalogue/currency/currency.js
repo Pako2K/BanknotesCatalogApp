@@ -1,3 +1,5 @@
+"use strict"
+
 $(document).ready(function() {
     let searchStrArr = window.location.search.substr(1).split("&");
     let searchParam = searchStrArr[0].split("=");
@@ -33,6 +35,7 @@ $(document).ready(function() {
             $("#currency-symbol").hide();
 
         $("#currency-name").text(currencyJSON.name);
+        $("#currency-name").data("id", currencyId);
         $("#currency-name").data("plural", currencyJSON.namePlural);
         if (currencyJSON.iso3)
             $("#currency-iso3").append(currencyJSON.iso3);
