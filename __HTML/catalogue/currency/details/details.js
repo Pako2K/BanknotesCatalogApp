@@ -70,44 +70,33 @@ function loadSeriesDetails(seriesId, newDenomId) {
     // Clean-up all banknotes
     $("div.banknotes-section").empty();
 
-    $.ajax({
-        type: "GET",
-        url: `/series/${seriesId}`,
-        async: true,
-        cache: true,
-        timeout: TIMEOUT,
-        dataType: 'json',
-        success: function(result, status) {
-            // Store series id and name
-            $("div.series-info").data("series-id", seriesId);
-            $("div.series-info").data("series-name", result[0].name);
-            $("div.series-info").data("series-start", result[0].start);
-            $("div.series-info").data("series-end", result[0].end);
+    asyncGET(`/series/${seriesId}`, (result, status) => {
+        // Store series id and name
+        $("div.series-info").data("series-id", seriesId);
+        $("div.series-info").data("series-name", result[0].name);
+        $("div.series-info").data("series-start", result[0].start);
+        $("div.series-info").data("series-end", result[0].end);
 
-            // Set series Info
-            if (result[0].name) {
-                let endDate = "";
-                if (result[0].end == null || result[0].end == "")
-                    endDate = " - present";
-                else if (result[0].end !== result[0].start)
-                    endDate = " - " + result[0].end;
-                $("div.series-info").append(`<h5 name="h5name" id="series-name">${result[0].name} [${result[0].start}${endDate}]</h5>`);
-            }
-            if (result[0].issuerName) {
-                $("div.series-info").append(`<p id="series-issuer">Issued by: <span data-id="${result[0].issuerId}">${result[0].issuerName}</span></p>`);
-            }
-            if (result[0].isOverstamped) {
-                $("div.series-info").append(`<p id="series-is-overstamped"><i>Overstamped</i> Series</p>`);
-            }
-            if (result[0].lawDate) {
-                $("div.series-info").append(`<p id="series-law-date"><span>${result[0].lawDate}</span></p>`);
-            }
-            if (result[0].description) {
-                $("div.series-info").append(`<p id="series-description">Description: <span>${result[0].description}</span></p>`);
-            }
-        },
-        error: function(xhr, status, error) {
-            alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+        // Set series Info
+        if (result[0].name) {
+            let endDate = "";
+            if (result[0].end == null || result[0].end == "")
+                endDate = " - present";
+            else if (result[0].end !== result[0].start)
+                endDate = " - " + result[0].end;
+            $("div.series-info").append(`<h5 name="h5name" id="series-name">${result[0].name} [${result[0].start}${endDate}]</h5>`);
+        }
+        if (result[0].issuerName) {
+            $("div.series-info").append(`<p id="series-issuer">Issued by: <span data-id="${result[0].issuerId}">${result[0].issuerName}</span></p>`);
+        }
+        if (result[0].isOverstamped) {
+            $("div.series-info").append(`<p id="series-is-overstamped"><i>Overstamped</i> Series</p>`);
+        }
+        if (result[0].lawDate) {
+            $("div.series-info").append(`<p id="series-law-date"><span>${result[0].lawDate}</span></p>`);
+        }
+        if (result[0].description) {
+            $("div.series-info").append(`<p id="series-description">Description: <span>${result[0].description}</span></p>`);
         }
     });
 

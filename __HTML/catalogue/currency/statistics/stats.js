@@ -14,144 +14,63 @@ function initializeStats() {
     else
         uriToken = "variants";
 
-    $.ajax({
-        type: "GET",
-        url: `/currency/${currencyId}/series/${uriToken}/stats?territoryId=${territoryId}`,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-        success: function(seriesJSON, status) {
-            if (uriToken === "variants") {
-                // Add null collectionStats
-                for (let row of seriesJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            loadSeriesTable(currencyId, seriesJSON);
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET(`/currency/${currencyId}/series/${uriToken}/stats?territoryId=${territoryId}`, (seriesJSON, status) => {
+        if (uriToken === "variants") {
+            // Add null collectionStats
+            for (let row of seriesJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+
+        loadSeriesTable(currencyId, seriesJSON);
     });
 
-
-    $.ajax({
-        type: "GET",
-        url: `/currency/${currencyId}/denominations/${uriToken}/stats?territoryId=${territoryId}`,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(denomJSON, status) {
-            if (uriToken === "variants") {
-                // Add null collectionStats
-                for (let row of denomJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numSeries = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            loadDenominationsTable(denomJSON);
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET(`/currency/${currencyId}/denominations/${uriToken}/stats?territoryId=${territoryId}`, (denomJSON, status) => {
+        if (uriToken === "variants") {
+            // Add null collectionStats
+            for (let row of denomJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numSeries = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+
+        loadDenominationsTable(denomJSON);
     });
 
-
-    $.ajax({
-        type: "GET",
-        url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=issue&territoryId=${territoryId}`,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(yearsJSON, status) {
-            if (uriToken === "variants") {
-                // Add null collectionStats
-                for (let row of yearsJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            loadYearsTable(yearsJSON);
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET(`/currency/${currencyId}/years/${uriToken}/stats?dateType=issue&territoryId=${territoryId}`, (yearsJSON, status) => {
+        if (uriToken === "variants") {
+            // Add null collectionStats
+            for (let row of yearsJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+
+        loadYearsTable(yearsJSON);
     });
 
-    $.ajax({
-        type: "GET",
-        url: `/currency/${currencyId}/years/${uriToken}/stats?dateType=printed&territoryId=${territoryId}`,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
-
-        success: function(yearsJSON, status) {
-            if (uriToken === "variants") {
-                // Add null collectionStats
-                for (let row of yearsJSON) {
-                    row.collectionStats = {};
-                    row.collectionStats.numDenominations = 0;
-                    row.collectionStats.numVariants = 0;
-                    row.collectionStats.price = 0;
-                }
-            }
-
-            loadPrintedTable(yearsJSON);
-        },
-        error: function(xhr, status, error) {
-            switch (xhr.status) {
-                case 403:
-                    alert("Your session is not valid or has expired.");
-                    _clearSessionCookies();
-                    location.reload();
-                    break;
-                default:
-                    alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+    asyncGET(`/currency/${currencyId}/years/${uriToken}/stats?dateType=printed&territoryId=${territoryId}`, (yearsJSON, status) => {
+        if (uriToken === "variants") {
+            // Add null collectionStats
+            for (let row of yearsJSON) {
+                row.collectionStats = {};
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
         }
+
+        loadPrintedTable(yearsJSON);
     });
 
-    if (Session.getUsername() === undefined) {
+    if (!Session.getUsername()) {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();

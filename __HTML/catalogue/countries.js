@@ -151,16 +151,12 @@ function loadTables(countriesJSON) {
             (!showExisting && (country.end === null))
         ) continue;
 
-        let flagFileName = country.iso3;
-        if (!country.iso3) {
-            country.iso3 = "-";
-            // Remove spaces and commas
-            flagFileName = country.name.replace(/,|\s/g, "");
-        }
+        // Remove spaces and commas
+        let flagFileName = country.iso3 || country.name.replace(/,|\s/g, "");
 
         let descFields = [];
         descFields.push(`<img src="/data/_flags_/${flagFileName.toLowerCase()}.png">`);
-        descFields.push(country.iso3);
+        descFields.push(country.iso3 || "-");
         descFields.push(`<a href="/catalogue/country/index.html?countryId=${country.id}">${country.name}</a>`);
         descFields.push(country.start);
         descFields.push(country.end || "");

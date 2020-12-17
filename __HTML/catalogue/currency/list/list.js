@@ -23,72 +23,51 @@ function initializeList() {
             variantsUri = `/series/${seriesJSON[idx].id}/variants`;
 
         notesArray.push({});
-        $.ajax({
-            type: "GET",
-            url: variantsUri || itemsUri,
-            async: true,
-            cache: false,
-            timeout: TIMEOUT,
-            dataType: 'json',
 
-            success: function(notesJSON, status) {
-                numReplies++;
-                notesArray[idx] = notesJSON;
-                notesArray[idx].seriesId = seriesJSON[idx].id
-                notesArray[idx].seriesName = seriesJSON[idx].name
-                if (numReplies === seriesJSON.length) {
-                    // Create a flat JSON array 
-                    let notesList = [];
-                    for (let series of notesArray) {
-                        for (let denomination of series) {
-                            for (let variant of denomination.variants) {
-                                let record = {};
-                                record.id = variant.id;
-                                record.catalogueId = variant.catalogueId;
-                                record.denomination = denomination.denomination;
-                                record.printedDate = variant.printedDate;
-                                record.issueYear = variant.issueYear;
-                                record.seriesName = series.seriesName;
-                                record.notIssued = variant.notIssued;
-                                record.width = denomination.width;
-                                record.height = denomination.height;
-                                record.printer = variant.printerName;
-                                record.description = variant.variantDescription;
-                                record.items = variant.items || [];
-                                record.sortingQuantity = record.items[0] ? parseFloat(record.items[0].quantity) : -1;
-                                record.sortingPrice = record.items[0] ? parseFloat(record.items[0].price) : -1;
-                                record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
+        asyncGET(variantsUri || itemsUri, (notesJSON, status) => {
+            numReplies++;
+            notesArray[idx] = notesJSON;
+            notesArray[idx].seriesId = seriesJSON[idx].id
+            notesArray[idx].seriesName = seriesJSON[idx].name
+            if (numReplies === seriesJSON.length) {
+                // Create a flat JSON array 
+                let notesList = [];
+                for (let series of notesArray) {
+                    for (let denomination of series) {
+                        for (let variant of denomination.variants) {
+                            let record = {};
+                            record.id = variant.id;
+                            record.catalogueId = variant.catalogueId;
+                            record.denomination = denomination.denomination;
+                            record.printedDate = variant.printedDate;
+                            record.issueYear = variant.issueYear;
+                            record.seriesName = series.seriesName;
+                            record.notIssued = variant.notIssued;
+                            record.width = denomination.width;
+                            record.height = denomination.height;
+                            record.printer = variant.printerName;
+                            record.description = variant.variantDescription;
+                            record.items = variant.items || [];
+                            record.sortingQuantity = record.items[0] ? parseFloat(record.items[0].quantity) : -1;
+                            record.sortingPrice = record.items[0] ? parseFloat(record.items[0].price) : -1;
+                            record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
 
-                                // Parse the catalogue id in order to be able to sort
-                                let parseCatId = parseCatalogueId(record.catalogueId);
-                                record.catalogueIdPreffix = parseCatId.catalogueIdPreffix;
-                                record.catalogueIdInt = parseCatId.catalogueIdInt;
-                                record.catalogueIdSuffix = parseCatId.catalogueIdSuffix;
+                            // Parse the catalogue id in order to be able to sort
+                            let parseCatId = parseCatalogueId(record.catalogueId);
+                            record.catalogueIdPreffix = parseCatId.catalogueIdPreffix;
+                            record.catalogueIdInt = parseCatId.catalogueIdInt;
+                            record.catalogueIdSuffix = parseCatId.catalogueIdSuffix;
 
-                                notesList.push(record);
-                            }
+                            notesList.push(record);
                         }
                     }
-                    // Store list:
-                    $("#list-table-div").data("notes-list", JSON.stringify(notesList));
-                    // And draw it
-                    $("#list-table-div>table").find(".sort-selection").removeClass("sort-selection");
-                    $("#list-table-div>table").find(".sorting-column").removeClass("sorting-column");
-                    $("span.default-sort").click();
                 }
-            },
-
-            error: function(xhr, status, error) {
-                switch (xhr.status) {
-                    case 403:
-                        alert("Your session is not valid or has expired.");
-                        _clearSessionCookies();
-                        location.reload();
-                        break;
-                    default:
-                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        location.reload();
-                }
+                // Store list:
+                $("#list-table-div").data("notes-list", JSON.stringify(notesList));
+                // And draw it
+                $("#list-table-div>table").find(".sort-selection").removeClass("sort-selection");
+                $("#list-table-div>table").find(".sorting-column").removeClass("sorting-column");
+                $("span.default-sort").click();
             }
         });
     }

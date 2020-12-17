@@ -39,31 +39,18 @@ class ContinentsFilter {
         // $("head").append('<link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">');
         parentElement.append('<div class="super-container"><div id="continents-filter-html-container"></div><div>');
         // Load continents from db and assign on click function, synchronously!
-        $.ajax({
-            type: "GET",
-            url: `/continents`,
-            async: false,
-            cache: true,
-            timeout: TIMEOUT,
-            dataType: 'json',
-
-            success: function(result, status) {
-                let container = $("#continents-filter-html-container");
-                for (let cont of result) {
-                    container.append(`<div><p id="continentID-${cont.id}">${cont.name}</p><div>`);
-                    container.find("p").last().click(() => {
-                        ContinentsFilter.clicked($(`#continentID-${cont.id}`), onChangeCallback);
-                    });
-                }
-
-                // Read cookie for selected continent
-                let selectedId = getCookie(_COOKIE_FILTER_CONT_PATH);
-                $(`#continentID-${selectedId}`).click();
-            },
-            error: function(xhr, status, error) {
-                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                window.location.pathname = "/";
+        syncGET(`/continents`, (result, status) => {
+            let container = $("#continents-filter-html-container");
+            for (let cont of result) {
+                container.append(`<div><p id="continentID-${cont.id}">${cont.name}</p><div>`);
+                container.find("p").last().click(() => {
+                    ContinentsFilter.clicked($(`#continentID-${cont.id}`), onChangeCallback);
+                });
             }
+
+            // Read cookie for selected continent
+            let selectedId = getCookie(_COOKIE_FILTER_CONT_PATH);
+            $(`#continentID-${selectedId}`).click();
         });
     }
 

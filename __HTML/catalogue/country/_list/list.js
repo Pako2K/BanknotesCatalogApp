@@ -11,71 +11,50 @@ function loadListTable(countryId, currenciesJSON) {
             variantsUri = `/currency/${currenciesJSON[idx].id}/variants?territoryId=${countryId}`;
 
         notesArray.push({});
-        $.ajax({
-            type: "GET",
-            url: variantsUri || itemsUri,
-            async: true,
-            cache: false,
-            timeout: TIMEOUT,
-            dataType: 'json',
 
-            success: function(notesJSON, status) {
-                numReplies++;
-                notesArray[idx] = notesJSON;
-                notesArray[idx].currencyId = currenciesJSON[idx].id;
-                notesArray[idx].currencyName = currenciesJSON[idx].name + (currenciesJSON[idx].iso3 ? ` (${currenciesJSON[idx].iso3})` : "");
-                if (numReplies === currenciesJSON.length) {
-                    // Create a flat JSON array 
-                    let notesList = [];
-                    for (let currency of notesArray) {
-                        for (let denomination of currency) {
-                            for (let variant of denomination.variants) {
-                                let record = {};
-                                record.id = variant.id;
-                                record.catalogueId = variant.catalogueId;
-                                record.denomination = denomination.denomination;
-                                record.printedDate = variant.printedDate;
-                                record.issueYear = variant.issueYear;
-                                record.notIssued = variant.notIssued;
-                                record.currencyName = currency.currencyName;
-                                record.width = denomination.width;
-                                record.height = denomination.height;
-                                record.description = variant.variantDescription;
-                                record.items = variant.items || [];
-                                record.sortingQuantity = record.items[0] ? parseFloat(record.items[0].quantity) : -1;
-                                record.sortingPrice = record.items[0] ? parseFloat(record.items[0].price) : -1;
-                                record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
+        asyncGET(variantsUri || itemsUri, (notesJSON, status) => {
+            numReplies++;
+            notesArray[idx] = notesJSON;
+            notesArray[idx].currencyId = currenciesJSON[idx].id;
+            notesArray[idx].currencyName = currenciesJSON[idx].name + (currenciesJSON[idx].iso3 ? ` (${currenciesJSON[idx].iso3})` : "");
+            if (numReplies === currenciesJSON.length) {
+                // Create a flat JSON array 
+                let notesList = [];
+                for (let currency of notesArray) {
+                    for (let denomination of currency) {
+                        for (let variant of denomination.variants) {
+                            let record = {};
+                            record.id = variant.id;
+                            record.catalogueId = variant.catalogueId;
+                            record.denomination = denomination.denomination;
+                            record.printedDate = variant.printedDate;
+                            record.issueYear = variant.issueYear;
+                            record.notIssued = variant.notIssued;
+                            record.currencyName = currency.currencyName;
+                            record.width = denomination.width;
+                            record.height = denomination.height;
+                            record.description = variant.variantDescription;
+                            record.items = variant.items || [];
+                            record.sortingQuantity = record.items[0] ? parseFloat(record.items[0].quantity) : -1;
+                            record.sortingPrice = record.items[0] ? parseFloat(record.items[0].price) : -1;
+                            record.sortingPurchaseDate = record.items[0] ? record.items[0].purchaseDate : "";
 
-                                // Parse the catalogue id in order to be able to sort
-                                let parseCatId = parseCatalogueId(record.catalogueId);
-                                record.catalogueIdPreffix = parseCatId.catalogueIdPreffix;
-                                record.catalogueIdInt = parseCatId.catalogueIdInt;
-                                record.catalogueIdSuffix = parseCatId.catalogueIdSuffix;
+                            // Parse the catalogue id in order to be able to sort
+                            let parseCatId = parseCatalogueId(record.catalogueId);
+                            record.catalogueIdPreffix = parseCatId.catalogueIdPreffix;
+                            record.catalogueIdInt = parseCatId.catalogueIdInt;
+                            record.catalogueIdSuffix = parseCatId.catalogueIdSuffix;
 
-                                notesList.push(record);
-                            }
+                            notesList.push(record);
                         }
                     }
-                    // Store list:
-                    $("#list-table-div").data("notes-list", JSON.stringify(notesList));
-                    // And draw it
-                    $("#list-table-div>table").find(".sort-selection").removeClass("sort-selection");
-                    $("#list-table-div>table").find(".sorting-column").removeClass("sorting-column");
-                    $("span.default-sort").click();
                 }
-            },
-
-            error: function(xhr, status, error) {
-                switch (xhr.status) {
-                    case 403:
-                        alert("Your session is not valid or has expired.");
-                        _clearSessionCookies();
-                        location.reload();
-                        break;
-                    default:
-                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        location.reload();
-                }
+                // Store list:
+                $("#list-table-div").data("notes-list", JSON.stringify(notesList));
+                // And draw it
+                $("#list-table-div>table").find(".sort-selection").removeClass("sort-selection");
+                $("#list-table-div>table").find(".sorting-column").removeClass("sorting-column");
+                $("span.default-sort").click();
             }
         });
     }

@@ -24,35 +24,14 @@ function initializeTimeline() {
             variantsUri = `/series/${seriesJSON[idx].id}/variants`;
 
         notesArray.push({});
-        $.ajax({
-            type: "GET",
-            url: variantsUri || itemsUri,
-            async: true,
-            cache: false,
-            timeout: TIMEOUT,
-            dataType: 'json',
 
-            success: function(notesJSON, status) {
-                numReplies++;
-                notesArray[idx] = notesJSON;
-                notesArray[idx].seriesId = seriesJSON[idx].id
-                notesArray[idx].seriesName = seriesJSON[idx].name
-                if (numReplies === seriesJSON.length) {
-                    drawTables(notesArray);
-                }
-            },
-
-            error: function(xhr, status, error) {
-                switch (xhr.status) {
-                    case 403:
-                        alert("Your session is not valid or has expired.");
-                        _clearSessionCookies();
-                        location.reload();
-                        break;
-                    default:
-                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                        location.reload();
-                }
+        asyncGET(variantsUri || itemsUri, (notesJSON, status) => {
+            numReplies++;
+            notesArray[idx] = notesJSON;
+            notesArray[idx].seriesId = seriesJSON[idx].id
+            notesArray[idx].seriesName = seriesJSON[idx].name
+            if (numReplies === seriesJSON.length) {
+                drawTables(notesArray);
             }
         });
     }

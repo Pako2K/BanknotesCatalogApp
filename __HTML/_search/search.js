@@ -119,56 +119,36 @@ function callVariantsAPI(filters) {
     if (Session.getUsername())
         urlStr = `/items?${queryStr}`
 
-    $.ajax({
-        type: "GET",
-        url: urlStr,
-        async: true,
-        cache: false,
-        timeout: TIMEOUT,
-        dataType: 'json',
+    asyncGET(urlStr, (variantsJSON, status) => {
+        if (variantsJSON.length === 0) {
+            $("#results-section").addClass("not-found");
+            return;
+        }
+        $("#results-section").addClass("success");
 
-        success: function(variantsJSON, status) {
-            if (variantsJSON.length === 0) {
-                $("#results-section").addClass("not-found");
-                return;
-            }
-            $("#results-section").addClass("success");
-
-            for (let row of variantsJSON) {
-                // Parse the catalogue id in order to be able to sort
-                let parsedCatId = parseCatalogueId(row.catalogueId);
-                row.catalogueIdPreffix = parsedCatId.catalogueIdPreffix;
-                row.catalogueIdInt = parsedCatId.catalogueIdInt;
-                row.catalogueIdSuffix = parsedCatId.catalogueIdSuffix;
-                if (row.item) {
-                    row.grade = row.item.grade;
-                    row.price = parseFloat(row.item.price);
-                } else {
-                    row.grade = "-";
-                    row.price = 0;
-                }
-            }
-
-            $("#results-table").data("value", JSON.stringify(variantsJSON));
-
-            // Sort by the first column
-            $("#results-table th:first-of-type>span").click();
-        },
-        error: function(xhr, status, error) {
-            if (xhr.responseJSON) {
-                switch (xhr.responseJSON.status) {
-                    case 400:
-                        break;
-                    case 413:
-                        $("#results-section").addClass("too-many-results");
-                        $("#results-section>p>span").text(xhr.responseJSON.description.split(":")[1]);
-                        break;
-                    default:
-                        alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
-                }
+        for (let row of variantsJSON) {
+            // Parse the catalogue id in order to be able to sort
+            let parsedCatId = parseCatalogueId(row.catalogueId);
+            row.catalogueIdPreffix = parsedCatId.catalogueIdPreffix;
+            row.catalogueIdInt = parsedCatId.catalogueIdInt;
+            row.catalogueIdSuffix = parsedCatId.catalogueIdSuffix;
+            if (row.item) {
+                row.grade = row.item.grade;
+                row.price = parseFloat(row.item.price);
             } else {
-                alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);
+                row.grade = "-";
+                row.price = 0;
             }
+        }
+
+        $("#results-table").data("value", JSON.stringify(variantsJSON));
+
+        // Sort by the first column
+        $("#results-table th:first-of-type>span").click();
+    }, (xhr, status, error) => {
+        if (xhr.responseJSON && xhr.responseJSON.status === 413) {
+            $("#results-section").addClass("too-many-results");
+            $("#results-section>p>span").text(xhr.responseJSON.description.split(":")[1]);
         }
     });
 }
