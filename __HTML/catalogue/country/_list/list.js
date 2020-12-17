@@ -62,10 +62,15 @@ function loadListTable(countryId, currenciesJSON) {
 
 
 
-function drawList(notesList, sortKey, sortAsc) {
+function drawList(sortKey, sortAsc) {
     $("#list-table-div>table>tbody").empty();
 
-    sortJSON(notesList, sortKey, sortAsc);
+    let notesList = JSON.parse($("#list-table-div").data("notes-list"));
+
+    if (sortKey)
+        sortJSON(notesList, sortKey, sortAsc);
+
+    $("#list-table-div").data("notes-list", JSON.stringify(notesList));
 
     let rowsHTML = "";
     let existsNotIssued = false;
@@ -155,7 +160,7 @@ function sortClick(htmlElem) {
         "Purchased": ["sortingPurchaseDate", "issueYear"]
     };
 
-    drawList(JSON.parse($("#list-table-div").data("notes-list")), mapFieldName[sortObj.mapKey], sortObj.sortAsc);
+    drawList(mapFieldName[sortObj.mapKey], sortObj.sortAsc);
 }
 
 
@@ -208,7 +213,7 @@ function openUpsertCollectionFromList(rowElem) {
 
         let gradesJSON = $("#grades-coding").data("grades");
 
-        new UpsertCollectionForm(variantJSON, gradesJSON, () => { loadTable("List") });
+        new UpsertCollectionForm(variantJSON, gradesJSON, () => { loadListTable(countryId, currenciesTable.getData()); });
 
     } else
         alert("Please log in to add this note to your collection.");
