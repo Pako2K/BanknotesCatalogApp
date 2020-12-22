@@ -7,6 +7,4 @@ $("head").append(`<script src="${catEntity}.js"></script>`);
 
 $(document).ready(() => {
     initialize();
-
-    $("#applied-filters>span.cont-name").text(ContinentsFilter.getSelectedName());
 })

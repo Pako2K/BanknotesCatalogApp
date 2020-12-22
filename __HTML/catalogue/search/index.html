@@ -22,8 +22,9 @@
     <script src="/_shared/ajax-wrapper.js"></script>
     <script src="/_shared/utils.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="grouping.css">
-    <script src="grouping.js"></script>
+    <link rel="stylesheet" type="text/css" href="search.css">
+    <script src="search.js"></script>
+
 
     <link rel="stylesheet" type="text/css" href="/_shared/header/header.css">
     <script src="/_shared/header/header.js" defer></script>
@@ -34,30 +35,39 @@
     <link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">
     <script src="/_shared/continents-filter-class/continents-filter.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="/_class/from-to-filter/from-to-filter.css">
-    <script src="/_class/from-to-filter/from-to-filter.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="/_class/filter-group/filter-group.css">
+    <script src="/_class/filter-group/territory-filters.js"></script>
+    <script src="/_class/filter-group/currency-filters.js"></script>
+    <script src="/_class/filter-group/banknote-filters.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/_class/card/card.css">
-    <script src="/_class/card/show-hide-card.js"></script>
     <script src="/_class/card/simple-card.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">
-    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/list-table/list-table.css">
+    <script src="/_shared/list-table/__list-table.js"></script>
 </head>
 
 <body>
     <div id="continents-filter">
         <script>
-            new ContinentsFilter($("#continents-filter"), changedContinent);
+            new ContinentsFilter($("#continents-filter"), callVariantsAPI);
         </script>
     </div>
 
-    <section id="filters">
+    <section id="filters-section">
+        <div id="territory-filter"></div>
+        <div id="currency-filter"></div>
+        <div id="banknote-filter"></div>
     </section>
 
     <section>
-        <div id="list-card">
+        <div class="button" onclick="callVariantsAPI()">
+            <p>Search</p>
         </div>
+    </section>
+
+    <section>
+        <div id="results-list"></div>
     </section>
 </body>

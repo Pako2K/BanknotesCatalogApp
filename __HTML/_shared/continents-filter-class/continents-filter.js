@@ -3,10 +3,10 @@
 /* DEPENDENCIES: 
 
     /shared/cookies.js
-    /shared/constants.js
 
 */
 
+const _COOKIE_FILTER_CONT_PATH = "BOC.filter.continent";
 
 class ContinentsFilter {
 
@@ -50,7 +50,8 @@ class ContinentsFilter {
 
             // Read cookie for selected continent
             let selectedId = getCookie(_COOKIE_FILTER_CONT_PATH);
-            $(`#continentID-${selectedId}`).click();
+            $(`#continentID-${selectedId}`).addClass("selectedContinent");
+            $("#continents-filter-html-container p:not(.selectedContinent)").addClass("deselectedContinent");
         });
     }
 

@@ -1,0 +1,115 @@
+@import '../../_shared/index',
+'../../_shared/common';
+@mixin media-screen-block($scale-factor: 1) {
+    section {
+        font-size: 1em*$scale-factor;
+    }
+}
+
+@include media-screen-block();
+section {
+    padding: 0.5em 0.5em;
+    background-color: $BODY_BACKGROUND_COLOR;
+}
+
+#filters-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    &>div {
+        margin: 0.25em 0.5em;
+        min-width: 25%;
+    }
+}
+
+.button {
+    margin: auto;
+    border: none;
+    background: rgb(193, 221, 141);
+    box-shadow: rgb(50, 50, 50) 2px 2px 3px;
+    cursor: pointer;
+    height: 2em;
+    width: 10em;
+    display: flex;
+    align-content: center;
+    &>p {
+        @include no-user-select;
+        margin: auto;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-shadow: -1px -1px 2px white;
+        text-align: center;
+        vertical-align: middle;
+        color: black;
+    }
+    &:active {
+        box-shadow: none;
+        position: relative;
+        top: 2px;
+        left: 2px;
+        border: 0.5px solid grey;
+    }
+    &:focus {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        outline: none;
+    }
+}
+
+#results-list {
+    margin: 0.25em 0.5em;
+    overflow: auto;
+    & p.result-msg {
+        text-align: center;
+        font-size: 1em;
+        font-weight: bold;
+        color: darkgreen;
+    }
+    & p.not-logged-in {
+        text-align: center;
+    }
+}
+
+#results-table {
+    margin: auto;
+    font-size: 1.1em;
+}
+
+@media screen and (max-width: $WIDTH_BIG_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_BIG_TABLET);
+    #filters-section {
+        flex-wrap: wrap;
+        justify-content: center;
+        &>div {
+            margin: 0.25em 1%;
+        }
+        & #territory-filter {
+            width: 55%;
+        }
+        & #banknote-filter {
+            width: 38%;
+        }
+        & #currency-filter {
+            order: 3;
+            width: 95%;
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_SMALL_TABLET) {
+    @include media-screen-block($WIDTH_FACTOR_SMALL_TABLET);
+}
+
+@media screen and (max-width: $HEIGHT_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+    #filters-section>div {
+        min-width: 95%;
+    }
+    #banknote-filter {
+        order: 3;
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    @include media-screen-block($HEIGHT_FACTOR_BIG_PHONE);
+}

@@ -1,75 +1,41 @@
+"use strict"
+
 let currenciesTable;
 let statsSummaryTable;
-let foundedFilter;
-let extinctFilter;
-let existingButton;
-let extinctButton;
-let curTypeButtons = [];
+let currencyFilters;
+let listCard;
 
-let currencyTypes;
 
+const currencyTypes = ["OWNED", "SHARED"];
 // Statistics
 let statsCurType = [];
 
 function initialize() {
-    // Customize some texts:
-    $(`#types-filter>p`).text("Currency Type");
+    currencyTypes.forEach(element => {
+        statsCurType.push({});
+    });
 
-    $('#catalogue-stats>div.block-description').append(`
+    // Insert Currency filters
+    currencyFilters = new CurrencyFilters("Currencies", $(`#catalogue-filters`), currencyTypes, onCurrencyFiltersChanged);
+
+    // Insert territory stats
+    let card = new ShowHideCard("CurrenciesStats", $('#catalogue-stats'), "Stats");
+    card.setContent(`
+        <div id="summary-table">
+        </div>
+        <div class="block-description">
+        </div>`);
+    let rows = [];
+    currencyTypes.forEach((element, idx) => {
+        rows.push({ id: idx, name: element });
+    });
+    statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Collect."], rows);
+
+    $('#catalogue-stats div.block-description').append(`
             <p>Shows statistics for each currency type, either existing or extinct, according to the filters:</p>
             <p>the total number of currencies in the catalogue, </p>
             <p>the number of currencies in your collection.</p>`);
 
-    $('#catalogue-list div.block-title>p').text("List of Currencies");
-
-    if (getCookie(_COOKIE_CURRENCY_FILTERS_HIDE) === "")
-        hideBlock("#catalogue-filters span:last-of-type", "filters");
-    if (getCookie(_COOKIE_CURRENCY_STATS_HIDE) === "")
-        hideBlock("#catalogue-stats span:last-of-type", "stats");
-
-
-    foundedFilter = new FromToFilter($("#years-filter>div:first-of-type"), "Created", yearFilterChanged);
-    extinctFilter = new FromToFilter($("#years-filter>div:last-of-type"), "Replaced", yearFilterChanged);
-
-    foundedFilter.initFrom(getCookie(_COOKIE_CURRENCY_FILTER_FOUNDED_FROM));
-    foundedFilter.initTo(getCookie(_COOKIE_CURRENCY_FILTER_FOUNDED_TO));
-    extinctFilter.initFrom(getCookie(_COOKIE_CURRENCY_FILTER_EXTINCT_FROM));
-    extinctFilter.initTo(getCookie(_COOKIE_CURRENCY_FILTER_EXTINCT_TO));
-
-    // Set Currency types 
-    let disabledCurTypes = [];
-    let cookie = getCookie(_COOKIE_CURRENCY_FILTER_CUR_TYPES_DISABLED);
-    if (cookie)
-        disabledCurTypes = cookie.split("#");
-
-    currencyTypes = ["OWNED", "SHARED"];
-    let rows = [];
-    currencyTypes.forEach((element, idx) => {
-        statsCurType[idx] = { existing: { total: 0, col: 0 }, extinct: { total: 0, col: 0 } };
-
-        rows.push({ id: idx, name: element });
-
-        $("#types-filter>ul").append(`<li><div id="cur-type-${element}"></div>${element}</li>`);
-        curTypeButtons[element] = new SlideButton($(`#cur-type-${element}`), 24, 13, true, curTypeFilterChanged);
-    });
-
-    statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Collect."], rows);
-    disabledCurTypes.forEach((val, idx) => {
-        curTypeButtons[val].click();
-    });
-
-
-    // Add slide buttons
-    existingButton = new SlideButton($("#existing-slide-button"), 30, 16, true, stateFilterChanged);
-    extinctButton = new SlideButton($("#extinct-slide-button"), 30, 16, true, stateFilterChanged);
-
-    if (getCookie(_COOKIE_CURRENCY_FILTER_EXISTING) == "false") existingButton.click();
-    if (getCookie(_COOKIE_CURRENCY_FILTER_EXTINCT) == "false") extinctButton.click();
-
-
-    let existingInYear = getCookie(_COOKIE_CURRENCY_FILTER_EXISTING_IN_YEAR);
-    if (existingInYear)
-        $("#existing-year-filter>input").val(existingInYear).blur();
 
     let variantsUri;
     let itemsUri;
@@ -78,7 +44,7 @@ function initialize() {
     else
         variantsUri = "/currencies/variants/stats";
 
-    // Get currencies
+    // Get currencies and stats
     asyncGET(variantsUri || itemsUri, (currenciesJSON, status) => {
         if (variantsUri) {
             // Add null collectionStats
@@ -99,6 +65,12 @@ function initialize() {
             }
         }
         // Store and load data
+        let subtitle = ContinentsFilter.getSelectedName();
+        listCard = new SimpleCard($('#catalogue-list'), "List of Currencies", subtitle);
+        listCard.setContent(`
+            <div id="catalogue-list-table">
+            </div>`);
+
         currenciesTable = new StatsListTable($("#catalogue-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
             { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
             { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
@@ -128,16 +100,39 @@ function loadTables(currenciesJSON) {
 
     // Retrieve filters values
     let filterContId = ContinentsFilter.getSelectedId();
-    let foundedFrom = foundedFilter.getFrom();
-    let foundedTo = foundedFilter.getTo();
-    let extinctFrom = extinctFilter.getFrom();
-    let extinctTo = extinctFilter.getTo();
-    let existingInYear = $("#existing-year-filter input").val();
-    let showExisting = existingButton.isActive();
-    let showExtinct = extinctButton.isActive();
+    let filtersJSON = currencyFilters.getFilters();
+
+    let foundedFrom = filtersJSON.founded.from;
+    let foundedTo = filtersJSON.founded.to;
+    let extinctFrom = filtersJSON.extinct.from;
+    let extinctTo = filtersJSON.extinct.to;
+    let existingInYear = filtersJSON.existingInYear;
+    let showExisting = filtersJSON.isExisting === "false" ? false : true;
+    let showExtinct = filtersJSON.isExtinct === "false" ? false : true;
+
+    // Set subtitle
+    let subtitle = ContinentsFilter.getSelectedName();
+    if (!showExisting)
+        subtitle += "&nbsp;&nbsp;&nbsp;Not Existing";
+    if (!showExtinct)
+        subtitle += "&nbsp;&nbsp;&nbsp;Not Replaced";
+    if (existingInYear && existingInYear != "")
+        subtitle += "&nbsp;&nbsp;&nbsp;Existing in " + existingInYear;
+
+    listCard.setSubtitle(subtitle);
+
+    // Format summary table
+    showExisting ? statsSummaryTable.enableColumns(0) : statsSummaryTable.disableColumns(0);
+    showExtinct ? statsSummaryTable.enableColumns(1) : statsSummaryTable.disableColumns(1);
+    currencyTypes.forEach((val, idx) => {
+        if (filtersJSON.disabledCurTypes.indexOf(val) !== -1)
+            statsSummaryTable.disableRow(idx);
+        else
+            statsSummaryTable.enableRow(idx);
+    });
+
 
     for (let currency of currenciesJSON) {
-
         // Apply filters
 
         if (filterContId && filterContId !== currency.territory.continent.id) continue;
@@ -146,9 +141,9 @@ function loadTables(currenciesJSON) {
 
         if ((extinctFrom && (!currency.end || (parseInt(currency.end) < extinctFrom))) || (extinctTo && (!currency.end || (parseInt(currency.end) > extinctTo)))) continue;
 
-        if (existingInYear && !(currency.start < existingInYear && (!currency.end || currency.end > existingInYear))) continue;
+        if (existingInYear && !(currency.start <= existingInYear && (!currency.end || currency.end >= existingInYear))) continue;
 
-        if (!curTypeButtons[currency.currencyType].isActive()) continue;
+        if (filtersJSON.disabledCurTypes.indexOf(currency.currencyType) !== -1) continue;
 
         if ((!showExtinct && (currency.end != null)) ||
             (!showExisting && (currency.end == null))
@@ -195,119 +190,11 @@ function loadTables(currenciesJSON) {
     statsSummaryTable.setData(statsValuesJSON);
 }
 
-
-function showBlock(elem, blockName) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().show();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-
-    if (blockName === 'filters')
-        deleteCookie(_COOKIE_CURRENCY_FILTERS_HIDE);
-    else
-        deleteCookie(_COOKIE_CURRENCY_STATS_HIDE);
-}
-
-function hideBlock(elem, blockName) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().hide();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-    if (blockName === 'filters')
-        setCookie(_COOKIE_CURRENCY_FILTERS_HIDE, "");
-    else
-        setCookie(_COOKIE_CURRENCY_STATS_HIDE, "");
-}
-
-
 function changedContinent(contId, contName) {
-
-    $("#applied-filters>span.cont-name").text(contName);
-
     // Get data and reload the tables
-    if (currenciesTable)
-        loadTables(currenciesTable.getData());
+    loadTables(currenciesTable.getData());
 }
 
-function yearFilterChanged(filterName, from, to) {
-    // Store value in the cookie
-    if (filterName === "Founded") {
-        setCookie(_COOKIE_CURRENCY_FILTER_FOUNDED_FROM, from);
-        setCookie(_COOKIE_CURRENCY_FILTER_FOUNDED_TO, to);
-    } else {
-        setCookie(_COOKIE_CURRENCY_FILTER_EXTINCT_FROM, from);
-        setCookie(_COOKIE_CURRENCY_FILTER_EXTINCT_TO, to);
-    }
-
-    // Get data and reload the tables
-    if (currenciesTable)
-        loadTables(currenciesTable.getData());
-}
-
-function stateFilterChanged(id, state) {
-    let type = id.split('-')[0];
-
-    if (type === "existing") {
-        setCookie(_COOKIE_CURRENCY_FILTER_EXISTING, state);
-    } else {
-        setCookie(_COOKIE_CURRENCY_FILTER_EXTINCT, state);
-    }
-
-    if (!state) {
-        statsSummaryTable.disableColumns((type === "existing") ? 0 : 1);
-        $(`#applied-filters>span.${type}`).text("Not " + type);
-        $(`#applied-filters>span.${type}`).show();
-    } else {
-        statsSummaryTable.enableColumns((type === "existing") ? 0 : 1);
-        $(`#applied-filters>span.${type}`).hide();
-    }
-
-    // Get data and reload the tables
-    if (currenciesTable)
-        loadTables(currenciesTable.getData());
-}
-
-function curTypeFilterChanged(id, state) {
-    let curTypeName = id.split("-")[2];
-    let curTypeId = currencyTypes.indexOf(curTypeName);
-    let disabledCurTypes = [];
-    let cookie = getCookie(_COOKIE_CURRENCY_FILTER_CUR_TYPES_DISABLED);
-    if (cookie)
-        disabledCurTypes = cookie.split("#");
-
-    if (!state) {
-        statsSummaryTable.disableRow(curTypeId);
-        // Add to Cookie
-        if (disabledCurTypes.indexOf(curTypeName) === -1)
-            disabledCurTypes.push(curTypeName);
-    } else {
-        statsSummaryTable.enableRow(curTypeId);
-        // Update Cookie
-        let pos = disabledCurTypes.indexOf(curTypeName);
-        if (pos !== -1)
-            disabledCurTypes.splice(pos, 1);
-    }
-    setCookie(_COOKIE_CURRENCY_FILTER_CUR_TYPES_DISABLED, disabledCurTypes.join("#"));
-
-    // Get data and reload the tables
-    if (currenciesTable)
-        loadTables(currenciesTable.getData());
-}
-
-function existingYearFilterChanged(elem) {
-    if ($(elem).data("init-value") !== $(elem).val()) {
-        setCookie(_COOKIE_CURRENCY_FILTER_EXISTING_IN_YEAR, $(elem).val());
-
-        if ($(elem).val() && $(elem).val() != "") {
-            $(`#applied-filters>span.existing-in`).text("Existing in " + $(elem).val());
-            $(`#applied-filters>span.existing-in`).show();
-        } else {
-            $(`#applied-filters>span.existing-in`).hide();
-        }
-        $(elem).data("init-value", $(elem).val());
-        if (currenciesTable)
-            loadTables(currenciesTable.getData());
-    }
+function onCurrencyFiltersChanged() {
+    loadTables(currenciesTable.getData());
 }

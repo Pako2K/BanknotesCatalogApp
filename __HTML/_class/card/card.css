@@ -1,0 +1,78 @@
+.show-hide-card,
+.simple-card {
+  border: solid 0.5px lightgray;
+  -webkit-box-shadow: 1px 1px 2px lightgrey;
+          box-shadow: 1px 1px 2px lightgrey;
+  background-color: white;
+  padding: 0.5em 0.75em;
+  height: 100%;
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+}
+
+.show-hide-card .card-title,
+.simple-card .card-title {
+  margin-bottom: 0.5em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-bottom: solid 2px black;
+  font-family: sans-serif;
+}
+
+.show-hide-card .card-title p.title,
+.simple-card .card-title p.title {
+  margin: 0 0 0 0.25em;
+  font-weight: bold;
+}
+
+.show-hide-card .card-title p.subtitle,
+.simple-card .card-title p.subtitle {
+  font-size: 0.75em;
+  margin: 0.25em;
+  color: #216b5f;
+  font-style: italic;
+  max-width: 66%;
+}
+
+.show-hide-card .card-title div.show-hide,
+.simple-card .card-title div.show-hide {
+  font-size: 0.75em;
+}
+
+.show-hide-card .card-title div.show-hide span,
+.simple-card .card-title div.show-hide span {
+  margin: 0.25em 0.5em;
+  font-style: italic;
+  display: inline-block;
+}
+
+.show-hide-card .card-title div.show-hide span.disabled,
+.simple-card .card-title div.show-hide span.disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.show-hide-card .card-title div.show-hide span:not(.disabled),
+.simple-card .card-title div.show-hide span:not(.disabled) {
+  cursor: pointer;
+}
+
+.show-hide-card.hidden,
+.simple-card.hidden {
+  height: auto;
+}
+
+.show-hide-card.hidden .card-content,
+.simple-card.hidden .card-content {
+  display: none;
+}
+/*# sourceMappingURL=card.css.map */

@@ -6,11 +6,17 @@
 
     "credentialsDB": {
         "connectionString": null,
-        "ssl": false
+        "ssl": false,
+        "max": 5,
+        "idleTimeoutMillis": 30000,
+        "connectionTimeoutMillis": 30000
     },
     "catalogueDB": {
         "connectionString": null,
-        "ssl": false
+        "ssl": false,
+        "max": 5,
+        "idleTimeoutMillis": 30000,
+        "connectionTimeoutMillis": 30000
     },
 
     "useHTTPS": false,
@@ -30,7 +36,7 @@
             "path": "/",
             "httpOnly": true,
             "secure": false,
-            "maxAge": 1800000
+            "maxAge": 300000
         },
         "resave": true,
         "unset": "destroy",

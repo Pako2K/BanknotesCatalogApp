@@ -1,0 +1,85 @@
+div.territory-filters,
+div.currency-filters,
+div.banknote-filters {
+    &>div.denom-filter>div {
+        font-size: 0.9em;
+        margin-right: 1.4em;
+    }
+    &>div.years-filter {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        &>div {
+            font-size: 0.9em;
+            margin-right: 1.4em;
+        }
+    }
+    &>div.types-filter {
+        & p {
+            font-size: 0.9em;
+            margin-bottom: 0.5em;
+            font-family: "New Roman", serif;
+        }
+        &>ul {
+            margin: 0.5em 0;
+            padding-left: 2em;
+            list-style-type: none;
+            list-style-position: inside;
+            &>li {
+                font-size: 0.8em;
+                font-family: sans-serif;
+                margin: 0.5em 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                &>div {
+                    margin-right: 0.5em;
+                }
+            }
+        }
+    }
+    &>div.state-filter {
+        margin: 1em 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        font-size: 0.9em;
+        &>div {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        & p:first-of-type {
+            margin: 0 2em 0 0.5em;
+        }
+    }
+    &>div.existing-year-filter {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        &>p {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+            margin-right: 0.5em;
+            font-family: "New Roman", serif;
+            font-size: 0.9em;
+        }
+        &>input {
+            vertical-align: middle;
+            padding-left: 0.6em;
+            font-size: 0.9em;
+            width: 5em;
+            height: 1.8em;
+            background-color: whitesmoke;
+            border: solid 0.5px black;
+            &:focus {
+                outline: none;
+                background-color: white;
+                box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+            }
+        }
+    }
+}

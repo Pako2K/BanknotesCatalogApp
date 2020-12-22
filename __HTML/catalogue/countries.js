@@ -1,80 +1,42 @@
+"use strict"
+
 let countriesTable;
 let statsSummaryTable;
-let foundedFilter;
-let extinctFilter;
-let existingButton;
-let extinctButton;
-let terTypeButtons = [];
+let territoryFilters;
+let listCard;
 
-let territoryTypesJSON;
-let territoryTypesMap;
-
+let territoryTypesAbbr;
 // Statistics
 let statsTerType = [];
 
 function initialize() {
-    // Customize some texts:
-    $(`#types-filter>p`).text("Territory Type");
+    // Load Country types before anything else
+    asyncGET("/territory-types", (territoryTypesJSON, status) => {
+        territoryTypesAbbr = [];
 
-    $('#catalogue-stats>div.block-description').append(`
-        <p>Shows 3 statistics for each territory type, either existing or extinct territories, according to the filters:</p>
-        <p>the total number of territories in the catalogue, </p>
-        <p>the number of territories which issue their own currencies,</p>
-        <p>the number of territories in your collection.</p>`);
-
-    $('#catalogue-list div.block-title>p').text("List of Territories");
-
-    if (getCookie(_COOKIE_COUNTRY_FILTERS_HIDE) === "")
-        hideBlock("#catalogue-filters span:last-of-type", "filters");
-    if (getCookie(_COOKIE_COUNTRY_STATS_HIDE) === "")
-        hideBlock("#catalogue-stats span:last-of-type", "stats");
-
-
-    foundedFilter = new FromToFilter($("#years-filter>div:first-of-type"), "Founded", yearFilterChanged);
-    extinctFilter = new FromToFilter($("#years-filter>div:last-of-type"), "Extinct", yearFilterChanged);
-
-    foundedFilter.initFrom(getCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_FROM));
-    foundedFilter.initTo(getCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_TO));
-    extinctFilter.initFrom(getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_FROM));
-    extinctFilter.initTo(getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_TO));
-
-    // Load Country types synchronously, before anything else
-    syncGET("/territory-types", (result, status) => {
-        let disabledTerTypes = [];
-        let cookie = getCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED);
-        if (cookie)
-            disabledTerTypes = cookie.split("#");
-
-        territoryTypesJSON = result;
-        territoryTypesMap = [];
-        let rows = [];
         territoryTypesJSON.forEach(element => {
-            territoryTypesMap[element.id] = element.abbrevation;
-            statsTerType[element.id] = { existing: { total: 0, issuing: 0, col: 0 }, extinct: { total: 0, issuing: 0, col: 0 } };
-
-            rows.push({ id: element.id, name: element.name });
-
-            $("#types-filter>ul").append(`<li><div id="ter-type-${element.id}"></div>${element.name}</li>`);
-            terTypeButtons[element.id] = new SlideButton($(`#ter-type-${element.id}`), 24, 13, true, terTypeFilterChanged);
+            territoryTypesAbbr[element.id] = element.abbrevation;
+            statsTerType[element.id] = {};
         });
 
-        statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Issuer", "Collect."], rows);
-        disabledTerTypes.forEach((val, idx) => {
-            terTypeButtons[parseInt(val)].click();
-        });
+        // Insert Territory filters
+        territoryFilters = new TerritoryFilters("Countries", $(`#catalogue-filters`), territoryTypesJSON, onTerritoryFiltersChanged);
+
+        // Insert territory stats
+        let card = new ShowHideCard("CountriesStats", $('#catalogue-stats'), "Stats");
+        card.setContent(`
+            <div id="summary-table">
+            </div>
+            <div class="block-description">
+            </div>`);
+        statsSummaryTable = new StatsSummaryTable($("#summary-table"), ["Total", "Issuer", "Collect."], territoryTypesJSON);
+
+        $('#catalogue-stats div.block-description').append(`
+            <p>Shows 3 statistics for each territory type, either existing or extinct territories, according to the filters:</p>
+            <p>the total number of territories in the catalogue, </p>
+            <p>the number of territories which issue their own currencies,</p>
+            <p>the number of territories in your collection.</p>`);
     });
-
-    // Add slide buttons
-    existingButton = new SlideButton($("#existing-slide-button"), 30, 16, true, stateFilterChanged);
-    extinctButton = new SlideButton($("#extinct-slide-button"), 30, 16, true, stateFilterChanged);
-
-    if (getCookie(_COOKIE_COUNTRY_FILTER_EXISTING) == "false") existingButton.click();
-    if (getCookie(_COOKIE_COUNTRY_FILTER_EXTINCT) == "false") extinctButton.click();
-
-
-    let existingInYear = getCookie(_COOKIE_COUNTRY_FILTER_EXISTING_IN_YEAR);
-    if (existingInYear)
-        $("#existing-year-filter>input").val(existingInYear).blur();
 
     let variantsUri;
     let itemsUri;
@@ -98,6 +60,12 @@ function initialize() {
             }
         }
         // Store and load data
+        let subtitle = ContinentsFilter.getSelectedName();
+        listCard = new SimpleCard($('#catalogue-list'), "List of Territories", subtitle);
+        listCard.setContent(`
+            <div id="catalogue-list-table">
+            </div>`);
+
         countriesTable = new StatsListTable($("#catalogue-list-table"), [{ name: "", align: "center", isSortable: 0, optionalShow: 1 },
             { name: "ISO", align: "center", isSortable: 1, optionalShow: 1 },
             { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
@@ -109,6 +77,7 @@ function initialize() {
         countriesTable.loadData(countriesJSON, "Name");
     });
 }
+
 
 function loadTables(countriesJSON) {
     let totals = {
@@ -126,16 +95,39 @@ function loadTables(countriesJSON) {
 
     // Retrieve values for filtering
     let filterContId = ContinentsFilter.getSelectedId();
-    let foundedFrom = foundedFilter.getFrom();
-    let foundedTo = foundedFilter.getTo();
-    let extinctFrom = extinctFilter.getFrom();
-    let extinctTo = extinctFilter.getTo();
-    let existingInYear = $("#existing-year-filter input").val();
-    let showExisting = existingButton.isActive();
-    let showExtinct = extinctButton.isActive();
+    let filtersJSON = territoryFilters.getFilters();
+
+    let foundedFrom = filtersJSON.founded.from;
+    let foundedTo = filtersJSON.founded.to;
+    let extinctFrom = filtersJSON.extinct.from;
+    let extinctTo = filtersJSON.extinct.to;
+    let existingInYear = filtersJSON.existingInYear;
+    let showExisting = filtersJSON.isExisting === "false" ? false : true;
+    let showExtinct = filtersJSON.isExtinct === "false" ? false : true;
+
+    // Set subtitle
+    let subtitle = ContinentsFilter.getSelectedName();
+    if (!showExisting)
+        subtitle += "&nbsp;&nbsp;&nbsp;Not Existing";
+    if (!showExtinct)
+        subtitle += "&nbsp;&nbsp;&nbsp;Not Extinct";
+    if (existingInYear && existingInYear != "")
+        subtitle += "&nbsp;&nbsp;&nbsp;Existing in " + existingInYear;
+
+    listCard.setSubtitle(subtitle);
+
+    // Format summary table
+    showExisting ? statsSummaryTable.enableColumns(0) : statsSummaryTable.disableColumns(0);
+    showExtinct ? statsSummaryTable.enableColumns(1) : statsSummaryTable.disableColumns(1);
+    statsTerType.forEach((val, idx) => {
+        if (filtersJSON.disabledTerTypes.indexOf(idx.toString()) !== -1)
+            statsSummaryTable.disableRow(idx);
+        else
+            statsSummaryTable.enableRow(idx);
+    });
+
 
     for (let country of countriesJSON) {
-
         // Apply filters 
         if (filterContId && filterContId !== country.continentId) continue;
 
@@ -143,9 +135,9 @@ function loadTables(countriesJSON) {
 
         if ((extinctFrom && country.end < extinctFrom) || (extinctTo && country.end > extinctTo)) continue;
 
-        if (existingInYear && !(country.start < existingInYear && (!country.end || country.end > existingInYear))) continue;
+        if (existingInYear && !(country.start <= existingInYear && (!country.end || country.end >= existingInYear))) continue;
 
-        if (!terTypeButtons[country.territoryTypeId].isActive()) continue;
+        if (filtersJSON.disabledTerTypes.indexOf(country.territoryTypeId.toString()) !== -1) continue;
 
         if ((!showExtinct && (country.end !== null)) ||
             (!showExisting && (country.end === null))
@@ -160,7 +152,7 @@ function loadTables(countriesJSON) {
         descFields.push(`<a href="/catalogue/country/index.html?countryId=${country.id}">${country.name}</a>`);
         descFields.push(country.start);
         descFields.push(country.end || "");
-        descFields.push(territoryTypesMap[country.territoryTypeId]);
+        descFields.push(territoryTypesAbbr[country.territoryTypeId]);
         countriesTable.addRecord(descFields, [country.numCurrencies, country.numSeries, country.numDenominations, country.numNotes, country.numVariants], [country.collectionStats.numCurrencies, country.collectionStats.numSeries, country.collectionStats.numDenominations, country.collectionStats.numNotes, country.collectionStats.numVariants],
             country.collectionStats.price);
 
@@ -199,117 +191,12 @@ function loadTables(countriesJSON) {
 }
 
 
-function showBlock(elem, blockName) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().show();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-
-    if (blockName === 'filters')
-        deleteCookie(_COOKIE_COUNTRY_FILTERS_HIDE);
-    else
-        deleteCookie(_COOKIE_COUNTRY_STATS_HIDE);
-}
-
-function hideBlock(elem, blockName) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().hide();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-    if (blockName === 'filters')
-        setCookie(_COOKIE_COUNTRY_FILTERS_HIDE, "");
-    else
-        setCookie(_COOKIE_COUNTRY_STATS_HIDE, "");
-}
-
-
 function changedContinent(contId, contName) {
-
-    $("#applied-filters>span.cont-name").text(contName);
-
     // Get data and reload the tables
-    if (countriesTable)
-        loadTables(countriesTable.getData());
+    loadTables(countriesTable.getData());
 }
 
-function yearFilterChanged(filterName, from, to) {
-    // Store value in the cookie
-    if (filterName === "Founded") {
-        setCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_FROM, from);
-        setCookie(_COOKIE_COUNTRY_FILTER_FOUNDED_TO, to);
-    } else {
-        setCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_FROM, from);
-        setCookie(_COOKIE_COUNTRY_FILTER_EXTINCT_TO, to);
-    }
 
-    // Get data and reload the tables
-    if (countriesTable)
-        loadTables(countriesTable.getData());
-}
-
-function stateFilterChanged(id, state) {
-    let type = id.split('-')[0];
-
-    if (type === "existing") {
-        setCookie(_COOKIE_COUNTRY_FILTER_EXISTING, state);
-    } else {
-        setCookie(_COOKIE_COUNTRY_FILTER_EXTINCT, state);
-    }
-
-    if (!state) {
-        statsSummaryTable.disableColumns((type === "existing") ? 0 : 1);
-        $(`#applied-filters>span.${type}`).text("Not " + type);
-        $(`#applied-filters>span.${type}`).show();
-    } else {
-        statsSummaryTable.enableColumns((type === "existing") ? 0 : 1);
-        $(`#applied-filters>span.${type}`).hide();
-    }
-
-    // Get data and reload the tables
-    if (countriesTable)
-        loadTables(countriesTable.getData());
-}
-
-function terTypeFilterChanged(id, state) {
-    let terTypeId = id.split("-")[2];
-    let disabledTerTypes = [];
-    let cookie = getCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED);
-    if (cookie)
-        disabledTerTypes = cookie.split("#");
-
-    if (!state) {
-        statsSummaryTable.disableRow(terTypeId);
-        // Add to Cookie
-        if (disabledTerTypes.indexOf(terTypeId) === -1)
-            disabledTerTypes.push(terTypeId);
-    } else {
-        statsSummaryTable.enableRow(terTypeId);
-        // Update Cookie
-        let pos = disabledTerTypes.indexOf(terTypeId);
-        if (pos !== -1)
-            disabledTerTypes.splice(pos, 1);
-    }
-    setCookie(_COOKIE_COUNTRY_FILTER_TER_TYPES_DISABLED, disabledTerTypes.join("#"));
-
-    // Get data and reload the tables
-    if (countriesTable)
-        loadTables(countriesTable.getData());
-}
-
-function existingYearFilterChanged(elem) {
-    if ($(elem).data("init-value") !== $(elem).val()) {
-        setCookie(_COOKIE_COUNTRY_FILTER_EXISTING_IN_YEAR, $(elem).val());
-
-        if ($(elem).val() && $(elem).val() != "") {
-            $(`#applied-filters>span.existing-in`).text("Existing in " + $(elem).val());
-            $(`#applied-filters>span.existing-in`).show();
-        } else {
-            $(`#applied-filters>span.existing-in`).hide();
-        }
-        $(elem).data("init-value", $(elem).val());
-        if (countriesTable)
-            loadTables(countriesTable.getData());
-    }
+function onTerritoryFiltersChanged() {
+    loadTables(countriesTable.getData());
 }

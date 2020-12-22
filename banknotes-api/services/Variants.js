@@ -352,8 +352,8 @@ function updateVariant(variantId, variant, response, validated) {
 
 
 
-//===> /items?contId&terTypeId&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&curType
-//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&minDenom&maxDenom&issueDateFrom&issueDateTo
+//===> /items?contId&terTypeIds&terStartDateFrom&terStartDateTo&terEndDateFrom&terEndDateTo&terIsExixting&terIsExtinct&terExixtingIn&curTypeIds
+//               &curStartDateFrom&curStartDateTo&curEndDateFrom&currEndDateTo&curIsExixting&curIsExtinct&curExixtingIn&minDenom&maxDenom&issueDateFrom&issueDateTo
 function itemsGET(request, response) {
     let queryStrJSON = url.parse(request.url, true).query;
     let param;
@@ -364,9 +364,9 @@ function itemsGET(request, response) {
     if (param !== "")
         sqlTerritory = `AND TER.ter_con_id = ${param}`;
 
-    param = queryStrJSON.terTypeId || "";
+    param = queryStrJSON.terTypeIds || "";
     if (param !== "")
-        sqlTerritory += ` AND TER.ter_tty_id = ${param}`;
+        sqlTerritory += ` AND TER.ter_tty_id in (${param})`;
 
     param = queryStrJSON.terStartDateFrom || "";
     if (param !== "")
@@ -384,9 +384,19 @@ function itemsGET(request, response) {
     if (param !== "")
         sqlTerritory += ` AND TER.ter_end <= ${param}`;
 
+    if (!(queryStrJSON.terIsExisting === ''))
+        sqlTerritory += ` AND TER.ter_end IS NOT NULL`;
+
+    if (!(queryStrJSON.terIsExtinct === ''))
+        sqlTerritory += ` AND TER.ter_end IS NULL`;
+
+    param = queryStrJSON.terExistingIn || "";
+    if (param !== "")
+        sqlTerritory += ` AND TER.ter_start <= ${param} AND (TER.ter_end IS NULL OR TER.ter_end >${param})`;
 
     // Calculate the filters for currencies
     let sqlCurrency = "";
+
     param = queryStrJSON.curStartDateFrom || "";
     if (param !== "")
         sqlCurrency += ` AND CAST(substr(CUR.cur_start,1,4) AS INTEGER) >= ${param}`;
@@ -403,6 +413,26 @@ function itemsGET(request, response) {
     if (param !== "")
         sqlCurrency += ` AND CAST(substr(CUR.cur_end,1,4) AS INTEGER) <= ${param}`;
 
+    if (!(queryStrJSON.curIsExisting === ''))
+        sqlCurrency += ` AND CUR.cur_end IS NOT NULL`;
+
+    if (!(queryStrJSON.curIsExtinct === ''))
+        sqlCurrency += ` AND CUR.cur_end IS NULL`;
+
+    param = queryStrJSON.curExistingIn || "";
+    if (param !== "")
+        sqlCurrency += ` AND CAST(substr(CUR.cur_start,1,4) AS INTEGER) <= ${param} AND (CUR.cur_end IS NULL OR CAST(substr(CUR.cur_end,1,4) AS INTEGER) > ${param})`;
+
+    // Filter for type of currency
+    let sqlTEC = "";
+    param = queryStrJSON.curTypeIds || "";
+    if (param !== "") {
+        let types = param.split(",");
+        param = `'${types[0]}'`;
+        if (types.length === 2)
+            param += `,'${types[0]}'`;
+        sqlTEC += ` AND TEC.tec_cur_type in (${param}) AND TEC.tec_is_issuer = 1`;
+    }
 
     // Calculate the filters for banknotes
     let sqlBanknote = "";
@@ -432,8 +462,8 @@ function itemsGET(request, response) {
 
 
     // If the 3 sql filters are "" (and therefore they are equal)
-    if (sqlTerritory === sqlCurrency && sqlBanknote === sqlCurrency) {
-        new Exception(400, "VAR-001", "Search parameters not found").send(response);
+    if (sqlTerritory === sqlCurrency && sqlBanknote === sqlCurrency && sqlTEC === sqlCurrency) {
+        new Exception(400, "VAR-001", "Search parameters not specified").send(response);
         return;
     }
 
@@ -442,7 +472,7 @@ function itemsGET(request, response) {
                             INNER JOIN ser_series SER ON BAN.ban_ser_id = SER.ser_id
                             INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id
                             INNER JOIN cur_currency CUR ON SER.ser_cur_id = CUR.cur_id ${sqlCurrency}
-                            INNER JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = ISS.iss_ter_id)
+                            INNER JOIN tec_territory_currency TEC ON (TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = ISS.iss_ter_id) ${sqlTEC}
                             INNER JOIN ter_territory TER ON TEC.tec_ter_id = TER.ter_id ${sqlTerritory}`;
 
     let sql = ` WITH resultset AS (
@@ -463,10 +493,7 @@ function itemsGET(request, response) {
                 SELECT * FROM resultset
                 ${sqlBanknote}
                 ORDER BY "variantId"`;
-    if (request.onlyVariants) {
-        catalogueDB.getAndReply(response, sql);
-        return;
-    }
+
 
     // Retrieve the catalogue data
     catalogueDB.execSQL(sql, [], (err, catRows) => {
@@ -475,6 +502,18 @@ function itemsGET(request, response) {
             return;
         }
 
+        if (catRows.length > 1000) {
+            new Exception(413, "VAR-10", "Too many records found: " + catRows.length).send(response);
+            return;
+        }
+
+        if (request.onlyVariants) {
+            // Build reply JSON
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(catRows));
+            response.send();
+            return;
+        }
 
         // Retrieve the collection data
         sql = ` WITH resultset AS (

@@ -33,83 +33,43 @@
     <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
     <script src="/_shared/footer/footer.js" defer></script>
 
-
     <link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">
-    <link rel="stylesheet" type="text/css" href="/_shared/slide-button-class/slide-button.css">
-    <link rel="stylesheet" type="text/css" href="/_shared/from-to-filter-class/from-to-filter.css">
-    <link rel="stylesheet" type="text/css" href="/_shared/stats-summary-table-class/stats-summary-table.css">
-    <link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">
     <script src="/_shared/continents-filter-class/continents-filter.js"></script>
-    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_class/card/card.css">
+    <script src="/_class/card/show-hide-card.js"></script>
+    <script src="/_class/card/simple-card.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_class/filter-group/filter-group.css">
+    <script src="/_class/filter-group/territory-filters.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_class/filter-group/filter-group.css">
+    <script src="/_class/filter-group/currency-filters.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/stats-summary-table-class/stats-summary-table.css">
     <script src="/_shared/stats-summary-table-class/stats-summary-table.js"></script>
-    <script src="/_shared/from-to-filter-class/from-to-filter.js"></script>
-    <script src="/_shared/slide-button-class/slide-button.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">
+    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
+
 </head>
 
 <body>
-    <section id="continents-filter">
+    <div id="continents-filter">
         <script>
             new ContinentsFilter($("#continents-filter"), changedContinent);
         </script>
-    </section>
+    </div>
 
     <section id="filters-and-stats">
-        <div class="group" id="catalogue-filters">
-            <div class="block-title">
-                <p>Filters</p>
-                <p class="show-hide"><span class="disabled" onclick="showBlock(this,'filters')">Show</span>|<span onclick="hideBlock(this,'filters')">Hide</span></p>
-            </div>
-            <div>
-                <div id="years-filter">
-                    <div>
-                    </div>
-                    <div>
-                    </div>
-                </div>
-                <div id="types-filter">
-                    <p></p>
-                    <ul>
-                    </ul>
-                </div>
-                <div id="state-filter">
-                    <div>
-                        <div id="existing-slide-button"></div>
-                        <p>Currently Existing</p>
-                    </div>
-                    <div>
-                        <div id="extinct-slide-button"></div>
-                        <p>Already Extinct</p>
-                    </div>
-                </div>
-                <div id="existing-year-filter">
-                    <p>Existing in</p>
-                    <input type="number" onblur="existingYearFilterChanged(this)" onkeyup="if (event.which === 13) this.blur()">
-                </div>
-            </div>
+        <div id="catalogue-filters">
         </div>
-        <div class="group" id="catalogue-stats">
-            <div class="block-title">
-                <p>Stats</p>
-                <p class="show-hide"><span class="disabled" onclick="showBlock(this,'stats')">Show</span>|<span onclick="hideBlock(this,'stats')">Hide</span></p>
-            </div>
-            <div>
-                <div id="summary-table">
-                </div>
-            </div>
-            <div class="block-description">
-            </div>
+        <div id="catalogue-stats">
         </div>
     </section>
 
-    <section id="catalogue-list">
-        <div class="group">
-            <div class="block-title">
-                <p>List of ...</p>
-                <div id="applied-filters"><span class="cont-name"></span><span class="existing"></span><span class="extinct"></span><span class="existing-in"></span></div>
-            </div>
-            <div id="catalogue-list-table">
-
-            </div>
+    <section>
+        <div id="catalogue-list">
         </div>
     </section>
 </body>

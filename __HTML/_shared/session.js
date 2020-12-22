@@ -5,7 +5,17 @@
 
 */
 
+
+const _COOKIE_USERNAME = "BOC.user.name";
+const _COOKIE_IS_ADMIN = "BOC.user.isAdmin";
+const _COOKIE_LAST_CONNECTION = "BOC.user.lastConnection";
+const _COOKIE_EXPIRATION = "BOC.session.expiration";
+const _COOKIE_EXPIRATION_TIME = "BOC.session.expirationTime";
+const _COOKIE_EXPIRATION_WARNING = "BOC.session.expirationWarning";
+
 class Session {
+    static _TIMEOUT = 15000;
+
     /* Login */
     static login(user, password, successCallback) {
         $.ajax({
@@ -16,7 +26,7 @@ class Session {
             headers: {
                 "authorization": "Basic " + btoa(user + ":" + password)
             },
-            timeout: TIMEOUT,
+            timeout: Session._TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {
@@ -89,7 +99,7 @@ class Session {
             url: `/user/session`,
             async: true,
             cache: false,
-            timeout: TIMEOUT,
+            timeout: Session._TIMEOUT,
             dataType: "json",
 
             success: function(result, status, xhr) {
@@ -123,7 +133,7 @@ class Session {
             url: `/user/session`,
             async: false,
             cache: false,
-            timeout: TIMEOUT,
+            timeout: Session._TIMEOUT,
             dataType: 'json',
 
             success: function(result, status) {

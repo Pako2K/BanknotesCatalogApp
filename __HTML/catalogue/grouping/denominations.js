@@ -1,19 +1,29 @@
 "use strict"
 
 let issuedFilter;
-
+let listCard;
 let denominationsTable;
 
-function initialize() {
-    // Customize some texts:
-    $('.list-section div.block-title>p').text("List of Denominations");
+const _COOKIE_DENOMINATIONS_FILTER_ISSUED_FROM = "BOC.denominations.filter.issued.from";
+const _COOKIE_DENOMINATIONS_FILTER_ISSUED_TO = "BOC.denominations.filter.issued.to";
 
-    if (getCookie(_COOKIE_DENOMINATIONS_FILTERS_HIDE) === "")
-        hideBlock("#filters span:last-of-type");
+function initialize() {
+    // Insert Denomination filters in a card
+    let card = new ShowHideCard("DenominationFilter", $('#filters'), "Filters");
+    card.setContent(`
+        <div id="years-filter">
+            <div></div>
+        </div>`);
 
     issuedFilter = new FromToFilter($("#years-filter>div"), "Issued", yearFilterChanged);
-    issuedFilter.initFrom(getCookie(_COOKIE_DENOMINATIONS_FILTER_ISSUED_FROM));
-    issuedFilter.initTo(getCookie(_COOKIE_DENOMINATIONS_FILTER_ISSUED_TO));
+    issuedFilter.initFrom(localStorage.getItem(_COOKIE_DENOMINATIONS_FILTER_ISSUED_FROM));
+    issuedFilter.initTo(localStorage.getItem(_COOKIE_DENOMINATIONS_FILTER_ISSUED_TO));
+
+    // Store and load data
+    listCard = new SimpleCard($('#list-card'), "List of Denominations", "");
+    listCard.setContent(`
+          <div id="list-table">
+          </div>`);
 
     denominationsTable = new StatsListTable($("#list-table"), [
         { name: "Denomination", align: "center", isSortable: 1, optionalShow: 0 },
@@ -35,6 +45,9 @@ function readDenominations() {
     let filterContId = ContinentsFilter.getSelectedId();
     let yearFrom = issuedFilter.getFrom();
     let yearTo = issuedFilter.getTo();
+
+    // Set subtitle
+    listCard.setSubtitle(ContinentsFilter.getSelectedName());
 
     let queryStr = "";
     if (filterContId) queryStr = "?continentId=" + filterContId;
@@ -113,37 +126,14 @@ function loadTable(denominationsJSON) {
 }
 
 function changedContinent(contId, contName) {
-    $("#applied-filters>span.cont-name").text(contName);
-
     // Retrieve denominations
-    if (denominationsTable)
-        readDenominations();
+    readDenominations();
 }
 
 function yearFilterChanged(filterName, from, to) {
     // Store value in the cookie
-    setCookie(_COOKIE_DENOMINATIONS_FILTER_ISSUED_FROM, from);
-    setCookie(_COOKIE_DENOMINATIONS_FILTER_ISSUED_TO, to);
+    localStorage.setItem(_COOKIE_DENOMINATIONS_FILTER_ISSUED_FROM, from);
+    localStorage.setItem(_COOKIE_DENOMINATIONS_FILTER_ISSUED_TO, to);
 
     readDenominations();
-}
-
-
-function showBlock(elem) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().show();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-
-    deleteCookie(_COOKIE_DENOMINATIONS_FILTERS_HIDE);
-}
-
-function hideBlock(elem) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().hide();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-    setCookie(_COOKIE_DENOMINATIONS_FILTERS_HIDE, "");
 }

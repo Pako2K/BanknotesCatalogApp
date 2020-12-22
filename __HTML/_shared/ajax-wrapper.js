@@ -1,9 +1,11 @@
 /* DEPENDENCIES
 
-    constants.js
     session.js
 
 */
+
+const TIMEOUT = 15000;
+
 
 function asyncGET(url, successCallback, errorCallback) {
     $.ajax({
@@ -19,6 +21,10 @@ function asyncGET(url, successCallback, errorCallback) {
                 case 403:
                     alert("For security reasons, your session has expired.\nPlease log in again");
                     Session.logout();
+                    break;
+                case 413:
+                    // To be handled by the caller
+                    console.log("Query failed. \n${status} - ${error}");
                     break;
                 default:
                     alert(`Query failed. \n${status} - ${error}\nPlease contact the web site administrator.`);

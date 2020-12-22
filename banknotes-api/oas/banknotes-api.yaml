@@ -620,11 +620,12 @@ paths:
       operationId: variantsGET
       parameters:
       - $ref: '#/components/parameters/searchContinentId'
-      - $ref: '#/components/parameters/searchTerTypeId'
+      - $ref: '#/components/parameters/searchTerTypeIds'
       - $ref: '#/components/parameters/searchTerStartDateFrom'
       - $ref: '#/components/parameters/searchTerStartDateTo'
       - $ref: '#/components/parameters/searchTerEndDateFrom'
       - $ref: '#/components/parameters/searchTerEndDateTo'
+      - $ref: '#/components/parameters/searchCurTypeIds'
       - $ref: '#/components/parameters/searchCurStartDateFrom'
       - $ref: '#/components/parameters/searchCurStartDateTo'
       - $ref: '#/components/parameters/searchCurEndDateFrom'
@@ -670,11 +671,12 @@ paths:
       - $ref: '#/components/parameters/cookieUsername'
       - $ref: '#/components/parameters/cookieSessionId'
       - $ref: '#/components/parameters/searchContinentId'
-      - $ref: '#/components/parameters/searchTerTypeId'
+      - $ref: '#/components/parameters/searchTerTypeIds'
       - $ref: '#/components/parameters/searchTerStartDateFrom'
       - $ref: '#/components/parameters/searchTerStartDateTo'
       - $ref: '#/components/parameters/searchTerEndDateFrom'
       - $ref: '#/components/parameters/searchTerEndDateTo'
+      - $ref: '#/components/parameters/searchCurTypeIds'
       - $ref: '#/components/parameters/searchCurStartDateFrom'
       - $ref: '#/components/parameters/searchCurStartDateTo'
       - $ref: '#/components/parameters/searchCurEndDateFrom'
@@ -1585,13 +1587,13 @@ components:
       description: Retrieve resource for this specific territory
       schema:
         type: integer
-    searchTerTypeId:
+    searchTerTypeIds:
       in: query
-      name: terTypeId
+      name: terTypeIds
       required: false
-      description: Retrieve resource from countries of this type
+      description: Retrieve resource from countries of these types (list of id's separated by ",")
       schema:
-        type: integer
+        type: string
     searchTerStartDateFrom:
       in: query
       name: terStartDateFrom
@@ -1620,6 +1622,36 @@ components:
       description: Retrieve resource from countries disappeared in or before this year
       schema:
         type: integer
+    searchTerIsExisting:
+      in: query
+      name: terIsExisting
+      required: false
+      description: Retrieve resource from countries currently existing
+      allowEmptyValue: true 
+      schema:
+        type: boolean
+    searchTerIsExtinct:
+      in: query
+      name: terIsExtinct
+      required: false
+      description: Retrieve resource from countries already extinct
+      allowEmptyValue: true 
+      schema:
+        type: boolean
+    searchTerExistingIn:
+      in: query
+      name: terExistingIn
+      required: false
+      description: Retrieve resource from countries existing in this year
+      schema:
+        type: integer
+    searchCurTypeIds:
+      in: query
+      name: curTypeIds
+      required: false
+      description: Retrieve resource from currencies of these types (list of id's separated by ",")
+      schema:
+        type: string
     searchCurStartDateFrom:
       in: query
       name: curStartDateFrom
@@ -1646,6 +1678,29 @@ components:
       name: curEndDateTo
       required: false
       description: Retrieve resource of currencies disappeared in or before this year
+      schema:
+        type: integer
+    searchCurIsExisting:
+      in: query
+      name: terIsExisting
+      required: false
+      description: Retrieve resource from countries currently existing
+      allowEmptyValue: true 
+      schema:
+        type: boolean
+    searchCurIsExtinct:
+      in: query
+      name: terIsExtinct
+      required: false
+      description: Retrieve resource from countries already extinct
+      allowEmptyValue: true 
+      schema:
+        type: boolean
+    searchCurExistingIn:
+      in: query
+      name: terExistingIn
+      required: false
+      description: Retrieve resource from countries existing in this year
       schema:
         type: integer
     searchMinDenom:

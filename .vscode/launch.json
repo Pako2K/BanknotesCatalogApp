@@ -8,7 +8,7 @@
             "env": {
                 "PORT": "80",
                 "CRE_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/credentials",
-                "CAT_DATABASE_URL": "postgres://AppAPI:AppAPI@localhost:5432/banknotes",
+                "CAT_DATABASE_URL": "postgres://hzmqymye:V08h1TZKv6UBCzn93qvywrutM0ce7Da0@kandula.db.elephantsql.com:5432/hzmqymye",
                 "MAIL_PWD": "i3yysqBO6t9T75aqVSK4"
             },
             "type": "node",

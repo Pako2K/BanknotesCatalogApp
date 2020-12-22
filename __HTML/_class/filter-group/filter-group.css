@@ -1,0 +1,162 @@
+div.territory-filters > div.denom-filter > div,
+div.currency-filters > div.denom-filter > div,
+div.banknote-filters > div.denom-filter > div {
+  font-size: 0.9em;
+  margin-right: 1.4em;
+}
+
+div.territory-filters > div.years-filter,
+div.currency-filters > div.years-filter,
+div.banknote-filters > div.years-filter {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+div.territory-filters > div.years-filter > div,
+div.currency-filters > div.years-filter > div,
+div.banknote-filters > div.years-filter > div {
+  font-size: 0.9em;
+  margin-right: 1.4em;
+}
+
+div.territory-filters > div.types-filter p,
+div.currency-filters > div.types-filter p,
+div.banknote-filters > div.types-filter p {
+  font-size: 0.9em;
+  margin-bottom: 0.5em;
+  font-family: "New Roman", serif;
+}
+
+div.territory-filters > div.types-filter > ul,
+div.currency-filters > div.types-filter > ul,
+div.banknote-filters > div.types-filter > ul {
+  margin: 0.5em 0;
+  padding-left: 2em;
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+div.territory-filters > div.types-filter > ul > li,
+div.currency-filters > div.types-filter > ul > li,
+div.banknote-filters > div.types-filter > ul > li {
+  font-size: 0.8em;
+  font-family: sans-serif;
+  margin: 0.5em 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+div.territory-filters > div.types-filter > ul > li > div,
+div.currency-filters > div.types-filter > ul > li > div,
+div.banknote-filters > div.types-filter > ul > li > div {
+  margin-right: 0.5em;
+}
+
+div.territory-filters > div.state-filter,
+div.currency-filters > div.state-filter,
+div.banknote-filters > div.state-filter {
+  margin: 1em 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  font-size: 0.9em;
+}
+
+div.territory-filters > div.state-filter > div,
+div.currency-filters > div.state-filter > div,
+div.banknote-filters > div.state-filter > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+div.territory-filters > div.state-filter p:first-of-type,
+div.currency-filters > div.state-filter p:first-of-type,
+div.banknote-filters > div.state-filter p:first-of-type {
+  margin: 0 2em 0 0.5em;
+}
+
+div.territory-filters > div.existing-year-filter,
+div.currency-filters > div.existing-year-filter,
+div.banknote-filters > div.existing-year-filter {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+div.territory-filters > div.existing-year-filter > p,
+div.currency-filters > div.existing-year-filter > p,
+div.banknote-filters > div.existing-year-filter > p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-right: 0.5em;
+  font-family: "New Roman", serif;
+  font-size: 0.9em;
+}
+
+div.territory-filters > div.existing-year-filter > input,
+div.currency-filters > div.existing-year-filter > input,
+div.banknote-filters > div.existing-year-filter > input {
+  vertical-align: middle;
+  padding-left: 0.6em;
+  font-size: 0.9em;
+  width: 5em;
+  height: 1.8em;
+  background-color: whitesmoke;
+  border: solid 0.5px black;
+}
+
+div.territory-filters > div.existing-year-filter > input:focus,
+div.currency-filters > div.existing-year-filter > input:focus,
+div.banknote-filters > div.existing-year-filter > input:focus {
+  outline: none;
+  background-color: white;
+  -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+          box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+/*# sourceMappingURL=filter-group.css.map */

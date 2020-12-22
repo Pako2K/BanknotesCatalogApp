@@ -11,38 +11,16 @@ body {
   background: black;
 }
 
-.group {
-  padding: 10px 12px;
-  margin: 4px;
+section {
+  font-size: 1em;
+}
+
+section {
+  background-color: #eeefed;
+  padding: 0.5em 1em;
 }
 
 #filters-and-stats {
-  padding: 0.5em 0;
-}
-
-#catalogue-filters > div:last-of-type {
-  margin-left: 0.5em;
-}
-
-#years-filter > div {
-  font-size: 0.9em;
-  margin-right: 1.4em;
-}
-
-#types-filter p,
-#state-filter p,
-#existing-year-filter p {
-  font-size: 0.9em;
-}
-
-#types-filter > ul {
-  margin: 0.5em 0;
-  padding-left: 2em;
-}
-
-#types-filter > ul > li {
-  font-size: 0.8em;
-  margin: 0.5em 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -50,63 +28,20 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
 }
 
-#types-filter > ul > li > div {
-  margin-right: 0.5em;
-}
-
-#types-filter p {
-  margin-bottom: 0.5em;
-}
-
-#state-filter {
-  margin: 1em 0;
-}
-
-#state-filter p:first-of-type {
-  margin: 0 3em 0 0.5em;
-}
-
-#existing-year-filter > p {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  margin-right: 0.5em;
-}
-
-#existing-year-filter > input {
-  vertical-align: middle;
-  padding-left: 0.6em;
-  font-size: 0.9em;
-  width: 5em;
+#filters-and-stats > div {
+  min-width: 35%;
+  margin: 0.3em 0em;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 #summary-table {
   padding-left: 0.5em;
-}
-
-#catalogue-list-table {
-  padding: 0.5em 1px;
-}
-
-#applied-filters {
-  font-size: 0.7em;
-}
-
-div.block-title {
-  margin-bottom: 0.5em;
-}
-
-div.block-title p {
-  font-size: 0.9em;
-}
-
-div.block-title p.show-hide > span {
-  font-size: 0.9em;
-  margin: 0 0.5em;
 }
 
 div.block-description {
@@ -115,6 +50,7 @@ div.block-description {
 
 div.block-description > p {
   font-size: 0.65em;
+  font-style: oblique;
   margin: 0 1em;
 }
 
@@ -122,581 +58,48 @@ div.block-description > p:not(:first-of-type) {
   padding-left: 2em;
 }
 
-section {
-  font-family: sans-serif;
-  margin: 0;
-  background-color: #eeefed;
-}
-
-.group {
-  border: solid 0.5px lightgray;
-  -webkit-box-shadow: 1px 1px 2px lightgrey;
-          box-shadow: 1px 1px 2px lightgrey;
-  background-color: white;
-}
-
-div.block-title {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  border-bottom: solid 2px black;
-}
-
-div.block-title p {
-  margin: 0;
-}
-
-div.block-title p span.disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
-div.block-title p span:not(.disabled) {
-  cursor: pointer;
-}
-
-div.block-title p:first-of-type {
-  font-weight: bold;
-}
-
-div.block-title p:last-of-type > span {
-  font-style: italic;
-  display: inline-block;
-}
-
-div.block-description > p {
-  font-style: oblique;
-}
-
-#filters-and-stats {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
-}
-
-#filters-and-stats > div {
-  min-width: 35%;
-}
-
-#years-filter {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-}
-
-#types-filter p,
-#state-filter p,
-#existing-year-filter p {
-  font-family: New Roman, serif;
-}
-
-#types-filter ul {
-  list-style-type: none;
-  list-style-position: inside;
-}
-
-#state-filter {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-}
-
-#state-filter > div {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-#existing-year-filter {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-#existing-year-filter > input {
-  height: 1.8em;
-  background-color: whitesmoke;
-  border: solid 0.5px black;
-}
-
-#existing-year-filter > input:focus {
-  outline: none;
-  background-color: white;
-  -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-          box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-}
-
-#catalogue-stats > div {
-  overflow: auto;
-}
-
-#summary-table {
-  display: inline-block;
-}
-
 #catalogue-list {
   font-family: sans-serif;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-}
-
-#catalogue-list > div {
-  min-width: 70%;
-  display: inline-block;
-}
-
-#applied-filters {
-  color: #216b5f;
-  font-style: italic;
-  max-width: 66%;
-}
-
-#applied-filters > span {
-  display: inline-block;
-  white-space: nowrap;
-  margin: 0;
-  -ms-flex-item-align: end;
-      -ms-grid-row-align: end;
-      align-self: end;
-}
-
-#applied-filters > span:not(:empty) {
-  padding-top: 0.4em;
-  padding-left: 1em;
+  margin: auto;
+  overflow: auto;
 }
 
 #catalogue-list-table {
   overflow: auto;
+  padding: 0.5em 1px;
+  margin: auto;
 }
 
 @media screen and (max-width: 1000px) {
-  .group {
-    padding: 9px 10.8px;
-    margin: 3.6px;
+  section {
+    font-size: 0.9em;
   }
   #filters-and-stats {
-    padding: 0.45em 0;
-  }
-  #catalogue-filters > div:last-of-type {
-    margin-left: 0.45em;
-  }
-  #years-filter > div {
-    font-size: 0.81em;
-    margin-right: 1.26em;
-  }
-  #types-filter p,
-  #state-filter p,
-  #existing-year-filter p {
-    font-size: 0.81em;
-  }
-  #types-filter > ul {
-    margin: 0.45em 0;
-    padding-left: 1.8em;
-  }
-  #types-filter > ul > li {
-    font-size: 0.72em;
-    margin: 0.45em 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
+    -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-            flex-direction: row;
+        -ms-flex-direction: column;
+            flex-direction: column;
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center;
-  }
-  #types-filter > ul > li > div {
-    margin-right: 0.45em;
-  }
-  #types-filter p {
-    margin-bottom: 0.45em;
-  }
-  #state-filter {
-    margin: 0.9em 0;
-  }
-  #state-filter p:first-of-type {
-    margin: 0 2.7em 0 0.45em;
-  }
-  #existing-year-filter > p {
-    margin-top: 0.45em;
-    margin-bottom: 0.45em;
-    margin-right: 0.45em;
-  }
-  #existing-year-filter > input {
-    vertical-align: middle;
-    padding-left: 0.54em;
-    font-size: 0.81em;
-    width: 4.5em;
-  }
-  #summary-table {
-    padding-left: 0.45em;
-  }
-  #catalogue-list-table {
-    padding: 0.45em 1px;
-  }
-  #applied-filters {
-    font-size: 0.63em;
-  }
-  div.block-title {
-    margin-bottom: 0.45em;
-  }
-  div.block-title p {
-    font-size: 0.81em;
-  }
-  div.block-title p.show-hide > span {
-    font-size: 0.9em;
-    margin: 0 0.5em;
-  }
-  div.block-description {
-    margin-top: 0.54em;
-  }
-  div.block-description > p {
-    font-size: 0.585em;
-    margin: 0 1em;
-  }
-  div.block-description > p:not(:first-of-type) {
-    padding-left: 2em;
-  }
-  #filters-and-stats {
-    display: block;
   }
 }
 
 @media screen and (max-width: 800px) {
-  .group {
-    padding: 8.5px 10.2px;
-    margin: 3.4px;
-  }
-  #filters-and-stats {
-    padding: 0.425em 0;
-  }
-  #catalogue-filters > div:last-of-type {
-    margin-left: 0.425em;
-  }
-  #years-filter > div {
-    font-size: 0.765em;
-    margin-right: 1.19em;
-  }
-  #types-filter p,
-  #state-filter p,
-  #existing-year-filter p {
-    font-size: 0.765em;
-  }
-  #types-filter > ul {
-    margin: 0.425em 0;
-    padding-left: 1.7em;
-  }
-  #types-filter > ul > li {
-    font-size: 0.68em;
-    margin: 0.425em 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-            flex-direction: row;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-  }
-  #types-filter > ul > li > div {
-    margin-right: 0.425em;
-  }
-  #types-filter p {
-    margin-bottom: 0.425em;
-  }
-  #state-filter {
-    margin: 0.85em 0;
-  }
-  #state-filter p:first-of-type {
-    margin: 0 2.55em 0 0.425em;
-  }
-  #existing-year-filter > p {
-    margin-top: 0.425em;
-    margin-bottom: 0.425em;
-    margin-right: 0.425em;
-  }
-  #existing-year-filter > input {
-    vertical-align: middle;
-    padding-left: 0.51em;
-    font-size: 0.765em;
-    width: 4.25em;
-  }
-  #summary-table {
-    padding-left: 0.425em;
-  }
-  #catalogue-list-table {
-    padding: 0.425em 1px;
-  }
-  #applied-filters {
-    font-size: 0.595em;
-  }
-  div.block-title {
-    margin-bottom: 0.425em;
-  }
-  div.block-title p {
-    font-size: 0.765em;
-  }
-  div.block-title p.show-hide > span {
-    font-size: 0.9em;
-    margin: 0 0.5em;
-  }
-  div.block-description {
-    margin-top: 0.51em;
-  }
-  div.block-description > p {
-    font-size: 0.5525em;
-    margin: 0 1em;
-  }
-  div.block-description > p:not(:first-of-type) {
-    padding-left: 2em;
+  section {
+    font-size: 0.85em;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .group {
-    padding: 7.5px 9px;
-    margin: 3px;
-  }
-  #filters-and-stats {
-    padding: 0.375em 0;
-  }
-  #catalogue-filters > div:last-of-type {
-    margin-left: 0.375em;
-  }
-  #years-filter > div {
-    font-size: 0.675em;
-    margin-right: 1.05em;
-  }
-  #types-filter p,
-  #state-filter p,
-  #existing-year-filter p {
-    font-size: 0.675em;
-  }
-  #types-filter > ul {
-    margin: 0.375em 0;
-    padding-left: 1.5em;
-  }
-  #types-filter > ul > li {
-    font-size: 0.6em;
-    margin: 0.375em 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-            flex-direction: row;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-  }
-  #types-filter > ul > li > div {
-    margin-right: 0.375em;
-  }
-  #types-filter p {
-    margin-bottom: 0.375em;
-  }
-  #state-filter {
-    margin: 0.75em 0;
-  }
-  #state-filter p:first-of-type {
-    margin: 0 2.25em 0 0.375em;
-  }
-  #existing-year-filter > p {
-    margin-top: 0.375em;
-    margin-bottom: 0.375em;
-    margin-right: 0.375em;
-  }
-  #existing-year-filter > input {
-    vertical-align: middle;
-    padding-left: 0.45em;
-    font-size: 0.675em;
-    width: 3.75em;
-  }
-  #summary-table {
-    padding-left: 0.375em;
-  }
-  #catalogue-list-table {
-    padding: 0.375em 1px;
-  }
-  #applied-filters {
-    font-size: 0.525em;
-  }
-  div.block-title {
-    margin-bottom: 0.375em;
-  }
-  div.block-title p {
-    font-size: 0.675em;
-  }
-  div.block-title p.show-hide > span {
-    font-size: 0.9em;
-    margin: 0 0.5em;
-  }
-  div.block-description {
-    margin-top: 0.45em;
-  }
-  div.block-description > p {
-    font-size: 0.4875em;
-    margin: 0 1em;
-  }
-  div.block-description > p:not(:first-of-type) {
-    padding-left: 2em;
+  section {
+    font-size: 0.75em;
   }
 }
 
 @media screen and (max-width: 400px) {
-  .group {
-    padding: 7.5px 9px;
-    margin: 3px;
-  }
-  #filters-and-stats {
-    padding: 0.375em 0;
-  }
-  #catalogue-filters > div:last-of-type {
-    margin-left: 0.375em;
-  }
-  #years-filter > div {
-    font-size: 0.675em;
-    margin-right: 1.05em;
-  }
-  #types-filter p,
-  #state-filter p,
-  #existing-year-filter p {
-    font-size: 0.675em;
-  }
-  #types-filter > ul {
-    margin: 0.375em 0;
-    padding-left: 1.5em;
-  }
-  #types-filter > ul > li {
-    font-size: 0.6em;
-    margin: 0.375em 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-            flex-direction: row;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-  }
-  #types-filter > ul > li > div {
-    margin-right: 0.375em;
-  }
-  #types-filter p {
-    margin-bottom: 0.375em;
-  }
-  #state-filter {
-    margin: 0.75em 0;
-  }
-  #state-filter p:first-of-type {
-    margin: 0 2.25em 0 0.375em;
-  }
-  #existing-year-filter > p {
-    margin-top: 0.375em;
-    margin-bottom: 0.375em;
-    margin-right: 0.375em;
-  }
-  #existing-year-filter > input {
-    vertical-align: middle;
-    padding-left: 0.45em;
-    font-size: 0.675em;
-    width: 3.75em;
-  }
-  #summary-table {
-    padding-left: 0.375em;
-  }
-  #catalogue-list-table {
-    padding: 0.375em 1px;
-  }
-  #applied-filters {
-    font-size: 0.525em;
-  }
-  div.block-title {
-    margin-bottom: 0.375em;
-  }
-  div.block-title p {
-    font-size: 0.675em;
-  }
-  div.block-title p.show-hide > span {
-    font-size: 0.9em;
-    margin: 0 0.5em;
-  }
-  div.block-description {
-    margin-top: 0.45em;
-  }
-  div.block-description > p {
-    font-size: 0.4875em;
-    margin: 0 1em;
-  }
-  div.block-description > p:not(:first-of-type) {
-    padding-left: 2em;
+  section {
+    font-size: 0.75em;
   }
 }
 /*# sourceMappingURL=catalogue.css.map */

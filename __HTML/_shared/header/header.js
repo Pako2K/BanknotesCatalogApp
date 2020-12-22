@@ -27,7 +27,7 @@ const HEADER_HTML = `
             <a href="/catalogue/?currencies">Currencies</a>
             <a href="/catalogue/grouping/?denominations">Denominations</a>
             <a href="/catalogue/grouping/?years">Years</a>
-            <a href="/_search/">Search</a>
+            <a href="/catalogue/search/">Search</a>
             <a href="/collection/">My Collection</a>
             <a href="/_more/">More...</a>
         </nav>
