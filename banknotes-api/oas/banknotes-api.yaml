@@ -548,7 +548,13 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:    
+                  allOf:
+                  - type: object
+                    required:
+                    - seriesId
+                    properties:
+                      seriesId:
+                        type: integer
                   - $ref: '#/components/schemas/denomination'
                   - type: object
                     required:
@@ -584,7 +590,13 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:    
+                  allOf:
+                  - type: object
+                    required:
+                    - seriesId
+                    properties:
+                      seriesId:
+                        type: integer
                   - $ref: '#/components/schemas/denomination'
                   - type: object
                     required:
@@ -2721,6 +2733,8 @@ components:
           - territoryId
           - territoryName
           properties:
+            notIssued:
+              type: boolean
             seriesId:
               type: integer
             seriesName:
@@ -2743,6 +2757,8 @@ components:
               type: integer
             mintage:
               type: integer
+            description:
+              type: string
    
    
     itemKey:

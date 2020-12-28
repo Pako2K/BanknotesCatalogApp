@@ -1,3 +1,22 @@
+"use strict"
+
+/* DEPENDENCIES: 
+
+    /_shared/ajax-wrapper.js
+    /_class/form/modal-form.js
+
+*/
+
+if (!$("head>script[src='/_shared/ajax-wrapper.js']").length) {
+    $("head").append(`
+        <script src="/_shared/ajax-wrapper.js"></script>`);
+}
+
+if (!$("head>script[src='/_class/form/modal-form.js']").length) {
+    $("head").append(`
+        <script src="/_class/form/modal-form.js"></script>`);
+}
+
 class UpsertCollectionForm extends ModalForm {
     static FORM_HTML = `
         <table id="collection-items-table">

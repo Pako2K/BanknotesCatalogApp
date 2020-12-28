@@ -31,19 +31,19 @@
     <link rel="stylesheet" type="text/css" href="/_shared/footer/footer.css">
     <script src="/_shared/footer/footer.js" defer></script>
 
-    <link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">
-    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
-
     <script src="./currencies.js"></script>
+    <script src="./banknotes.js"></script>
     <script src="./statistics.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="./_list/list.css">
-    <script src="./_list/list.js"></script>
+    <link rel="stylesheet" type="text/css" href="/_class/card/card.css">
+    <script src="/_class/card/simple-card.js"></script>
+    <script src="/_class/card/show-hide-card.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="/_class/form/modal-form.css">
-    <script src="/_class/form/modal-form.js"></script>
-    <script src="/_class/form/upsert-collection-form.js"></script>
+    <link rel="stylesheet" type="text/css" href="/_class/notes-list-table/notes-list-table.css">
+    <script src="/_class/notes-list-table/notes-list-table.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="/_shared/stats-list-table-class/stats-list-table.css">
+    <script src="/_shared/stats-list-table-class/stats-list-table.js"></script>
 </head>
 
 <body>
@@ -80,25 +80,14 @@
         </div>
     </section>
     <section id="country-views" class="page-views">
-        <p onclick="selectView(this)">Currencies</p>
-        <p onclick="selectView(this)">Banknotes</p>
-        <p onclick="selectView(this)">Statistics</p>
+        <p id="country-view-currencies" onclick="selectView(this)">Currencies</p>
+        <p id="country-view-banknotes" onclick="selectView(this)">Banknotes</p>
+        <p id="country-view-statistics" onclick="selectView(this)">Statistics</p>
     </section>
 
     <section id="results-section">
-        <div class="card">
 
-        </div>
     </section>
-
-    <section id="grades-coding">
-        <div>
-            <h3>Grades Color Coding</h3>
-            <!--
-            <p class="XF-grade">Extremely Fine</p>-->
-        </div>
-    </section>
-
 </body>
 
 </html>

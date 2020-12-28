@@ -178,14 +178,18 @@ section {
     }
 }
 
+// #view-section {
+//     padding: 1em 1em;
+//     overflow: auto;
+// }
 #view-section {
-    padding: 1em 2em;
-    margin: 0em;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: center;
-    background-color: whitesmoke;
+    padding: 1em 1em;
+    overflow: auto;
+    // display: flex;
+    // flex-direction: column;
+    // flex-wrap: nowrap;
+    // align-items: center;
+    // background-color: whitesmoke;
 }
 
 .none-grade {

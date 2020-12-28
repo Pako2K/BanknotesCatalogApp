@@ -1,4 +1,29 @@
-@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+p.not-logged-in {
+  margin: auto;
+  color: #0a1e0a;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+p.not-logged-in > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.not-logged-in > a:visited {
+  color: #0a1e0a;
+}
+
+p.not-logged-in > a:hover {
+  color: black;
+}
+
+p.not-logged-in > a:active {
+  color: black;
+}
+
 #stats-main-div {
   display: -webkit-box;
   display: -ms-flexbox;

@@ -4,7 +4,6 @@ function initializeStats() {
     let searchStrArr = window.location.search.substr(1).split("&");
     let searchParam = searchStrArr[0].split("=");
     let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
-    let territoryId = $("#country-data").data("territory-id");
 
     $("#grades-coding").hide();
 
@@ -74,7 +73,8 @@ function initializeStats() {
         $(".only-logged-in").css('opacity', '0.25');
         // Show warning
         $("p.not-logged-in").show();
-    }
+    } else
+        $("p.not-logged-in").hide();
 }
 
 

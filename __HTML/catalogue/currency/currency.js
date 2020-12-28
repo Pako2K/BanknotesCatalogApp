@@ -1,9 +1,13 @@
 "use strict"
 
+let seriesJSON;
+let currencyId;
+let territoryId;
+
 $(document).ready(function() {
     let searchStrArr = window.location.search.substr(1).split("&");
     let searchParam = searchStrArr[0].split("=");
-    let currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
+    currencyId = searchParam[0] === "currencyId" ? searchParam[1] : "";
 
     // Optional parameters
     let seriesId = "";
@@ -25,7 +29,7 @@ $(document).ready(function() {
         // Load country info into page
         $("#country-data a").attr("href", "/catalogue/country/index.html?countryId=" + currencyJSON.territory.id);
         $("#country-flag img").attr("src", flagFileName(currencyJSON.territory));
-        $("#country-data").data("territory-id", currencyJSON.territory.id);
+        territoryId = currencyJSON.territory.id;
         $("#country-name a").text(currencyJSON.territory.name);
 
         // Load currency info into page
@@ -114,36 +118,43 @@ $(document).ready(function() {
             }
         }
 
+        // Get basic data and stats for the currency series
+        asyncGET(`/currency/${currencyId}/series${territoryIdQueryParam}`, (result, status) => {
+            // Store the data in the currency main page
+            seriesJSON = result;
+
+            $('#currency-views>p').eq(0).data("series-id", seriesId);
+            $('#currency-views>p').eq(0).data("denomination", denomination);
+
+            // Load default navigation option
+            let optionId = sessionStorage.getItem("Currency.Option");
+            if (optionId)
+                $(`#${optionId}`).click();
+            else
+                $(`#currency-views>p:first-of-type`).click();
+        });
+
+        if (Session.getUsername()) {
+            // Load grades from DB
+            asyncGET("/grades", (grades, status) => {
+                // store info so it can be reused in the upsert-collection form
+                $("#grades-coding").data("grades", grades);
+
+                let gradesHTML = "";
+                for (let grade of grades) {
+                    gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
+                }
+                $("#grades-coding>div").append(gradesHTML);
+            });
+        } else {
+            $("#grades-coding").hide();
+        }
+
         // Add currency to bookmarks
         Header.updateBookmarks(window.location.pathname + window.location.search, currencyJSON.territory.name, currencyJSON.name + `${currencyJSON.iso3?' - ' + currencyJSON.iso3:""}`);
     });
 
-    // Get basic data and stats for the currency series
-    asyncGET(`/currency/${currencyId}/series${territoryIdQueryParam}`, (result, status) => {
-        // Store the data in the currency main page
-        $(document).data("series-summary", JSON.stringify(result));
 
-        // Load default navigation option
-        $('#currency-views>p').eq(0).data("series-id", seriesId);
-        $('#currency-views>p').eq(0).data("denomination", denomination);
-        $('#currency-views>p').eq(0).click();
-    });
-
-    if (Session.getUsername()) {
-        // Load grades from DB
-        asyncGET("/grades", (grades, status) => {
-            // store info so it can be reused in the upsert-collection form
-            $("#grades-coding").data("grades", grades);
-
-            let gradesHTML = "";
-            for (let grade of grades) {
-                gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
-            }
-            $("#grades-coding>div").append(gradesHTML);
-        });
-    } else {
-        $("#grades-coding").hide();
-    }
 });
 
 
@@ -158,6 +169,7 @@ function selectView(optionElem) {
     let option = $(optionElem).text().toLowerCase();
     $(".selected-view").removeClass('selected-view');
     $(optionElem).addClass('selected-view');
+    sessionStorage.setItem("Currency.Option", $(optionElem).attr("id"));
     switch (option) {
         case "details":
             $("#view-section").load(`./${option}/__${option}.html`, initializeDetails);
@@ -166,7 +178,7 @@ function selectView(optionElem) {
             $("#view-section").load(`./${option}/__${option}.html`, initializeTimeline);
             break;
         case "list":
-            $("#view-section").load(`./${option}/__${option}.html`, initializeList);
+            showList();
             break;
         case "statistics":
             $("#view-section").load(`./${option}/__${option}.html`, initializeStats);

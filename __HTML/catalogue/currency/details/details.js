@@ -18,8 +18,7 @@ function initializeDetails() {
 
     // Load the series list
     $("div.series-list").empty();
-    let series = JSON.parse($(document).data("series-summary"));
-    for (let elem of series) {
+    for (let elem of seriesJSON) {
         let endDate = "";
         if (elem.end == null || elem.end == "")
             endDate = " - present";
@@ -317,8 +316,8 @@ function openUpsertSeries(isNewSeries) {
     if (currencyIdParam.split("=")[0] !== "currencyId")
         return;
 
-    let currencyJSON = { id: currencyIdParam.split("=")[1], name: $("#currency-name").text(), territoryId: $("#country-data").data("territory-id") };
-    let seriesJSON = isNewSeries ? undefined : {
+    let currencyJSON = { id: currencyIdParam.split("=")[1], name: $("#currency-name").text(), territoryId: territoryId };
+    let thisSeriesJSON = isNewSeries ? undefined : {
         id: $("div.series-info").data("series-id"),
         name: $("div.series-info").data("series-name"),
         start: $("div.series-info").data("series-start"),
@@ -329,20 +328,18 @@ function openUpsertSeries(isNewSeries) {
         description: $("div.series-info #series-description>span").text()
     };
 
-    new UpsertIssueForm(currencyJSON, seriesJSON, (newIssue)=>{
-        let series = JSON.parse($(document).data("series-summary"));
-        if (!seriesJSON){
-            series.push(newIssue);
-            series.sort((a,b)=>{return a.start-b.start;});
+    new UpsertIssueForm(currencyJSON, thisSeriesJSON, (newIssue)=>{
+        if (!thisSeriesJSON){
+            seriesJSON.push(newIssue);
+            seriesJSON.sort((a,b)=>{return a.start-b.start;});
         }
         else{
             //Search the updated series and replace it
-            let idx = series.findIndex((val)=>{
+            let idx = seriesJSON.findIndex((val)=>{
                 return val.id === newIssue.id;
             });
-            series.splice(idx,1,newIssue);
+            seriesJSON.splice(idx,1,newIssue);
         }
-        $(document).data("series-summary", JSON.stringify(series));
         $('#currency-views>p').eq(0).data("series-id", newIssue.id);
         initializeDetails(); 
     });
@@ -371,7 +368,7 @@ function openUpsertVariant(banknoteId, banknoteDenomination, variantId) {
     }
     let seriesId = $("div.series-info").data("series-id");
     let isOverstamped = $("div.series-info #series-is-overstamped").length;
-    let territory = {id: $("#country-data").data("territory-id"), name:$("#country-name").text()};
+    let territory = {id: territoryId, name:$("#country-name").text()};
 
     new UpsertVariantForm(territory, isOverstamped, banknoteId, banknoteDenomination, variantId, ()=>{loadSeriesDetails(seriesId)});
 }

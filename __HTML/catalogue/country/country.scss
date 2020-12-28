@@ -1,15 +1,11 @@
 @import '../../_shared/common',
 '../../_shared/index',
-'../../_shared/grades',
 '../common/common';
 @mixin media-screen-block($scale-factor: 1) {
     #country-cont>img {
         width: 40px*$scale-factor;
     }
     #results-section {
-        font-size: 1em*$scale-factor;
-    }
-    #grades-coding {
         font-size: 1em*$scale-factor;
     }
 }
@@ -122,70 +118,7 @@ section {
 
 #results-section {
     padding: 1em 1em;
-}
-
-div.card {
-    border: solid 0.5px lightgray;
-    box-shadow: 1px 1px 2px lightgrey;
-    background-color: white;
-    padding: 0.8em 1em;
-    margin-bottom: 1em;
     overflow: auto;
-}
-
-div.block-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: solid 2px black;
-    margin-bottom: 0.5em;
-    &>p {
-        margin: 0;
-        & span.disabled {
-            opacity: 0.3;
-            cursor: default;
-        }
-        & span:not(.disabled) {
-            cursor: pointer;
-        }
-    }
-    &>p:first-of-type {
-        font-weight: bold;
-    }
-    &>p:last-of-type {
-        &>span {
-            font-style: italic;
-            display: inline-block;
-            margin: 0 0.5em;
-        }
-    }
-}
-
-#grades-coding {
-    padding: 1em 1em;
-    font-family: Times New Roman, serif;
-    display: none;
-    &>div {
-        border: solid 1px lightgray;
-        padding: 1em;
-        background-color: ghostwhite;
-        margin: auto;
-        text-align: center;
-        max-width: 20em;
-        & h3 {
-            margin: 0;
-            margin-bottom: 1em;
-            font-size: 1em;
-        }
-        & p {
-            margin: auto;
-            font-size: 0.8em;
-            padding: 0.4em;
-            min-width: 10em;
-            max-width: 15em;
-            cursor: help;
-        }
-    }
 }
 
 @media screen and (max-width: $WIDTH_BIG_TABLET) {
@@ -212,8 +145,5 @@ div.block-title {
     @include media-screen-block($WIDTH_FACTOR_BIG_PHONE);
     #results-section {
         padding: 0.5em 0.2em;
-        &>div {
-            padding: 0.5em;
-        }
     }
 }

@@ -1,0 +1,226 @@
+@import '../../_shared/common',
+'../../_shared/grades';
+p.login-warning {
+    display: none;
+    margin: auto;
+    color: rgb(10, 30, 10);
+    text-align: center;
+    font-family: $FONT_HEADER;
+    font-weight: bold;
+    font-size: 0.9em;
+    &>a {
+        &:link {
+            text-shadow: 2px 2px 2px rgb(220, 250, 220);
+            text-decoration: underline dotted;
+            text-underline-position: under;
+        }
+        &:visited {
+            color: rgb(10, 30, 10);
+        }
+        &:hover {
+            color: black;
+        }
+        &:active {
+            color: black;
+        }
+    }
+}
+
+table.notes-list-table {
+    margin: auto;
+    margin-top: 1em;
+    border-right: solid 1px darkgrey;
+    border-bottom: solid 1px darkgrey;
+    border-collapse: collapse;
+    &>thead>tr>th {
+        @include no-user-select;
+        min-width: 5em;
+        max-width: 10em;
+        font-family: Lucida sans, sans-serif;
+        font-weight: normal;
+        font-size: 0.8em;
+        border-top: solid 1px darkgrey;
+        border-left: solid 1px darkgrey;
+        border-bottom: solid 1px darkgrey;
+        background-color: rgb(44, 95, 95);
+        color: whitesmoke;
+        text-align: center;
+        vertical-align: center;
+        padding: 0.4em 1em;
+        white-space: nowrap;
+        &:last-of-type {
+            font-size: 0.75em;
+        }
+        &.only-logged-in {
+            opacity: 0.8;
+        }
+    }
+    &>thead>tr:nth-of-type(2)>th {
+        min-width: 3em;
+        border-right: solid 1px darkgrey;
+        font-size: 0.75em;
+    }
+    &>tbody {
+        &>tr.not-issued {
+            color: brown;
+            & a {
+                color: brown;
+            }
+            & a:link {
+                color: brown;
+            }
+            & a:visited {
+                color: brown;
+            }
+            & a:hover {
+                color: brown;
+            }
+            & a:active {
+                color: rgb(121, 2, 2);
+            }
+        }
+        &>tr:nth-child(even) {
+            background-color: rgb(232, 230, 230);
+        }
+        &>tr:nth-child(odd) {
+            background-color: rgb(240, 240, 240);
+        }
+        &>tr>th {
+            max-width: 20em;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-family: Lucida sans, sans-serif;
+            font-weight: normal;
+            font-size: 0.7em;
+            border-left: solid 1px darkgray;
+            border-right: dotted 1px grey;
+            padding: 0.5em 0.5em;
+            &.left {
+                text-align: left;
+            }
+            & a {
+                color: inherit;
+                cursor: pointer;
+            }
+            & a:link {
+                color: inherit;
+                text-decoration: none;
+            }
+            & a:visited {
+                color: inherit;
+            }
+            & a:hover {
+                text-decoration: none;
+                border-bottom: dotted 0.75px black;
+            }
+            & a:active {
+                color: rgb(121, 2, 2);
+            }
+        }
+        &>tr>td {
+            font-family: Lucida sans, sans-serif;
+            font-size: 0.7em;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 10em;
+            padding: 0.3em 0.8em;
+            cursor: default;
+            &:last-of-type {
+                border-right: solid 1px darkgray;
+            }
+            &.only-logged-in {
+                opacity: 0.8;
+            }
+            &.left {
+                text-align: left;
+            }
+        }
+    }
+}
+
+p.not-issued {
+    color: brown;
+    font-size: 0.75em;
+}
+
+.is-sortable {
+    margin-right: 0.3em;
+    border-bottom: 1px dotted transparent;
+}
+
+.is-sortable:hover {
+    cursor: pointer;
+    border-bottom-color: whitesmoke;
+}
+
+.is-sortable.sorting-column {
+    border-bottom-color: whitesmoke;
+    text-shadow: 2px 2px 2px rgb(59, 59, 59);
+}
+
+.sort-div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sort-desc,
+.sort-asc {
+    border: 0.5em solid rgba(255, 255, 255, 0.15);
+    border-left: 0.4em solid transparent;
+    border-right: 0.4em solid transparent;
+    cursor: pointer;
+}
+
+.sort-desc {
+    border-bottom: 0em solid transparent;
+}
+
+.sort-asc {
+    margin-top: -0.3em;
+    margin-bottom: 0.2em;
+    border-top: 0px solid transparent;
+}
+
+.sort-asc.sort-selection {
+    border-bottom-color: whitesmoke;
+}
+
+.sort-desc.sort-selection {
+    border-top-color: whitesmoke;
+}
+
+div.grades-coding {
+    margin: 1em 1em;
+    font-family: Times New Roman, serif;
+    display: none;
+    &>div {
+        margin: auto;
+        border: solid 1px lightgray;
+        padding: 1em;
+        background-color: ghostwhite;
+        text-align: center;
+        max-width: 20em;
+        & h3 {
+            margin: 0;
+            margin-bottom: 1em;
+            font-size: 1em;
+        }
+        & p {
+            margin: auto;
+            font-size: 0.8em;
+            padding: 0.4em;
+            min-width: 10em;
+            max-width: 15em;
+            cursor: help;
+        }
+    }
+}
+
+@media screen and (max-width: $WIDTH_BIG_PHONE) {
+    .optional-show {
+        display: none;
+    }
+}

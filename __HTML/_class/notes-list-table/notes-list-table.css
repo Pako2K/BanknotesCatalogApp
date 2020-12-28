@@ -1,1 +1,303 @@
-/* No CSS *//*# sourceMappingURL=notes-list-table.css.map */
+@import url("https://fonts.googleapis.com/css2?family=Girassol&family=Berkshire+Swash&family=Source+Sans+Pro:wght@300&display=swap");
+.UNC-grade {
+  background-color: green;
+  color: whitesmoke;
+}
+
+.XF-grade {
+  background-color: greenyellow;
+  color: #464646;
+}
+
+.VF-grade {
+  background-color: yellow;
+  color: #464646;
+}
+
+.F-grade {
+  background-color: orange;
+  color: #464646;
+}
+
+.VG-grade {
+  background-color: #785000;
+  color: lightgrey;
+}
+
+.G-grade {
+  background-color: #5a5000;
+  color: lightgrey;
+}
+
+.P-grade {
+  background-color: #3c3200;
+  color: lightgrey;
+}
+
+.REP-grade {
+  background-color: lightgray;
+  color: #464646;
+}
+
+p.login-warning {
+  display: none;
+  margin: auto;
+  color: #0a1e0a;
+  text-align: center;
+  font-family: "Source Sans Pro", "sans-serif";
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+p.login-warning > a:link {
+  text-shadow: 2px 2px 2px #dcfadc;
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+  text-underline-position: under;
+}
+
+p.login-warning > a:visited {
+  color: #0a1e0a;
+}
+
+p.login-warning > a:hover {
+  color: black;
+}
+
+p.login-warning > a:active {
+  color: black;
+}
+
+table.notes-list-table {
+  margin: auto;
+  margin-top: 1em;
+  border-right: solid 1px darkgrey;
+  border-bottom: solid 1px darkgrey;
+  border-collapse: collapse;
+}
+
+table.notes-list-table > thead > tr > th {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox 2+ */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Standard syntax */
+  min-width: 5em;
+  max-width: 10em;
+  font-family: Lucida sans, sans-serif;
+  font-weight: normal;
+  font-size: 0.8em;
+  border-top: solid 1px darkgrey;
+  border-left: solid 1px darkgrey;
+  border-bottom: solid 1px darkgrey;
+  background-color: #2c5f5f;
+  color: whitesmoke;
+  text-align: center;
+  vertical-align: center;
+  padding: 0.4em 1em;
+  white-space: nowrap;
+}
+
+table.notes-list-table > thead > tr > th:last-of-type {
+  font-size: 0.75em;
+}
+
+table.notes-list-table > thead > tr > th.only-logged-in {
+  opacity: 0.8;
+}
+
+table.notes-list-table > thead > tr:nth-of-type(2) > th {
+  min-width: 3em;
+  border-right: solid 1px darkgrey;
+  font-size: 0.75em;
+}
+
+table.notes-list-table > tbody > tr.not-issued {
+  color: brown;
+}
+
+table.notes-list-table > tbody > tr.not-issued a {
+  color: brown;
+}
+
+table.notes-list-table > tbody > tr.not-issued a:link {
+  color: brown;
+}
+
+table.notes-list-table > tbody > tr.not-issued a:visited {
+  color: brown;
+}
+
+table.notes-list-table > tbody > tr.not-issued a:hover {
+  color: brown;
+}
+
+table.notes-list-table > tbody > tr.not-issued a:active {
+  color: #790202;
+}
+
+table.notes-list-table > tbody > tr:nth-child(even) {
+  background-color: #e8e6e6;
+}
+
+table.notes-list-table > tbody > tr:nth-child(odd) {
+  background-color: #f0f0f0;
+}
+
+table.notes-list-table > tbody > tr > th {
+  max-width: 20em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: Lucida sans, sans-serif;
+  font-weight: normal;
+  font-size: 0.7em;
+  border-left: solid 1px darkgray;
+  border-right: dotted 1px grey;
+  padding: 0.5em 0.5em;
+}
+
+table.notes-list-table > tbody > tr > th.left {
+  text-align: left;
+}
+
+table.notes-list-table > tbody > tr > th a {
+  color: inherit;
+  cursor: pointer;
+}
+
+table.notes-list-table > tbody > tr > th a:link {
+  color: inherit;
+  text-decoration: none;
+}
+
+table.notes-list-table > tbody > tr > th a:visited {
+  color: inherit;
+}
+
+table.notes-list-table > tbody > tr > th a:hover {
+  text-decoration: none;
+  border-bottom: dotted 0.75px black;
+}
+
+table.notes-list-table > tbody > tr > th a:active {
+  color: #790202;
+}
+
+table.notes-list-table > tbody > tr > td {
+  font-family: Lucida sans, sans-serif;
+  font-size: 0.7em;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 10em;
+  padding: 0.3em 0.8em;
+  cursor: default;
+}
+
+table.notes-list-table > tbody > tr > td:last-of-type {
+  border-right: solid 1px darkgray;
+}
+
+table.notes-list-table > tbody > tr > td.only-logged-in {
+  opacity: 0.8;
+}
+
+table.notes-list-table > tbody > tr > td.left {
+  text-align: left;
+}
+
+p.not-issued {
+  color: brown;
+  font-size: 0.75em;
+}
+
+.is-sortable {
+  margin-right: 0.3em;
+  border-bottom: 1px dotted transparent;
+}
+
+.is-sortable:hover {
+  cursor: pointer;
+  border-bottom-color: whitesmoke;
+}
+
+.is-sortable.sorting-column {
+  border-bottom-color: whitesmoke;
+  text-shadow: 2px 2px 2px #3b3b3b;
+}
+
+.sort-div {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.sort-desc,
+.sort-asc {
+  border: 0.5em solid rgba(255, 255, 255, 0.15);
+  border-left: 0.4em solid transparent;
+  border-right: 0.4em solid transparent;
+  cursor: pointer;
+}
+
+.sort-desc {
+  border-bottom: 0em solid transparent;
+}
+
+.sort-asc {
+  margin-top: -0.3em;
+  margin-bottom: 0.2em;
+  border-top: 0px solid transparent;
+}
+
+.sort-asc.sort-selection {
+  border-bottom-color: whitesmoke;
+}
+
+.sort-desc.sort-selection {
+  border-top-color: whitesmoke;
+}
+
+div.grades-coding {
+  margin: 1em 1em;
+  font-family: Times New Roman, serif;
+  display: none;
+}
+
+div.grades-coding > div {
+  margin: auto;
+  border: solid 1px lightgray;
+  padding: 1em;
+  background-color: ghostwhite;
+  text-align: center;
+  max-width: 20em;
+}
+
+div.grades-coding > div h3 {
+  margin: 0;
+  margin-bottom: 1em;
+  font-size: 1em;
+}
+
+div.grades-coding > div p {
+  margin: auto;
+  font-size: 0.8em;
+  padding: 0.4em;
+  min-width: 10em;
+  max-width: 15em;
+  cursor: help;
+}
+
+@media screen and (max-width: 400px) {
+  .optional-show {
+    display: none;
+  }
+}
+/*# sourceMappingURL=notes-list-table.css.map */

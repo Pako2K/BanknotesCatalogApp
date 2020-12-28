@@ -479,11 +479,11 @@ function itemsGET(request, response) {
                     SELECT  BVA.bva_id AS "variantId", BVA.bva_cat_id AS "catalogueId", 
                             BVA.bva_issue_year AS "issueYear", BVA.bva_printed_date AS "printedDate", BVA.bva_mintage AS "mintage",
                             CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
-                            SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
+                            BVA.bva_not_issued AS "notIssued", SER.ser_id AS "seriesId", SER.ser_name AS "seriesName", 
                             CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName",
                             CASE WHEN BVA.bva_overstamped_id IS NULL THEN BAN.ban_size_width ELSE BAN2.ban_size_width END AS "width",
 	 						CASE WHEN BVA.bva_overstamped_id IS NULL THEN BAN.ban_size_height ELSE BAN2.ban_size_height END AS "height",
-                            PRI.pri_name AS "printer", ISS.iss_name AS "issuer"
+                            PRI.pri_name AS "printer", ISS.iss_name AS "issuer", BVA.bva_description AS "description"
                     FROM bva_variant BVA
                     ${commonJoinsSQL}
                     LEFT JOIN pri_printer PRI ON PRI.pri_id = BVA.bva_pri_id
@@ -763,7 +763,7 @@ function currencyByIdItemsGET(request, response) {
         sqlJoin = "INNER JOIN iss_issuer ISS ON ISS.iss_id = SER.ser_iss_id AND ISS.iss_ter_id = $2";
 
 
-    let sql = ` SELECT  BAN.ban_id AS "id", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+    let sql = ` SELECT  BAN.ban_ser_id as "seriesId", BAN.ban_id AS "id", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE BAN.ban_face_value END AS "faceValue", 
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_id END AS "unitId",
                         CASE WHEN BAN.ban_cus_id = 0 THEN null ELSE CUS.cus_value END AS "unitValue",
@@ -811,6 +811,7 @@ function currencyByIdItemsGET(request, response) {
                 if (denominationJSON.denomination) replyJSON.push(denominationJSON);
                 // Store new denomination
                 denominationJSON = {};
+                denominationJSON.seriesId = row.seriesId;
                 denominationJSON.id = row.id;
                 denominationJSON.denomination = row.denomination;
                 if (row.faceValue) denominationJSON.faceValue = row.faceValue;

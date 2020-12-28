@@ -1,6 +1,4 @@
 function initializeTimeline() {
-    let seriesJSON = JSON.parse($(document).data("series-summary"));
-
     if (Session.getUsername())
         $("#grades-coding").show();
     else

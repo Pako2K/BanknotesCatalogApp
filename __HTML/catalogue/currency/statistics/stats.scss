@@ -1,4 +1,26 @@
-@import '../../_shared/common';
+p.not-logged-in {
+    margin: auto;
+    color: rgb(10, 30, 10);
+    text-align: center;
+    font-size: 0.9em;
+    &>a {
+        &:link {
+            text-shadow: 2px 2px 2px rgb(220, 250, 220);
+            text-decoration: underline dotted;
+            text-underline-position: under;
+        }
+        &:visited {
+            color: rgb(10, 30, 10);
+        }
+        &:hover {
+            color: black;
+        }
+        &:active {
+            color: black;
+        }
+    }
+}
+
 #stats-main-div {
     display: flex;
     flex-direction: row;

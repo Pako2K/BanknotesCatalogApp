@@ -65,14 +65,11 @@ section {
         font-weight: bold;
         color: darkgreen;
     }
-    & p.not-logged-in {
-        text-align: center;
-    }
 }
 
 #results-table {
     margin: auto;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 @media screen and (max-width: $WIDTH_BIG_TABLET) {

@@ -13,43 +13,14 @@ function showCurrencies() {
         { name: "Type", align: "center", isSortable: 0, optionalShow: 0 }
     ], ["Issues", "Denoms.", "Note Types", "Variants"], loadTable);
 
-    let variantsUri;
-    let itemsUri;
-    if (Session.getUsername())
-        itemsUri = `/territory/${countryId}/currencies/items/stats`;
-    else
-        variantsUri = `/territory/${countryId}/currencies/variants/stats`;
-
-    asyncGET(variantsUri || itemsUri, (currenciesJSON, status) => {
-        if (variantsUri) {
-            // Add null collectionStats
-            for (let row of currenciesJSON) {
-                row.start = parseInt(row.start.slice(0, 4));
-                if (row.end) row.end = parseInt(row.end.slice(0, 4));
-                row.collectionStats = {};
-                row.collectionStats.numCurrencies = 0;
-                row.collectionStats.numSeries = 0;
-                row.collectionStats.numDenominations = 0;
-                row.collectionStats.numNotes = 0;
-                row.collectionStats.numVariants = 0;
-                row.collectionStats.price = 0;
-            }
-        } else {
-            for (let row of currenciesJSON) {
-                row.start = parseInt(row.start.slice(0, 4));
-                if (row.end) row.end = parseInt(row.end.slice(0, 4));
-            }
-        }
-
-        currenciesTable.loadData(currenciesJSON, "Created");
-    });
+    currenciesTable.loadData(currenciesJSON, "Created");
 }
 
 
-function loadTable(currenciesJSON) {
+function loadTable(currencies) {
     currenciesTable.clean();
 
-    for (let currency of currenciesJSON) {
+    for (let currency of currencies) {
         let descFields = [];
         descFields.push(currency.iso3 || "-");
         let queryParams = `currencyId=${currency.id}`;

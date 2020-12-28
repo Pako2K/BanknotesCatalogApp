@@ -4,6 +4,7 @@ let territoryFilters;
 let currencyFilters;
 let banknoteFilters;
 let listCard;
+let resultsTable;
 
 let filters = {
     continent: null,
@@ -23,94 +24,11 @@ $(document).ready(() => {
 
     // Results card
     listCard = new SimpleCard($('#results-list'), "List of Banknotes", "");
-    listCard.setContent(`
-        <p class="result-msg"></p>
-        <div>
-            <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
-            <table id="results-table" class="list-table">
-                <thead>
-                    <tr>
-                        <th rowspan="2"><span class="is-sortable sorting-column" onclick="sortClick(this)">Cat. Id</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Territory</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Currency</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Issue</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Denomination</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Issue Date</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Printed Date</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Issued by</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Printer</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Width (mm)</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th rowspan="2"><span class="is-sortable" onclick="sortClick(this)">Height (mm)</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </th>
-                        <th colspan="2" class="th-stats"><span class="only-logged-in">Collection</span></th>
-                    </tr>
-                    <tr>
-                        <td><span class="only-logged-in">Grade</span></td>
-                        <td><span class="is-sortable only-logged-in" onclick="sortClick(this)">Price</span>
-                            <div class="sort-div" onclick="sortClick(this)">
-                                <div class="sort-asc"></div>
-                                <div class="sort-desc"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>`);
+    listCard.setContent(`<p class="result-msg"></p>
+                        <div id="results-table"></div>`);
+
+    resultsTable = new NotesListTable($("#results-table"), "ALL");
+
 
     // Load Country types 
     asyncGET("/territory-types", (territoryTypesJSON, status) => {
@@ -121,10 +39,6 @@ $(document).ready(() => {
         // All filters loaded: call API and fill in the list table
         callVariantsAPI();
     });
-
-    if (!Session.getUsername()) {
-        $(".only-logged-in").css('opacity', '0.25');
-    }
 })
 
 
@@ -199,14 +113,11 @@ function getBanknoteFilters() {
 
 
 function callVariantsAPI() {
-    $("p.not-logged-in").hide();
-
     filters.continent = ContinentsFilter.getSelectedId() || "";
     if (!(getTerritoryFilters() + getCurrencyFilters() + getBanknoteFilters())) {
         $("#results-list p.result-msg").text("Enter your search criteria using the filters above.");
-        $("#results-table>tbody").empty();
-        $("#results-table>tfoot>tr").empty();
-        $("#results-table").hide();
+        resultsTable.removeData();
+        resultsTable.hide();
         listCard.setSubtitle("");
         return;
     }
@@ -215,9 +126,8 @@ function callVariantsAPI() {
     let terTypeParam = "";
     if (!filters.territory.types.length) {
         alert("No territory type selected!");
-        $("#results-table>tbody").empty();
-        $("#results-table>tfoot>tr").empty();
-        $("#results-table").hide();
+        resultsTable.removeData();
+        resultsTable.hide();
         listCard.setSubtitle("");
         return;
     } else if (territoryTypes.length > filters.territory.types.length) {
@@ -227,9 +137,8 @@ function callVariantsAPI() {
     let curTypeParam = "";
     if (!filters.currency.types.length) {
         alert("No currency type selected!");
-        $("#results-table>tbody").empty();
-        $("#results-table>tfoot>tr").empty();
-        $("#results-table").hide();
+        resultsTable.removeData();
+        resultsTable.hide();
         listCard.setSubtitle("");
         return;
     } else if (currencyTypes.length > filters.currency.types.length) {
@@ -258,137 +167,23 @@ function callVariantsAPI() {
     asyncGET(urlStr, (variantsJSON, status) => {
         if (variantsJSON.length === 0) {
             $("#results-list p.result-msg").text("No banknotes found with this search criteria.");
-            $("#results-table>tbody").empty();
-            $("#results-table>tfoot>tr").empty();
-            $("#results-table").hide();
+            resultsTable.removeData();
+            resultsTable.hide();
+            listCard.setSubtitle("Found: " + 0);
             return;
         }
-        $("#results-table").show();
 
+        resultsTable.addData(variantsJSON);
+        resultsTable.show();
         $("#results-list p.result-msg").text("");
-
         listCard.setSubtitle("Found: " + variantsJSON.length);
 
-        for (let row of variantsJSON) {
-            // Parse the catalogue id in order to be able to sort
-            let parsedCatId = parseCatalogueId(row.catalogueId);
-            row.catalogueIdPreffix = parsedCatId.catalogueIdPreffix;
-            row.catalogueIdInt = parsedCatId.catalogueIdInt;
-            row.catalogueIdSuffix = parsedCatId.catalogueIdSuffix;
-            if (row.item) {
-                row.grade = row.item.grade;
-                row.price = parseFloat(row.item.price);
-            } else {
-                row.grade = "-";
-                row.price = 0;
-            }
-        }
-
-        $("#results-table").data("value", JSON.stringify(variantsJSON));
-
-        // Sort by the first column
-        $(".sort-selection").removeClass("sort-selection");
-        $("#results-table th:first-of-type>span").click();
-
-        // Hide collection columns if no user is logged 
-        if (!Session.getUsername()) {
-            $("p.not-logged-in").show();
-        }
     }, (xhr, status, error) => {
         if (xhr.responseJSON && xhr.responseJSON.status === 413) {
             $("#results-list p.result-msg").text(`Too many banknotes found:${xhr.responseJSON.description.split(":")[1]}. Refine your search.`);
-            $("#results-table>tbody").empty();
-            $("#results-table>tfoot>tr").empty();
-            $("#results-table").hide();
+            resultsTable.removeData();
+            resultsTable.hide();
             listCard.setSubtitle("");
         }
     });
-}
-
-
-function loadResultsTable() {
-    // Clean table body and foot
-    $("#results-table>tbody").empty();
-    $("#results-table>tfoot>tr").empty();
-
-    // Retrieve denominations info in JSON object
-    let variantsJSON = JSON.parse($("#results-table").data("value"));
-
-    let record = "";
-
-    for (let variant of variantsJSON) {
-        record = `  <tr>
-                        <th class="name"><a href="/catalogue/currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}&denomination=${variant.denomination}">${variant.catalogueId}</a></th>
-                        <th class="name"><a href="/catalogue/country/index.html?countryId=${variant.territoryId}">${variant.territoryName}</a></th>
-                        <th class="name"><a href="/catalogue/currency/index.html?currencyId=${variant.currencyId}">${variant.currencyName}</a></th>
-                        <th class="name"><a href="/catalogue/currency/index.html?currencyId=${variant.currencyId}&seriesId=${variant.seriesId}">${variant.seriesName}</a></th>
-                        <th>${variant.denomination.toLocaleString("de-DE")}</th>
-                        <th>${variant.issueYear}</th>
-                        <th>${variant.printedDate || "ND"}</th>
-                        <th class="name">${variant.issuer || "-"}</th>
-                        <th class="name">${variant.printer || "-"}</th>
-                        <th>${variant.width || "-"}</th>
-                        <th>${variant.height || "-"}</th>
-                        <td class="only-logged-in">${(variant.item) ? variant.item.grade : "-"}</td>
-                        <td class="only-logged-in">${(variant.item) ? variant.item.price + ' €' : "-"}</td>
-                    </tr>`;
-        $("#results-table>tbody").append(record);
-    }
-}
-
-
-function sortClick(htmlElem, titleStr) {
-    let mapKey = listTableSetSortingColumn(htmlElem);
-
-    // Determine the field name (it might no be the title of the column)
-    if (titleStr)
-        mapKey = titleStr;
-
-    // Load table body
-    // Mapping column name - field name
-    let mapFieldName = {
-        "Cat. Id": "catalogueId",
-        "Territory": "territoryName",
-        "Currency": "currencyName",
-        "Issue": "seriesName",
-        "Denomination": "denomination",
-        "Issue Date": "issueYear",
-        "Printed Date": "printedDate",
-        "Issued by": "issuer",
-        "Printer": "printer",
-        "Price": "price",
-        "Width (mm)": "width",
-        "Height (mm)": "height"
-    };
-    let isCollecBasedSorting = $(htmlElem).text() === "Collect.";
-    let sortingField = mapFieldName[mapKey];
-    if (isCollecBasedSorting)
-        sortingField = "collecStats." + sortingField;
-
-    // Retrieve sorting 
-    let sortingAsc = $(".sort-selection").hasClass("sort-asc");
-
-    // Sort
-    let sortingFields = [];
-    if (sortingField !== "catalogueId") {
-        sortingFields.push(sortingField);
-        sortingFields.push("catalogueIdPreffix");
-        sortingFields.push("catalogueIdInt");
-        sortingFields.push("catalogueIdSuffix");
-    } else {
-        sortingFields.push("catalogueIdPreffix");
-        sortingFields.push("catalogueIdInt");
-        sortingFields.push("catalogueIdSuffix");
-    }
-
-    let variantsJSON = sortJSON(JSON.parse($("#results-table").data("value")), sortingFields, sortingAsc);
-
-    // Store result
-    $("#results-table").data("value", JSON.stringify(variantsJSON));
-
-    // Load denominations table body
-    loadResultsTable();
-
-    // Save the sorting field so it can be read after re-loading the data
-    $("#results-table").data("sorting-field", sortingField);
 }

@@ -102,13 +102,9 @@ section {
   color: darkgreen;
 }
 
-#results-list p.not-logged-in {
-  text-align: center;
-}
-
 #results-table {
   margin: auto;
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
 @media screen and (max-width: 1000px) {

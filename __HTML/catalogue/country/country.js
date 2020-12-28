@@ -1,9 +1,10 @@
 "use strict"
 
 let countryId;
+let currenciesJSON;
 
 $(document).ready(function() {
-    countryId = window.location.search.substr("?countryId=".length);
+    countryId = window.location.search.split("&")[0].substr("?countryId=".length);
 
     // Get data for the country header
     asyncGET(`/territory/${countryId}`, (countryData, status) => {
@@ -64,22 +65,43 @@ $(document).ready(function() {
         Header.updateBookmarks(window.location.pathname + window.location.search, countryData.name);
     });
 
-    // Load results table for the selected navigation option
-    $("#country-views>p:first-of-type").click();
+    // Retrieve and store currencies info
+    let variantsUri;
+    let itemsUri;
+    if (Session.getUsername())
+        itemsUri = `/territory/${countryId}/currencies/items/stats`;
+    else
+        variantsUri = `/territory/${countryId}/currencies/variants/stats`;
 
-    if (Session.getUsername()) {
-        // Load grades from DB
-        asyncGET("/grades", (grades, status) => {
-            // store info so it can be reused in the upsert-collection form
-            $("#grades-coding").data("grades", grades);
-
-            let gradesHTML = "";
-            for (let grade of grades) {
-                gradesHTML += `<p class="${grade.grade}-grade" title="${grade.description}">${grade.name}</p>`;
+    asyncGET(variantsUri || itemsUri, (results, status) => {
+        if (variantsUri) {
+            // Add null collectionStats
+            for (let row of results) {
+                row.start = parseInt(row.start.slice(0, 4));
+                if (row.end) row.end = parseInt(row.end.slice(0, 4));
+                row.collectionStats = {};
+                row.collectionStats.numCurrencies = 0;
+                row.collectionStats.numSeries = 0;
+                row.collectionStats.numDenominations = 0;
+                row.collectionStats.numNotes = 0;
+                row.collectionStats.numVariants = 0;
+                row.collectionStats.price = 0;
             }
-            $("#grades-coding>div").append(gradesHTML);
-        });
-    }
+        } else {
+            for (let row of results) {
+                row.start = parseInt(row.start.slice(0, 4));
+                if (row.end) row.end = parseInt(row.end.slice(0, 4));
+            }
+        }
+        currenciesJSON = results;
+
+        // Load results table for the selected navigation option
+        let optionId = sessionStorage.getItem("Country.Option");
+        if (optionId)
+            $(`#${optionId}`).click();
+        else
+            $(`#country-views>p:first-of-type`).click();
+    });
 });
 
 
@@ -94,25 +116,16 @@ function selectView(option) {
     if (!$(option).hasClass(".selected-view")) {
         $("#country-views>p.selected-view").removeClass("selected-view");
         $(option).addClass("selected-view");
+        sessionStorage.setItem("Country.Option", $(option).attr("id"));
         switch ($(option).text()) {
             case "Currencies":
-                $("#grades-coding").hide();
                 showCurrencies();
                 break;
             case "Statistics":
-                $("#grades-coding").hide();
                 showStatistics();
                 break;
             case "Banknotes":
-                if (Session.getUsername())
-                    $("#grades-coding").show();
-                else
-                    $("#grades-coding").hide();
-                $("#results-section").empty();
-                $("#results-section").append('<div class="card"></div>');
-                $("#results-section>div").load("./_list/table.html", () => {
-                    loadListTable(countryId, currenciesTable.getData());
-                });
+                showBanknotes();
                 break;
         }
     }

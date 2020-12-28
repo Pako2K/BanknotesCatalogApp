@@ -7,16 +7,11 @@ function showStatistics() {
 
     // ISSUES
     //----------------------------------------
-    $("#results-section").append(`
-        <div id="issues-card" class="card">
-            <div class="block-title">
-              <p>Issues</p>
-              <p class="show-hide"><span class="disabled" onclick="showBlock(this,'Issues')">Show</span>|<span onclick="hideBlock(this,'Issues')">Hide</span></p>
-            </div>
-        </div>`);
+    $("#results-section").append(`<div id="issues-card"></div>`);
+    new ShowHideCard("CountryIssues", $('#issues-card'), "Issues").setContent("<div class='table'></div>");
 
     // Store and load data
-    seriesTable = new StatsListTable($("#results-section>div:last-of-type"), [
+    seriesTable = new StatsListTable($("#issues-card div.table"), [
         { name: "Name", align: "left", isSortable: 1, optionalShow: 0 },
         { name: "Currency", align: "left", isSortable: 0, optionalShow: 0 },
         { name: "Start", align: "center", isSortable: 1, optionalShow: 0 },
@@ -49,16 +44,12 @@ function showStatistics() {
 
     // DENOMINATIONS
     //----------------------------------------
-    $("#results-section").append(`
-        <div id="denominations-card" class="card">
-            <div class="block-title">
-              <p>Denominations</p>
-              <p class="show-hide"><span class="disabled" onclick="showBlock(this,'Denominations')">Show</span>|<span onclick="hideBlock(this,'Denominations')">Hide</span></p>
-            </div>
-        </div>`);
+    $("#results-section").append(`<div id="denominations-card"></div>`);
+    let card = new ShowHideCard("CountryDenominations", $('#denominations-card'), "Denominations");
+    card.setContent("<div class='table'></div>");
 
     // Store and load data
-    denominationsTable = new StatsListTable($("#results-section>div:last-of-type"), [
+    denominationsTable = new StatsListTable($("#denominations-card div.table"), [
         { name: "Denomination", align: "center", isSortable: 1, optionalShow: 0 },
     ], ["Currencies", "Issues", "Variants"], fillDenominationsTable);
 
@@ -88,16 +79,12 @@ function showStatistics() {
 
     // ISSUE YEARS
     //----------------------------------------
-    $("#results-section").append(`
-        <div id="years-card" class="card">
-            <div class="block-title">
-              <p>Issue Years</p>
-              <p class="show-hide"><span class="disabled" onclick="showBlock(this,'Years')">Show</span>|<span onclick="hideBlock(this,'Years')">Hide</span></p>
-            </div>
-        </div>`);
+    $("#results-section").append(`<div id="issueyears-card"></div>`);
+    card = new ShowHideCard("CountryIssueYears", $('#issueyears-card'), "Issue Years");
+    card.setContent("<div class='table'></div>");
 
     // Store and load data
-    yearsTable = new StatsListTable($("#results-section>div:last-of-type"), [
+    yearsTable = new StatsListTable($("#issueyears-card div.table"), [
         { name: "Issue Year", align: "center", isSortable: 1, optionalShow: 0 },
     ], ["Denominations", "Variants"], fillYearsTable);
 
@@ -192,33 +179,4 @@ function fillYearsTable(resultJSON) {
         yearsTable.addRecord(descFields, [year.numDenominations, year.numVariants], [year.collectionStats.numDenominations, year.collectionStats.numVariants],
             year.collectionStats.price);
     }
-}
-
-function showBlock(elem, blockName) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().show();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-
-    if (blockName === 'Issues')
-        deleteCookie(_COOKIE_COUNTRY_STATISTICS_ISSUES_HIDE);
-    else if (blockName === 'Denominations')
-        deleteCookie(_COOKIE_COUNTRY_STATISTICS_DENOMINATIONS_HIDE);
-    else
-        deleteCookie(_COOKIE_COUNTRY_STATISTICS_YEARS_HIDE);
-}
-
-function hideBlock(elem, blockName) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().hide();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-    if (blockName === 'Issues')
-        setCookie(_COOKIE_COUNTRY_STATISTICS_ISSUES_HIDE, "");
-    else if (blockName === 'Denominations')
-        setCookie(_COOKIE_COUNTRY_STATISTICS_DENOMINATIONS_HIDE, "");
-    else
-        setCookie(_COOKIE_COUNTRY_STATISTICS_YEARS_HIDE, "");
 }
