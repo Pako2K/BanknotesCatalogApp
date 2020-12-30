@@ -31,8 +31,7 @@
                 font-style: italic;
                 display: inline-block;
                 &.disabled {
-                    opacity: 0.25;
-                    cursor: default;
+                    display: none;
                 }
                 &:not(.disabled) {
                     cursor: pointer;

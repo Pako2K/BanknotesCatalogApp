@@ -57,8 +57,7 @@
 
 .show-hide-card .card-title div.show-hide span.disabled,
 .simple-card .card-title div.show-hide span.disabled {
-  opacity: 0.25;
-  cursor: default;
+  display: none;
 }
 
 .show-hide-card .card-title div.show-hide span:not(.disabled),

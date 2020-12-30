@@ -102,6 +102,8 @@ class UpsertVariantForm extends ModalForm {
 
     static onSubmitCallback;
 
+    static cache = { printerId: null };
+
     constructor(territory, isOverstamped, banknoteId, denominationStr, variantId, onSubmitCallback) {
         let title = variantId ? "Update Variant" : "Add new Variant";
         super("upsert-variant-form", title, denominationStr, UpsertVariantForm.FORM_HTML, UpsertVariantForm.submit);
@@ -173,7 +175,7 @@ class UpsertVariantForm extends ModalForm {
                     form.find("textarea[name='variant-description']").val(variant.description);
                 });
             } else {
-                form.find("select[name='variant-printer']").val(0)
+                form.find("select[name='variant-printer']").val(UpsertVariantForm.cache.printerId || 0)
             }
         });
     }
@@ -239,6 +241,7 @@ class UpsertVariantForm extends ModalForm {
                 UpsertVariantForm.onSubmitCallback();
             });
         }
+        UpsertVariantForm.cache.printerId = variant.printerId;
     }
 
     static setIssueYear() {

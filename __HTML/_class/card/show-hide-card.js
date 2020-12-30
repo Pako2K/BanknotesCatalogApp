@@ -13,7 +13,7 @@ class ShowHideCard {
                 <div class="card-title">
                     <p class="title">${title}</p>
                     <div class="show-hide">
-                        <span class="disabled" onclick="ShowHideCard.toggleBlock(this,'show')">Show</span>|
+                        <span class="disabled" onclick="ShowHideCard.toggleBlock(this,'show')">Show</span>
                         <span onclick="ShowHideCard.toggleBlock(this,'hide')">Hide</span>
                     </div>
                 </div>
