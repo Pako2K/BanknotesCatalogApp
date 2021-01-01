@@ -23,6 +23,38 @@ $(document).ready(() => {
                         </div>
                     </div>`);
 
+    card = new ShowHideCard("ColExpensesDate", $('#expenses-date'), "Expenses per Date");
+    card.setContent(`<div id="expenses-date-table">
+                        <table class="expenses-list-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="3">Year</th>
+                                    <th rowspan="3">Month</th>
+                                    <th colspan="4">Expenses</th>
+                                <tr>
+                                <tr>
+                                    <th>Monthly</th>
+                                    <th>Yearly</th>
+                                    <th>Monthly Avg.</th>
+                                    <th>Accumulated</th>
+                                <tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>    
+                    <div>`);
+    card = new ShowHideCard("ColExpensesSeller", $('#expenses-seller'), "Expenses per Seller");
+    card.setContent(`<div id="expenses-seller-table">
+                        <table class="expenses-list-table">
+                            <thead>
+                                <tr>
+                                    <th>Seller</th>
+                                    <th>Expenses</th>
+                                <tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>    
+                    <div>`);
+
     // Add slide buttons
     onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, false, duplicatesFilterChanged);
     noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, false, duplicatesFilterChanged);
@@ -173,6 +205,7 @@ function duplicatesFilterChanged(id, state) {
 
 function loadItemsTable(sortKey, sortAsc) {
     $("#items-table>tbody").empty();
+    $(".expenses-list-table>tbody").empty();
 
     let itemsJSON = JSON.parse($("#items-table").data("value"));
     if (sortKey) {
@@ -190,7 +223,30 @@ function loadItemsTable(sortKey, sortAsc) {
 
     let filterContId = ContinentsFilter.getSelectedId();
 
+    let expensesDate = [];
+    expensesDate[0] = 0;
+    let expensesSeller = [];
+    expensesSeller[0] = 0;
     for (let record of itemsJSON) {
+        // Aggregate stats for expenses tables
+        // Parse purchase date
+        if (record.purchaseDate) {
+            let year = parseInt(record.purchaseDate.split("-")[0]);
+            let month = parseInt(record.purchaseDate.split("-")[1]);
+            let day = parseInt(record.purchaseDate.split("-")[2]);
+            record.purchaseDate = day + "-" + month + "-" + year;
+            if (!expensesDate[year])
+                expensesDate[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            expensesDate[year][month - 1] += record.price * record.quantity;
+        } else {
+            expensesDate[0] += record.price * record.quantity;
+        }
+
+        if (record.seller) {
+            expensesSeller[record.seller] = (expensesSeller[record.seller] || 0) + record.price * record.quantity;
+        } else {
+            expensesSeller[0] += record.price * record.quantity;
+        }
 
         // Apply filters
         if (filterContId != 0 && record.continentId != filterContId) continue
@@ -240,6 +296,64 @@ function loadItemsTable(sortKey, sortAsc) {
     }
 
     $("#items-table>tbody").append(rowsHTML);
+
+    // Expenses per date
+    let total = expensesDate[0];
+
+    $("#expenses-date-table tbody").append(`
+    <tr>
+        <th>NA</th>
+        <th>NA</th>
+        <td>${expensesDate[0].toFixed(2)} €</td>
+        <td>-</td>
+        <td>-</td>
+        <td>${total.toFixed(2)} €</td>
+    </tr>`);
+
+    expensesDate.splice(0, 1);
+    expensesDate.forEach((val, idx) => {
+        let yearSum = val[0];
+        let rows = "";
+        for (let month = 2; month <= 12; month++) {
+            yearSum += val[month - 1]
+            rows += `<tr>
+                        <th>${month}</th>
+                        <td>${val[month-1].toFixed(2)} €</td>
+                    </tr>`;
+        }
+        total += yearSum;
+        $("#expenses-date-table tbody").append(`
+        <tr class="first-subrow">
+            <th rowspan="12">${idx+1}</th>
+            <th>1</th>
+            <td>${val[0].toFixed(2)} €</td>
+            <td rowspan="12">${yearSum.toFixed(2)} €</td>
+            <td rowspan="12">${(yearSum / 12).toFixed(2)} €</td>
+            <td rowspan="12">${total.toFixed(2)} €</td>
+        </tr>
+        ${rows}`);
+    });
+
+    // Expenses per seller
+    total = expensesSeller[0];
+
+    $("#expenses-seller-table tbody").append(`
+    <tr>
+        <th class="text">Unknown</th>
+        <td>${expensesSeller[0].toFixed(2)} €</td>
+    </tr>`);
+
+    let rows = "";
+    let keys = Object.keys(expensesSeller);
+    keys.splice(0, 1);
+    keys.sort((a, b) => { return expensesSeller[b].toFixed(2) - expensesSeller[a].toFixed(2); });
+    keys.forEach(val => {
+        rows += `<tr>
+                    <th class="text">${val}</th>
+                    <td>${expensesSeller[val].toFixed(2)} €</td>
+                </tr>`;
+    });
+    $("#expenses-seller-table tbody").append(rows);
 }
 
 
