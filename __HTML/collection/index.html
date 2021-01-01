@@ -32,8 +32,14 @@
     <script src="/_shared/footer/footer.js" defer></script>
 
     <link rel="stylesheet" type="text/css" href="/_shared/continents-filter-class/continents-filter.css">
-    <link rel="stylesheet" type="text/css" href="/_class/slide-button/slide-button.css">
     <script src="/_shared/continents-filter-class/continents-filter.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_class/card/card.css">
+    <script src="/_class/card/show-hide-card.js"></script>
+    <script src="/_class/card/simple-card.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/_class/slide-button/slide-button.css">
+
     <script src="/_class/slide-button/slide-button.js"></script>
 </head>
 
@@ -44,92 +50,12 @@
         </script>
     </section>
 
-    <section id="collection-filters">
-        <div class="group">
-            <div class="block-title">
-                <p>Filters</p>
-                <p class="show-hide"><span class="disabled" onclick="showBlock(this)">Show</span>|<span onclick="hideBlock(this)">Hide</span></p>
-            </div>
-            <div id="duplicates-filter">
-                <div>
-                    <div id="only-duplicates-button"></div>
-                    <p>Show only duplicates</p>
-                </div>
-                <div>
-                    <div id="exclude-duplicates-button"></div>
-                    <p>Do not show duplicates</p>
-                </div>
-            </div>
-        </div>
+    <section>
+        <div id="collection-filters"></div>
     </section>
 
     <section class="list-section">
-        <div class="group">
-            <div class="block-title">
-                <p>List of Banknotes</p>
-                <div id="applied-filters"><span class="cont-name"></span><span class="only-duplicates"></span><span class="exclude-duplicates"></span></div>
-            </div>
-            <div id="list-table">
-                <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
-                <table id="items-table" class="notes-list-table">
-                    <thead>
-                        <tr>
-                            <th><span class="is-sortable default-sort" onclick="sortClick(this)">Territory</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th><span class="is-sortable" onclick="sortClick(this)">Denom.</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th><span class="is-sortable" onclick="sortClick(this)">Currency</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th><span class="is-sortable" onclick="sortClick(this)">Cat. Id</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th class="collection-field">Grade</th>
-                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Qty.</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Seller</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Purchased</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                            <th class="collection-field">Comments</th>
-                            <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Price</span>
-                                <div class="sort-div" onclick="sortClick(this)">
-                                    <div class="sort-asc"></div>
-                                    <div class="sort-desc"></div>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+        <div id="list-table">
         </div>
     </section>
 

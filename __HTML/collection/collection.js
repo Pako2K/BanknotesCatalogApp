@@ -2,16 +2,96 @@
 
 let onlyDuplicatesBtn;
 let noDuplicatesBtn;
+let listCard;
+let subtitle = ["", ""];
+
+const _COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES = "BOC.collection.filters.only-duplicates";
+const _COOKIE_COLLECTION_FILTER_NO_DUPLICATES = "BOC.collection.filters.no-duplicates";
+
 
 $(document).ready(() => {
+    // Add card for filters
+    let card = new ShowHideCard("CollectionFilters", $('#collection-filters'), "Filters");
+    card.setContent(`<div id="duplicates-filter">
+                        <div>
+                            <div id="only-duplicates-button"></div>
+                            <p>Show only duplicates</p>
+                        </div>
+                        <div>
+                            <div id="exclude-duplicates-button"></div>
+                            <p>Do not show duplicates</p>
+                        </div>
+                    </div>`);
+
     // Add slide buttons
-    onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, true, duplicatesFilterChanged);
-    noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, true, duplicatesFilterChanged);
+    onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, false, duplicatesFilterChanged);
+    noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, false, duplicatesFilterChanged);
 
-    if (getCookie(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) == "false") onlyDuplicatesBtn.click();
-    if (getCookie(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) == "false") noDuplicatesBtn.click();
+    subtitle[0] = ContinentsFilter.getSelectedName();
+    listCard = new SimpleCard($('#list-table'), "List of Banknotes", subtitle[0]);
+    listCard.setContent(`  <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
+                    <table id="items-table" class="notes-list-table">
+                        <thead>
+                            <tr>
+                                <th><span class="is-sortable default-sort" onclick="sortClick(this)">Territory</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th><span class="is-sortable" onclick="sortClick(this)">Denom.</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th><span class="is-sortable" onclick="sortClick(this)">Currency</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th><span class="is-sortable" onclick="sortClick(this)">Cat. Id</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th class="collection-field">Grade</th>
+                                <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Qty.</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Seller</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Purchased</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                                <th class="collection-field">Comments</th>
+                                <th class="collection-field"><span class="is-sortable" onclick="sortClick(this)">Price</span>
+                                    <div class="sort-div" onclick="sortClick(this)">
+                                        <div class="sort-asc"></div>
+                                        <div class="sort-desc"></div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>`);
 
-    $("#applied-filters>span.cont-name").text(ContinentsFilter.getSelectedName());
+    if (sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) != "false") onlyDuplicatesBtn.click();
+    if (sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) != "false") noDuplicatesBtn.click();
+
 
     if (!Session.getUsername()) {
         // Show warning
@@ -39,7 +119,14 @@ $(document).ready(() => {
 
 
 function changedContinent(contId, contName) {
-    $("#applied-filters>span.cont-name").text(contName);
+    subtitle[0] = contName;
+    if (contId)
+        if (subtitle[1] !== "")
+            listCard.setSubtitle(subtitle.join(", "));
+        else
+            listCard.setSubtitle(subtitle[0]);
+    else
+        listCard.setSubtitle(subtitle[1]);
 
     // Update page
     if ($("#items-table").data("value"))
@@ -47,23 +134,36 @@ function changedContinent(contId, contName) {
 }
 
 function duplicatesFilterChanged(id, state) {
-    let text;
     let filtersClass;
     if (id === "only-duplicates-button") {
-        setCookie(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES, state);
+        sessionStorage.setItem(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES, state);
         filtersClass = "only-duplicates";
-        text = "Only Duplicates"
+        subtitle[1] = "Only Duplicates";
+        if (state) {
+            $(`#exclude-duplicates-button`).parent().hide();
+        } else {
+            $(`#exclude-duplicates-button`).parent().show();
+        }
+
     } else {
-        setCookie(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES, state);
+        sessionStorage.setItem(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES, state);
         filtersClass = "exclude-duplicates";
-        text = "Exclude Duplicates"
+        subtitle[1] = "Exclude Duplicates";
+        if (state) {
+            $(`#only-duplicates-button`).parent().hide();
+        } else {
+            $(`#only-duplicates-button`).parent().show();
+        }
     }
 
-    if (!state) {
-        $(`#applied-filters>span.${filtersClass}`).text(text);
-        $(`#applied-filters>span.${filtersClass}`).show();
+    if (state) {
+        if (subtitle[0] !== "")
+            listCard.setSubtitle(subtitle.join(",  "));
+        else
+            listCard.setSubtitle(subtitle[1]);
     } else {
-        $(`#applied-filters>span.${filtersClass}`).hide();
+        subtitle[1] = "";
+        listCard.setSubtitle(subtitle[0]);
     }
 
     // Get data and reload the tables
@@ -95,11 +195,11 @@ function loadItemsTable(sortKey, sortAsc) {
         // Apply filters
         if (filterContId != 0 && record.continentId != filterContId) continue
 
-        if (!onlyDuplicatesBtn.isActive()) {
+        if (onlyDuplicatesBtn.isActive()) {
             if (!record.isDuplicated && record.quantity === 1) continue;
             if (record.quantity > 1) record.quantity--;
         } else {
-            if (!noDuplicatesBtn.isActive()) {
+            if (noDuplicatesBtn.isActive()) {
                 if (record.isDuplicated) continue;
                 record.quantity = 1;
             }
@@ -200,21 +300,23 @@ function listTableSetSortingColumn(sortingElem) {
 }
 
 
-function showBlock(elem) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().show();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
+function parseCatalogueId(catalogueId) {
+    let record = {};
+    record.catalogueIdPreffix = "";
+    record.catalogueIdInt = 0;
+    record.catalogueIdSuffix = "";
+
+    for (let i = 0; i < catalogueId.length; i++) {
+        let char = catalogueId[i];
+        let integer = parseInt(char);
+        if (isNaN(integer))
+            record.catalogueIdPreffix += char;
+        else {
+            record.catalogueIdInt = parseInt(catalogueId.slice(i));
+            record.catalogueIdSuffix = catalogueId.slice(i + record.catalogueIdInt.toString().length)
+            break;
+        }
     }
 
-    deleteCookie(_COOKIE_COLLECTION_FILTERS_HIDE);
-}
-
-function hideBlock(elem) {
-    if (!$(elem).hasClass("disabled")) {
-        $(elem).parent().parent().siblings().hide();
-        $(elem).siblings(".disabled").removeClass("disabled");
-        $(elem).addClass("disabled");
-    }
-    setCookie(_COOKIE_COLLECTION_FILTERS_HIDE, "");
+    return record;
 }
