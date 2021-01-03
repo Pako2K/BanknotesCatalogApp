@@ -140,7 +140,8 @@ class UpsertDenominationForm extends ModalForm {
         let banknoteId = form.data("banknote-id");
         banknote.faceValue = parseFloat(form.find("input[name='note-face-value']").val());
         banknote.unitId = parseInt(form.find("select[name='note-units']").val());
-        banknote.materialId = parseInt(form.find("select[name='note-material']").val());
+        if (form.find("select[name='note-material']").val() !== "")
+            banknote.materialId = parseInt(form.find("select[name='note-material']").val());
         if (form.find("input[name='note-width']").val() !== "")
             banknote.width = parseInt(form.find("input[name='note-width']").val());
         if (form.find("input[name='note-height']").val() !== "")
