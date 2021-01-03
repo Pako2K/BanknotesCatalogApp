@@ -56,8 +56,10 @@ $(document).ready(() => {
                     <div>`);
 
     // Add slide buttons
-    onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, false, duplicatesFilterChanged);
-    noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, false, duplicatesFilterChanged);
+    let state = sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) === "true";
+    onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, state, duplicatesFilterChanged);
+    state = sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) === "true";
+    noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, state, duplicatesFilterChanged);
 
     subtitle[0] = ContinentsFilter.getSelectedName();
     listCard = new SimpleCard($('#list-table'), "List of Banknotes", subtitle[0]);
@@ -121,8 +123,6 @@ $(document).ready(() => {
                         </tbody>
                     </table>`);
 
-    if (sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) != "false") onlyDuplicatesBtn.click();
-    if (sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) != "false") noDuplicatesBtn.click();
 
 
     if (!Session.getUsername()) {

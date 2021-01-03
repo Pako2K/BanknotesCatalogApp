@@ -128,7 +128,7 @@ $(document).ready(function() {
 
             // Load default navigation option
             let optionId = sessionStorage.getItem("Currency.Option");
-            if (optionId)
+            if (optionId && seriesId === "")
                 $(`#${optionId}`).click();
             else
                 $(`#currency-views>p:first-of-type`).click();
