@@ -21,7 +21,7 @@ module.exports.initialize = function(app) {
 // ===> /items/all
 function itemsAllGET(request, response) {
     let sql = ` SELECT  CON.con_id AS "continentId", TER.ter_id AS "territoryId", TER.ter_name AS "territoryName", CUR.cur_id AS "currencyId", CUR.cur_name AS "currencyName", 
-                        BVA.bva_cat_id AS "catalogueId", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
+                        BVA.bva_cat_id AS "catalogueId", SER.ser_id AS "seriesId", CASE WHEN BAN.ban_cus_id = 0 THEN BAN.ban_face_value ELSE BAN.ban_face_value / CUS.cus_value END AS "denomination",
                         BVA.bva_id AS "variantId", BIT.bit_id AS "id", BIT.bit_gra_grade AS "grade", BIT.bit_price AS "price", 
                         BIT.bit_quantity AS "quantity", BIT.bit_seller AS "seller", BIT.bit_purchase_date AS "purchaseDate",
                         BIT.bit_description AS "description"

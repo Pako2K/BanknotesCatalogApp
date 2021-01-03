@@ -339,7 +339,7 @@ class NotesListTable {
 
                         for (let i = 1; i < record.items.length; i++) {
                             gradeClass = `${record.items[i].grade}-grade`;
-                            rowHTML = `<tr">
+                            rowHTML = `<tr>
                                         <td class="only-logged-in ${gradeClass}">${record.items[i].quantity}</td>
                                         <td class="only-logged-in ${gradeClass}">${record.items[i].grade}</td>
                                         <td class="only-logged-in ${gradeClass}">${record.items[i].price + " €"}</td>
@@ -422,7 +422,7 @@ class NotesListTable {
 
                         for (let i = 1; i < record.items.length; i++) {
                             gradeClass = `${record.items[i].grade}-grade`;
-                            rowHTML = `<tr">
+                            rowHTML = `<tr>
                                         <td class="only-logged-in ${gradeClass}">${record.items[i].quantity}</td>
                                         <td class="only-logged-in ${gradeClass}">${record.items[i].grade}</td>
                                         <td class="only-logged-in ${gradeClass}">${record.items[i].price + " €"}</td>

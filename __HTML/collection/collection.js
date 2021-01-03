@@ -274,7 +274,7 @@ function loadItemsTable(sortKey, sortAsc) {
                         <th class="text ${gradeClass}"><a href="/catalogue/country/index.html?countryId=${record.territoryId}">${record.territoryName}</a></th>
                         <td class="${gradeClass}">${record.denomination.toLocaleString("de-DE")}</th>
                         <th class="${gradeClass}"><a href="/catalogue/currency/index.html?currencyId=${record.currencyId}">${record.currencyName}</a></th>
-                        <td class="${gradeClass}">${record.catalogueId}</th>
+                        <th class="${gradeClass}"><a href="/catalogue/currency/index.html?currencyId=${record.currencyId}&seriesId=${record.seriesId}&denomination=${record.denomination}">${record.catalogueId}</a></th>
                         <td class="${gradeClass}">${record.grade}</td>
                         <td class="${gradeClass}">${record.quantity}</td>
                         <td class="text ${gradeClass}">${record.seller || ""}</td>
