@@ -5,25 +5,15 @@ let noDuplicatesBtn;
 let listCard;
 let subtitle = ["", ""];
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 const _COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES = "BOC.collection.filters.only-duplicates";
 const _COOKIE_COLLECTION_FILTER_NO_DUPLICATES = "BOC.collection.filters.no-duplicates";
 
 
 $(document).ready(() => {
-    // Add card for filters
-    let card = new ShowHideCard("CollectionFilters", $('#collection-filters'), "Filters");
-    card.setContent(`<div id="duplicates-filter">
-                        <div>
-                            <div id="only-duplicates-button"></div>
-                            <p>Show only duplicates</p>
-                        </div>
-                        <div>
-                            <div id="exclude-duplicates-button"></div>
-                            <p>Do not show duplicates</p>
-                        </div>
-                    </div>`);
 
-    card = new ShowHideCard("ColExpensesDate", $('#expenses-date'), "Expenses per Date");
+    let card = new ShowHideCard("ColExpensesDate", $('#expenses-date'), "Expenses per Date");
     card.setContent(`<div id="expenses-date-table">
                         <table class="expenses-list-table">
                             <thead>
@@ -55,15 +45,24 @@ $(document).ready(() => {
                         </table>    
                     <div>`);
 
-    // Add slide buttons
-    let state = sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) === "true";
-    onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, state, duplicatesFilterChanged);
-    state = sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) === "true";
-    noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, state, duplicatesFilterChanged);
+
 
     subtitle[0] = ContinentsFilter.getSelectedName();
     listCard = new SimpleCard($('#list-table'), "List of Banknotes", subtitle[0]);
-    listCard.setContent(`  <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
+    listCard.setContent(`
+                    <div id="collection-filters">
+                        <div id="duplicates-filter">
+                        <div>
+                            <div id="only-duplicates-button"></div>
+                            <p>Show only duplicates</p>
+                        </div>
+                        <div>
+                            <div id="exclude-duplicates-button"></div>
+                            <p>Do not show duplicates</p>
+                        </div>
+                    </div>
+                    </div>
+                    <p class="not-logged-in"><a href="/index.html">Log in</a> to see your collection stats!</p>
                     <table id="items-table" class="notes-list-table">
                         <thead>
                             <tr>
@@ -123,6 +122,24 @@ $(document).ready(() => {
                         </tbody>
                     </table>`);
 
+    // Add card for filters
+    // card = new ShowHideCard("CollectionFilters", $('#collection-filters'), "Filters");
+    // card.setContent(`<div id="duplicates-filter">
+    //                 <div>
+    //                     <div id="only-duplicates-button"></div>
+    //                     <p>Show only duplicates</p>
+    //                 </div>
+    //                 <div>
+    //                     <div id="exclude-duplicates-button"></div>
+    //                     <p>Do not show duplicates</p>
+    //                 </div>
+    //             </div>`);
+
+    // Add slide buttons
+    let state = sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_ONLY_DUPLICATES) === "true";
+    onlyDuplicatesBtn = new SlideButton($(`#only-duplicates-button`), 24, 13, state, duplicatesFilterChanged);
+    state = sessionStorage.getItem(_COOKIE_COLLECTION_FILTER_NO_DUPLICATES) === "true";
+    noDuplicatesBtn = new SlideButton($(`#exclude-duplicates-button`), 24, 13, state, duplicatesFilterChanged);
 
 
     if (!Session.getUsername()) {
@@ -314,19 +331,19 @@ function loadItemsTable(sortKey, sortAsc) {
     expensesDate.forEach((val, idx) => {
         let yearSum = val[0];
         let rows = "";
-        for (let month = 2; month <= 12; month++) {
-            yearSum += val[month - 1]
+        for (let month = 1; month < 12; month++) {
+            yearSum += val[month]
             rows += `<tr>
-                        <th>${month}</th>
-                        <td>${val[month-1].toFixed(2)} €</td>
+                        <th>${MONTHS[month]}</th>
+                        <td>${val[month]?val[month].toFixed(2) + " €": "-"}</td>
                     </tr>`;
         }
         total += yearSum;
         $("#expenses-date-table tbody").append(`
         <tr class="first-subrow">
             <th rowspan="12">${idx+1}</th>
-            <th>1</th>
-            <td>${val[0].toFixed(2)} €</td>
+            <th>${MONTHS[0]}</th>
+            <td>${val[0]?val[0].toFixed(2) + " €": "-"}</td>
             <td rowspan="12">${yearSum.toFixed(2)} €</td>
             <td rowspan="12">${(yearSum / 12).toFixed(2)} €</td>
             <td rowspan="12">${total.toFixed(2)} €</td>

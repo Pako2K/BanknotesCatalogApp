@@ -56,13 +56,13 @@ class BanknoteFilters extends ShowHideCard {
             </div>`);
 
         this._thisContent = $(`#${this._CONTENT_ID}`);
-        let issuedFilter = new FromToFilter(this._thisContent.find("div.years-filter>div"), "Issued", this._issuedFilterChanged);
-        let denomFilter = new FromToFilter(this._thisContent.find("div.denom-filter>div"), "Denomination", this._denomFilterChanged);
+        this.issuedFilter = new FromToFilter(this._thisContent.find("div.years-filter>div"), "Issued", this._issuedFilterChanged);
+        this.denomFilter = new FromToFilter(this._thisContent.find("div.denom-filter>div"), "Denomination", this._denomFilterChanged);
 
-        issuedFilter.initFrom(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_ISSUED_FROM));
-        issuedFilter.initTo(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_ISSUED_TO));
-        denomFilter.initFrom(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_DENOM_FROM));
-        denomFilter.initTo(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_DENOM_TO));
+        this.issuedFilter.initFrom(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_ISSUED_FROM));
+        this.issuedFilter.initTo(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_ISSUED_TO));
+        this.denomFilter.initFrom(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_DENOM_FROM));
+        this.denomFilter.initTo(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_DENOM_TO));
     }
 
 
@@ -79,6 +79,25 @@ class BanknoteFilters extends ShowHideCard {
         };
     }
 
+    setDenomFrom(denom) {
+        this.denomFilter.initFrom(denom);
+        localStorage.setItem(this._CONTENT_ID + BAN_FILTER_DENOM_FROM, denom);
+    }
+
+    setDenomTo(denom) {
+        this.denomFilter.initTo(denom);
+        localStorage.setItem(this._CONTENT_ID + BAN_FILTER_DENOM_TO, denom);
+    }
+
+    setIssuedFrom(year) {
+        this.issuedFilter.initFrom(year);
+        localStorage.setItem(this._CONTENT_ID + BAN_FILTER_ISSUED_FROM, year);
+    }
+
+    setIssuedTo(year) {
+        this.issuedFilter.initTo(year);
+        localStorage.setItem(this._CONTENT_ID + BAN_FILTER_ISSUED_TO, year);
+    }
 
     _issuedFilterChanged = (filterName, from, to) => {
         localStorage.setItem(this._CONTENT_ID + BAN_FILTER_ISSUED_FROM, from);

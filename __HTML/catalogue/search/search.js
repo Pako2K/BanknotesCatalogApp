@@ -18,9 +18,27 @@ const currencyTypes = ["OWNED", "SHARED"];
 
 $(document).ready(() => {
 
+    let searchStrArr = window.location.search.substr(1).split("&");
+    let searchParam = searchStrArr[0].split("=");
+    let denomination = searchParam[0] === "denomination" ? searchParam[1] : null;
+    let issueYear = searchParam[0] === "issued" ? searchParam[1] : null;
+
+
     // Insert filters
     currencyFilters = new CurrencyFilters("SearchCur", $(`#currency-filter`), currencyTypes, () => {});
     banknoteFilters = new BanknoteFilters("SearchBan", $(`#banknote-filter`), () => {});
+
+    if (denomination) {
+        banknoteFilters.setDenomFrom(denomination);
+        banknoteFilters.setDenomTo(denomination);
+        banknoteFilters.setIssuedFrom("");
+        banknoteFilters.setIssuedTo("");
+    } else if (issueYear) {
+        banknoteFilters.setDenomFrom("");
+        banknoteFilters.setDenomTo("");
+        banknoteFilters.setIssuedFrom(issueYear);
+        banknoteFilters.setIssuedTo(issueYear);
+    }
 
     // Results card
     listCard = new SimpleCard($('#results-list'), "List of Banknotes", "");

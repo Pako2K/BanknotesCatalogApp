@@ -25,7 +25,7 @@ class Footer {
                         <p>Last connection: <br><span id="last-connection"></span></p>
                     </div>
                 </div>
-                <p class="copyright">@Copyright 2020 The Banknotes Online Catalogue</p>
+                <p class="copyright">@Copyright 2021 The Banknotes Online Catalogue</p>
             </footer>
         `);
         Footer.manageSessionExpiration();

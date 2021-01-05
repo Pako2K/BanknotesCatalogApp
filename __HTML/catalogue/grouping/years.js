@@ -88,7 +88,7 @@ function loadTable(yearsJSON) {
         // Apply filters
         if ((!yearFrom || year.issueYear >= yearFrom) && (!yearTo || year.issueYear <= yearTo)) {
             let descFields = [];
-            descFields.push(year.issueYear);
+            descFields.push(`<a href="/catalogue/search?issued=${year.issueYear}">${year.issueYear}</a>`);
             yearsTable.addRecord(descFields, [year.numTerritories, year.numCurrencies, year.numSeries, year.numDenominations, year.numNotes, year.numVariants], [year.collectionStats.numTerritories, year.collectionStats.numCurrencies, year.collectionStats.numSeries, year.collectionStats.numDenominations, year.collectionStats.numNotes, year.collectionStats.numVariants],
                 year.collectionStats.price);
 

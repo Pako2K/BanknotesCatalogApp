@@ -62,11 +62,7 @@ section {
 }
 
 #collection-filters {
-  padding: 0.5em 0;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
-  min-width: 25%;
+  padding: 0;
   margin: auto;
 }
 
@@ -79,6 +75,7 @@ section {
       -ms-flex-direction: column;
           flex-direction: column;
   margin-top: 1em;
+  margin-left: 0.75em;
 }
 
 #duplicates-filter > div {
@@ -125,7 +122,7 @@ section {
 }
 
 .list-section > div {
-  margin-bottom: 0.5em;
+  margin: 0.5em auto;
   min-width: 70%;
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -243,7 +240,7 @@ section {
 }
 
 .expenses-list-table > tbody th {
-  padding: 0.5em 0.8em;
+  padding: 0.25em 0.8em;
 }
 
 .expenses-list-table > tbody th.text {
@@ -258,6 +255,11 @@ section {
 
 .expenses-list-table > tbody > tr.first-subrow {
   border-top: dotted 1px grey;
+}
+
+.expenses-list-table > tbody > tr.first-subrow td:last-of-type {
+  color: darkred;
+  font-weight: bold;
 }
 
 .is-sortable {
