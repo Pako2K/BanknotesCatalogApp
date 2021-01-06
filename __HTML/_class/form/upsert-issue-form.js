@@ -60,7 +60,7 @@ class UpsertIssueForm extends ModalForm {
         // Fill-in the issuers
         asyncGET(`/territory/${currencyJSON.territoryId}/issuer`, (result, status) => {
             for (let issuer of result) {
-                $("#issuers").append(`<option value='${issuer.name}' data-id='${issuer.id}'>`);
+                $("#issuers").append(`<option value="${issuer.name}" data-id='${issuer.id}'>`);
                 if (seriesJSON && !seriesJSON.issuerName && seriesJSON.issuerId === issuer.id)
                     seriesJSON.issuerName = issuer.name;
             }
