@@ -198,7 +198,7 @@ function loadSeriesDetails(seriesId, newDenomId) {
                         variantsHTML +=
                             `<div class="variant-box section-title">
                                         <p>${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
-                                        <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick='openUpsertVariant(${denom.id}, "${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}", ${variant.id})' alt="Edit Variant"/>
+                                        <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick='openUpsertVariant(${denom.id}, "${denomStr.replace("'", "\\'")}${faceValueStr ? " [ " + faceValueStr + " ]": ""}", ${variant.id})' alt="Edit Variant"/>
                                         
                                                                               
                                         <div class="variant-pictures">
@@ -249,7 +249,7 @@ function loadSeriesDetails(seriesId, newDenomId) {
                         <div class="variants-section">
                             ${variantsHTML}
                             <div id="denom-id-${denom.id}" class="variant-add-box only-admin" >
-                                <div class="clickable-button" onclick='openUpsertVariant(${denom.id}, "${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}")'>
+                                <div class="clickable-button" onclick="openUpsertVariant(${denom.id}, '${denomStr.replace("'", "\\'")}${faceValueStr ? " [ " + faceValueStr + " ]": ""}')">
                                     <div>
                                         <img src="./details/add-blue.png" alt="Add variant"/>
                                         <p>New Variant</p>
