@@ -198,7 +198,7 @@ function loadSeriesDetails(seriesId, newDenomId) {
                         variantsHTML +=
                             `<div class="variant-box section-title">
                                         <p>${dateStr} ${variant.catalogueId === "NA" ? "" : " &#9654 " + variant.catalogueId}</p>
-                                        <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick="openUpsertVariant(${denom.id}, '${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}', ${variant.id})" alt="Edit Variant"/>
+                                        <img class="only-admin sqr-button clickable-button" src="./details/edit.png" onclick='openUpsertVariant(${denom.id}, "${denomStr}${faceValueStr ? " [ " + faceValueStr + " ]": ""}", ${variant.id})' alt="Edit Variant"/>
                                         
                                                                               
                                         <div class="variant-pictures">
