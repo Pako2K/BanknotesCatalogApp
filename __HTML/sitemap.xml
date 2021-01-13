@@ -49,19 +49,19 @@
 		</url>
 
 		<url>
-			<loc>https://banknotes-catalogue.herokuapp.com/contact.html</loc>
+			<loc>https://banknotes-catalogue.herokuapp.com/site/contact.html</loc>
 			<changefreq>daily</changefreq>
 			<priority>1</priority>
 		</url>
 
 		<url>
-			<loc>https://banknotes-catalogue.herokuapp.com/sources.html</loc>
+			<loc>https://banknotes-catalogue.herokuapp.com/site/sources.html</loc>
 			<changefreq>daily</changefreq>
 			<priority>1</priority>
 		</url>
 
 		<url>
-			<loc>https://banknotes-catalogue.herokuapp.com/glossary.html</loc>
+			<loc>https://banknotes-catalogue.herokuapp.com/site/glossary.html</loc>
 			<changefreq>daily</changefreq>
 			<priority>1</priority>
 		</url>
