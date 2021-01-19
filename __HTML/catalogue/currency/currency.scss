@@ -16,25 +16,23 @@ section {
     background-color: $BODY_BACKGROUND_COLOR;
 }
 
-#currency-header {
-    grid-template-columns: repeat(4, min-content) repeat(5, auto);
-    grid-template-rows: repeat(9, auto);
-}
-
 #currency-data {
-    grid-column: 1/6;
-    grid-row: 1;
-    &>div:first-of-type>div {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    &>div.currency-title>div {
         display: inline-block;
     }
 }
 
 #currency-symbol {
-    font-size: 1.4em;
+    font-size: 1.2em;
     border: solid 0.5px black;
     padding: 0.1em 0.5em;
     background: rgb(99, 135, 120);
     color: rgb(220, 230, 210);
+    margin-right: 0.75em;
 }
 
 #currency-name,
@@ -50,16 +48,15 @@ section {
 }
 
 #country-data {
-    grid-column: 6/10;
-    grid-row: 1;
-    // display: none;
     justify-self: end;
+    margin-bottom: 0.25em;
     &>div {
+        font-size: 0.9em;
         display: inline-block;
         vertical-align: middle;
     }
     & img {
-        height: 1.6em;
+        height: 1.4em;
         width: auto;
         box-shadow: 2px 2px 2px gray;
     }
@@ -92,7 +89,6 @@ section {
 }
 
 #currency-period {
-    grid-column: 1/10;
     font-size: 0.8em;
     color: black;
     margin-bottom: 0.4em;
@@ -109,14 +105,12 @@ section {
 }
 
 #currency-subunit {
-    grid-column: 1/10;
     font-size: 0.8em;
     white-space: nowrap;
     margin-bottom: 0.5em;
 }
 
 #currency-desc {
-    grid-column: 1/10;
     display: none;
     font-size: 0.75em;
     color: rgb(104, 44, 44);
@@ -124,7 +118,6 @@ section {
 }
 
 #related-currencies {
-    grid-column: 1/10;
     &>table {
         border-collapse: collapse;
     }
@@ -164,7 +157,6 @@ section {
 
 #owning-country,
 #sharing-country {
-    grid-column: 1/10;
     display: none;
     font-size: 0.8em;
     margin-top: 0.5em;
@@ -178,18 +170,9 @@ section {
     }
 }
 
-// #view-section {
-//     padding: 1em 1em;
-//     overflow: auto;
-// }
 #view-section {
     padding: 1em 1em;
     overflow: auto;
-    // display: flex;
-    // flex-direction: column;
-    // flex-wrap: nowrap;
-    // align-items: center;
-    // background-color: whitesmoke;
 }
 
 .none-grade {

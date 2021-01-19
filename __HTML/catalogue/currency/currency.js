@@ -103,6 +103,7 @@ $(document).ready(function() {
 
         if (currencyJSON.currencyType === "OWNED" && currencyJSON.sharedBy) {
             $("#sharing-country").show();
+            currencyJSON.sharedBy.sort((a, b) => { return a.name.localeCompare(b.name); });
             for (let territory of currencyJSON.sharedBy)
                 $("#sharing-country").append(createCountryLink(territory));
         }
@@ -111,6 +112,7 @@ $(document).ready(function() {
             $("#owning-country").append(createCountryLink(currencyJSON.ownedBy));
             if (currencyJSON.sharedBy) {
                 $("#sharing-country").show();
+                currencyJSON.sharedBy.sort((a, b) => { return a.name.localeCompare(b.name); });
                 for (let territory of currencyJSON.sharedBy) {
                     if (territory.id !== currencyJSON.territory.id)
                         $("#sharing-country").append(createCountryLink(territory));

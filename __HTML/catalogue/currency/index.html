@@ -59,21 +59,6 @@
 
 <body>
     <section id="currency-header" class="page-header">
-        <div id="currency-data">
-            <div>
-                <div id="currency-symbol">
-                </div>
-                <div id="currency-name"></div>
-                <div id="currency-iso3"> - </div>
-                <div class="info-button" onclick="toggleDescription(this)">i</div>
-            </div>
-            <div id="currency-full-name"></div>
-        </div>
-        <div id="currency-subunit"></div>
-        <div id="currency-period">
-            From <span id="currency-start"></span><span> to </span><span id="currency-end"></span>
-        </div>
-
         <div id="country-data">
             <div id="country-flag">
                 <a href=""><img src="" alt="Territory flag" /></a>
@@ -82,6 +67,21 @@
                 <a href=""></a>
             </div>
         </div>
+        <div id="currency-data">
+            <div id="currency-symbol"></div>
+            <div class="currency-title">
+                <div id="currency-name"></div>
+                <div id="currency-iso3"> - </div>
+                <div class="info-button" onclick="toggleDescription(this)">i</div>
+            </div>
+        </div>
+        <div id="currency-full-name"></div>
+        <div id="currency-subunit"></div>
+        <div id="currency-period">
+            From <span id="currency-start"></span><span> to </span><span id="currency-end"></span>
+        </div>
+
+
         <div id="currency-desc"></div>
         <div id="related-currencies">
             <table>

@@ -321,14 +321,14 @@ function currenciesItemsStatsGET(request, response) {
 
 
 
-
 const territoryCurrenciesStats_commonFROM =
-    `FROM cur_currency CUR
-    INNER JOIN tec_territory_currency TEC ON TEC.tec_cur_id = CUR.cur_id AND TEC.tec_ter_id = $1
-    LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = $1
-    LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
+    `FROM  tec_territory_currency TEC
+	INNER JOIN cur_currency CUR ON TEC.tec_cur_id = CUR.cur_id 
+	LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = TEC.tec_ter_id AND TEC.tec_is_issuer=1
+	LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
-    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
+    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
+	WHERE TEC.tec_ter_id = $1`;
 
 // ===> /territory/:territoryId/currencies/items/stats
 function territoryByIdCurrenciesItemsStatsGET(request, response) {

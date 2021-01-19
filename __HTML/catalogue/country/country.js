@@ -49,6 +49,7 @@ $(document).ready(function() {
 
         if (countryData.predecessors && countryData.predecessors.length) {
             $("#country-pred").show();
+            countryData.predecessors.sort((a, b) => { return a.name.localeCompare(b.name); });
             for (let pred of countryData.predecessors) {
                 $("#country-pred").append(createCountryLink(pred));
             }
@@ -56,6 +57,7 @@ $(document).ready(function() {
 
         if (countryData.successors && countryData.successors.length) {
             $("#country-suc").show();
+            countryData.successors.sort((a, b) => { return a.name.localeCompare(b.name); });
             for (let suc of countryData.successors) {
                 $("#country-suc").append(createCountryLink(suc));
             }

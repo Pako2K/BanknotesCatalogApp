@@ -125,6 +125,7 @@ body {
 .country-link {
   font-weight: bold;
   margin-right: 1em;
+  margin-bottom: 0.5em;
   white-space: nowrap;
 }
 
@@ -209,32 +210,33 @@ section {
   background-color: #eeefed;
 }
 
-#currency-header {
-  -ms-grid-columns: (min-content)[4] (auto)[5];
-      grid-template-columns: repeat(4, -webkit-min-content) repeat(5, auto);
-      grid-template-columns: repeat(4, min-content) repeat(5, auto);
-  -ms-grid-rows: (auto)[9];
-      grid-template-rows: repeat(9, auto);
-}
-
 #currency-data {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 5;
-  grid-column: 1/6;
-  -ms-grid-row: 1;
-  grid-row: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
 }
 
-#currency-data > div:first-of-type > div {
+#currency-data > div.currency-title > div {
   display: inline-block;
 }
 
 #currency-symbol {
-  font-size: 1.4em;
+  font-size: 1.2em;
   border: solid 0.5px black;
   padding: 0.1em 0.5em;
   background: #638778;
   color: #dce6d2;
+  margin-right: 0.75em;
 }
 
 #currency-name,
@@ -250,22 +252,19 @@ section {
 }
 
 #country-data {
-  -ms-grid-column: 6;
-  -ms-grid-column-span: 4;
-  grid-column: 6/10;
-  -ms-grid-row: 1;
-  grid-row: 1;
   -ms-grid-column-align: end;
       justify-self: end;
+  margin-bottom: 0.25em;
 }
 
 #country-data > div {
+  font-size: 0.9em;
   display: inline-block;
   vertical-align: middle;
 }
 
 #country-data img {
-  height: 1.6em;
+  height: 1.4em;
   width: auto;
   -webkit-box-shadow: 2px 2px 2px gray;
           box-shadow: 2px 2px 2px gray;
@@ -302,9 +301,6 @@ section {
 }
 
 #currency-period {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 9;
-  grid-column: 1/10;
   font-size: 0.8em;
   color: black;
   margin-bottom: 0.4em;
@@ -321,28 +317,16 @@ section {
 }
 
 #currency-subunit {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 9;
-  grid-column: 1/10;
   font-size: 0.8em;
   white-space: nowrap;
   margin-bottom: 0.5em;
 }
 
 #currency-desc {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 9;
-  grid-column: 1/10;
   display: none;
   font-size: 0.75em;
   color: #682c2c;
   margin-bottom: 0.5em;
-}
-
-#related-currencies {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 9;
-  grid-column: 1/10;
 }
 
 #related-currencies > table {
@@ -391,9 +375,6 @@ section {
 
 #owning-country,
 #sharing-country {
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 9;
-  grid-column: 1/10;
   display: none;
   font-size: 0.8em;
   margin-top: 0.5em;
