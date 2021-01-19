@@ -327,8 +327,7 @@ const territoryCurrenciesStats_commonFROM =
 	LEFT JOIN iss_issuer ISS ON ISS.iss_ter_id = TEC.tec_ter_id AND TEC.tec_is_issuer=1
 	LEFT JOIN ser_series SER ON SER.ser_cur_id = TEC.tec_cur_id AND SER.ser_iss_id = ISS.iss_id
     LEFT JOIN ban_banknote BAN ON BAN.ban_ser_id = SER.ser_id
-    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id
-	WHERE TEC.tec_ter_id = $1`;
+    LEFT JOIN bva_variant BVA ON BVA.bva_ban_id = BAN.ban_id`;
 
 // ===> /territory/:territoryId/currencies/items/stats
 function territoryByIdCurrenciesItemsStatsGET(request, response) {
@@ -345,6 +344,7 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
                         CASE WHEN TEC.tec_start IS NULL THEN CUR.cur_start ELSE TEC.tec_start END AS "start",
                         CASE WHEN TEC.tec_end IS NULL THEN CUR.cur_end ELSE TEC.tec_end END AS "end", ${currenciesStats_commonSELECT}
                 ${territoryCurrenciesStats_commonFROM}
+                WHERE TEC.tec_ter_id = $1
                 GROUP BY "id", "iso3", "currencyType", "isIssuer", "start", "end"
                 ORDER BY "start", "end"`;
 
@@ -367,6 +367,7 @@ function territoryByIdCurrenciesItemsStatsGET(request, response) {
                 ${territoryCurrenciesStats_commonFROM}
                 INNER JOIN bit_item BIT ON BIT.bit_bva_id = BVA.bva_id
                 INNER JOIN usr_user USR ON USR.usr_id = BIT.bit_usr_id AND USR.usr_name = $2
+                WHERE TEC.tec_ter_id = $1
                 GROUP BY "id"`;
 
         catalogueDB.execSQL(sql, [territoryId, request.session.user], (err, colRows) => {
