@@ -117,8 +117,8 @@ function getCurrencyFilters() {
 function getBanknoteFilters() {
     let filtersJSON = banknoteFilters.getFilters();
 
-    filters.banknote.denominationMin = filtersJSON.denom.from || "";
-    filters.banknote.denominationMax = filtersJSON.denom.to || "";
+    filters.banknote.denominationMin = filtersJSON.denom.from.replace('+', '%2B') || "";
+    filters.banknote.denominationMax = filtersJSON.denom.to.replace('+', '%2B') || "";
     filters.banknote.issuedateFrom = filtersJSON.issued.from || "";
     filters.banknote.issuedateTo = filtersJSON.issued.to || "";
 
