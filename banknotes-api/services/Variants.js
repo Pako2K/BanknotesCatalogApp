@@ -438,13 +438,13 @@ function itemsGET(request, response) {
     let sqlBanknote = "";
     param = queryStrJSON.minDenom || "";
     if (param !== "")
-        sqlBanknote = `WHERE denomination >= ${param}`;
+        sqlBanknote = `WHERE denomination >= ${parseFloat(param) * 0.9999}`;
     param = queryStrJSON.maxDenom || "";
     if (param !== "") {
         if (sqlBanknote === "")
-            sqlBanknote = `WHERE denomination <= ${param}`;
+            sqlBanknote = `WHERE denomination <= ${parseFloat(param) * 1.0001}`;
         else
-            sqlBanknote += ` AND denomination <= ${param}`;
+            sqlBanknote += ` AND denomination <= ${parseFloat(param) * 1.0001}`;
     }
     param = queryStrJSON.issueYearFrom || "";
     if (param !== "")

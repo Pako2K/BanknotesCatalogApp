@@ -57,7 +57,7 @@ class BanknoteFilters extends ShowHideCard {
 
         this._thisContent = $(`#${this._CONTENT_ID}`);
         this.issuedFilter = new FromToFilter(this._thisContent.find("div.years-filter>div"), "Issued", this._issuedFilterChanged);
-        this.denomFilter = new FromToFilter(this._thisContent.find("div.denom-filter>div"), "Denomination", this._denomFilterChanged);
+        this.denomFilter = new FromToFilter(this._thisContent.find("div.denom-filter>div"), "Denomination", this._denomFilterChanged, "From", "To", true, 12);
 
         this.issuedFilter.initFrom(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_ISSUED_FROM));
         this.issuedFilter.initTo(localStorage.getItem(this._CONTENT_ID + BAN_FILTER_ISSUED_TO));

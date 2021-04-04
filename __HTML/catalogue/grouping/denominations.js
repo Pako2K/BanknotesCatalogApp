@@ -114,7 +114,7 @@ function loadTable(denominationsJSON) {
     for (let denom of denominationsJSON) {
         let descFields = [];
         let denomStr = denom.denomination.toLocaleString("de-DE");
-        descFields.push(`<a href="/catalogue/search?denomination=${denomStr}">${denomStr}</a>`);
+        descFields.push(`<a href="/catalogue/search?denomination=${denom.denomination}">${denomStr}</a>`);
         denominationsTable.addRecord(descFields, [denom.numTerritories, denom.numCurrencies, denom.numSeries, denom.numVariants], [denom.collectionStats.numTerritories, denom.collectionStats.numCurrencies, denom.collectionStats.numSeries, denom.collectionStats.numVariants],
             denom.collectionStats.price);
 

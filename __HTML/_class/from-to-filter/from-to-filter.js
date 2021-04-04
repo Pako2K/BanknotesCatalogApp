@@ -1,5 +1,5 @@
 class FromToFilter {
-    constructor(parentDiv, filterName, callback, lowLimitLbl = "From", upLimitLbl = "To", isHorizontal = true) {
+    constructor(parentDiv, filterName, callback, lowLimitLbl = "From", upLimitLbl = "To", isHorizontal = true, lengthEM = 4) {
         if (!parentDiv || !filterName || filterName === "")
             throw "addFromToFilter: Invalid parameters";
 
@@ -27,6 +27,8 @@ class FromToFilter {
                     </div>`;
 
         parentDiv.append(html);
+
+        parentDiv.find("input").css("width", lengthEM + "em");
 
         parentDiv.find("input").focusin(function() {
             $(this).parents(".from-to-filter").addClass("input-focus");
