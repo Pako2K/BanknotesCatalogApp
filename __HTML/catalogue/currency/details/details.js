@@ -108,12 +108,23 @@ function loadSeriesDetails(seriesId, newDenomId) {
         variantsUri = `/series/${seriesId}/variants`;
 
     asyncGET(variantsUri || itemsUri, (notesJSON, status) => {
+                // Currency plural names
+                let plurals = [];
+                let pluralStrs = $("#currency-name").data("plural").split(',');
+                for (let elem of pluralStrs) {
+                    let elemItem = elem.split('-');
+                    if (elemItem.length === 1)
+                        plurals[0] = elemItem[0];
+                    else
+                        plurals[elem[0]] = elemItem[1];
+                }
+
                 // For each banknote
                 for (let denom of notesJSON) {
                     // Create section
                     let denomStr = denom.denomination.toLocaleString("de-DE") + ' ';
                     if (denom.denomination != 1)
-                        denomStr += $("#currency-name").data("plural");
+                        denomStr += plurals[denom.denomination] || plurals[0];
                     else
                         denomStr += $("#currency-name").text();
                     let faceValueStr;
