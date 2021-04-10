@@ -110,7 +110,9 @@ function loadSeriesDetails(seriesId, newDenomId) {
     asyncGET(variantsUri || itemsUri, (notesJSON, status) => {
                 // Currency plural names
                 let plurals = [];
-                let pluralStrs = $("#currency-name").data("plural").split(',');
+                let pluralStrs = [];
+                if ($("#currency-name").data("plural"))
+                    pluralStrs = $("#currency-name").data("plural").split(',');
                 for (let elem of pluralStrs) {
                     let elemItem = elem.split('-');
                     if (elemItem.length === 1)
