@@ -50,19 +50,15 @@ class UpsertVariantForm extends ModalForm {
         </div>
         <div class="non-overstamped">
             <p class="field-title">Signature</p>
-            <input name="variant-signature" type="text" size="36" maxlength="35" autocomplete="off" />
+            <input name="variant-signature" type="text" size="36" maxlength="60" autocomplete="off" />
         </div>
-        <!-- <div>
-            <p class="field-title">Signature details</p>
-            <input name="variant-signature-ext" type="text" size="36" maxlength="35" autocomplete="off" />
-        </div> -->
         <div class="non-overstamped">
             <p class="field-title">Watermark</p>
-            <input name="variant-watermark" type="text" size="36" maxlength="35" autocomplete="off" />
+            <input name="variant-watermark" type="text" size="36" maxlength="60" autocomplete="off" />
         </div>
         <div class="non-overstamped">
             <p class="field-title">Security thread</p>
-            <input name="variant-security-thread" type="text" size="36" maxlength="35" autocomplete="off"></input>
+            <input name="variant-security-thread" type="text" size="36" maxlength="40" autocomplete="off"></input>
         </div>
         <div class="non-overstamped">
             <p class="field-title">Other Security features</p>
