@@ -194,7 +194,8 @@ function territoriesItemsStatsGET(request, response) {
             return;
         }
 
-        sql = ` SELECT * FROM ( 
+        sql = ` SELECT "id", sum("numCurrencies") AS "numCurrencies", sum("numSeries") AS "numSeries", sum("numDenominations") AS "numDenominations", 
+                sum("numNotes") AS "numNotes", sum("numVariants") AS "numVariants", sum("price") AS "price" FROM ( 
                     SELECT  TER.ter_id AS id, ${territoriesStats_commonSELECT}, sum(BIT.bit_price * BIT.bit_quantity) AS "price"
                     ${territoriesStats_commonFROM}
                     INNER JOIN bit_item BIT ON bit_bva_id = bva_id
@@ -212,7 +213,7 @@ function territoriesItemsStatsGET(request, response) {
                     INNER JOIN bit_item BIT ON bit_bva_id = bva_id
                     INNER JOIN usr_user USR ON USR.usr_id = bit_usr_id AND USR.usr_name = $1
                     GROUP BY TER.ter_id
-                ) AS stats ORDER BY "id"`;
+                ) AS stats GROUP BY "id" ORDER BY "id"`;
 
         // Retrieve the collection statistics for the session user
         catalogueDB.execSQL(sql, [request.session.user], (err, colRows) => {
@@ -226,11 +227,11 @@ function territoriesItemsStatsGET(request, response) {
             for (let row of catRows) {
                 row.collectionStats = {};
                 if (collecIndex < colRows.length && row.id === colRows[collecIndex].id) {
-                    row.collectionStats.numCurrencies = colRows[collecIndex].numCurrencies;
-                    row.collectionStats.numSeries = colRows[collecIndex].numSeries;
-                    row.collectionStats.numDenominations = colRows[collecIndex].numDenominations;
-                    row.collectionStats.numNotes = colRows[collecIndex].numNotes;
-                    row.collectionStats.numVariants = colRows[collecIndex].numVariants;
+                    row.collectionStats.numCurrencies = parseInt(colRows[collecIndex].numCurrencies);
+                    row.collectionStats.numSeries = parseInt(colRows[collecIndex].numSeries);
+                    row.collectionStats.numDenominations = parseInt(colRows[collecIndex].numDenominations);
+                    row.collectionStats.numNotes = parseInt(colRows[collecIndex].numNotes);
+                    row.collectionStats.numVariants = parseInt(colRows[collecIndex].numVariants);
                     row.collectionStats.price = colRows[collecIndex].price;
                     collecIndex++;
                 } else {
