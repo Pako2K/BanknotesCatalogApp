@@ -12,3 +12,6 @@ logs/*
 
 # exclude visual studio code files
 .vscode/*
+
+# exclude package-lock.json
+package-lock.json
