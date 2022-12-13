@@ -8,7 +8,7 @@
         "ssl": {
             "rejectUnauthorized": false
         },
-        "max": 5,
+        "max": 2,
         "idleTimeoutMillis": 30000,
         "connectionTimeoutMillis": 30000
     },
@@ -17,7 +17,7 @@
         "ssl": {
             "rejectUnauthorized": false
         },
-        "max": 5,
+        "max": 3,
         "idleTimeoutMillis": 30000,
         "connectionTimeoutMillis": 30000
     },
